@@ -52,24 +52,28 @@
     </div>
 
     <div class="task_properties">
-      <div>
-        <label for="task_name">Name:</label>
-        <input type="text" id="task_name" name="name"
-               onchange="update_task(this)">
-      </div>
-      <div>
-        <label for="start_date">Start Date:</label>
-        <input type="date" id="description_start_date" name="start_date"
-               onchange="update_task(this)">
-      </div>
-      <div>
-        <label for="end_date">End Date:</label>
-        <input type="date" id="description_end_date" name="end_date"
-               onchange="update_task(this)">
-      </div>
-      <div>
-        <button onclick="delete_task()">Delete</button>
-        <button onclick="delete_all_tasks()">Start Fresh</button>
+      <div class="task_general_info">
+        <div>
+          <label for="task_name">Name:</label>
+          <input type="text" id="task_name" name="name"
+                 onchange="update_task(this)">
+        </div>
+        <div>
+          <label for="start_date">Start Date:</label>
+          <input type="date" id="description_start_date" name="start_date"
+                 onchange="update_task(this)">
+          <label for="end_date">End Date:</label>
+          <input type="date" id="description_end_date" name="end_date"
+                 onchange="update_task(this)">
+          <label for="days_length">Days:</label>
+          <input type="number" step="1" pattern="\d+" size="5"
+                 id="description_days_length" name="days_length"
+                 onchange="update_task(this)">
+        </div>
+        <div>
+          <button onclick="delete_task()">Delete</button>
+          <button onclick="delete_all_tasks()">Start Fresh</button>
+        </div>
       </div>
       <hr>
       <div class="task_description">
@@ -106,17 +110,20 @@
         document.getElementById("task_name").value = task.name;
         document.getElementById("description_start_date").value = task.start;
         document.getElementById("description_end_date").value = task.end;
+        document.getElementById("description_days_length").value =
+            moment(task.end).diff(moment(task.start), "days") + 1;
         document.getElementById("description").value = task.description;
         //
         document.getElementById("up").disabled = false;
         document.getElementById("down").disabled = false;
     }
 
-    function gantt_on_date_change(task, start, date) {
-        //todo: merge with gantt_on_click?
+    function gantt_on_date_change(task, start, end) {
         active_task_id = task.id;
         document.getElementById("description_start_date").value = start;
         document.getElementById("description_end_date").value = end;
+        document.getElementById("description_days_length").value =
+            moment(task.end).diff(moment(task.start), "days") + 1;
     }
 
     function add_task() {
@@ -173,8 +180,15 @@
         // todo: simplify; pass task field as arg?
         if ( input_obj.id == "description_end_date" ){
             tasks[idx].end = input_obj.value;
+            gantt_on_date_change(tasks[idx], tasks[idx].start, tasks[idx].end);
+            //todo: somehow update automatically?
         } else if ( input_obj.id == "description_start_date" ){
             tasks[idx].start = input_obj.value;
+            gantt_on_date_change(tasks[idx], tasks[idx].start, tasks[idx].end);
+        } else if ( input_obj.id == "description_days_length" ){
+            var new_end = moment(tasks[idx].start).add(input_obj.value - 1, 'days');
+            tasks[idx].end = new_end.format("YYYY-MM-DD");
+            gantt_on_date_change(tasks[idx], tasks[idx].start, tasks[idx].end);
         } else if ( input_obj.id == "task_name" ){
             tasks[idx].name = input_obj.value;
         } else if ( input_obj.id == "description" ){
