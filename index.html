@@ -43,7 +43,10 @@
           <option selected value="Week">Weeks</option>
           <option value="Month">Months</option>
         </select>
-
+        <div>
+          <button id="up" disabled onclick="move_task_up()">Up</button>
+          <button id="down" disabled onclick="move_task_down()">Down</button>
+        </div>
         <button onclick="add_task()">New</button>
       </div>
     </div>
@@ -104,6 +107,9 @@
         document.getElementById("description_start_date").value = task.start;
         document.getElementById("description_end_date").value = task.end;
         document.getElementById("description").value = task.description;
+        //
+        document.getElementById("up").disabled = false;
+        document.getElementById("down").disabled = false;
     }
 
     function gantt_on_date_change(task, start, date) {
@@ -131,6 +137,31 @@
         gantt.refresh(tasks);
     }
 
+    function move_task_up() {
+        if ( active_task_id == null ) return;
+
+        var tasks = gantt.tasks;
+        var idx = tasks.findIndex( x => {return x.id === active_task_id} );
+
+        if ( idx == 0 ) return;
+        [tasks[idx-1], tasks[idx]] = [tasks[idx], tasks[idx-1]];
+
+        store_tasks(tasks);
+        gantt.refresh(tasks);
+    }
+
+    function move_task_down() {
+        if ( active_task_id == null ) return;
+
+        var tasks = gantt.tasks;
+        var idx = tasks.findIndex( x => {return x.id === active_task_id} );
+
+        if ( idx == (tasks.length - 1) ) return;
+        [tasks[idx], tasks[idx+1]] = [tasks[idx+1], tasks[idx]];
+
+        store_tasks(tasks);
+        gantt.refresh(tasks);
+    }
 
     function update_task(input_obj) {
         if ( active_task_id == null ) return;
@@ -167,6 +198,8 @@
         document.getElementById("description_start_date").value = null;
         document.getElementById("description_end_date").value = null;
         document.getElementById("description").value = null;
+        document.getElementById("up").disabled = true;
+        document.getElementById("down").disabled = true;
 
         active_task_id = null;
         store_tasks(tasks);
@@ -181,6 +214,8 @@
         document.getElementById("description_start_date").value = null;
         document.getElementById("description_end_date").value = null;
         document.getElementById("description").value = null;
+        document.getElementById("up").disabled = true;
+        document.getElementById("down").disabled = true;
         active_task_id = null;
 
         add_task(); // need at least 1 task to render correctly;
