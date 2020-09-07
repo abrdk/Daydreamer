@@ -47,7 +47,13 @@
           <button id="up" disabled onclick="move_task_up()">Up</button>
           <button id="down" disabled onclick="move_task_down()">Down</button>
         </div>
-        <button onclick="add_task()">New</button>
+        <div>
+          <button id="fold" disabled onclick="fold_unroll()">Fold/Unfold</button>
+          <button id="sub" disabled onclick="add_subtask()">Sub</button>
+        </div>
+        <div>
+          <button onclick="add_task()">New</button>
+        </div>
       </div>
     </div>
 
@@ -116,6 +122,7 @@
         //
         document.getElementById("up").disabled = false;
         document.getElementById("down").disabled = false;
+        document.getElementById("sub").disabled = false;
     }
 
     function gantt_on_date_change(task, start, end) {
@@ -133,6 +140,7 @@
                           'Learn to Draw', 'Write a Book'];
 
         var new_task = {
+            id: gen_task_id(),
             name: task_names[Math.floor(Math.random() * task_names.length)],
             start: moment().format("YYYY-MM-DD"),
             end: moment().add(7, 'days').format("YYYY-MM-DD"),
@@ -140,6 +148,28 @@
         };
 
         tasks.push(new_task);
+        store_tasks(tasks);
+        gantt.refresh(tasks);
+    }
+
+    function add_subtask() {
+        if ( active_task_id == null ) return;
+
+        var tasks = gantt.tasks;
+        var idx = tasks.findIndex( x => {return x.id === active_task_id} );
+
+        // reuse add_task?
+        var task_names = ['Make Next Step'];
+        var new_task = {
+            id: gen_task_id(),
+            name: task_names[Math.floor(Math.random() * task_names.length)],
+            start: tasks[idx].start,
+            end: tasks[idx].end,
+            description: '',
+            dependencies: tasks[idx].id
+        };
+
+        tasks.splice(idx + 1, 0, new_task);
         store_tasks(tasks);
         gantt.refresh(tasks);
     }
@@ -168,6 +198,10 @@
 
         store_tasks(tasks);
         gantt.refresh(tasks);
+    }
+
+    function fold_unroll() {
+        console.log("fold");
     }
 
     function update_task(input_obj) {
@@ -211,9 +245,11 @@
         document.getElementById("task_name").value = null;
         document.getElementById("description_start_date").value = null;
         document.getElementById("description_end_date").value = null;
+        document.getElementById("description_days_length").value = null;
         document.getElementById("description").value = null;
         document.getElementById("up").disabled = true;
         document.getElementById("down").disabled = true;
+        document.getElementById("sub").disabled = true;
 
         active_task_id = null;
         store_tasks(tasks);
@@ -227,9 +263,11 @@
         document.getElementById("task_name").value = null;
         document.getElementById("description_start_date").value = null;
         document.getElementById("description_end_date").value = null;
+        document.getElementById("description_days_length").value = null;
         document.getElementById("description").value = null;
         document.getElementById("up").disabled = true;
         document.getElementById("down").disabled = true;
+        document.getElementById("sub").disabled = true;
         active_task_id = null;
 
         add_task(); // need at least 1 task to render correctly;
@@ -252,30 +290,35 @@
     function example_tasks() {
         var tasks = [
             {
+                id: gen_task_id(),
                 name: 'Vacation',
                 start: moment().format("YYYY-MM-DD"), //todo: avoid casting date to string?
                 end: moment().add(30, 'days').format("YYYY-MM-DD"),
                 description: "Unwind a bit"
             },
             {
+                id: gen_task_id(),
                 name: 'Fly to the Moon',
                 start: moment().format("YYYY-MM-DD"),
                 end: moment().add(7, 'days').format("YYYY-MM-DD"),
                 description: ""
             },
             {
+                id: gen_task_id(),
                 name: 'Go to Mars',
                 start: moment().add(7, 'days').format("YYYY-MM-DD"),
                 end: moment().add(15, 'days').format("YYYY-MM-DD"),
                 description: ""
             },
             {
+                id: gen_task_id(),
                 name: 'Visit Alpha Centauri',
                 start: moment().add(15, 'days').format("YYYY-MM-DD"),
                 end: moment().add(25, 'days').format("YYYY-MM-DD"),
                 description: ""
             },
             {
+                id: gen_task_id(),
                 name: 'Get Back Home',
                 start: moment().add(25, 'days').format("YYYY-MM-DD"),
                 end: moment().add(30, 'days').format("YYYY-MM-DD"),
@@ -283,6 +326,11 @@
             }
         ];
         return tasks;
+    }
+
+    function gen_task_id() {
+        //todo: use better method
+        return Math.floor(Math.random() * 1000000).toString();
     }
 
   </script>
