@@ -1,0 +1,45 @@
+.taskList {
+  display: flex;
+  flex-direction: column;
+}
+
+.taskListWrapper {
+  box-sizing: border-box;
+}
+
+.taskListTableRow {
+  display: table-row;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px 0 85px;
+  border-top: 1px solid #F3F3F3;
+  color: #2C2C2C;
+  font-weight: 500;
+  box-sizing: border-box;
+  min-width: 300px;
+}
+
+.arrowModal {
+  cursor: pointer;
+  margin-left: 30px;
+}
+
+.addTask {
+  font-size: 15px;
+  line-height: 21px;
+  color: #3375F5;
+  padding: 20px 15px 20px 85px;
+  border-top: 1px solid #F3F3F3;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.addTask input {
+  border: none;
+  outline: none;
+  background: none;
+}
