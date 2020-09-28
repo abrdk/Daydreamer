@@ -6,6 +6,7 @@ import { ViewMode } from "./types/public-types";
 import { Task } from "./types/public-types";
 import { tasksList } from "./helpers/tasks";
 import { PopUpMenu } from "./components/popUpMenu/popUpMenu";
+import { TaskMenu } from './components/taskMenu/taskMenu'
 
 //Init
 const App = () => {
@@ -59,7 +60,7 @@ const App = () => {
 
   return (
     <>
-      {/* <PopUpMenu /> */}
+      <TaskMenu/>
       <ViewSwitcher
         onViewModeChange={(viewMode: any) => setView(viewMode)}
         onViewListChange={setIsChecked}
