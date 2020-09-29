@@ -1,18 +1,15 @@
-import React, { useState, SyntheticEvent, useRef, useEffect } from "react";
-import { ViewMode, GanttProps, Task } from "../../types/public-types";
-import { GridProps } from "../grid/grid";
+import React, { useState, useRef, useEffect } from "react";
+import { ViewMode } from "../../types/public-types";
 import { ganttDateRange, seedDates } from "../../helpers/date-helper";
-import { CalendarProps } from "../calendar/calendar";
-import { TaskGanttContentProps } from "./task-gantt-content";
 import { TaskListHeaderDefault } from "../task-list/task-list-header";
 import { TaskListTableDefault } from "../task-list/task-list-table";
 import { StandardTooltipContent } from "../other/tooltip";
 import { Scroll } from "../other/scroll";
-import { TaskListProps, TaskList } from "../task-list/task-list";
+import { TaskList } from "../task-list/task-list";
 import styles from "./gantt.module.css";
 import { TaskGantt } from "./task-gantt";
 
-export const Gantt: React.FC<GanttProps> = ({
+export const Gantt = ({
   tasks,
   addTask,
   headerHeight = 100,
@@ -43,10 +40,11 @@ export const Gantt: React.FC<GanttProps> = ({
   onDoubleClick,
   onTaskDelete,
   onSelect,
+  setMenu
 }) => {
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const [ganttTasks, setGanttTasks] = useState<Task[]>(tasks);
-  const [selectedTask, setSelectedTask] = useState<string>("");
+  const wrapperRef = useRef(null);
+  const [ganttTasks, setGanttTasks] = useState(tasks);
+  const [selectedTask, setSelectedTask] = useState("");
   const [scrollY, setScrollY] = useState(0);
   const [scrollX, setScrollX] = useState(0);
   const [ignoreScrollEvent, setIgnoreScrollEvent] = useState(false);
@@ -63,7 +61,7 @@ export const Gantt: React.FC<GanttProps> = ({
 
   // scroll events
   useEffect(() => {
-    const handleWheel = (event: WheelEvent) => {
+    const handleWheel = event => {
       event.preventDefault();
       const newScrollY = scrollY + event.deltaY;
       if (newScrollY < 0) {
@@ -91,16 +89,16 @@ export const Gantt: React.FC<GanttProps> = ({
         wrapperRef.current.removeEventListener("wheel", handleWheel);
       }
     };
-  }, [wrapperRef.current, scrollY, ganttHeight, ganttTasks, rowHeight]);
+  }, [scrollY, ganttHeight, ganttTasks, rowHeight, ganttFullHeight]);
 
-  const handleScrollY = (event: SyntheticEvent<HTMLDivElement>) => {
+  const handleScrollY = event => {
     if (scrollY !== event.currentTarget.scrollTop && !ignoreScrollEvent) {
       setScrollY(event.currentTarget.scrollTop);
     }
     setIgnoreScrollEvent(false);
   };
 
-  const handleScrollX = (event: SyntheticEvent<HTMLDivElement>) => {
+  const handleScrollX = event => {
     if (scrollX !== event.currentTarget.scrollLeft && !ignoreScrollEvent) {
       setScrollX(event.currentTarget.scrollLeft);
     }
@@ -110,7 +108,7 @@ export const Gantt: React.FC<GanttProps> = ({
   /**
    * Handles arrow keys events and transform it to new scroll
    */
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDown = event => {
     event.preventDefault();
     let newScrollY = scrollY;
     let newScrollX = scrollX;
@@ -134,6 +132,7 @@ export const Gantt: React.FC<GanttProps> = ({
       case "ArrowRight":
         newScrollX += columnWidth;
         break;
+      default: newScrollX += 0;
     }
     if (isX) {
       if (newScrollX < 0) {
@@ -156,14 +155,14 @@ export const Gantt: React.FC<GanttProps> = ({
   };
 
   // task change event
-  const handleTasksChange = (tasks: Task[]) => {
+  const handleTasksChange = tasks => {
     setGanttTasks(tasks);
   };
 
   /**
    * Task select event
    */
-  const handleSelectedTask = (taskId: string) => {
+  const handleSelectedTask = taskId => {
     const newSelectedTask = ganttTasks.find(t => t.id === taskId);
     if (newSelectedTask) {
       if (onSelect) {
@@ -185,7 +184,7 @@ export const Gantt: React.FC<GanttProps> = ({
     }
   };
 
-  const gridProps: GridProps = {
+  const gridProps = {
     columnWidth,
     gridWidth,
     tasks: ganttTasks,
@@ -193,7 +192,7 @@ export const Gantt: React.FC<GanttProps> = ({
     dates,
     todayColor,
   };
-  const calendarProps: CalendarProps = {
+  const calendarProps = {
     dates,
     locale,
     viewMode,
@@ -202,7 +201,7 @@ export const Gantt: React.FC<GanttProps> = ({
     fontFamily,
     fontSize,
   };
-  const barProps: TaskGanttContentProps = {
+  const barProps = {
     addTask: addTask,
     tasks: ganttTasks,
     selectedTask,
@@ -231,7 +230,7 @@ export const Gantt: React.FC<GanttProps> = ({
     TooltipContent,
   };
 
-  const tableProps: TaskListProps = {
+  const tableProps = {
     addTask,
     rowHeight,
     rowWidth: listCellWidth,
@@ -247,6 +246,7 @@ export const Gantt: React.FC<GanttProps> = ({
     setSelectedTask: handleSelectedTask,
     TaskListHeader,
     TaskListTable,
+    setMenu
   };
 
   return (

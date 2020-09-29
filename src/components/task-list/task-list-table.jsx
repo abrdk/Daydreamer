@@ -1,17 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "./task-list-table.module.css";
-import { Task } from "../../types/public-types";
 
-export const TaskListTableDefault: React.FC<{
-  rowHeight: number;
-  rowWidth: string;
-  fontFamily: string;
-  fontSize: string;
-  locale: string;
-  tasks: Task[];
-  selectedTaskId: string;
-  setSelectedTask: (taskId: string) => void;
-}> = ({ rowHeight, tasks, fontFamily, fontSize }) => {
+export const TaskListTableDefault = ({ rowHeight, tasks, fontFamily, fontSize, setMenu }) => {
   return (
     <div
       className={styles.taskListWrapper}
@@ -29,7 +19,9 @@ export const TaskListTableDefault: React.FC<{
             title={t.name}
           >
             {t.name}
-            <img className={styles.arrowModal} src={require('../../img/arrow.png')} alt="arrow" />
+            <img className={styles.arrowModal} src={require('../../img/arrow.png')} alt="arrow" 
+              onClick={setMenu.bind(null, t, true)}
+            />
           </div>
         );
       })}

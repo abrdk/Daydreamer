@@ -1,26 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import style from "./bar.module.css";
 
-type BarDisplayProps = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  isSelected: boolean;
-  progressWidth: number;
-  barCornerRadius: number;
-  text: string;
-  hasChild: boolean;
-  arrowIndent: number;
-  styles: {
-    backgroundColor: string;
-    backgroundSelectedColor: string;
-    progressColor: string;
-    progressSelectedColor: string;
-  };
-  onMouseDown: (event: React.MouseEvent<SVGPolygonElement, MouseEvent>) => void;
-};
-export const BarDisplay: React.FC<BarDisplayProps> = ({
+export const BarDisplay = ({
   x,
   y,
   width,
@@ -34,7 +15,7 @@ export const BarDisplay: React.FC<BarDisplayProps> = ({
   styles,
   onMouseDown,
 }) => {
-  const textRef = useRef<SVGTextElement>(null);
+  const textRef = useRef(null);
   const [isTextInside, setIsTextInside] = useState(true);
 
   useEffect(() => {

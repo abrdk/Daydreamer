@@ -1,5 +1,8 @@
 import { Task, ViewMode } from "../types/public-types";
 
+export const month = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня', 'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря'];
+
+
 type DateHelperScales =
   | "year"
   | "month"
@@ -134,6 +137,13 @@ export const getLocaleWeekDay = (date: Date, locale: string) => {
   }).format(date);
   return bottomValue;
 };
+
+export const dateString = (d: string) => {
+  let date = new Date(d);
+  let day = date.getDate().toString();
+  day = day.length === 1 ? 0+day : day
+  return day + ' ' + month[date.getMonth()] + ' ' + date.getFullYear();
+}
 
 /**
  * Returns monday of current week

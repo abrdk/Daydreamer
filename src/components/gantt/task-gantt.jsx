@@ -1,19 +1,10 @@
-import React, { useRef, useEffect, SyntheticEvent } from "react";
-import { GridProps, Grid } from "../grid/grid";
-import { CalendarProps, Calendar } from "../calendar/calendar";
-import { TaskGanttContentProps, TaskGanttContent } from "./task-gantt-content";
+import React, { useRef, useEffect } from "react";
+import { Grid } from "../grid/grid";
+import { Calendar } from "../calendar/calendar";
+import { TaskGanttContent } from "./task-gantt-content";
 import styles from "./gantt.module.css";
 
-export type TaskGanttProps = {
-  gridProps: GridProps;
-  calendarProps: CalendarProps;
-  barProps: TaskGanttContentProps;
-  ganttHeight: number;
-  scrollY: number;
-  scrollX: number;
-  onScroll: (event: SyntheticEvent<HTMLDivElement>) => void;
-};
-export const TaskGantt: React.FC<TaskGanttProps> = ({
+export const TaskGantt = ({
   gridProps,
   calendarProps,
   barProps,
@@ -22,9 +13,9 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
   scrollX,
   onScroll,
 }) => {
-  const ganttSVGRef = useRef<SVGSVGElement>(null);
-  const horizontalContainerRef = useRef<HTMLDivElement>(null);
-  const verticalContainerRef = useRef<HTMLDivElement>(null);
+  const ganttSVGRef = useRef(null);
+  const horizontalContainerRef = useRef(null);
+  const verticalContainerRef = useRef(null);
   const newBarProps = { ...barProps, svg: ganttSVGRef };
 
   useEffect(() => {

@@ -1,16 +1,7 @@
 import React from "react";
 import styles from "./calendar.module.css";
 
-type TopPartOfCalendarProps = {
-  value: string;
-  x1Line: number;
-  y1Line: number;
-  y2Line: number;
-  xText: number;
-  yText: number;
-};
-
-export const TopPartOfCalendar: React.FC<TopPartOfCalendarProps> = ({
+export const TopPartOfCalendar = ({
   value,
   x1Line,
   y1Line,

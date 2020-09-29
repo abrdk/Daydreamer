@@ -1,22 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
-import { Task } from "../../types/public-types";
-import { BarTask } from "../../types/bar-task";
 import styles from "./tooltip.module.css";
 
-export type TooltipProps = {
-  x: number;
-  svgHeight: number;
-  rowHeight: number;
-  task: BarTask;
-  fontSize: string;
-  fontFamily: string;
-  TooltipContent: React.FC<{
-    task: Task;
-    fontSize: string;
-    fontFamily: string;
-  }>;
-};
-export const Tooltip: React.FC<TooltipProps> = ({
+export const Tooltip = ({
   x,
   rowHeight,
   svgHeight,
@@ -25,7 +10,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
   fontFamily,
   TooltipContent,
 }) => {
-  const tooltipRef = useRef<HTMLDivElement | null>(null);
+  const tooltipRef = useRef(null);
   const [toolWidth, setToolWidth] = useState(1000);
   const [relatedY, setRelatedY] = useState((task.index - 1) * rowHeight);
   useEffect(() => {
@@ -39,7 +24,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
       }
       setToolWidth(tooltipRef.current.scrollWidth * 1.1);
     }
-  }, [tooltipRef, task]);
+  }, [tooltipRef, task, rowHeight, svgHeight]);
   return (
     <foreignObject x={x} y={relatedY} width={toolWidth} height={1000}>
       <div ref={tooltipRef} className={styles.tooltipDetailsContainer}>
@@ -53,11 +38,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
   );
 };
 
-export const StandardTooltipContent: React.FC<{
-  task: Task;
-  fontSize: string;
-  fontFamily: string;
-}> = ({ task, fontSize, fontFamily }) => {
+export const StandardTooltipContent = ({ task, fontSize, fontFamily }) => {
   const style = {
     fontSize,
     fontFamily,

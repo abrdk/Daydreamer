@@ -1,14 +1,8 @@
-import React, { SyntheticEvent, useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import styles from "./scroll.module.css";
 
-export const Scroll: React.FC<{
-  scroll: number;
-  ganttHeight: number;
-  ganttFullHeight: number;
-  headerHeight: number;
-  onScroll: (event: SyntheticEvent<HTMLDivElement>) => void;
-}> = ({ scroll, ganttHeight, ganttFullHeight, headerHeight, onScroll }) => {
-  const scrollRef = useRef<HTMLDivElement>(null);
+export const Scroll = ({ scroll, ganttHeight, ganttFullHeight, headerHeight, onScroll }) => {
+  const scrollRef = useRef(null);
 
   useEffect(() => {
     if (scrollRef.current) {

@@ -1,58 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Task, EventOption } from "../../types/public-types";
 import { Bar } from "../bar/bar";
-import { BarTask } from "../../types/bar-task";
 import { Arrow } from "../other/arrow";
 import {
   convertToBarTasks,
-  handleTaskBySVGMouseEvent,
-  BarMoveAction,
+  handleTaskBySVGMouseEvent
 } from "../../helpers/bar-helper";
 import { Tooltip } from "../other/tooltip";
 import { isKeyboardEvent } from "../../helpers/other-helper";
 
-export type GanttContentMoveAction =
-  | "mouseenter"
-  | "mouseleave"
-  | "delete"
-  | "dblclick"
-  | "select"
-  | BarMoveAction;
-export type BarEvent = {
-  changedTask?: BarTask;
-  originalTask?: BarTask;
-  action: GanttContentMoveAction;
-};
-export type TaskGanttContentProps = {
-  tasks: Task[];
-  dates: Date[];
-  selectedTask: string;
-  rowHeight: number;
-  barCornerRadius: number;
-  columnWidth: number;
-  barFill: number;
-  barProgressColor: string;
-  barProgressSelectedColor: string;
-  barBackgroundColor: string;
-  barBackgroundSelectedColor: string;
-  handleWidth: number;
-  timeStep: number;
-  svg?: React.RefObject<SVGSVGElement>;
-  svgHeight: number;
-  arrowColor: string;
-  arrowIndent: number;
-  fontSize: string;
-  fontFamily: string;
-  setSelectedTask: (taskId: string) => void;
-  TooltipContent: React.FC<{
-    task: Task;
-    fontSize: string;
-    fontFamily: string;
-  }>;
-  onTasksChange: (tasks: Task[]) => void;
-} & EventOption;
-
-export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
+export const TaskGanttContent = ({
   tasks,
   dates,
   selectedTask,
@@ -81,11 +37,11 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
   TooltipContent,
 }) => {
   const point = svg?.current?.createSVGPoint();
-  const [barEvent, setBarEvent] = useState<BarEvent>({
+  const [barEvent, setBarEvent] = useState({
     action: "",
   });
-  const [barTasks, setBarTasks] = useState<BarTask[]>([]);
-  const [failedTask, setFailedTask] = useState<BarTask | null>(null);
+  const [barTasks, setBarTasks] = useState([]);
+  const [failedTask, setFailedTask] = useState(null);
   const [xStep, setXStep] = useState(0);
   const [initEventX1Delta, setInitEventX1Delta] = useState(0);
   const [isMoving, setIsMoving] = useState(false);
@@ -141,10 +97,10 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
       onTasksChange(newTasks);
       setFailedTask(null);
     }
-  }, [failedTask, barTasks]);
+  }, [failedTask, barTasks, onTasksChange]);
 
   useEffect(() => {
-    const handleMouseMove = async (event: MouseEvent) => {
+    const handleMouseMove = async event => {
       if (!barEvent.changedTask || !point || !svg?.current) return;
       event.preventDefault();
 
@@ -155,7 +111,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
 
       const { isChanged, changedTask } = handleTaskBySVGMouseEvent(
         cursor.x,
-        barEvent.action as BarMoveAction,
+        barEvent.action,
         barEvent.changedTask,
         xStep,
         timeStep,
@@ -169,7 +125,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
       }
     };
 
-    const handleMouseUp = async (event: MouseEvent) => {
+    const handleMouseUp = async event => {
       const { changedTask: selectedTask, action, originalTask } = barEvent;
 
       if (!selectedTask || !point || !svg?.current || !originalTask) return;
@@ -182,7 +138,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
 
       const { changedTask } = handleTaskBySVGMouseEvent(
         cursor.x,
-        action as BarMoveAction,
+        action,
         selectedTask,
         xStep,
         timeStep,
@@ -258,15 +214,17 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
     onDateChange,
     svg,
     isMoving,
+    onTasksChange,
+    point
   ]);
 
   /**
    * Method is Start point of task change
    */
   const handleBarEventStart = async (
-    action: GanttContentMoveAction,
-    task: BarTask,
-    event?: React.MouseEvent | React.KeyboardEvent
+    action,
+    task,
+    event
   ) => {
     if (!event) {
       if (action === "select") {

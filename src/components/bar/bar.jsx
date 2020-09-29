@@ -1,30 +1,15 @@
 import React from "react";
-import { BarTask } from "../../types/bar-task";
 import {
   progressWithByParams,
   getProgressPoint,
 } from "../../helpers/bar-helper";
 import styles from "./bar.module.css";
-import { GanttContentMoveAction } from "../gantt/task-gantt-content";
 import { BarDisplay } from "./bar-display";
 import { BarDateHandle } from "./bar-date-handle";
 import { BarProgressHandle } from "./bar-progress-handle";
 
-export type BarProps = {
-  task: BarTask;
-  arrowIndent: number;
-  isProgressChangeable: boolean;
-  isDateChangeable: boolean;
-  isDelete: boolean;
-  isSelected: boolean;
-  onEventStart: (
-    action: GanttContentMoveAction,
-    selectedTask: BarTask,
-    event?: React.MouseEvent | React.KeyboardEvent
-  ) => any;
-};
 
-export const Bar: React.FC<BarProps> = ({
+export const Bar = ({
   task,
   arrowIndent,
   isProgressChangeable,
@@ -45,11 +30,8 @@ export const Bar: React.FC<BarProps> = ({
       className={styles.barWrapper}
       tabIndex={0}
       onKeyDown={e => {
-        switch (e.key) {
-          case "Delete": {
-            if (isDelete) onEventStart("delete", task, e);
-            break;
-          }
+        if (e.key === 'Delete') {
+          if (isDelete) onEventStart("delete", task, e);
         }
         e.stopPropagation();
       }}

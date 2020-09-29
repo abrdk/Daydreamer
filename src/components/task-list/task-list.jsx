@@ -1,40 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./task-list-table.module.css";
-import { Task } from "../../types/public-types";
 
-export type TaskListProps = {
-  addTask: (name: string) => void
-  headerHeight: number;
-  rowWidth: string;
-  fontFamily: string;
-  fontSize: string;
-  rowHeight: number;
-  ganttHeight: number;
-  scrollY: number;
-  locale: string;
-  tasks: Task[];
-  horizontalContainerClass?: string;
-  selectedTaskId: string;
-  setSelectedTask: (taskId: string) => void;
-  TaskListHeader: React.FC<{
-    headerHeight: number;
-    rowWidth: string;
-    fontFamily: string;
-    fontSize: string;
-  }>;
-  TaskListTable: React.FC<{
-    rowHeight: number;
-    rowWidth: string;
-    fontFamily: string;
-    fontSize: string;
-    locale: string;
-    tasks: Task[];
-    selectedTaskId: string;
-    setSelectedTask: (taskId: string) => void;
-  }>;
-};
-
-export const TaskList: React.FC<TaskListProps> = ({
+export const TaskList = ({
   addTask,
   headerHeight,
   fontFamily,
@@ -50,8 +17,9 @@ export const TaskList: React.FC<TaskListProps> = ({
   horizontalContainerClass,
   TaskListHeader,
   TaskListTable,
+  setMenu
 }) => {
-  const horizontalContainerRef = useRef<HTMLDivElement>(null);
+  const horizontalContainerRef = useRef(null);
   useEffect(() => {
     if (horizontalContainerRef.current) {
       horizontalContainerRef.current.scrollTop = scrollY;
@@ -73,12 +41,13 @@ export const TaskList: React.FC<TaskListProps> = ({
     locale,
     selectedTaskId,
     setSelectedTask,
+    setMenu
   };
 
   const [add, setAdd] = useState(false);
   const [name, setName] = useState('');
 
-  const pushTask = (e: any) => {
+  const pushTask = e => {
     if(name) addTask(name);
     setAdd(false);
     setName('');
@@ -100,17 +69,16 @@ export const TaskList: React.FC<TaskListProps> = ({
         {add ?
           <>
             <input type="text" value={name}
-              onKeyDown={(e: any) => {
+              onKeyDown={e => {
                 e.stopPropagation();
                 if(e.keyCode === 13) pushTask(e.target.value);
               }}
-              onChange={(e: any) => setName(e.target.value)}
+              onChange={e => setName(e.target.value)}
             />
             <img src={require('../../img/enter.png')} alt="enter"
               onClick={pushTask}
             />
           </>
-        
         : <div onClick={() => setAdd(true)}>
           Добавить задачу
         </div>}

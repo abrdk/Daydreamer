@@ -1,4 +1,4 @@
-import React, { ReactChild } from "react";
+import React from "react";
 import { ViewMode } from "../../types/public-types";
 import { TopPartOfCalendar } from "./top-part-of-calendar";
 import {
@@ -8,17 +8,7 @@ import {
 } from "../../helpers/date-helper";
 import styles from "./calendar.module.css";
 
-export type CalendarProps = {
-  dates: Date[];
-  locale: string;
-  viewMode: ViewMode;
-  headerHeight: number;
-  columnWidth: number;
-  fontFamily: string;
-  fontSize: string;
-};
-
-export const Calendar: React.FC<CalendarProps> = ({
+export const Calendar = ({
   dates,
   locale,
   viewMode,
@@ -28,8 +18,8 @@ export const Calendar: React.FC<CalendarProps> = ({
   fontSize,
 }) => {
   const getCalendarValuesForMonth = () => {
-    const topValues: ReactChild[] = [];
-    const bottomValues: ReactChild[] = [];
+    const topValues = [];
+    const bottomValues = [];
     const topDefaultWidth = columnWidth * 6;
     const topDefaultHeight = headerHeight * 0.5;
     for (let i = 0; i < dates.length; i++) {
@@ -66,9 +56,9 @@ export const Calendar: React.FC<CalendarProps> = ({
   };
 
   const getCalendarValuesForWeek = () => {
-    const topValues: ReactChild[] = [];
-    const bottomValues: ReactChild[] = [];
-    let weeksCount: number = 1;
+    const topValues = [];
+    const bottomValues = [];
+    let weeksCount = 1;
     const topDefaultHeight = headerHeight * 0.5;
     for (let i = dates.length - 1; i >= 0; i--) {
       const date = dates[i];
@@ -114,8 +104,8 @@ export const Calendar: React.FC<CalendarProps> = ({
   };
 
   const getCalendarValuesForDay = () => {
-    const topValues: ReactChild[] = [];
-    const bottomValues: ReactChild[] = [];
+    const topValues = [];
+    const bottomValues = [];
     const topDefaultHeight = headerHeight * 0.5;
     for (let i = 0; i < dates.length; i++) {
       const date = dates[i];
@@ -155,8 +145,8 @@ export const Calendar: React.FC<CalendarProps> = ({
   };
 
   const getCalendarValuesForOther = () => {
-    const topValues: ReactChild[] = [];
-    const bottomValues: ReactChild[] = [];
+    const topValues = [];
+    const bottomValues = [];
     const ticks = viewMode === ViewMode.HalfDay ? 2 : 4;
     const topDefaultHeight = headerHeight * 0.5;
 
@@ -194,8 +184,8 @@ export const Calendar: React.FC<CalendarProps> = ({
     }
     return [topValues, bottomValues];
   };
-  let topValues: ReactChild[] = [];
-  let bottomValues: ReactChild[] = [];
+  let topValues = [];
+  let bottomValues = [];
   switch (viewMode) {
     case ViewMode.Month:
       [topValues, bottomValues] = getCalendarValuesForMonth();

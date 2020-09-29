@@ -1,13 +1,6 @@
 import React from "react";
-import { BarTask } from "../../types/bar-task";
 
-type ArrowProps = {
-  taskFrom: BarTask;
-  taskTo: BarTask;
-  rowHeight: number;
-  arrowIndent: number;
-};
-export const Arrow: React.FC<ArrowProps> = ({
+export const Arrow = ({
   taskFrom,
   taskTo,
   rowHeight,
