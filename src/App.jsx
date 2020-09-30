@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import './App.css';
 import { ViewSwitcher } from "./components/viewSwitcher/viewSwitcher";
 import { Gantt } from "./components/gantt/gantt";
@@ -43,7 +43,63 @@ const App = () => {
   let onProgressChange = async task=> {};
   let onDblClick = task => {};
   let onSelect = (task, isSelected) => {};
-  
+
+  const addChild = ({...task}) => {
+    const tasks = [...state.tasks];
+    const i = tasks.findIndex(k => k.id === task.id);
+    const id = Date.now();
+    tasks.splice(i+1, 0, {
+      level: task.level === 3 ? 4 : task.level+1,
+      start: task.start,
+      end: task.end,
+      name: task.level === 3 ? 'Подзадача 4' : 'Подзадача '+(task.level+1),
+      id,
+      progress: 10,
+      parent: task.id,
+      styles: { progressColor: "#AF78FF", progressSelectedColor: "#ff9e0d" },
+      children: [],
+      show: true
+    });
+    tasks[i].children.push(id);
+    dispatch({ type: 'INIT', tasks});
+  }
+
+  const hideChildren = task => {
+    task.menu = task.menu ? false : true;
+    const tasks = [...state.tasks];
+    tasks.forEach(k => {
+      if(task.children.indexOf(k.id) !== -1) {
+        k.show = k.show ? false : true;
+        if(k.children && k.children[0]) hideArr(tasks, k.children, k.show) 
+      }
+    })
+    dispatch({ type: 'INIT', tasks});
+  }
+
+  const hideArr = (tasks, arr, show) => {
+    for(let i = 0; i < arr.length; i++) {
+      let item = tasks.findIndex(t => t.id === arr[i]);
+      if(item) tasks[item].show = show;
+      if(item && tasks[item].children && tasks[item].children[0]) hideArr(tasks, tasks[item].children);
+    }
+  }
+
+  const [list, setList] = useState(1);
+  const setMobile = index => setList(index);
+
+  const moveChild = (task, dir) => {
+    let tasks = [...state.tasks];
+    const i = state.tasks.findIndex(k => k.id === task.id);
+    if(i+dir < 0) return;
+    tasks = tasks.filter(k => k.id !== task.id);
+    if(dir > 0) {
+      tasks.splice(i+1, 0, task);
+    } else {
+      tasks.splice(i-1, 0, task);
+    }
+    dispatch({ type: 'INIT', tasks});
+  }
+
   if(!state.tasks[0]) return null;
   return (
     <>
@@ -53,17 +109,20 @@ const App = () => {
         setMenu={(task, menu) => dispatch(setTaskMenu(task, menu))}
         onTaskChange={onTaskChange}
         delTask={id => dispatch(delTask(id))}
+        moveChild={moveChild}
       />
       <ViewSwitcher
         onViewModeChange={(viewMode) => setView(viewMode)}
         onViewListChange={setIsChecked}
         isChecked={isChecked}
+        setMobile={setMobile}
       />
       <Gantt
+        list={list}
         setMenu={(task, menu) => dispatch(setTaskMenu(task, menu))}
         menu={state.menu}
         addTask={name => dispatch(addTask(name))}
-        tasks={state.tasks}
+        tasks={[...state.tasks].filter(k => k.show)}
         viewMode={view}
         onDateChange={onTaskChange}
         onTaskDelete={onTaskDelete}
@@ -72,6 +131,8 @@ const App = () => {
         onSelect={onSelect}
         listCellWidth={isChecked ? "155px" : ""}
         columnWidth={columnWidth}
+        addChild={addChild}
+        hideChildren={hideChildren}
       />
     </>
   );

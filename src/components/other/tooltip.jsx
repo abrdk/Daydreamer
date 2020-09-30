@@ -55,7 +55,7 @@ export const StandardTooltipContent = ({ task, fontSize, fontFamily }) => {
       <p className={styles.tooltipDefaultContainerParagraph}>{`Длительность: ${~~(
         (task.end.getTime() - task.start.getTime()) /
         (1000 * 60 * 60 * 24)
-      )} day(s)`}</p>
+      )} день(дней)`}</p>
       <p className={styles.tooltipDefaultContainerParagraph}>
         {!!task.progress && `Выполнено: ${task.progress} %`}
       </p>

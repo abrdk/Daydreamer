@@ -8,18 +8,22 @@ import ru from 'date-fns/locale/ru';
 import "react-datepicker/dist/react-datepicker.css";
 registerLocale('ru', ru);
 
-export const TaskMenu = ({menu, setMenu, currentTask, onTaskChange, delTask}) => {
+export const TaskMenu = ({menu, setMenu, currentTask, onTaskChange, delTask, moveChild}) => {
 
 	const [inp, setInp] = useState(false);
 	const [desc, setDesc] = useState(false);
 	
 	return(
-		<div className="secondMenu" style={{width: menu ? '330px' : 0, overflow: menu ? '' : 'hidden'}}>
+		<div className={menu ? 'secondMenu' : 'secondMenu secondMenuClose'} style={{width: menu ? '330px' : 0, overflow: menu ? '' : 'hidden'}}>
 			<div className="topMenu">
-				<div className="topMenuLeft">
-					<img className="closeMenu up" src={require('./img/up.png')} alt="up" />
-					<img className="closeMenu bottom" src={require('./img/bottom.png')} alt="bottom"/>
-				</div>
+				{!currentTask.children || !currentTask.children[0] ? <div className="topMenuLeft">
+					<img className="closeMenu up" src={require('./img/up.png')} alt="up" 
+						onClick={moveChild.bind(null, currentTask, -1)}
+					/>
+					<img className="closeMenu bottom" src={require('./img/bottom.png')} alt="bottom"
+						onClick={moveChild.bind(null, currentTask, 1)}
+					/>
+				</div> : <div />}
 				<img className="closeMenu" src={require('./img/frame.png')} alt="frame"
 					onClick={setMenu.bind(null, {}, false)}
 				/>
@@ -106,7 +110,7 @@ export const TaskMenu = ({menu, setMenu, currentTask, onTaskChange, delTask}) =>
 				<img className="Polygon" src={require('./img/polygon.png')} alt="polygon"/>
 			</div>
 			<div className="colorText">
-				<div className="colorTextMore"
+				{(!currentTask.children || !currentTask.children[0]) && <div className="colorTextMore"
 					onClick={() => {
 						delTask(currentTask.id);
 						setMenu({}, false);
@@ -114,7 +118,7 @@ export const TaskMenu = ({menu, setMenu, currentTask, onTaskChange, delTask}) =>
 				>
 					<img className="del" src={require('./img/del.png')} alt="del"/>
 					<div>Удалить задачу</div>
-				</div>
+				</div>}
 			</div>
 			{!desc && <div className="titleMenu titleMenuInput">
 				<div className="title">{currentTask.desc}</div>

@@ -32,3 +32,35 @@ input[type="range"]::-moz-range-track {
     align-items: center;
     cursor: pointer;
 }
+
+.mobile-switch {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: space-between;
+    align-items: center;
+    background: #FBFBFD;
+    box-shadow: 0px -4px 10px rgba(0, 0, 0, 0.22);
+    border-radius: 6px 6px 0px 0px;
+    height: 60px;
+    padding: 0 15px;
+    font-size: 14px;
+    line-height: 21px;
+    color: #2C2C2C;
+    display: none;
+}
+
+.mobile-switch input {
+    width: 80px;
+}
+
+@media (max-width: 800px) {
+    .switch-module {
+        display: none;
+    }
+    .mobile-switch {
+        display: flex;
+    }
+}

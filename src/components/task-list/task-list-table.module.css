@@ -5,15 +5,14 @@
 
 .taskListWrapper {
   box-sizing: border-box;
+  user-select: none;
 }
 
 .taskListTableRow {
-  display: table-row;
-  text-overflow: ellipsis;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 15px 0 85px;
+  padding: 0 15px 0 45px;
   border-top: 1px solid #F3F3F3;
   color: #2C2C2C;
   font-weight: 500;
@@ -21,9 +20,33 @@
   min-width: 300px;
 }
 
-.arrowModal {
+.taskListTableRowImg {
+  display: flex;
+  align-items: center;
+}
+
+.arrowRow {
+  display: flex;
+  align-items: center;
   cursor: pointer;
-  margin-left: 30px;
+}
+
+.arrowRow img {
+  margin-right: 10px;
+}
+
+.taskListTableRowImg img {
+  cursor: pointer;
+  opacity: .7;
+  transition: .3s;
+}
+
+.taskListTableRowImg img:hover {
+  opacity: 1;
+}
+
+.arrowModal {
+  margin-left: 10px;
 }
 
 .addTask {

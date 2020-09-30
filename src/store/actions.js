@@ -13,12 +13,15 @@ export const addTask = name => {
     return {
         type: ADD_TASK,
         task: {
+            level: 1,
             start: date,
             end: new Date(Date.now() + ( 3600 * 1000 * 24 * 7)),
             name,
             id: Date.now(),
             progress: 10,
             // dependencies: ["Task 4"],
+            children: [],
+            show: true,
             styles: { progressColor: "#AF78FF", progressSelectedColor: "#ff9e0d" }
         }
     }

@@ -40,7 +40,10 @@ export const Gantt = ({
   onDoubleClick,
   onTaskDelete,
   onSelect,
-  setMenu
+  setMenu,
+  addChild,
+  hideChildren,
+  list
 }) => {
   const wrapperRef = useRef(null);
   const [ganttTasks, setGanttTasks] = useState(tasks);
@@ -246,7 +249,9 @@ export const Gantt = ({
     setSelectedTask: handleSelectedTask,
     TaskListHeader,
     TaskListTable,
-    setMenu
+    setMenu,
+    addChild,
+    hideChildren
   };
 
   return (
@@ -256,16 +261,32 @@ export const Gantt = ({
       tabIndex={0}
       ref={wrapperRef}
     >
-      {listCellWidth && <TaskList {...tableProps} addTask={addTask} />}
-      <TaskGantt
-        gridProps={gridProps}
-        calendarProps={calendarProps}
-        barProps={barProps}
-        ganttHeight={ganttHeight}
-        scrollY={scrollY}
-        scrollX={scrollX}
-        onScroll={handleScrollX}
-      />
+      {window.innerWidth > 800 ? <>
+        {listCellWidth && <TaskList {...tableProps} addTask={addTask} />}
+        <TaskGantt
+          gridProps={gridProps}
+          calendarProps={calendarProps}
+          barProps={barProps}
+          ganttHeight={ganttHeight}
+          scrollY={scrollY}
+          scrollX={scrollX}
+          onScroll={handleScrollX}
+          addChild={addChild}
+        />
+      </>
+      : <>
+        {list ? <TaskList {...tableProps} addTask={addTask} /> : null}
+        {!list && <TaskGantt
+          gridProps={gridProps}
+          calendarProps={calendarProps}
+          barProps={barProps}
+          ganttHeight={ganttHeight}
+          scrollY={scrollY}
+          scrollX={scrollX}
+          onScroll={handleScrollX}
+          addChild={addChild}
+        />}
+      </>}
       <Scroll
         ganttFullHeight={ganttFullHeight}
         ganttHeight={ganttHeight}

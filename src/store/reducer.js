@@ -29,8 +29,12 @@ export const reducer = (state = initialState, action) => {
                 ...state, tasks: arr, currentTask: action.task,
             }
         case DEL_TASK :
+            let t = [...state.tasks];
+            for(let i = 0; i < t.length; i ++) {
+                if(t[i].children) t[i].children = t[i].children.filter(k => k !== action.id);
+            }
             return {
-                ...state, tasks: state.tasks.filter(k => k.id !== action.id),
+                ...state, tasks: t.filter(k => k.id !== action.id),
             }
         default : return {...state}
     }

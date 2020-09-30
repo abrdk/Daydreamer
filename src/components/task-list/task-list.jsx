@@ -17,7 +17,9 @@ export const TaskList = ({
   horizontalContainerClass,
   TaskListHeader,
   TaskListTable,
-  setMenu
+  setMenu,
+  addChild,
+  hideChildren
 }) => {
   const horizontalContainerRef = useRef(null);
   useEffect(() => {
@@ -41,7 +43,9 @@ export const TaskList = ({
     locale,
     selectedTaskId,
     setSelectedTask,
-    setMenu
+    setMenu,
+    addChild,
+    hideChildren
   };
 
   const [add, setAdd] = useState(false);

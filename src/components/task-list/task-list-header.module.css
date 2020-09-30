@@ -21,3 +21,9 @@
   vertical-align: -webkit-baseline-middle;
   vertical-align: middle;
 }
+
+@media (max-width: 800px) {
+	.ganttTable_Header {
+    display: none;
+  }
+}

@@ -11,6 +11,14 @@
 	background: #FBFBFD;
 	box-shadow: 0 0 4px 1px #e1e1e3;
 	transition: .3s;
+	z-index: 100;
+	width: 330px;
+	overflow: '';
+}
+.secondMenuClose {
+	overflow: hidden;
+	width: 0;
+	box-shadow: none;
 }
 .topMenu{
 	border-bottom: 1px solid #e1e1e3;
@@ -183,4 +191,13 @@
 	border: none;
 	outline: none;
 	background: none;
+}
+
+@media (max-width: 800px) {
+	.secondMenu {
+		position: fixed;
+		left: 0;
+		top: 0;
+		height: calc(100vh - 70px);
+	}
 }
