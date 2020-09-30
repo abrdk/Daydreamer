@@ -91,6 +91,9 @@ const App = () => {
     let tasks = [...state.tasks];
     const i = state.tasks.findIndex(k => k.id === task.id);
     if(i+dir < 0) return;
+    const ney = state.tasks[i+dir];
+    if(!ney) return;
+    if(ney.parent !== task.parent) return;
     tasks = tasks.filter(k => k.id !== task.id);
     if(dir > 0) {
       tasks.splice(i+1, 0, task);
