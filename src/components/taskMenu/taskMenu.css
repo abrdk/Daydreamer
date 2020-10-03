@@ -1,0 +1,203 @@
+.secondMenu{
+	position: absolute;
+	font-family: Roboto;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 15px;
+	line-height: 21px;
+	top: 220px;
+	left: 300px;
+	height: 550px;
+	background: #FBFBFD;
+	box-shadow: 0 0 4px 1px #e1e1e3;
+	transition: .3s;
+	z-index: 100;
+	width: 330px;
+	overflow: '';
+}
+.secondMenuClose {
+	overflow: hidden;
+	width: 0;
+	box-shadow: none;
+}
+.topMenu{
+	border-bottom: 1px solid #e1e1e3;
+	width: 100%;
+	height: 40px;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+.topMenuLeft{
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+}
+.closeMenu{
+	width: 24px;
+	height: 24px;
+	margin: 8px 15px;
+	box-sizing: border-box;
+	cursor: pointer;
+}
+.up{
+	margin: 8px 6px 8px 28px;
+}
+.bottom{
+	margin: 8px 0 8px 6px;
+}
+.titleMenu{
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	border-bottom: 1px solid #e1e1e3;
+	width: 100%;
+	height: 120px;
+	padding: 0 30px;
+}
+.title{
+	color: #8A919E;
+	font-size: 13px;
+}
+.titleText{
+	color: #2C2C2C;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+}
+.Vector{
+	width: 14px;
+	margin-left: 7px;
+	cursor: pointer;
+}
+.colorText{
+	cursor: pointer;
+	color: #8A919E;
+	height: 50px;
+	border-bottom: 1px solid #e1e1e3;
+	display: flex;
+	align-items: center;
+	flex-direction: row;
+	justify-content: space-between;
+
+}
+.colorTextMore{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+.color{
+	border-radius: 29px;
+	margin: 5px 7px 0 30px;
+}
+.Polygon{
+	width: 8px;
+	height: 10px;
+	margin-right: 20px;
+}
+.del{
+	width: 17px;
+	height: 17px;
+	margin-right: 7px;
+    margin-left: 30px;
+}
+.inputText input, textarea, .titleText input, textarea{
+	width: 300px;
+	height: 150px;
+	border: 1px solid #6A9DFF;
+	box-sizing: border-box;
+	border-radius: 3px;
+	padding: 10px 14px;
+}
+.titleText textarea{
+	outline: none;
+	resize: none;
+}
+.secondMenu input:focus{
+	outline: none;
+}
+
+.inputText{
+	margin-top: 15px;
+	display: flex;
+	justify-content: center;
+}
+.savePlase{
+	display: flex;
+	margin-left: 15px;
+	justify-content: flex-start;
+	width: 100%;
+	height: 20px;
+	margin-top: 15px;
+}
+.saveButton{
+	color: #fff;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 115px;
+	height: 35px;
+	background: #3375F5;
+	border-radius: 4px;
+	cursor: pointer;
+}
+.titleMenuInput{
+	height: 60px;
+	border: none;
+}
+.titleTextInput{
+	font-style: italic;
+	cursor: pointer;
+	color: #747474;
+}
+.hintUp{
+	position: absolute;
+	width: 140px;
+	height: 35px;
+	background-color: #000;
+	opacity: 0.9;
+	font-style: italic;
+	color: #fff;
+	font-size: 13px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 6px;
+	top: -35px;
+	left: -30px;
+}
+.hintUp div{
+	position: absolute;
+	width: 15px;
+	height: 15px;
+	background-color: #000;
+	opacity: 0.9;
+	display: flex;
+	transform: rotate(45deg);
+	bottom: -6px;
+	left: 63px;
+}
+.hintBottom{
+	left: 6px;
+}
+.menu-date {
+	display: flex;
+	justify-content: space-between;
+	padding-right: 20px;
+}
+.menu-date input {
+	width: 120px;
+	border: none;
+	outline: none;
+	background: none;
+}
+
+@media (max-width: 800px) {
+	.secondMenu {
+		position: fixed;
+		left: 0;
+		top: 0;
+		height: calc(100vh - 70px);
+	}
+}
