@@ -2,7 +2,7 @@
 Put your ideas on a timeline. [Start now!](https://abrdk.github.io/Daydreamer/index.html)
 
 <p align="center">
-    <a href="http://noooway.github.io/Daydreamer/index.html">
+    <a href="http://abrdk.github.io/Daydreamer/index.html">
         <img src="https://i.ibb.co/rb8JCNG/daydreams-v01.png" width="600"/>
     </a>
 </p>
