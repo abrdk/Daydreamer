@@ -58,7 +58,7 @@ export const TaskMenu = ({menu, setMenu, currentTask, onTaskChange, delTask, mov
 				<div className="title">Дата</div>
 				<div className="menu-date">
 					<DatePicker
-						selected={currentTask.start}
+						selected={typeof currentTask.start === 'string' ? new Date(currentTask.start) : currentTask.start}
 						onChange={start => {
 							onTaskChange({
 								...currentTask,
@@ -66,13 +66,13 @@ export const TaskMenu = ({menu, setMenu, currentTask, onTaskChange, delTask, mov
 							})
 						}}
 						selectsStart
-						startDate={currentTask.start}
-						endDate={currentTask.end}
+						startDate={typeof currentTask.start === 'string' ? new Date(currentTask.start) : currentTask.start}
+						endDate={typeof currentTask.end === 'string' ? new Date(currentTask.end) : currentTask.end}
 						dateFormat="d MMMM yyyy"
 						locale="ru"
 					/>
 					<DatePicker
-						selected={currentTask.end}
+						selected={typeof currentTask.end === 'string' ? new Date(currentTask.end) : currentTask.end}
 						onChange={end => {
 							onTaskChange({
 								...currentTask,
@@ -80,9 +80,9 @@ export const TaskMenu = ({menu, setMenu, currentTask, onTaskChange, delTask, mov
 							})
 						}}
 						selectsEnd
-						startDate={currentTask.start}
-						endDate={currentTask.end}
-						minDate={currentTask.start}
+						startDate={typeof currentTask.start === 'string' ? new Date(currentTask.start) : currentTask.start}
+						endDate={typeof currentTask.end === 'string' ? new Date(currentTask.end) : currentTask.end}
+						minDate={typeof currentTask.start === 'string' ? new Date(currentTask.start) : currentTask.start}
 						dateFormat="d MMMM yyyy"
 						locale="ru"
 					/>
