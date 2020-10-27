@@ -18,7 +18,9 @@ export default async (req, res) => {
 			if(candidate) return res.status(400).json({ message: 'Такой пользователь уже существует' });
 			const hashedPassword = await bcrypt.hash(password, 12);
 			const user = new User({ email, password: hashedPassword });
-			await user.save();
+			const u = await user.save();
+			const token = jwt.sign({ userId: u.id }, 'jwtSecret', { expiresIn: '24h' });
+			res.setHeader('Set-Cookie', `ganttToken=${token}; max-age=36000000; Path=/`);
 			res.status(201).json({ message: 'ok' });
 		}
 		else {
@@ -29,6 +31,7 @@ export default async (req, res) => {
 			res.setHeader('Set-Cookie', `ganttToken=${token}; max-age=36000000; Path=/`);
 			res.json({ message: 'ok' });
 		}
+		
 	} catch (e) {
 		console.log(e);
 		res.status(500).json({ message: 'Ошибка базы данных' });
