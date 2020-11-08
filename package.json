@@ -1,6 +1,6 @@
 {
-  "name": "gannt",
-  "version": "0.1.0",
+  "name": "daydreamer",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
