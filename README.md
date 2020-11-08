@@ -9,10 +9,10 @@ Put your ideas on a timeline. [Start now!](https://daydreamer-demo.herokuapp.com
 
 To run the app in the development mode, use
 ```bash
-yarn start
+yarn dev
 ```
-Visit [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Open [http://localhost:3000](http://localhost:3000) to see the app.
 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).  
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 Gantt chart functionality is inspired by [Frappe Gantt](https://github.com/frappe/gantt).
