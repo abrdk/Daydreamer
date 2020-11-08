@@ -1,0 +1,15 @@
+version: "2"
+services:
+  daydreamer:
+    image: daydreamer
+    build: .
+    ports:
+      - "5000:3000"
+    depends_on:
+      - mongodb
+  mongodb:
+    image: mongo:latest
+    container_name: "mongodb"
+    command: mongod --port 27017 --bind_ip_all
+    ports:
+      - "27017:27017"
