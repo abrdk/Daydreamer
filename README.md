@@ -7,7 +7,9 @@ Put your ideas on a timeline. [Start now!](https://daydreamer-demo.herokuapp.com
     </a>
 </p>
 
-To run the app in the development mode, use
+Run `yarn install` to install dependencies.
+
+To start the app in the development mode, use
 ```bash
 yarn dev
 ```
