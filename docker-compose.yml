@@ -4,7 +4,7 @@ services:
     image: daydreamer
     build: .
     ports:
-      - "5000:3000"
+      - "3000:3000"
     depends_on:
       - mongodb
   mongodb:
