@@ -5,37 +5,19 @@ import styles from "./viewSwitcher.module.css";
 const modes = ["Day", "Week", "Month"];
 
 export const ViewSwitcher = ({ onViewModeChange }) => {
-  const [scale, setScale] = useState(1);
+  const [scale, setScale] = useState(0);
 
-  return (
-    <div className={styles.buttonsWrapper}>
-      <div
-        className={scale === 0 ? styles.activeButton : styles.inactiveButton}
-        onClick={() => {
-          setScale(0);
-          onViewModeChange(ViewMode[modes[0]]);
-        }}
-      >
-        {modes[0]}
-      </div>
-      <div
-        className={scale === 1 ? styles.activeButton : styles.inactiveButton}
-        onClick={() => {
-          setScale(1);
-          onViewModeChange(ViewMode[modes[1]]);
-        }}
-      >
-        {modes[1]}
-      </div>
-      <div
-        className={scale === 2 ? styles.activeButton : styles.inactiveButton}
-        onClick={() => {
-          setScale(2);
-          onViewModeChange(ViewMode[modes[2]]);
-        }}
-      >
-        {modes[2]}
-      </div>
+  const buttons = [0, 1, 2].map((i) => (
+    <div
+      className={scale === i ? styles.activeButton : styles.inactiveButton}
+      onClick={() => {
+        setScale(i);
+        onViewModeChange(ViewMode[modes[i]]);
+      }}
+    >
+      {modes[i]}
     </div>
-  );
+  ));
+
+  return <div className={styles.buttonsWrapper}>{buttons}</div>;
 };
