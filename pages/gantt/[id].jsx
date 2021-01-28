@@ -8,6 +8,8 @@ import styles from "./Gantt.module.css";
 import { xhr } from "../../helpers/xhr";
 import GantChart from "../../ganttChart/ganttChart";
 import { Modal } from "../../modal/modal";
+import { ViewSwitcher } from "../../ganttChart/components/viewSwitcher/viewSwitcher";
+import { ViewMode } from "../../ganttChart/types/public-types";
 
 let id;
 
@@ -20,6 +22,7 @@ export default function Gantt({ charts: arr, currentChart, user }) {
   const [chart, setChart] = useState(currentChart ? currentChart : []);
   const [menu, setMenu] = useState(false);
   const [modal, setModal] = useState(false);
+  const [view, setView] = useState(ViewMode.Day);
 
   const request = (query) => {
     setModal("loader");
@@ -46,7 +49,7 @@ export default function Gantt({ charts: arr, currentChart, user }) {
         mapName={name}
       />
       <div className={styles.container}>
-        <div className={styles.mainMenuLeft}>
+        {/* <div className={styles.mainMenuLeft}>
           {menu ? (
             <img
               src="/img/closeMenu.png"
@@ -112,8 +115,9 @@ export default function Gantt({ charts: arr, currentChart, user }) {
               <a className={styles.logOut}>Регистрация</a>
             </Link>
           )}
-        </div>
+        </div> */}
         <div className={styles.header}>
+          <ViewSwitcher onViewModeChange={(viewMode) => setView(viewMode)} />
           <div />
           {name && (
             <div>
@@ -131,7 +135,6 @@ export default function Gantt({ charts: arr, currentChart, user }) {
               <img src="/img/avatar.svg" alt=" " /> <span>John Smith</span>
             </button>
             {/* <button
-              style={{ width: "120px", height: "33px", marginRight: "15px" }}
               onClick={request.bind(null, {
                 query: "update",
                 chart,
@@ -144,7 +147,12 @@ export default function Gantt({ charts: arr, currentChart, user }) {
         </div>
         <div className={styles.gantChartWrap}>
           <div style={{ minWidth: "700px" }}>
-            <GantChart chart={chart} setChart={setChart} load={load} />
+            <GantChart
+              chart={chart}
+              setChart={setChart}
+              load={load}
+              view={view}
+            />
           </div>
         </div>
       </div>

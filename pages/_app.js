@@ -1,9 +1,8 @@
-import '../styles/globals.css';
-import '../ganttChart/components/taskMenu/taskMenu.css';
-import '../ganttChart/components/viewSwitcher/viewSwitcher.css';
+import "../styles/globals.css";
+import "../ganttChart/components/taskMenu/taskMenu.css";
 
 function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
+  return <Component {...pageProps} />;
 }
 
-export default MyApp
+export default MyApp;

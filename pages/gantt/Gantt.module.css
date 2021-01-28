@@ -104,7 +104,7 @@
 .header {
   height: 89px;
   width: 100%;
-  padding: 20px 35px;
+  padding: 20px 35px 23px 56px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -118,7 +118,6 @@
 .header button {
   width: 150px;
   height: 50px;
-  margin: 0 10px;
   color: #258efa;
   border-radius: 3px;
   opacity: 1;
@@ -138,6 +137,8 @@
   align-items: center;
   justify-content: start;
   padding-left: 18px;
+  margin-left: 20px;
+  margin-right: 0;
 }
 
 .account_button img {
