@@ -14,10 +14,25 @@ export const Modal = ({ modal, setModal, request, chart, mapName, id }) => {
   };
 
   if (modal === "share") {
+    const copyLink = (e) => {
+      document.querySelector("#link").select();
+      document.execCommand("copy");
+    };
+
+    const outsideClick = (e) => {
+      if (e.target.id === "share_wrapper") {
+        setModal(false);
+      }
+    };
+
     return (
       <>
-        <div className={styles.modalBlock} id="link_container" />
-        <div className={styles.modalWrap}>
+        <div className={styles.modalBlock} />
+        <div
+          className={styles.modalWrap}
+          onClick={outsideClick}
+          id="share_wrapper"
+        >
           <div className={styles.modal}>
             <h4>Share project</h4>
             <form>
@@ -27,16 +42,12 @@ export const Modal = ({ modal, setModal, request, chart, mapName, id }) => {
                 id="link"
                 readOnly={true}
                 value={getLink(id)}
-                onMouseDown={(e) => {
-                  e.target.select();
-                  document.execCommand("copy");
-                }}
+                onMouseDown={copyLink}
               />
             </form>
             <button
               onClick={(e) => {
-                document.querySelector("#link").select();
-                document.execCommand("copy");
+                copyLink(e);
                 setModal(false);
               }}
             >
