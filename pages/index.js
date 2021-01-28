@@ -1,15 +1,24 @@
-import Link from "next/link";
-import styles from "../styles/Home.module.css";
+import * as cookie from "cookie";
+const jwt = require("jsonwebtoken");
 
-export default function Home() {
-  return (
-    <div className={styles.container}>
-      <Link href="/login">
-        <a className={styles.mainLink}>Вход</a>
-      </Link>
-      <Link href="/signup">
-        <a className={styles.mainLink}>Регистрация</a>
-      </Link>
-    </div>
-  );
+export default function Home(props) {
+  return <></>;
 }
+
+Home.getInitialProps = async ({ res }) => {
+  let user;
+
+  try {
+    const token = cookie.parse(req.headers.cookie).ganttToken;
+    user = jwt.verify(token, "jwtSecret");
+  } catch (e) {}
+
+  if (user) {
+    res.writeHead(302, { Location: "gantt/new" });
+    res.end();
+  } else {
+    res.writeHead(302, { Location: "signup" });
+    res.end();
+  }
+  return {};
+};

@@ -13,7 +13,6 @@
   line-height: 21px;
   margin: 0;
   border: 1px solid #9ccdff;
-  cursor: pointer;
 }
 
 .baseButton:nth-child(1) {
@@ -30,6 +29,7 @@
   composes: baseButton;
   background: #ffffff;
   color: #9ccdff;
+  cursor: pointer;
 }
 .activeButton {
   composes: baseButton;

@@ -135,7 +135,7 @@
   background: #ecf5ff;
   display: flex;
   align-items: center;
-  justify-content: start;
+  justify-content: flex-start;
   padding-left: 18px;
   margin-left: 20px;
   margin-right: 0;

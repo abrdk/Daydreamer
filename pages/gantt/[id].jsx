@@ -49,7 +49,7 @@ export default function Gantt({ charts: arr, currentChart, user }) {
         mapName={name}
       />
       <div className={styles.container}>
-        {/* <div className={styles.mainMenuLeft}>
+        <div className={styles.mainMenuLeft}>
           {menu ? (
             <img
               src="/img/closeMenu.png"
@@ -115,7 +115,7 @@ export default function Gantt({ charts: arr, currentChart, user }) {
               <a className={styles.logOut}>Регистрация</a>
             </Link>
           )}
-        </div> */}
+        </div>
         <div className={styles.header}>
           <ViewSwitcher onViewModeChange={(viewMode) => setView(viewMode)} />
           <div />
@@ -165,14 +165,18 @@ export async function getServerSideProps(ctx) {
 
   try {
     const token = cookie.parse(ctx.req.headers.cookie).ganttToken;
-    const decoded = jwt.verify(token, "jwtSecret");
-    user = decoded.userId;
+    user = jwt.verify(token, "jwtSecret");
   } catch (e) {}
+
+  if (!user) {
+    ctx.res.writeHead(302, { Location: "signup" });
+    ctx.res.end();
+  }
 
   try {
     const getDB = require("../../helpers/getDb");
     const Gantt = getDB("Gantt");
-    if (user) charts = await Gantt.find({ user });
+    if (user.userId) charts = await Gantt.find({ user: user.userId });
     currentChart = await Gantt.findOne({ _id: ctx.query.id });
   } catch (e) {}
 
@@ -180,7 +184,7 @@ export async function getServerSideProps(ctx) {
     props: {
       charts: charts ? JSON.stringify(charts) : null,
       currentChart: currentChart ? JSON.stringify(currentChart) : null,
-      user: user ? JSON.stringify(user) : null,
+      user: user.userId,
     },
   };
 }

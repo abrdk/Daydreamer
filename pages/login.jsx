@@ -1,10 +1,13 @@
+import * as cookie from "cookie";
+const jwt = require("jsonwebtoken");
+
 import Link from "next/link";
 import { useState } from "react";
 import { xhr } from "../helpers/xhr";
 import Router from "next/router";
 import styles from "../styles/Home.module.css";
 
-export default function Login() {
+export default function Login(props) {
   const [warn, setWarn] = useState(null);
   const [loader, setLoader] = useState(false);
 
@@ -57,3 +60,18 @@ export default function Login() {
     </div>
   );
 }
+
+Login.getInitialProps = async ({ req, res }) => {
+  let user;
+
+  try {
+    const token = cookie.parse(req.headers.cookie).ganttToken;
+    user = jwt.verify(token, "jwtSecret");
+  } catch (e) {}
+
+  if (user) {
+    res.writeHead(302, { Location: "gantt/new" });
+    res.end();
+  }
+  return {};
+};

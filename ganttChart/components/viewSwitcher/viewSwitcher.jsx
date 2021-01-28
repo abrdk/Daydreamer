@@ -9,6 +9,7 @@ export const ViewSwitcher = ({ onViewModeChange }) => {
 
   const buttons = [0, 1, 2].map((i) => (
     <div
+      key={i}
       className={scale === i ? styles.activeButton : styles.inactiveButton}
       onClick={() => {
         setScale(i);
