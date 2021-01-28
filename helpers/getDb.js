@@ -1,19 +1,24 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 try {
-  mongoose.connect('mongodb://mongodb:27017/gantt',{
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-  });
-} catch(e) {}
+  mongoose.connect(
+    "mongodb+srv://Admin:RhfcfdxbR3416@cluster0.id6e1.mongodb.net/daydreamer?retryWrites=true&w=majority",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useFindAndModify: false,
+    }
+  );
+} catch (e) {}
 
-const getDB = name => {
+const getDB = (name) => {
   let DB;
   try {
-    DB = mongoose.model(name)
-  } catch (e) { DB = require('../models/'+name); }
+    DB = mongoose.model(name);
+  } catch (e) {
+    DB = require("../models/" + name);
+  }
   return DB;
-}
+};
 
 module.exports = getDB;
