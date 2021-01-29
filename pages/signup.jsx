@@ -2,7 +2,7 @@ import * as cookie from "cookie";
 const jwt = require("jsonwebtoken");
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import styles from "../styles/Home.module.css";
 import "../styles/Home.module.css";
 import { xhr } from "../helpers/xhr";
