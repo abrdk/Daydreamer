@@ -14,7 +14,7 @@ import { ViewMode } from "../../ganttChart/types/public-types";
 // name of project
 let id = "new";
 
-export default function Gantt({ charts: arr, currentChart, user }) {
+export default function Gantt({ charts: arr, currentChart, user, token }) {
   if (currentChart) currentChart = JSON.parse(currentChart).chart;
 
   const [charts, setCharts] = useState(arr ? JSON.parse(arr) : []);
@@ -50,6 +50,7 @@ export default function Gantt({ charts: arr, currentChart, user }) {
         mapName={name}
         userName={user.name}
         password={user.password}
+        token={token}
       />
       <div className={styles.container}>
         <div className={styles.mainMenuLeft}>
@@ -172,10 +173,10 @@ export default function Gantt({ charts: arr, currentChart, user }) {
 }
 
 export async function getServerSideProps(ctx) {
-  let user, charts, currentChart;
+  let user, charts, currentChart, token;
 
   try {
-    const token = cookie.parse(ctx.req.headers.cookie).ganttToken;
+    token = cookie.parse(ctx.req.headers.cookie).ganttToken;
     user = jwt.verify(token, "jwtSecret");
   } catch (e) {}
 
@@ -200,6 +201,7 @@ export async function getServerSideProps(ctx) {
       charts: charts ? JSON.stringify(charts) : null,
       currentChart: currentChart ? JSON.stringify(currentChart) : null,
       user,
+      token,
     },
   };
 }

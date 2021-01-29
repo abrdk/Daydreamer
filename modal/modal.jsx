@@ -13,6 +13,7 @@ export const Modal = ({
   id,
   userName,
   password,
+  token,
 }) => {
   const [name, setName] = useState("");
 
@@ -69,13 +70,13 @@ export const Modal = ({
       </>
     );
   }
-  console.log(modal);
   if (modal === "account") {
     return (
       <AccountModal
         currentName={userName}
         currentPassword={password}
         setModal={setModal}
+        token={token}
       />
     );
   }

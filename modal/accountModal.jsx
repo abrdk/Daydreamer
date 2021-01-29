@@ -3,6 +3,7 @@ import modalStyles from "./modal.module.css";
 import homeStyles from "../styles/Home.module.css";
 import { xhr } from "../helpers/xhr";
 import Link from "next/link";
+import Router from "next/router";
 
 import FloatingLabel from "floating-label-react";
 
@@ -10,6 +11,7 @@ export default function AccountModal({
   currentName,
   currentPassword,
   setModal,
+  token,
 }) {
   const [nameWarn, setNameWarn] = useState("");
   const [passwordWarn, setPasswordWarn] = useState("");
@@ -24,25 +26,15 @@ export default function AccountModal({
     }
   };
 
-  const query = () => {
+  const deleteQuery = () => {
     xhr(
-      "/auth",
+      "/auth/delete",
       {
-        query: "login",
-        name,
-        password,
+        token,
       },
-      "POST"
+      "DELETE"
     ).then((res) => {
-      if (res.message === "ok") {
-        Router.push("/gantt/new");
-      } else {
-        if (res.errorType === "name") {
-          setNameWarn(res.message);
-        } else if (res.errorType === "password") {
-          setPasswordWarn(res.message);
-        }
-      }
+      Router.push("/signup");
     });
   };
 
@@ -110,7 +102,9 @@ export default function AccountModal({
             <Link href="/logout">
               <div className={homeStyles.formButton}>Log out</div>
             </Link>
-            <div className={modalStyles.deleteAccount}>Delete account</div>
+            <div className={modalStyles.deleteAccount} onClick={deleteQuery}>
+              Delete account
+            </div>
           </div>
         </div>
       </div>

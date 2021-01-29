@@ -19,9 +19,8 @@ export default function Signup() {
 
   const query = () => {
     xhr(
-      "/auth",
+      "/auth/signup",
       {
-        query: "signup",
         name,
         password,
       },
