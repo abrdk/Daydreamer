@@ -4,13 +4,12 @@ const jwt = require("jsonwebtoken");
 import Link from "next/link";
 import { useState } from "react";
 import styles from "../styles/Home.module.css";
-import "../styles/Home.module.css";
 import { xhr } from "../helpers/xhr";
 import Router from "next/router";
 
 import FloatingLabel from "floating-label-react";
 
-export default function Signup(props) {
+export default function Signup() {
   const [nameWarn, setNameWarn] = useState("");
   const [passwordWarn, setPasswordWarn] = useState("");
 
@@ -51,7 +50,8 @@ export default function Signup(props) {
       <div className={styles.form}>
         <div className={styles.formTitle}>Registration</div>
         <div className={styles.formDescription}>
-          Enter your information to register and to be able to use the service
+          Enter your information to register and to be
+          <br /> able to use the service
         </div>
         <FloatingLabel
           id="name"
@@ -107,7 +107,7 @@ export default function Signup(props) {
   );
 }
 
-Signup.getInitialProps = async ({ req, res }) => {
+export async function getServerSideProps({ req, res }) {
   let user;
 
   try {
@@ -116,9 +116,15 @@ Signup.getInitialProps = async ({ req, res }) => {
   } catch (e) {}
 
   if (user) {
-    res.writeHead(302, { Location: "gantt/new" });
-    res.end();
+    return {
+      redirect: {
+        destination: "/gantt/new",
+        permanent: false,
+      },
+    };
   }
 
-  return {};
-};
+  return {
+    props: {},
+  };
+}

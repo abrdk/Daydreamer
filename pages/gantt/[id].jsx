@@ -169,8 +169,12 @@ export async function getServerSideProps(ctx) {
   } catch (e) {}
 
   if (!user) {
-    ctx.res.writeHead(302, { Location: "signup" });
-    ctx.res.end();
+    return {
+      redirect: {
+        destination: "/signup",
+        permanent: false,
+      },
+    };
   }
 
   try {

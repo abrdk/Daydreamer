@@ -12,7 +12,7 @@
     "floating-label-react": "^1.0.3",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.10",
-    "next": "9.5.5",
+    "next": "10.0.5",
     "rc-color-picker": "^1.2.6",
     "react": "17.0.1",
     "react-datepicker": "^3.2.2",

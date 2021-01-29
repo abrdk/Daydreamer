@@ -7,61 +7,108 @@ import { xhr } from "../helpers/xhr";
 import Router from "next/router";
 import styles from "../styles/Home.module.css";
 
-export default function Login(props) {
-  const [warn, setWarn] = useState(null);
-  const [loader, setLoader] = useState(false);
+import FloatingLabel from "floating-label-react";
+
+export default function Login() {
+  const [nameWarn, setNameWarn] = useState("");
+  const [passwordWarn, setPasswordWarn] = useState("");
+
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [isPasswordVisible, setPasswordVisibility] = useState(false);
 
   const query = () => {
-    setLoader(true);
     xhr(
       "/auth",
       {
         query: "login",
-        email: document.getElementById("email").value,
-        password: document.getElementById("password").value,
+        name,
+        password,
       },
       "POST"
     ).then((res) => {
-      setLoader(false);
-      if (res.message === "ok") Router.push("/gantt/new");
-      else setWarn(res.message);
+      if (res.message === "ok") {
+        Router.push("/gantt/new");
+      } else {
+        if (res.errorType === "name") {
+          setNameWarn(res.message);
+        } else if (res.errorType === "password") {
+          setPasswordWarn(res.message);
+        }
+      }
     });
   };
 
   return (
-    <div className={styles.container} onClick={() => setWarn(null)}>
+    <div
+      className={styles.container}
+      onClick={() => {
+        setNameWarn(null);
+        setPasswordWarn(null);
+      }}
+    >
       <div className={styles.form}>
-        <div className={styles.formTitle}>Вход</div>
-        {loader ? (
-          <img src="/img/loader.gif" alt="loader" />
-        ) : (
-          <>
-            <label>
-              <span>Электронная почта</span>
-              <input className="input" id="email" type="email" />
-            </label>
-            <label>
-              <span>Пароль</span>
-              <input className="input" id="password" type="password" />
-            </label>
-            {warn && <div>{warn}</div>}
-            <button onClick={query}>Войти</button>
-            <Link href="/recover">
-              <a style={{ textDecoration: "none", color: "#8B8B8B" }}>
-                Восстановить пароль
-              </a>
-            </Link>
-            <Link href="/signup">
-              <a>Регистрация</a>
-            </Link>
-          </>
-        )}
+        <div className={styles.formTitle}>Sign in</div>
+        <div className={styles.formDescription}>
+          Enter your information to sign in <br /> on the service
+        </div>
+        <FloatingLabel
+          id="name"
+          name="name"
+          placeholder="Your name"
+          className={
+            nameWarn
+              ? name
+                ? styles.formInputFilledWarn
+                : styles.formInputWarn
+              : name
+              ? styles.formInputFilled
+              : styles.formInput
+          }
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        {nameWarn && <div className={styles.warn}>{nameWarn}</div>}
+        <FloatingLabel
+          id="password"
+          name="password"
+          placeholder="Your password"
+          className={
+            passwordWarn
+              ? password
+                ? styles.formInputFilledWarn
+                : styles.formInputWarn
+              : password
+              ? styles.formInputFilled
+              : styles.formInput
+          }
+          type={isPasswordVisible ? "text" : "password"}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <img
+          src="/img/eye.svg"
+          alt=" "
+          className={styles.eye}
+          onClick={() => setPasswordVisibility(!isPasswordVisible)}
+        />
+        {passwordWarn && <div className={styles.warn}>{passwordWarn}</div>}
+        <div className={styles.formButton} onClick={query}>
+          Sign in
+        </div>
+        <div className={styles.line}></div>
+        <div className={styles.loginDescription}>
+          Don't have an account yet?
+        </div>
+        <Link href="/signup">
+          <a className={styles.loginLink}>Registration</a>
+        </Link>
       </div>
     </div>
   );
 }
 
-Login.getInitialProps = async ({ req, res }) => {
+export async function getServerSideProps({ req, res }) {
   let user;
 
   try {
@@ -70,8 +117,15 @@ Login.getInitialProps = async ({ req, res }) => {
   } catch (e) {}
 
   if (user) {
-    res.writeHead(302, { Location: "gantt/new" });
-    res.end();
+    return {
+      redirect: {
+        destination: "/gantt/new",
+        permanent: false,
+      },
+    };
   }
-  return {};
-};
+
+  return {
+    props: {},
+  };
+}

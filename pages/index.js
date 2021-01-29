@@ -1,7 +1,7 @@
 import * as cookie from "cookie";
 const jwt = require("jsonwebtoken");
 
-export default function Home(props) {
+export default function Home() {
   return <></>;
 }
 
@@ -20,5 +20,4 @@ Home.getInitialProps = async ({ res }) => {
     res.writeHead(302, { Location: "signup" });
     res.end();
   }
-  return {};
 };

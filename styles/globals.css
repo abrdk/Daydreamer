@@ -2,7 +2,7 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 a {
@@ -11,19 +11,21 @@ a {
 }
 
 button {
-  background-color: #3375F5;
+  background-color: #3375f5;
   border-radius: 3px;
   font-weight: 500;
   font-size: 17px;
   line-height: 21px;
-  color: #FFFFFF;
+  color: #ffffff;
   height: 50px;
   outline: none;
   border: none;
   cursor: pointer;
-  opacity: .7;
-  transition: .3s;
+  opacity: 0.7;
+  transition: 0.3s;
   width: 100%;
+  padding: 0;
+  margin: 0;
 }
 button:hover {
   opacity: 1;
@@ -31,7 +33,7 @@ button:hover {
 
 .input {
   height: 44px;
-  border: 1px solid #B4B4B4;
+  border: 1px solid #b4b4b4;
   border-radius: 3px;
   outline: none;
   margin-top: 15px;
