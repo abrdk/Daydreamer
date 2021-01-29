@@ -68,7 +68,7 @@
 
 .formInput input {
   width: 100%;
-  height: 60px;
+  height: 58px;
   font-style: normal;
   font-weight: normal;
   font-size: 15px;
@@ -134,9 +134,14 @@
 
 .eye {
   position: absolute;
-  top: 254px;
-  left: 344px;
+  top: 18px;
+  right: 12px;
   cursor: pointer;
+}
+
+.passwordContainer {
+  width: 100%;
+  position: relative;
 }
 
 .formButton {
@@ -153,6 +158,7 @@
   align-items: center;
   color: #fff;
   cursor: pointer;
+  margin-bottom: 24px;
 }
 
 .line {

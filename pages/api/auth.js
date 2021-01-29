@@ -43,7 +43,7 @@ export default async (req, res) => {
       const hashedPassword = await bcrypt.hash(password, 12);
       const user = new User({ name, password: hashedPassword });
       const u = await user.save();
-      const token = jwt.sign({ userId: u.id }, "jwtSecret", {
+      const token = jwt.sign({ id: u.id, name, password }, "jwtSecret", {
         expiresIn: "24h",
       });
       res.setHeader(
@@ -51,7 +51,7 @@ export default async (req, res) => {
         `ganttToken=${token}; max-age=36000000; Path=/`
       );
       res.status(201).json({ message: "ok" });
-    } else {
+    } else if (query === "login") {
       if (!candidate) {
         return res
           .status(400)
@@ -64,9 +64,13 @@ export default async (req, res) => {
           errorType: "password",
         });
       }
-      const token = jwt.sign({ userId: candidate.id }, "jwtSecret", {
-        expiresIn: "24h",
-      });
+      const token = jwt.sign(
+        { id: candidate.id, name: name, password },
+        "jwtSecret",
+        {
+          expiresIn: "24h",
+        }
+      );
       res.setHeader(
         "Set-Cookie",
         `ganttToken=${token}; max-age=36000000; Path=/`

@@ -70,30 +70,32 @@ export default function Signup() {
           onChange={(e) => setName(e.target.value)}
         />
         {nameWarn && <div className={styles.warn}>{nameWarn}</div>}
-        <FloatingLabel
-          id="password"
-          name="password"
-          placeholder="Your password"
-          className={
-            passwordWarn
-              ? password
-                ? styles.formInputFilledWarn
-                : styles.formInputWarn
-              : password
-              ? styles.formInputFilled
-              : styles.formInput
-          }
-          type={isPasswordVisible ? "text" : "password"}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <img
-          src="/img/eye.svg"
-          alt=" "
-          className={styles.eye}
-          onClick={() => setPasswordVisibility(!isPasswordVisible)}
-        />
         {passwordWarn && <div className={styles.warn}>{passwordWarn}</div>}
+        <div className={styles.passwordContainer}>
+          <FloatingLabel
+            id="password"
+            name="password"
+            placeholder="Your password"
+            className={
+              passwordWarn
+                ? password
+                  ? styles.formInputFilledWarn
+                  : styles.formInputWarn
+                : password
+                ? styles.formInputFilled
+                : styles.formInput
+            }
+            type={isPasswordVisible ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <img
+            src="/img/eye.svg"
+            alt=" "
+            className={styles.eye}
+            onClick={() => setPasswordVisibility(!isPasswordVisible)}
+          />
+        </div>
         <div className={styles.formButton} onClick={query}>
           Registration
         </div>

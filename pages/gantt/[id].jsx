@@ -11,7 +11,8 @@ import { Modal } from "../../modal/modal";
 import { ViewSwitcher } from "../../ganttChart/components/viewSwitcher/viewSwitcher";
 import { ViewMode } from "../../ganttChart/types/public-types";
 
-let id;
+// name of project
+let id = "new";
 
 export default function Gantt({ charts: arr, currentChart, user }) {
   if (currentChart) currentChart = JSON.parse(currentChart).chart;
@@ -47,6 +48,8 @@ export default function Gantt({ charts: arr, currentChart, user }) {
         chart={chart}
         id={id}
         mapName={name}
+        userName={user.name}
+        password={user.password}
       />
       <div className={styles.container}>
         <div className={styles.mainMenuLeft}>
@@ -131,8 +134,16 @@ export default function Gantt({ charts: arr, currentChart, user }) {
             >
               Share Project
             </button>
-            <button className={styles.account_button}>
-              <img src="/img/avatar.svg" alt=" " /> <span>John Smith</span>
+            <button
+              className={styles.account_button}
+              onClick={setModal.bind(null, "account")}
+            >
+              <img src="/img/avatar.svg" alt=" " />{" "}
+              <span>
+                {user.name.length > 10
+                  ? user.name.slice(0, 10) + "..."
+                  : user.name}
+              </span>
             </button>
             {/* <button
               onClick={request.bind(null, {
@@ -180,7 +191,7 @@ export async function getServerSideProps(ctx) {
   try {
     const getDB = require("../../helpers/getDb");
     const Gantt = getDB("Gantt");
-    if (user.userId) charts = await Gantt.find({ user: user.userId });
+    if (user.id) charts = await Gantt.find({ user: user.id });
     currentChart = await Gantt.findOne({ _id: ctx.query.id });
   } catch (e) {}
 
@@ -188,7 +199,7 @@ export async function getServerSideProps(ctx) {
     props: {
       charts: charts ? JSON.stringify(charts) : null,
       currentChart: currentChart ? JSON.stringify(currentChart) : null,
-      user: user.userId,
+      user,
     },
   };
 }

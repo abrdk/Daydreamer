@@ -83,3 +83,28 @@
   background: #258efa;
   font-size: 18px;
 }
+
+.accountModal {
+  composes: modal;
+  width: 420px;
+  height: 410px;
+  padding: 49px 40px 29px 40px;
+}
+
+.accountTitle {
+  composes: formTitle from "../styles/Home.module.css";
+  margin-bottom: 48px;
+}
+
+.deleteAccount {
+  width: 100%;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 21px;
+  text-align: center;
+  text-decoration-line: underline;
+  color: #258efa;
+  text-align: center;
+  cursor: pointer;
+}

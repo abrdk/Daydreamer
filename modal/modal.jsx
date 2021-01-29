@@ -2,7 +2,18 @@ import Link from "next/link";
 import { useState } from "react";
 import styles from "./modal.module.css";
 
-export const Modal = ({ modal, setModal, request, chart, mapName, id }) => {
+import AccountModal from "./accountModal";
+
+export const Modal = ({
+  modal,
+  setModal,
+  request,
+  chart,
+  mapName,
+  id,
+  userName,
+  password,
+}) => {
   const [name, setName] = useState("");
 
   if (!modal) return null;
@@ -56,6 +67,16 @@ export const Modal = ({ modal, setModal, request, chart, mapName, id }) => {
           </div>
         </div>
       </>
+    );
+  }
+  console.log(modal);
+  if (modal === "account") {
+    return (
+      <AccountModal
+        currentName={userName}
+        currentPassword={password}
+        setModal={setModal}
+      />
     );
   }
 
@@ -136,7 +157,7 @@ export const Modal = ({ modal, setModal, request, chart, mapName, id }) => {
 
   return (
     <>
-      <div className={styles.modalBlock} />
+      {/* <div className={styles.modalBlock} />
       <div className={styles.modalWrap}>
         <div className={styles.modal}>
           <img
@@ -156,7 +177,7 @@ export const Modal = ({ modal, setModal, request, chart, mapName, id }) => {
             </Link>
           </label>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };
