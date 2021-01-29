@@ -11,7 +11,8 @@ import Router from "next/router";
 import FloatingLabel from "floating-label-react";
 
 export default function Signup(props) {
-  const [warn, setWarn] = useState(null);
+  const [nameWarn, setNameWarn] = useState("");
+  const [passwordWarn, setPasswordWarn] = useState("");
 
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -27,13 +28,26 @@ export default function Signup(props) {
       },
       "POST"
     ).then((res) => {
-      if (res.message === "ok") Router.push("/gantt/new");
-      else setWarn(res.message);
+      if (res.message === "ok") {
+        Router.push("/gantt/new");
+      } else {
+        if (res.errorType === "name") {
+          setNameWarn(res.message);
+        } else if (res.errorType === "password") {
+          setPasswordWarn(res.message);
+        }
+      }
     });
   };
 
   return (
-    <div className={styles.container} onClick={() => setWarn(null)}>
+    <div
+      className={styles.container}
+      onClick={() => {
+        setNameWarn(null);
+        setPasswordWarn(null);
+      }}
+    >
       <div className={styles.form}>
         <div className={styles.formTitle}>Registration</div>
         <div className={styles.formDescription}>
@@ -43,15 +57,32 @@ export default function Signup(props) {
           id="name"
           name="name"
           placeholder="Your name"
-          className={name ? styles.formInputFilled : styles.formInput}
+          className={
+            nameWarn
+              ? name
+                ? styles.formInputFilledWarn
+                : styles.formInputWarn
+              : name
+              ? styles.formInputFilled
+              : styles.formInput
+          }
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
+        {nameWarn && <div className={styles.warn}>{nameWarn}</div>}
         <FloatingLabel
           id="password"
           name="password"
           placeholder="Your password"
-          className={password ? styles.formInputFilled : styles.formInput}
+          className={
+            passwordWarn
+              ? password
+                ? styles.formInputFilledWarn
+                : styles.formInputWarn
+              : password
+              ? styles.formInputFilled
+              : styles.formInput
+          }
           type={isPasswordVisible ? "text" : "password"}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -62,7 +93,7 @@ export default function Signup(props) {
           className={styles.eye}
           onClick={() => setPasswordVisibility(!isPasswordVisible)}
         />
-        {warn && <div>{warn}</div>}
+        {passwordWarn && <div className={styles.warn}>{passwordWarn}</div>}
         <div className={styles.formButton} onClick={query}>
           Registration
         </div>

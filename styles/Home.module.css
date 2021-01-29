@@ -78,6 +78,7 @@
   box-sizing: border-box;
   padding-left: 20px;
   padding-right: 45px;
+  border-radius: 5px;
 }
 
 .formInput span {
@@ -117,6 +118,18 @@
   top: -15px;
   margin-left: 16px;
   background-color: #fff;
+}
+
+.formInputWarn {
+  composes: formInput;
+  margin-bottom: 3px;
+  border: 1px solid #ff4b4b;
+}
+
+.formInputFilledWarn {
+  composes: formInputFilled;
+  margin-bottom: 3px;
+  border: 1px solid #ff4b4b;
 }
 
 .eye {
@@ -171,6 +184,16 @@
   color: #258efa;
   position: absolute;
   top: 454px;
+}
+
+.warn {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 21px;
+  color: #ff4b4b;
+  margin-bottom: 11px;
+  align-self: flex-start;
 }
 
 .form label {
