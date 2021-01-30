@@ -1,8 +1,12 @@
 import "../styles/globals.css";
 import "../ganttChart/components/taskMenu/taskMenu.css";
 
-function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />;
-}
+import { UsersProvider } from "../ganttChart/context/users/UsersContext";
 
-export default MyApp;
+export default function MyApp({ Component, pageProps }) {
+  return (
+    <UsersProvider>
+      <Component {...pageProps} />;
+    </UsersProvider>
+  );
+}

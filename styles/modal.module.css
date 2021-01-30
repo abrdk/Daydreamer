@@ -83,6 +83,7 @@
   composes: modal;
   width: 420px;
   padding: 49px 40px 29px 40px;
+  align-items: center;
 }
 
 .accountTitle {
@@ -94,8 +95,7 @@
 
 .accountLink {
   composes: link from "./global.module.css";
-  width: 100%;
-  text-align: center;
+  width: max-content;
 }
 
 .accountLinkDisabled {

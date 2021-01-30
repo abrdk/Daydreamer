@@ -3,18 +3,20 @@ const jwt = require("jsonwebtoken");
 
 import Head from "next/head";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import styles from "./Gantt.module.css";
 import { xhr } from "../../helpers/xhr";
 import GantChart from "../../ganttChart/ganttChart";
-import { Modal } from "../../modal/modal";
+import { Modal } from "../../ganttChart/components/modal/modal";
 import { ViewSwitcher } from "../../ganttChart/components/viewSwitcher/viewSwitcher";
 import { ViewMode } from "../../ganttChart/types/public-types";
+
+import { UsersContext } from "../../ganttChart/context/users/UsersContext";
 
 // name of project
 let id = "new";
 
-export default function Gantt({ charts: arr, currentChart, user, token }) {
+export default function Gantt({ charts: arr, currentChart }) {
   if (currentChart) currentChart = JSON.parse(currentChart).chart;
 
   const [charts, setCharts] = useState(arr ? JSON.parse(arr) : []);
@@ -24,6 +26,8 @@ export default function Gantt({ charts: arr, currentChart, user, token }) {
   const [menu, setMenu] = useState(false);
   const [modal, setModal] = useState(false);
   const [view, setView] = useState(ViewMode.Day);
+
+  const userCtx = useContext(UsersContext);
 
   const request = (query) => {
     setModal("loader");
@@ -48,9 +52,6 @@ export default function Gantt({ charts: arr, currentChart, user, token }) {
         chart={chart}
         id={id}
         mapName={name}
-        userName={user.name}
-        password={user.password}
-        token={token}
       />
       <div className={styles.container}>
         <div className={styles.mainMenuLeft}>
@@ -110,7 +111,7 @@ export default function Gantt({ charts: arr, currentChart, user, token }) {
               />
             </div>
           ))}
-          {user ? (
+          {userCtx.id ? (
             <Link href="/logout">
               <a className={styles.logOut}>Выйти из аккаунта</a>
             </Link>
@@ -141,9 +142,9 @@ export default function Gantt({ charts: arr, currentChart, user, token }) {
             >
               <img src="/img/avatar.svg" alt=" " />{" "}
               <span>
-                {user.name.length > 10
-                  ? user.name.slice(0, 10) + "..."
-                  : user.name}
+                {userCtx.name.length > 10
+                  ? userCtx.name.slice(0, 10) + "..."
+                  : userCtx.name}
               </span>
             </button>
             {/* <button
@@ -200,8 +201,6 @@ export async function getServerSideProps(ctx) {
     props: {
       charts: charts ? JSON.stringify(charts) : null,
       currentChart: currentChart ? JSON.stringify(currentChart) : null,
-      user,
-      token,
     },
   };
 }

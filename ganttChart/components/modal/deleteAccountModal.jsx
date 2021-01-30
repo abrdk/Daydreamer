@@ -1,9 +1,14 @@
-import modalStyles from "../styles/modal.module.css";
-import globalStyles from "../styles/global.module.css";
-import { xhr } from "../helpers/xhr";
+import modalStyles from "../../../styles/modal.module.css";
+import globalStyles from "../../../styles/global.module.css";
+import { xhr } from "../../../helpers/xhr";
 import Router from "next/router";
+import { useContext } from "react";
 
-export default function DeleteAccountModal({ setModal, token }) {
+import { UsersContext } from "../../context/users/UsersContext";
+
+export default function DeleteAccountModal({ setModal }) {
+  const { token, setUser } = useContext(UsersContext);
+
   const outsideClick = (e) => {
     if (e.target.id === "delete_account_wrapper") {
       setModal(false);
@@ -18,6 +23,7 @@ export default function DeleteAccountModal({ setModal, token }) {
       },
       "DELETE"
     ).then((res) => {
+      setUser({ id: "", token: "", name: "", password: "" });
       Router.push("/signup");
     });
   };

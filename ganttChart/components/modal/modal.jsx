@@ -1,22 +1,11 @@
-import Link from "next/link";
 import { useState } from "react";
-import styles from "../styles/modal.module.css";
+import styles from "../../../styles/modal.module.css";
 
 import AccountModal from "./accountModal";
 import DeleteAccountModal from "./deleteAccountModal";
 import ShareModal from "./shareModal";
 
-export const Modal = ({
-  modal,
-  setModal,
-  request,
-  chart,
-  mapName,
-  id,
-  userName,
-  password,
-  token,
-}) => {
+export const Modal = ({ modal, setModal, request, chart, mapName, id }) => {
   const [name, setName] = useState("");
 
   if (!modal) return null;
@@ -31,18 +20,11 @@ export const Modal = ({
     return <ShareModal setModal={setModal} link={getLink(id)} />;
   }
   if (modal === "account") {
-    return (
-      <AccountModal
-        currentName={userName}
-        currentPassword={password}
-        setModal={setModal}
-        token={token}
-      />
-    );
+    return <AccountModal setModal={setModal} />;
   }
 
   if (modal === "delete_account") {
-    return <DeleteAccountModal setModal={setModal} token={token} />;
+    return <DeleteAccountModal setModal={setModal} />;
   }
 
   if (modal === "create")

@@ -68,7 +68,12 @@ export default async (req, res) => {
           `ganttToken=${token}; max-age=36000000; Path=/`
         );
 
-        return res.status(201).json({ message: "ok" });
+        return res
+          .status(201)
+          .json({
+            message: "ok",
+            user: { token, id: result._id, name, password },
+          });
       }
     );
   }

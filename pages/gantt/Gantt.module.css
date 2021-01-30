@@ -150,9 +150,3 @@
   width: calc(100% - 40px);
   overflow: auto;
 }
-
-@media (max-width: 800px) {
-  .header {
-    padding: 0 10px 0 55px;
-  }
-}

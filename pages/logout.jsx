@@ -1,8 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import Router from "next/router";
 
+import { UsersContext } from "../ganttChart/context/users/UsersContext";
+
 export default function Logout(props) {
-  useEffect(() => Router.push("/"), [props]);
+  const { setUser } = useContext(UsersContext);
+
+  useEffect(() => {
+    setUser({ id: "", token: "", name: "", password: "" });
+    Router.push("/");
+  }, [props]);
+
   return null;
 }
 

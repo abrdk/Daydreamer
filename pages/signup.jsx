@@ -2,12 +2,14 @@ import * as cookie from "cookie";
 const jwt = require("jsonwebtoken");
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import styles from "../styles/auth.module.css";
 import { xhr } from "../helpers/xhr";
 import Router from "next/router";
 
 import FloatingLabel from "floating-label-react";
+
+import { UsersContext } from "../ganttChart/context/users/UsersContext";
 
 export default function Signup() {
   const [nameWarn, setNameWarn] = useState("");
@@ -16,6 +18,8 @@ export default function Signup() {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setPasswordVisibility] = useState(false);
+
+  const { setUser } = useContext(UsersContext);
 
   const query = () => {
     xhr(
@@ -27,6 +31,7 @@ export default function Signup() {
       "POST"
     ).then((res) => {
       if (res.message === "ok") {
+        setUser(res.user);
         Router.push("/gantt/new");
       } else {
         if (res.errorType === "name") {
