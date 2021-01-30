@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 
 import Link from "next/link";
 import { useState } from "react";
-import styles from "../styles/Home.module.css";
+import styles from "../styles/auth.module.css";
 import { xhr } from "../helpers/xhr";
 import Router from "next/router";
 
@@ -47,8 +47,8 @@ export default function Signup() {
       }}
     >
       <div className={styles.form}>
-        <div className={styles.formTitle}>Registration</div>
-        <div className={styles.formDescription}>
+        <div className={styles.title}>Registration</div>
+        <div className={styles.description}>
           Enter your information to register and to be
           <br /> able to use the service
         </div>
@@ -69,7 +69,6 @@ export default function Signup() {
           onChange={(e) => setName(e.target.value)}
         />
         {nameWarn && <div className={styles.warn}>{nameWarn}</div>}
-        {passwordWarn && <div className={styles.warn}>{passwordWarn}</div>}
         <div className={styles.passwordContainer}>
           <FloatingLabel
             id="password"
@@ -91,17 +90,18 @@ export default function Signup() {
           <img
             src="/img/eye.svg"
             alt=" "
-            className={styles.eye}
+            className={styles.passwordEye}
             onClick={() => setPasswordVisibility(!isPasswordVisible)}
           />
         </div>
-        <div className={styles.formButton} onClick={query}>
+        {passwordWarn && <div className={styles.warn}>{passwordWarn}</div>}
+        <div className={styles.primaryButton} onClick={query}>
           Registration
         </div>
         <div className={styles.line}></div>
-        <div className={styles.loginDescription}>Already have an account?</div>
+        <div className={styles.linkDescription}>Already have an account?</div>
         <Link href="/login">
-          <a className={styles.loginLink}>Sign in</a>
+          <a className={styles.link}>Sign in</a>
         </Link>
       </div>
     </div>

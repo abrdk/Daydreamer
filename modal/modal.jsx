@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { useState } from "react";
-import styles from "./modal.module.css";
+import styles from "../styles/modal.module.css";
 
 import AccountModal from "./accountModal";
+import DeleteAccountModal from "./deleteAccountModal";
+import ShareModal from "./shareModal";
 
 export const Modal = ({
   modal,
@@ -26,49 +28,7 @@ export const Modal = ({
   };
 
   if (modal === "share") {
-    const copyLink = (e) => {
-      document.querySelector("#link").select();
-      document.execCommand("copy");
-    };
-
-    const outsideClick = (e) => {
-      if (e.target.id === "share_wrapper") {
-        setModal(false);
-      }
-    };
-
-    return (
-      <>
-        <div className={styles.modalBlock} />
-        <div
-          className={styles.modalWrap}
-          onClick={outsideClick}
-          id="share_wrapper"
-        >
-          <div className={styles.modal}>
-            <h4>Share project</h4>
-            <form>
-              <label>Your link</label>
-              <input
-                type="text"
-                id="link"
-                readOnly={true}
-                value={getLink(id)}
-                onMouseDown={copyLink}
-              />
-            </form>
-            <button
-              onClick={(e) => {
-                copyLink(e);
-                setModal(false);
-              }}
-            >
-              Copy link
-            </button>
-          </div>
-        </div>
-      </>
-    );
+    return <ShareModal setModal={setModal} link={getLink(id)} />;
   }
   if (modal === "account") {
     return (
@@ -79,6 +39,10 @@ export const Modal = ({
         token={token}
       />
     );
+  }
+
+  if (modal === "delete_account") {
+    return <DeleteAccountModal setModal={setModal} token={token} />;
   }
 
   if (modal === "create")

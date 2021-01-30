@@ -1,9 +1,10 @@
 import { useState } from "react";
-import modalStyles from "./modal.module.css";
-import homeStyles from "../styles/Home.module.css";
+import modalStyles from "../styles/modal.module.css";
+import homeStyles from "../styles/auth.module.css";
+import globalStyles from "../styles/global.module.css";
 import { xhr } from "../helpers/xhr";
-import Link from "next/link";
 import Router from "next/router";
+import Link from "next/link";
 
 import FloatingLabel from "floating-label-react";
 
@@ -20,22 +21,41 @@ export default function AccountModal({
   const [password, setPassword] = useState(currentPassword);
   const [isPasswordVisible, setPasswordVisibility] = useState(false);
 
+  const [isUpdatingComplete, setUpdateState] = useState(false);
+
   const outsideClick = (e) => {
     if (e.target.id === "account_wrapper") {
       setModal(false);
     }
   };
 
-  const deleteQuery = () => {
-    xhr(
-      "/auth/delete",
-      {
-        token,
-      },
-      "DELETE"
-    ).then((res) => {
-      Router.push("/signup");
-    });
+  const isDataUpdating = () =>
+    !(name === currentName && password === currentPassword);
+
+  const update = () => {
+    if (!isDataUpdating() && !isUpdatingComplete) {
+      Router.push("/logout");
+    } else if (isDataUpdating() && !isUpdatingComplete) {
+      xhr(
+        "/auth/update",
+        {
+          token,
+          name,
+          password,
+        },
+        "PUT"
+      ).then((res) => {
+        if (res.message === "ok") {
+          setUpdateState(true);
+        } else {
+          if (res.errorType === "name") {
+            setNameWarn(res.message);
+          } else if (res.errorType === "password") {
+            setPasswordWarn(res.message);
+          }
+        }
+      });
+    }
   };
 
   return (
@@ -46,13 +66,14 @@ export default function AccountModal({
         onClick={outsideClick}
         id="account_wrapper"
       >
-        <div className={modalStyles.accountModal}>
-          <div
-            onClick={() => {
-              setNameWarn(null);
-              setPasswordWarn(null);
-            }}
-          >
+        <div
+          className={modalStyles.accountModal}
+          onClick={() => {
+            setNameWarn(null);
+            setPasswordWarn(null);
+          }}
+        >
+          <div>
             <div className={modalStyles.accountTitle}>Personal account</div>
             <FloatingLabel
               id="name"
@@ -92,17 +113,41 @@ export default function AccountModal({
               <img
                 src="/img/eye.svg"
                 alt=" "
-                className={homeStyles.eye}
+                className={homeStyles.passwordEye}
                 onClick={() => setPasswordVisibility(!isPasswordVisible)}
               />
             </div>
             {passwordWarn && (
-              <div className={homeStyles.warn}>{passwordWarn}</div>
+              <div className={homteStyles.warn}>{passwordWarn}</div>
             )}
-            <Link href="/logout">
-              <div className={homeStyles.formButton}>Log out</div>
-            </Link>
-            <div className={modalStyles.deleteAccount} onClick={deleteQuery}>
+            <div
+              className={
+                isUpdatingComplete
+                  ? globalStyles.successButton
+                  : isDataUpdating()
+                  ? modalStyles.accountSecondaryButton
+                  : modalStyles.accountPrimaryButton
+              }
+              onClick={update}
+            >
+              {isUpdatingComplete
+                ? "Your data was changed"
+                : isDataUpdating()
+                ? "Save data"
+                : "Log out"}
+            </div>
+            <div
+              className={
+                isDataUpdating() && !isUpdatingComplete
+                  ? modalStyles.accountLinkDisabled
+                  : modalStyles.accountLink
+              }
+              onClick={
+                isDataUpdating() && !isUpdatingComplete
+                  ? null
+                  : setModal.bind(null, "delete_account")
+              }
+            >
               Delete account
             </div>
           </div>

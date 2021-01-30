@@ -10,7 +10,6 @@ export default async (req, res) => {
   try {
     user = jwt.verify(token, "jwtSecret");
   } catch (e) {}
-
   if (user) {
     if (!name) {
       return res
@@ -40,18 +39,36 @@ export default async (req, res) => {
     const User = getDB("User");
     const candidate = await User.findOne({ name });
 
-    if (candidate) {
+    if (candidate && candidate._id != user.id) {
       return res
         .status(400)
         .json({ message: "This name already exists", errorType: "name" });
     }
 
+    const hashedPassword = await bcrypt.hash(password, 12);
+
     User.findOneAndUpdate(
-      { name },
-      { $set: { name, password } },
+      { name: user.name },
+      { $set: { name, password: hashedPassword } },
+      {
+        returnOriginal: false,
+      },
       function (err, result) {
         if (err) return res.status(500).json({ message: "Ошибка базы данных" });
-        res.json({ message: "ok" });
+
+        const token = jwt.sign(
+          { id: result._id, name, password },
+          "jwtSecret",
+          {
+            expiresIn: "24h",
+          }
+        );
+        res.setHeader(
+          "Set-Cookie",
+          `ganttToken=${token}; max-age=36000000; Path=/`
+        );
+
+        return res.status(201).json({ message: "ok" });
       }
     );
   }

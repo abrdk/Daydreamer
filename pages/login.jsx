@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { xhr } from "../helpers/xhr";
 import Router from "next/router";
-import styles from "../styles/Home.module.css";
+import styles from "../styles/auth.module.css";
 
 import FloatingLabel from "floating-label-react";
 
@@ -47,8 +47,8 @@ export default function Login() {
       }}
     >
       <div className={styles.form}>
-        <div className={styles.formTitle}>Sign in</div>
-        <div className={styles.formDescription}>
+        <div className={styles.title}>Sign in</div>
+        <div className={styles.description}>
           Enter your information to sign in <br /> on the service
         </div>
         <FloatingLabel
@@ -89,20 +89,18 @@ export default function Login() {
           <img
             src="/img/eye.svg"
             alt=" "
-            className={styles.eye}
+            className={styles.passwordEye}
             onClick={() => setPasswordVisibility(!isPasswordVisible)}
           />
         </div>
         {passwordWarn && <div className={styles.warn}>{passwordWarn}</div>}
-        <div className={styles.formButton} onClick={query}>
+        <div className={styles.primaryButton} onClick={query}>
           Sign in
         </div>
         <div className={styles.line}></div>
-        <div className={styles.loginDescription}>
-          Don't have an account yet?
-        </div>
+        <div className={styles.linkDescription}>Don't have an account yet?</div>
         <Link href="/signup">
-          <a className={styles.loginLink}>Registration</a>
+          <a className={styles.link}>Registration</a>
         </Link>
       </div>
     </div>
