@@ -45,7 +45,7 @@ export function ProjectsProvider(props) {
       dispatch({
         type: "ADD_PROJECT",
         payload: {
-          id: fakeId,
+          _id: fakeId,
           name: `Project name #${projects.length + 1}`,
           isCurrent,
         },
@@ -63,17 +63,17 @@ export function ProjectsProvider(props) {
         );
         dispatch({
           type: "UPDATE_PROJECT_ID",
-          payload: { id: fakeId, realId: res._id },
+          payload: { _id: fakeId, realId: res._id },
         });
       } catch (e) {}
     }
   };
 
-  const updateProject = async ({ id, name, isCurrent }) => {
+  const updateProject = async ({ _id, name, isCurrent }) => {
     if (document.cookie) {
       dispatch({
         type: "UPDATE_PROJECT",
-        payload: { id, name, isCurrent },
+        payload: { _id, name, isCurrent },
       });
       try {
         const token = cookie.parse(document.cookie).ganttToken;
@@ -81,7 +81,7 @@ export function ProjectsProvider(props) {
           "/projects/update",
           {
             token,
-            id,
+            id: _id,
             name,
             isCurrent,
           },
@@ -91,11 +91,11 @@ export function ProjectsProvider(props) {
     }
   };
 
-  const deleteProject = async (id) => {
+  const deleteProject = async (_id) => {
     if (document.cookie) {
       dispatch({
         type: "DELETE_PROJECT",
-        payload: id,
+        payload: { _id },
       });
       try {
         const token = cookie.parse(document.cookie).ganttToken;
@@ -103,7 +103,7 @@ export function ProjectsProvider(props) {
           "/projects/delete",
           {
             token,
-            id,
+            id: _id,
           },
           "DELETE"
         );

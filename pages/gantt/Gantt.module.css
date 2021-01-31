@@ -1,6 +1,6 @@
 .mainMenu {
   z-index: 90;
-  width: 320px;
+  width: 335px;
   height: 100vh;
   background: #ffffff;
   position: fixed;
@@ -135,4 +135,15 @@
   margin-left: 40px;
   width: calc(100% - 40px);
   overflow: auto;
+}
+
+.menuIconWrap {
+  background: rgba(51, 56, 61, 0.35);
+  z-index: 1000;
+  width: 40px;
+  height: 40px;
+  border-radius: 100px;
+  left: 17px;
+  top: 26px;
+  position: absolute;
 }

@@ -1,5 +1,5 @@
 export default function (state, action) {
-  const { id, realId } = action.payload;
+  const { _id, realId } = action.payload;
   switch (action.type) {
     case "SET_PROJECTS":
       return {
@@ -16,8 +16,8 @@ export default function (state, action) {
       return {
         ...state,
         projects: state.projects.map((project) => {
-          if (project.id == id) {
-            return { ...project, id: realId };
+          if (project._id == _id) {
+            return { ...project, _id: realId };
           }
           return project;
         }),
@@ -26,7 +26,7 @@ export default function (state, action) {
       return {
         ...state,
         projects: state.projects.map((project) => {
-          if (project.id == id) {
+          if (project._id == _id) {
             return action.payload;
           }
           return project;
@@ -35,7 +35,7 @@ export default function (state, action) {
     case "DELETE_PROJECT":
       return {
         ...state,
-        projects: state.projects.filter((project) => project.id != id),
+        projects: state.projects.filter((project) => project._id != _id),
       };
     default:
       return state;

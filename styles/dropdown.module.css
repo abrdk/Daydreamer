@@ -1,0 +1,139 @@
+.wrap {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(51, 56, 61, 0.35);
+  z-index: 101;
+}
+
+.wrapOptions {
+  z-index: 102;
+  position: absolute;
+  top: 81px;
+  left: 71px;
+  background: #fff;
+  border-radius: 3px 3px 0px 0px;
+  width: 375px;
+}
+
+.placeholder {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: 21px;
+  color: #696f75;
+}
+
+.root {
+  margin-top: 26px;
+  margin-left: 71px;
+  width: 235px;
+  height: 40px;
+  background: #ffffff;
+  border: 1px solid #258efa;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  padding: 0 16px 0 14px;
+  composes: placeholder;
+}
+
+.rootOpened {
+  composes: root;
+  color: #258efa;
+  z-index: 102;
+}
+
+.option {
+  composes: placeholder;
+  padding: 14px;
+  border-bottom: 1px solid #f3f3f3;
+  color: #949da7;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.icon {
+  display: none;
+  width: 16px;
+  height: 16px;
+}
+
+.option:hover .icon {
+  display: block;
+}
+
+.pencilWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.pencil {
+  composes: icon;
+  margin-left: 10px;
+  width: 12px;
+  height: 12px;
+}
+
+.optionSelected {
+  composes: option;
+  border-left: 3px solid #258efa;
+  padding-left: 11px;
+}
+
+.option:hover {
+  box-shadow: 15px 15px 50px rgba(9, 40, 72, 0.15);
+}
+
+.triangle {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 8px 8px 8px;
+  border-color: transparent transparent #fff transparent;
+  position: absolute;
+  top: 74px;
+  left: 81px;
+  z-index: 2000;
+}
+
+.input {
+  composes: placeholder;
+  color: #949da7;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.control {
+  border: none !important;
+  padding: 0 16px 0 14px !important;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  transition: none;
+}
+
+.menu {
+  top: 55px !important;
+  background: #ffffff !important;
+  border-radius: 3px 3px 0px 0px !important;
+  border: none !important;
+}
+
+.fakeText {
+  composes: placeholder;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+}

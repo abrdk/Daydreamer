@@ -27,12 +27,11 @@ export default function Gantt({ charts: arr, currentChart }) {
   const [name, setName] = useState("");
   const [load, setLoad] = useState(currentChart ? currentChart : []);
   const [chart, setChart] = useState(currentChart ? currentChart : []);
-  const [isMenuOpen, setMenu] = useState(false);
   const [modal, setModal] = useState(false);
   const [view, setView] = useState(ViewMode.Day);
 
   const userCtx = useContext(UsersContext);
-  const projectsCtx = useContext(ProjectsContext);
+  const { isProjectsLoaded } = useContext(ProjectsContext);
 
   const request = (query) => {
     setModal("loader");
@@ -50,7 +49,7 @@ export default function Gantt({ charts: arr, currentChart }) {
         {" "}
         <title> Daydreamer | Put your ideas on a timeline </title>{" "}
       </Head>
-      <When condition={userCtx.isUserLoaded}>
+      <When condition={userCtx.isUserLoaded && isProjectsLoaded}>
         <Modal
           modal={modal}
           setModal={setModal}
@@ -87,15 +86,6 @@ export default function Gantt({ charts: arr, currentChart }) {
                     : userCtx.name}
                 </span>
               </button>
-              {/* <button
-              onClick={request.bind(null, {
-                query: "update",
-                chart,
-                id,
-              })}
-            >
-              Записать
-            </button> */}
             </div>
           </div>
           <div className={styles.gantChartWrap}>

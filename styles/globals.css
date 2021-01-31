@@ -54,7 +54,7 @@ button:hover {
   border-radius: 0px 100px 100px 0px;
   left: 0;
   top: 26px;
-  position: fixed;
+  position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
