@@ -8,6 +8,7 @@ export default function (state, action) {
         token,
         name,
         password,
+        isUserLoaded: true,
       };
     default:
       return state;

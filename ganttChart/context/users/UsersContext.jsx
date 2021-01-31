@@ -12,27 +12,27 @@ export function UsersProvider(props) {
     name: "",
     password: "",
     token: "",
+    isUserLoaded: false,
   });
 
-  const { id, name, password, token } = usersState;
+  const { id, name, password, token, isUserLoaded } = usersState;
 
-  const loadUser = async () => {
-    let token, user;
-    try {
-      token = cookie.parse(document.cookie).ganttToken;
-      user = jwt.verify(token, "jwtSecret");
-    } catch (e) {}
+  const loadUser = () => {
+    if (document.cookie) {
+      const token = cookie.parse(document.cookie).ganttToken;
+      const user = jwt.verify(token, "jwtSecret");
 
-    if (user) {
-      dispatch({
-        type: "SET_USER",
-        payload: {
-          token,
-          id: user.id,
-          name: user.name,
-          password: user.password,
-        },
-      });
+      if (user) {
+        dispatch({
+          type: "SET_USER",
+          payload: {
+            token,
+            id: user.id,
+            name: user.name,
+            password: user.password,
+          },
+        });
+      }
     }
   };
 
@@ -55,6 +55,7 @@ export function UsersProvider(props) {
         password,
         token,
         setUser,
+        isUserLoaded,
       }}
     >
       {props.children}

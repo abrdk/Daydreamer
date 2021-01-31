@@ -12,7 +12,7 @@ export default async (req, res) => {
     const project = new Project({ name, owner: user.id, isCurrent: false });
     const p = await project.save();
 
-    res.status(201).json({ message: "ok" });
+    res.status(201).json({ message: "ok", project: p });
   } catch (e) {
     res.status(500).json({ message: "Ошибка базы данных" });
   }

@@ -115,10 +115,10 @@ export default function Login() {
 export async function getServerSideProps({ req }) {
   let user;
 
-  try {
+  if (req.headers.cookie) {
     const token = cookie.parse(req.headers.cookie).ganttToken;
     user = jwt.verify(token, "jwtSecret");
-  } catch (e) {}
+  }
 
   if (user) {
     return {

@@ -5,19 +5,26 @@ export default function Home() {
   return <></>;
 }
 
-Home.getInitialProps = async ({ res }) => {
+export async function getServerSideProps({ res, req }) {
   let user;
 
-  try {
+  if (req.headers.cookie) {
     const token = cookie.parse(req.headers.cookie).ganttToken;
     user = jwt.verify(token, "jwtSecret");
-  } catch (e) {}
+  }
 
   if (user) {
-    res.writeHead(302, { Location: "gantt/new" });
-    res.end();
-  } else {
-    res.writeHead(302, { Location: "signup" });
-    res.end();
+    return {
+      redirect: {
+        destination: "/gantt/new",
+        permanent: false,
+      },
+    };
   }
-};
+  return {
+    redirect: {
+      destination: "/signup",
+      permanent: false,
+    },
+  };
+}

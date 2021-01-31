@@ -2,7 +2,6 @@ import * as cookie from "cookie";
 const jwt = require("jsonwebtoken");
 
 import Head from "next/head";
-import Link from "next/link";
 import { useState, useContext } from "react";
 import styles from "./Gantt.module.css";
 import { xhr } from "../../helpers/xhr";
@@ -12,6 +11,8 @@ import { ViewSwitcher } from "../../ganttChart/components/viewSwitcher/viewSwitc
 import { ViewMode } from "../../ganttChart/types/public-types";
 
 import { UsersContext } from "../../ganttChart/context/users/UsersContext";
+
+import { When } from "react-if";
 
 // name of project
 let id = "new";
@@ -45,36 +46,39 @@ export default function Gantt({ charts: arr, currentChart }) {
         {" "}
         <title> Daydreamer | Put your ideas on a timeline </title>{" "}
       </Head>
-      <Modal
-        modal={modal}
-        setModal={setModal}
-        request={request}
-        chart={chart}
-        id={id}
-        mapName={name}
-      />
-      <div className={styles.container}>
-        <div
-          id="mainMenuLeft"
-          className="mainMenuLeft"
-          onClick={() => {
-            document.querySelector("#mainMenuLeft").classList.toggle("active");
-            setMenu(!isMenuOpen);
-          }}
-        >
-          {isMenuOpen ? (
-            <img src="/img/arrowLeft.svg" alt="close" />
-          ) : (
-            <img src="/img/arrowRight.svg" alt="close" />
-          )}
-        </div>
-        <div
-          className={isMenuOpen ? styles.mainMenuOpened : styles.mainMenu}
-          style={{
-            transform: isMenuOpen ? "translateX(0)" : "translateX(-100%)",
-          }}
-        >
-          {/* <div className={styles.mainMenuHeader}>
+      <When condition={userCtx.isUserLoaded}>
+        <Modal
+          modal={modal}
+          setModal={setModal}
+          request={request}
+          chart={chart}
+          id={id}
+          mapName={name}
+        />
+        <div className={styles.container}>
+          <div
+            id="mainMenuLeft"
+            className="mainMenuLeft"
+            onClick={() => {
+              document
+                .querySelector("#mainMenuLeft")
+                .classList.toggle("active");
+              setMenu(!isMenuOpen);
+            }}
+          >
+            {isMenuOpen ? (
+              <img src="/img/arrowLeft.svg" alt="close" />
+            ) : (
+              <img src="/img/arrowRight.svg" alt="close" />
+            )}
+          </div>
+          <div
+            className={isMenuOpen ? styles.mainMenuOpened : styles.mainMenu}
+            style={{
+              transform: isMenuOpen ? "translateX(0)" : "translateX(-100%)",
+            }}
+          >
+            {/* <div className={styles.mainMenuHeader}>
             Проекты
             <img
               src="/img/add.png"
@@ -112,7 +116,7 @@ export default function Gantt({ charts: arr, currentChart }) {
               />
             </div>
           ))} */}
-          {/* {userCtx.id ? (
+            {/* {userCtx.id ? (
             <Link href="/logout">
               <a className={styles.logOut}>Выйти из аккаунта</a>
             </Link>
@@ -121,34 +125,34 @@ export default function Gantt({ charts: arr, currentChart }) {
               <a className={styles.logOut}>Регистрация</a>
             </Link>
           )} */}
-        </div>
-        <div className={styles.header}>
-          <ViewSwitcher onViewModeChange={(viewMode) => setView(viewMode)} />
-          <div />
-          {name && (
-            <div>
-              Текущий проект - <b>{name}</b>
-            </div>
-          )}
-          <div className={styles.buttonsContainer}>
-            <button
-              className={styles.share_button}
-              onClick={setModal.bind(null, "share")}
-            >
-              Share Project
-            </button>
-            <button
-              className={styles.account_button}
-              onClick={setModal.bind(null, "account")}
-            >
-              <img src="/img/avatar.svg" alt=" " />{" "}
-              <span>
-                {userCtx.name.length > 10
-                  ? userCtx.name.slice(0, 10) + "..."
-                  : userCtx.name}
-              </span>
-            </button>
-            {/* <button
+          </div>
+          <div className={styles.header}>
+            <ViewSwitcher onViewModeChange={(viewMode) => setView(viewMode)} />
+            <div />
+            {name && (
+              <div>
+                Текущий проект - <b>{name}</b>
+              </div>
+            )}
+            <div className={styles.buttonsContainer}>
+              <button
+                className={styles.share_button}
+                onClick={setModal.bind(null, "share")}
+              >
+                Share Project
+              </button>
+              <button
+                className={styles.account_button}
+                onClick={setModal.bind(null, "account")}
+              >
+                <img src="/img/avatar.svg" alt=" " />{" "}
+                <span>
+                  {userCtx.name.length > 10
+                    ? userCtx.name.slice(0, 10) + "..."
+                    : userCtx.name}
+                </span>
+              </button>
+              {/* <button
               onClick={request.bind(null, {
                 query: "update",
                 chart,
@@ -157,19 +161,20 @@ export default function Gantt({ charts: arr, currentChart }) {
             >
               Записать
             </button> */}
+            </div>
+          </div>
+          <div className={styles.gantChartWrap}>
+            <div style={{ minWidth: "700px" }}>
+              <GantChart
+                chart={chart}
+                setChart={setChart}
+                load={load}
+                view={view}
+              />
+            </div>
           </div>
         </div>
-        <div className={styles.gantChartWrap}>
-          <div style={{ minWidth: "700px" }}>
-            <GantChart
-              chart={chart}
-              setChart={setChart}
-              load={load}
-              view={view}
-            />
-          </div>
-        </div>
-      </div>
+      </When>
     </>
   );
 }

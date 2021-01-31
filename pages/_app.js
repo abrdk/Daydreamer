@@ -6,7 +6,7 @@ import { UsersProvider } from "../ganttChart/context/users/UsersContext";
 export default function MyApp({ Component, pageProps }) {
   return (
     <UsersProvider>
-      <Component {...pageProps} />;
+      <Component {...pageProps} />
     </UsersProvider>
   );
 }
