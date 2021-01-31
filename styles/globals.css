@@ -45,3 +45,25 @@ button:hover {
 * {
   box-sizing: border-box;
 }
+
+.mainMenuLeft {
+  z-index: 100;
+  width: 35px;
+  height: 40px;
+  background: #ecf5ff;
+  border-radius: 0px 100px 100px 0px;
+  left: 0;
+  top: 26px;
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.mainMenuLeft.active {
+  border-radius: 100px;
+  width: 40px;
+  margin-left: 17px;
+}

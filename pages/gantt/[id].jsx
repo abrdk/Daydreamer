@@ -23,7 +23,7 @@ export default function Gantt({ charts: arr, currentChart }) {
   const [name, setName] = useState("");
   const [load, setLoad] = useState(currentChart ? currentChart : []);
   const [chart, setChart] = useState(currentChart ? currentChart : []);
-  const [menu, setMenu] = useState(false);
+  const [isMenuOpen, setMenu] = useState(false);
   const [modal, setModal] = useState(false);
   const [view, setView] = useState(ViewMode.Day);
 
@@ -54,26 +54,27 @@ export default function Gantt({ charts: arr, currentChart }) {
         mapName={name}
       />
       <div className={styles.container}>
-        <div className={styles.mainMenuLeft}>
-          {menu ? (
-            <img
-              src="/img/closeMenu.png"
-              alt="close"
-              onClick={() => setMenu(false)}
-            />
+        <div
+          id="mainMenuLeft"
+          className="mainMenuLeft"
+          onClick={() => {
+            document.querySelector("#mainMenuLeft").classList.toggle("active");
+            setMenu(!isMenuOpen);
+          }}
+        >
+          {isMenuOpen ? (
+            <img src="/img/arrowLeft.svg" alt="close" />
           ) : (
-            <img
-              src="/img/openMenu.png"
-              alt="close"
-              onClick={() => setMenu(true)}
-            />
+            <img src="/img/arrowRight.svg" alt="close" />
           )}
         </div>
         <div
-          className={styles.mainMenu}
-          style={{ transform: menu ? "translateX(0)" : "translateX(-100%)" }}
+          className={isMenuOpen ? styles.mainMenuOpened : styles.mainMenu}
+          style={{
+            transform: isMenuOpen ? "translateX(0)" : "translateX(-100%)",
+          }}
         >
-          <div className={styles.mainMenuHeader}>
+          {/* <div className={styles.mainMenuHeader}>
             Проекты
             <img
               src="/img/add.png"
@@ -110,8 +111,8 @@ export default function Gantt({ charts: arr, currentChart }) {
                 }}
               />
             </div>
-          ))}
-          {userCtx.id ? (
+          ))} */}
+          {/* {userCtx.id ? (
             <Link href="/logout">
               <a className={styles.logOut}>Выйти из аккаунта</a>
             </Link>
@@ -119,7 +120,7 @@ export default function Gantt({ charts: arr, currentChart }) {
             <Link href="/signup">
               <a className={styles.logOut}>Регистрация</a>
             </Link>
-          )}
+          )} */}
         </div>
         <div className={styles.header}>
           <ViewSwitcher onViewModeChange={(viewMode) => setView(viewMode)} />

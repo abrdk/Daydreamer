@@ -1,33 +1,17 @@
-.mainMenuLeft {
-  z-index: 100;
-  width: 60px;
-  text-align: center;
-  background-color: #303749;
-  height: 100vh;
-  left: 0;
-  top: 0;
-  position: fixed;
-}
-
-.mainMenuLeft img {
-  margin-top: 15px;
-  cursor: pointer;
-  opacity: 0.7;
-  transition: 0.3s;
-}
-.mainMenuLeft img:hover {
-  opacity: 1;
-}
-
 .mainMenu {
   z-index: 90;
   width: 320px;
   height: 100vh;
-  background: #2c3346;
+  background: #ffffff;
   position: fixed;
   top: 0;
-  left: 60px;
+  left: 0px;
   transition: 0.3s;
+}
+
+.mainMenuOpened {
+  composes: mainMenu;
+  box-shadow: 50px 0px 50px rgba(9, 40, 72, 0.15);
 }
 
 .mainMenuHeader {
@@ -106,13 +90,15 @@
   width: 100%;
   padding: 20px 35px 23px 56px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
 }
 
 .buttonsContainer {
   display: flex;
   flex-direction: row;
+  position: relative;
+  align-self: flex-start;
 }
 
 .header button {
