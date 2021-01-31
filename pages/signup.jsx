@@ -10,6 +10,7 @@ import Router from "next/router";
 import FloatingLabel from "floating-label-react";
 
 import { UsersContext } from "../ganttChart/context/users/UsersContext";
+import { ProjectsContext } from "../ganttChart/context/projects/ProjectsContext";
 
 export default function Signup() {
   const [nameWarn, setNameWarn] = useState("");
@@ -20,6 +21,7 @@ export default function Signup() {
   const [isPasswordVisible, setPasswordVisibility] = useState(false);
 
   const { setUser } = useContext(UsersContext);
+  const { createProject } = useContext(ProjectsContext);
 
   const query = () => {
     xhr(
@@ -32,6 +34,7 @@ export default function Signup() {
     ).then((res) => {
       if (res.message === "ok") {
         setUser(res.user);
+        createProject();
         Router.push("/gantt/new");
       } else {
         if (res.errorType === "name") {

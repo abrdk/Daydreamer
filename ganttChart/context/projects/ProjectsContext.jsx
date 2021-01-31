@@ -10,49 +10,54 @@ export const ProjectsContext = createContext();
 export function ProjectsProvider(props) {
   const [projectsState, dispatch] = useReducer(ProjectsReducer, {
     projects: [],
-    isProjectsLoaded,
+    isProjectsLoaded: false,
   });
 
   const { projects, isProjectsLoaded } = projectsState;
 
   const loadProjects = async () => {
-    if (document.cookie) {
-      try {
-        const token = cookie.parse(document.cookie).ganttToken;
-        res = await xhr(
-          "/projects/show",
-          {
-            token,
-          },
-          "POST"
-        );
+    try {
+      const token = cookie.parse(document.cookie).ganttToken;
+      const res = await xhr(
+        "/projects/show",
+        {
+          token,
+        },
+        "POST"
+      );
 
-        dispatch({
-          type: "SET_PROJECTS",
-          payload: res.projects,
-        });
-      } catch (e) {}
-    }
+      dispatch({
+        type: "SET_PROJECTS",
+        payload: res.projects,
+      });
+    } catch (e) {}
   };
 
   const createProject = async () => {
     if (document.cookie) {
+      let isCurrent;
+      if (projects.length) {
+        isCurrent = false;
+      } else {
+        isCurrent = true;
+      }
       const fakeId = uuidv4();
       dispatch({
         type: "ADD_PROJECT",
         payload: {
           id: fakeId,
           name: `Project name #${projects.length + 1}`,
-          isCurrent: false,
+          isCurrent,
         },
       });
       try {
         const token = cookie.parse(document.cookie).ganttToken;
-        res = await xhr(
+        const res = await xhr(
           "/projects/create",
           {
             token,
             name: `Project name #${projects.length}`,
+            isCurrent,
           },
           "POST"
         );
@@ -72,7 +77,7 @@ export function ProjectsProvider(props) {
       });
       try {
         const token = cookie.parse(document.cookie).ganttToken;
-        res = await xhr(
+        const res = await xhr(
           "/projects/update",
           {
             token,
@@ -94,7 +99,7 @@ export function ProjectsProvider(props) {
       });
       try {
         const token = cookie.parse(document.cookie).ganttToken;
-        res = await xhr(
+        const res = await xhr(
           "/projects/delete",
           {
             token,
