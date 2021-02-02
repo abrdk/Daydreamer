@@ -41,11 +41,11 @@ export default async (req, res) => {
       "Set-Cookie",
       `ganttToken=${token}; max-age=36000000; Path=/`
     );
-    res.json({
+    return res.json({
       message: "ok",
       user: { token, id: candidate.id, name, password },
     });
   } catch (e) {
-    res.status(500).json({ message: "Ошибка базы данных" });
+    return res.status(500).json({ message: "Ошибка базы данных" });
   }
 };

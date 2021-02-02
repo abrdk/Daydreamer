@@ -17,8 +17,8 @@ export default async (req, res) => {
     }
     const p = await project.save();
 
-    res.status(201).json({ message: "ok", project: p });
+    return res.status(201).json({ message: "ok", project: p });
   } catch (e) {
-    res.status(500).json({ message: "Ошибка базы данных" });
+    return res.status(500).json({ message: "Ошибка базы данных" });
   }
 };

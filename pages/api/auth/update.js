@@ -9,72 +9,75 @@ export default async (req, res) => {
 
   try {
     user = jwt.verify(token, "jwtSecret");
-  } catch (e) {}
-  if (user) {
-    if (!name) {
-      return res
-        .status(400)
-        .json({ message: "User name should not be empty", errorType: "name" });
-    }
-    if (name.length > 35) {
-      return res.status(400).json({
-        message: "User name should be less than 35 charactes",
-        errorType: "name",
-      });
-    }
 
-    if (!password) {
-      return res.status(400).json({
-        message: "Password should not be empty",
-        errorType: "password",
-      });
-    }
-    if (password.length > 35) {
-      return res.status(400).json({
-        message: "Password length should be less than 35 characters",
-        errorType: "password",
-      });
-    }
+    if (user) {
+      if (!name) {
+        return res.status(400).json({
+          message: "User name should not be empty",
+          errorType: "name",
+        });
+      }
+      if (name.length > 35) {
+        return res.status(400).json({
+          message: "User name should be less than 35 charactes",
+          errorType: "name",
+        });
+      }
 
-    const User = getDB("User");
-    const candidate = await User.findOne({ name });
+      if (!password) {
+        return res.status(400).json({
+          message: "Password should not be empty",
+          errorType: "password",
+        });
+      }
+      if (password.length > 35) {
+        return res.status(400).json({
+          message: "Password length should be less than 35 characters",
+          errorType: "password",
+        });
+      }
 
-    if (candidate && candidate._id != user.id) {
-      return res
-        .status(400)
-        .json({ message: "This name already exists", errorType: "name" });
-    }
+      const User = getDB("User");
+      const candidate = await User.findOne({ name });
 
-    const hashedPassword = await bcrypt.hash(password, 12);
-
-    User.findOneAndUpdate(
-      { name: user.name },
-      { $set: { name, password: hashedPassword } },
-      {
-        returnOriginal: false,
-      },
-      function (err, result) {
-        if (err) return res.status(500).json({ message: "Ошибка базы данных" });
-
-        const token = jwt.sign(
-          { id: result._id, name, password },
-          "jwtSecret",
-          {
-            expiresIn: "24h",
-          }
-        );
-        res.setHeader(
-          "Set-Cookie",
-          `ganttToken=${token}; max-age=36000000; Path=/`
-        );
-
+      if (candidate && candidate._id != user.id) {
         return res
-          .status(201)
-          .json({
+          .status(400)
+          .json({ message: "This name already exists", errorType: "name" });
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 12);
+
+      User.findOneAndUpdate(
+        { name: user.name },
+        { $set: { name, password: hashedPassword } },
+        {
+          returnOriginal: false,
+        },
+        function (err, result) {
+          if (err)
+            return res.status(500).json({ message: "Ошибка базы данных" });
+
+          const token = jwt.sign(
+            { id: result._id, name, password },
+            "jwtSecret",
+            {
+              expiresIn: "24h",
+            }
+          );
+          res.setHeader(
+            "Set-Cookie",
+            `ganttToken=${token}; max-age=36000000; Path=/`
+          );
+
+          return res.status(201).json({
             message: "ok",
             user: { token, id: result._id, name, password },
           });
-      }
-    );
+        }
+      );
+    }
+  } catch (e) {
+    return res.status(500).json({ message: "Ошибка базы данных" });
   }
 };

@@ -9,14 +9,16 @@ export default async (req, res) => {
 
   try {
     user = jwt.verify(token, "jwtSecret");
-  } catch (e) {}
 
-  if (user) {
-    const User = getDB("User");
-    User.findOneAndDelete({ name: user.name }, (err, doc) => {
-      if (err) return res.status(500).json({ message: "Ошибка базы данных" });
-      res.setHeader("Set-Cookie", `ganttToken=''; max-age=0; Path=/`);
-      res.json({ message: "ok" });
-    });
+    if (user) {
+      const User = getDB("User");
+      User.findOneAndDelete({ name: user.name }, (err, doc) => {
+        if (err) return res.status(500).json({ message: "Ошибка базы данных" });
+        res.setHeader("Set-Cookie", `ganttToken=''; max-age=0; Path=/`);
+        return res.json({ message: "ok" });
+      });
+    }
+  } catch (e) {
+    return res.status(500).json({ message: "Ошибка базы данных" });
   }
 };

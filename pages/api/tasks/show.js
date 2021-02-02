@@ -7,14 +7,14 @@ export default async (req, res) => {
 
   try {
     const user = jwt.verify(token, "jwtSecret");
-    const Project = getDB("Project");
+    const Task = getDB("Task");
 
-    Project.find({ owner: user.id }, (err, docs) => {
+    Task.find({ owner: user.id }, (err, docs) => {
       if (err) return res.status(500).json({ message: "Ошибка базы данных" });
 
       return res.status(201).json({
         message: "ok",
-        projects: docs,
+        tasks: docs,
       });
     });
   } catch (e) {

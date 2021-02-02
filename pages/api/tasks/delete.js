@@ -3,19 +3,16 @@ const getDB = require("../../../helpers/getDb.js");
 
 export default async (req, res) => {
   res.setHeader("Content-Type", "application/json");
-  const { token } = req.body;
+  const { token, id } = req.body;
 
   try {
     const user = jwt.verify(token, "jwtSecret");
-    const Project = getDB("Project");
+    const Task = getDB("Task");
 
-    Project.find({ owner: user.id }, (err, docs) => {
+    Task.findOneAndDelete({ _id: id, owner: user.id }, (err, doc) => {
       if (err) return res.status(500).json({ message: "Ошибка базы данных" });
 
-      return res.status(201).json({
-        message: "ok",
-        projects: docs,
-      });
+      return res.json({ message: "ok" });
     });
   } catch (e) {
     return res.status(500).json({ message: "Ошибка базы данных" });

@@ -17,11 +17,11 @@ export default async (req, res) => {
           if (err)
             return res.status(500).json({ message: "Ошибка базы данных" });
 
-          res.json({ message: "ok" });
+          return res.json({ message: "ok" });
         });
       }
     });
   } catch (e) {
-    res.status(500).json({ message: "Ошибка базы данных" });
+    return res.status(500).json({ message: "Ошибка базы данных" });
   }
 };
