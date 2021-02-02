@@ -112,12 +112,18 @@ export default function Login() {
   );
 }
 
-export async function getServerSideProps({ req }) {
+export async function getServerSideProps({ req, res }) {
   let user;
 
   if (req.headers.cookie) {
     const token = cookie.parse(req.headers.cookie).ganttToken;
-    user = jwt.verify(token, "jwtSecret");
+    try {
+      user = jwt.verify(token, "jwtSecret");
+    } catch (e) {
+      if (e.name === "TokenExpiredError") {
+        res.setHeader("Set-Cookie", `ganttToken=''; max-age=0; Path=/`);
+      }
+    }
   }
 
   if (user) {

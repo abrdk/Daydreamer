@@ -104,13 +104,19 @@ export default function Gantt({ charts: arr, currentChart }) {
   );
 }
 
-export async function getServerSideProps(ctx) {
-  let user, charts, currentChart, token;
+export async function getServerSideProps({ req, res }) {
+  let user, charts, currentChart;
 
-  try {
-    token = cookie.parse(ctx.req.headers.cookie).ganttToken;
-    user = jwt.verify(token, "jwtSecret");
-  } catch (e) {}
+  if (req.headers.cookie) {
+    const token = cookie.parse(req.headers.cookie).ganttToken;
+    try {
+      user = jwt.verify(token, "jwtSecret");
+    } catch (e) {
+      if (e.name === "TokenExpiredError") {
+        res.setHeader("Set-Cookie", `ganttToken=''; max-age=0; Path=/`);
+      }
+    }
+  }
 
   if (!user) {
     return {

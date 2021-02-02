@@ -19,8 +19,11 @@ export function UsersProvider(props) {
 
   const loadUser = () => {
     if (document.cookie) {
+      let user;
       const token = cookie.parse(document.cookie).ganttToken;
-      const user = jwt.verify(token, "jwtSecret");
+      try {
+        user = jwt.verify(token, "jwtSecret");
+      } catch (e) {}
 
       if (user) {
         dispatch({

@@ -9,7 +9,12 @@ export default async (req, res) => {
     const user = jwt.verify(token, "jwtSecret");
     const Project = getDB("Project");
 
-    const project = new Project({ name, owner: user.id, isCurrent });
+    let project;
+    if (name) {
+      project = new Project({ name, owner: user.id, isCurrent });
+    } else {
+      project = new Project({ owner: user.id, isCurrent });
+    }
     const p = await project.save();
 
     res.status(201).json({ message: "ok", project: p });

@@ -42,6 +42,14 @@ button:hover {
   padding-left: 5px;
 }
 
+input:active,
+input:focus {
+  outline: none !important;
+}
+input::-moz-focus-inner {
+  border: 0 !important;
+}
+
 * {
   box-sizing: border-box;
 }

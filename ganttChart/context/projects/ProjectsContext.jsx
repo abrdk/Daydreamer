@@ -16,24 +16,31 @@ export function ProjectsProvider(props) {
   const { projects, isProjectsLoaded } = projectsState;
 
   const loadProjects = async () => {
-    try {
-      const token = cookie.parse(document.cookie).ganttToken;
-      const res = await xhr(
-        "/projects/show",
-        {
-          token,
-        },
-        "POST"
-      );
+    if (document.cookie) {
+      try {
+        const token = cookie.parse(document.cookie).ganttToken;
+        const res = await xhr(
+          "/projects/show",
+          {
+            token,
+          },
+          "POST"
+        );
 
+        dispatch({
+          type: "SET_PROJECTS",
+          payload: res.projects,
+        });
+      } catch (e) {}
+    } else {
       dispatch({
         type: "SET_PROJECTS",
-        payload: res.projects,
+        payload: [],
       });
-    } catch (e) {}
+    }
   };
 
-  const createProject = async () => {
+  const createProject = async (name) => {
     if (document.cookie) {
       let isCurrent;
       if (projects.length) {
@@ -46,24 +53,37 @@ export function ProjectsProvider(props) {
         type: "ADD_PROJECT",
         payload: {
           _id: fakeId,
-          name: `Project name #${projects.length + 1}`,
+          name,
           isCurrent,
         },
       });
       try {
         const token = cookie.parse(document.cookie).ganttToken;
-        const res = await xhr(
-          "/projects/create",
-          {
-            token,
-            name: `Project name #${projects.length}`,
-            isCurrent,
-          },
-          "POST"
-        );
+
+        let res;
+        if (name === "") {
+          res = await xhr(
+            "/projects/create",
+            {
+              token,
+              isCurrent,
+            },
+            "POST"
+          );
+        } else {
+          res = await xhr(
+            "/projects/create",
+            {
+              token,
+              name,
+              isCurrent,
+            },
+            "POST"
+          );
+        }
         dispatch({
           type: "UPDATE_PROJECT_ID",
-          payload: { _id: fakeId, realId: res._id },
+          payload: { _id: fakeId, realId: res.project._id },
         });
       } catch (e) {}
     }

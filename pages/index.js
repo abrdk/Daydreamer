@@ -10,7 +10,13 @@ export async function getServerSideProps({ res, req }) {
 
   if (req.headers.cookie) {
     const token = cookie.parse(req.headers.cookie).ganttToken;
-    user = jwt.verify(token, "jwtSecret");
+    try {
+      user = jwt.verify(token, "jwtSecret");
+    } catch (e) {
+      if (e.name === "TokenExpiredError") {
+        res.setHeader("Set-Cookie", `ganttToken=''; max-age=0; Path=/`);
+      }
+    }
   }
 
   if (user) {

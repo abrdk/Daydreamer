@@ -4,13 +4,14 @@ import { If, Then, Else, When } from "react-if";
 
 import styles from "../../../styles/dropdown.module.css";
 
-import { UsersContext } from "../../context/users/UsersContext";
 import { ProjectsContext } from "../../context/projects/ProjectsContext";
 
 export default function Menu({ isDropdownOpen, setDropdown }) {
-  const { projects, updateProject, deleteProject } = useContext(
+  const { projects, createProject, updateProject, deleteProject } = useContext(
     ProjectsContext
   );
+
+  const [isNameUpdating, setNameUpdating] = useState(projects.map(() => false));
 
   const [selectedProject, setSelectedProject] = useState(
     projects.find((project) => project.isCurrent)
@@ -21,74 +22,56 @@ export default function Menu({ isDropdownOpen, setDropdown }) {
   const getMinWidth = (id) => {
     const el = document.querySelector(id);
     if (el) {
-      return Number(document.querySelector(id).offsetWidth) + 6 + "px";
+      const width = Number(document.querySelector(id).offsetWidth);
+      if (width > 300) {
+        return "300px";
+      }
+      return width + 6 + "px";
     }
     return "0px";
   };
 
-  useEffect(() => {
-    projects.forEach((project, i) => {
-      let input = document.querySelector(`#input-${i}`);
-      if (input) {
-        input.style.width = getMinWidth(`#fake${i}`);
-      }
-    });
-  }, [projects, isDropdownOpen]);
-
-  const options = projects.map((project, i) => (
-    <div
-      className={project.isCurrent ? styles.optionSelected : styles.option}
-      onClick={(e) => {
-        selectHandler(e, project, i);
-      }}
-      key={i}
-    >
-      <div className={styles.pencilWrapper}>
-        <span className={styles.fakeText} id={`fake${i}`}>
-          {project.name}
-        </span>
-        <input
-          value={project.name}
-          className={styles.input}
-          id={`input-${i}`}
-          onFocus={(e) => {
-            e.target.blur();
-          }}
-        />
-        <img
-          src="/img/pencil.svg"
-          alt=" "
-          className={styles.pencil}
-          // onClick={() => {
-          //   console.log(getMinWidth(`#fake${i}`));
-          // }}
-        />
-      </div>
-      <When condition={projects.length > 1}>
-        <img
-          src="/img/trash.svg"
-          alt=" "
-          id={`trash${i}`}
-          className={styles.icon}
-          onClick={() => deleteHandler(project, i)}
-        />
-      </When>
-    </div>
-  ));
+  const startUpdateHandler = (i) => {
+    if (!isNameUpdating[i]) {
+      setNameUpdating(
+        isNameUpdating.map((bool, index) => {
+          if (index == i) {
+            return true;
+          }
+          return false;
+        })
+      );
+      setTimeout(() => document.querySelector(`#input-${i}`).focus(), 100);
+    } else {
+      setNameUpdating(
+        isNameUpdating.map((bool, index) => {
+          if (index == i) {
+            return false;
+          }
+          return bool;
+        })
+      );
+    }
+  };
 
   const selectHandler = (e, project, i) => {
-    if (e.target.id != `trash${i}` && !project.isCurrent) {
-      updateProject({
+    if (
+      e.target.id != `trash${i}` &&
+      e.target.id != `pencil-${i}` &&
+      !project.isCurrent
+    ) {
+      const newProject = {
         _id: project._id,
         name: project.name,
         isCurrent: true,
-      });
+      };
+      updateProject(newProject);
       updateProject({
         _id: selectedProject._id,
         name: selectedProject.name,
         isCurrent: false,
       });
-      setSelectedProject(project);
+      setSelectedProject(newProject);
     }
   };
 
@@ -113,13 +96,116 @@ export default function Menu({ isDropdownOpen, setDropdown }) {
     deleteProject(project._id);
   };
 
+  const focusHandler = (e, i) => {
+    if (!isNameUpdating[i]) {
+      e.target.blur();
+    }
+  };
+
+  const blurHandler = (e, i, project) => {
+    if (e.target.value === "") {
+      const newProject = {
+        _id: project._id,
+        name: `Project name #${i + 1}`,
+        isCurrent: project.isCurrent,
+      };
+      updateProject(newProject);
+      if (project.isCurrent) {
+        setSelectedProject(newProject);
+      }
+    }
+  };
+
+  const updateHandler = (e, project) => {
+    const newProject = {
+      _id: project._id,
+      name: e.target.value,
+      isCurrent: project.isCurrent,
+    };
+    updateProject(newProject);
+    if (project.isCurrent) {
+      setSelectedProject(newProject);
+    }
+  };
+
+  useEffect(() => {
+    projects.forEach((project, i) => {
+      let input = document.querySelector(`#input-${i}`);
+      if (input) {
+        input.style.width = getMinWidth(`#fake${i}`);
+      }
+    });
+    if (projects.length > isNameUpdating.length) {
+      setNameUpdating([...isNameUpdating, true]);
+    } else if (projects.length < isNameUpdating.length) {
+      setNameUpdating(isNameUpdating.slice(0, projects.length));
+    }
+  }, [projects, isDropdownOpen]);
+
+  const options = projects.map((project, i) => (
+    <div
+      className={project.isCurrent ? styles.optionSelected : styles.option}
+      onClick={(e) => selectHandler(e, project, i)}
+      key={i}
+    >
+      <div className={styles.pencilWrapper}>
+        <div className={styles.fakeTextWrapper}>
+          <span
+            className={project.name ? styles.fakeText : styles.fakeTextVisible}
+            id={`fake${i}`}
+          >
+            {project.name ? project.name : `Project name #${i + 1}`}
+          </span>
+        </div>
+        <input
+          value={project.name}
+          className={styles.input}
+          id={`input-${i}`}
+          onFocus={(e) => focusHandler(e, i)}
+          onChange={(e) => updateHandler(e, project)}
+          onBlur={(e) => blurHandler(e, i, project)}
+        />
+        <div
+          className={styles.iconContainer}
+          onClick={(e) => {
+            startUpdateHandler(i);
+          }}
+        >
+          <img
+            src="/img/pencil.svg"
+            alt=" "
+            id={`pencil-${i}`}
+            className={styles.pencil}
+          />
+        </div>
+      </div>
+      <When condition={projects.length > 1}>
+        <div
+          className={styles.iconContainer}
+          onClick={() => deleteHandler(project, i)}
+        >
+          <img
+            src="/img/trash.svg"
+            alt=" "
+            id={`trash${i}`}
+            className={styles.icon}
+          />
+        </div>
+      </When>
+    </div>
+  ));
+
   return (
     <>
       <div
         className={isDropdownOpen ? styles.rootOpened : styles.root}
         onClick={() => setDropdown(!isDropdownOpen)}
       >
-        <span>{selectedProject.name}</span>
+        <span id="selectedProjectName">
+          {selectedProject.name.length > 18
+            ? selectedProject.name.slice(0, 18) + "..."
+            : selectedProject.name}
+        </span>
         <If condition={isDropdownOpen}>
           <Then>
             <img src="/img/arrowUp.svg" alt=" " />
@@ -137,7 +223,15 @@ export default function Menu({ isDropdownOpen, setDropdown }) {
         <div className={styles.triangle}></div>
         <div className={styles.wrapOptions}>
           {options}
-          <div></div>
+          <div
+            className={styles.newProject}
+            onClick={() => {
+              createProject("");
+              startUpdateHandler(projects.length);
+            }}
+          >
+            + New Project
+          </div>
         </div>
       </When>
     </>

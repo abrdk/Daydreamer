@@ -21,7 +21,7 @@ export default function Signup() {
   const [isPasswordVisible, setPasswordVisibility] = useState(false);
 
   const { setUser } = useContext(UsersContext);
-  const { createProject } = useContext(ProjectsContext);
+  const { projects, createProject } = useContext(ProjectsContext);
 
   const query = () => {
     xhr(
@@ -34,7 +34,7 @@ export default function Signup() {
     ).then((res) => {
       if (res.message === "ok") {
         setUser(res.user);
-        createProject();
+        createProject(`Project name #${projects.length + 1}`);
         Router.push("/gantt/new");
       } else {
         if (res.errorType === "name") {
@@ -116,12 +116,18 @@ export default function Signup() {
   );
 }
 
-export async function getServerSideProps({ req }) {
+export async function getServerSideProps({ req, res }) {
   let user;
 
   if (req.headers.cookie) {
     const token = cookie.parse(req.headers.cookie).ganttToken;
-    user = jwt.verify(token, "jwtSecret");
+    try {
+      user = jwt.verify(token, "jwtSecret");
+    } catch (e) {
+      if (e.name === "TokenExpiredError") {
+        res.setHeader("Set-Cookie", `ganttToken=''; max-age=0; Path=/`);
+      }
+    }
   }
 
   if (user) {

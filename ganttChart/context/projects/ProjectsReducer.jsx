@@ -10,7 +10,7 @@ export default function (state, action) {
     case "ADD_PROJECT":
       return {
         ...state,
-        projects: state.projects.push(action.payload),
+        projects: [...state.projects, action.payload],
       };
     case "UPDATE_PROJECT_ID":
       return {
