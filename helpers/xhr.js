@@ -5,7 +5,7 @@ export const xhr = (url, query, method) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: query ? JSON.stringify(query) : null,
+      body: Object.keys(query).length !== 0 ? JSON.stringify(query) : undefined,
     });
     resolve(await res.json());
   });

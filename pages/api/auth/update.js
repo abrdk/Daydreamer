@@ -1,14 +1,15 @@
+import * as cookie from "cookie";
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const getDB = require("../../../helpers/getDb.js");
 
 export default async (req, res) => {
   res.setHeader("Content-Type", "application/json");
-  const { token, name, password } = req.body;
-  let user;
+  const { name, password } = req.body;
 
   try {
-    user = jwt.verify(token, "jwtSecret");
+    const token = cookie.parse(req.headers.cookie).ganttToken;
+    const user = jwt.verify(token, "jwtSecret");
 
     if (user) {
       if (!name) {

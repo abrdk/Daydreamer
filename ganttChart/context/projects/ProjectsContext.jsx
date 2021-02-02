@@ -16,32 +16,25 @@ export function ProjectsProvider(props) {
   const { projects, isProjectsLoaded } = projectsState;
 
   const loadProjects = async () => {
-    if (document.cookie) {
-      try {
-        const token = cookie.parse(document.cookie).ganttToken;
-        const res = await xhr(
-          "/projects/show",
-          {
-            token,
-          },
-          "POST"
-        );
+    try {
+      if (cookie.parse(document.cookie).ganttToken) {
+        const res = await xhr("/projects/show", {}, "GET");
 
         dispatch({
           type: "SET_PROJECTS",
           payload: res.projects,
         });
-      } catch (e) {}
-    } else {
-      dispatch({
-        type: "SET_PROJECTS",
-        payload: [],
-      });
-    }
+      } else {
+        dispatch({
+          type: "SET_PROJECTS",
+          payload: [],
+        });
+      }
+    } catch (e) {}
   };
 
   const createProject = async (name) => {
-    if (document.cookie) {
+    try {
       let isCurrent;
       if (projects.length) {
         isCurrent = false;
@@ -57,78 +50,66 @@ export function ProjectsProvider(props) {
           isCurrent,
         },
       });
-      try {
-        const token = cookie.parse(document.cookie).ganttToken;
 
-        let res;
-        if (name === "") {
-          res = await xhr(
-            "/projects/create",
-            {
-              token,
-              isCurrent,
-            },
-            "POST"
-          );
-        } else {
-          res = await xhr(
-            "/projects/create",
-            {
-              token,
-              name,
-              isCurrent,
-            },
-            "POST"
-          );
-        }
-        dispatch({
-          type: "UPDATE_PROJECT_ID",
-          payload: { _id: fakeId, realId: res.project._id },
-        });
-      } catch (e) {}
-    }
+      const res = await xhr(
+        "/projects/create",
+        {
+          name,
+          isCurrent,
+        },
+        "POST"
+      );
+      dispatch({
+        type: "UPDATE_PROJECT_ID",
+        payload: { _id: fakeId, realId: res.project._id },
+      });
+    } catch (e) {}
   };
 
   const updateProject = async ({ _id, name, isCurrent }) => {
-    if (document.cookie) {
+    try {
       dispatch({
         type: "UPDATE_PROJECT",
         payload: { _id, name, isCurrent },
       });
-      try {
-        const token = cookie.parse(document.cookie).ganttToken;
-        const res = await xhr(
-          "/projects/update",
-          {
-            token,
-            id: _id,
-            name,
-            isCurrent,
-          },
-          "PUT"
-        );
-      } catch (e) {}
-    }
+
+      const res = await xhr(
+        "/projects/update",
+        {
+          id: _id,
+          name,
+          isCurrent,
+        },
+        "PUT"
+      );
+    } catch (e) {}
   };
 
   const deleteProject = async (_id) => {
-    if (document.cookie) {
+    try {
       dispatch({
         type: "DELETE_PROJECT",
         payload: { _id },
       });
-      try {
-        const token = cookie.parse(document.cookie).ganttToken;
-        const res = await xhr(
-          "/projects/delete",
-          {
-            token,
-            id: _id,
-          },
-          "DELETE"
-        );
-      } catch (e) {}
-    }
+
+      const token = cookie.parse(document.cookie).ganttToken;
+      const res = await xhr(
+        "/projects/delete",
+        {
+          id: _id,
+        },
+        "DELETE"
+      );
+
+      return true;
+    } catch (e) {}
+  };
+
+  const deleteAllProjects = async () => {
+    try {
+      const res = await xhr("/projects/delete_all", {}, "DELETE");
+      return true;
+    } catch (e) {}
   };
 
   useEffect(() => {
@@ -143,6 +124,7 @@ export function ProjectsProvider(props) {
         createProject,
         updateProject,
         deleteProject,
+        deleteAllProjects,
       }}
     >
       {props.children}

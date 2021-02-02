@@ -1,11 +1,13 @@
+import * as cookie from "cookie";
 const jwt = require("jsonwebtoken");
 const getDB = require("../../../helpers/getDb.js");
 
 export default async (req, res) => {
   res.setHeader("Content-Type", "application/json");
-  const { token, id, name, isCurrent } = req.body;
+  const { id, name, isCurrent } = req.body;
 
   try {
+    const token = cookie.parse(req.headers.cookie).ganttToken;
     const user = jwt.verify(token, "jwtSecret");
     const Project = getDB("Project");
 

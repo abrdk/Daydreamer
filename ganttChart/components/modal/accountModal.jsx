@@ -37,7 +37,6 @@ export default function AccountModal({ setModal }) {
       xhr(
         "/auth/update",
         {
-          token: userCtx.token,
           name,
           password,
         },

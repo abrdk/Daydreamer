@@ -1,3 +1,4 @@
+import * as cookie from "cookie";
 const jwt = require("jsonwebtoken");
 const getDB = require("../../../helpers/getDb.js");
 
@@ -10,7 +11,6 @@ export default async (req, res) => {
     dateStart,
     dateEnd,
     color,
-    token,
     root,
     order,
   } = req.body;
@@ -31,12 +31,13 @@ export default async (req, res) => {
       });
     }
 
+    const token = cookie.parse(req.headers.cookie).ganttToken;
     const user = jwt.verify(token, "jwtSecret");
     const Task = getDB("Task");
 
     Task.findOneAndUpdate(
       { _id: id, owner: user.id },
-      { $set: { name, description, dateStart, color, root, order } },
+      { $set: { name, description, dateStart, dateEnd, color, root, order } },
       {
         returnOriginal: false,
       },
