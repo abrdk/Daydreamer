@@ -161,7 +161,7 @@ export function TasksProvider(props) {
     const user = jwt.verify(token, "jwtSecret");
 
     createTask({
-      name: "Task name #3",
+      name: "Task name #1",
       description: "",
       dateStart: currentDate,
       dateEnd: afterWeek,

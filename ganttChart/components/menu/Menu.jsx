@@ -1,7 +1,8 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import styles from "../../../pages/gantt/Gantt.module.css";
 
 import DropDown from "./DropDown";
+import TasksRoot from "../tasks/TasksRoot";
 
 export default function Menu({ modal }) {
   const [isMenuOpen, setMenu] = useState(false);
@@ -48,6 +49,9 @@ export default function Menu({ modal }) {
         <div className={styles.tasksHeaderWrapper}>
           <div className={styles.tasksHeader}>TASK NAME</div>
         </div>
+        <div className={styles.line}></div>
+
+        <TasksRoot root={""} />
       </div>
     </>
   );
