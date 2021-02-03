@@ -1,23 +1,25 @@
 import { useState, useContext } from "react";
 import styles from "../../../pages/gantt/Gantt.module.css";
 
-import { UsersContext } from "../../context/users/UsersContext";
-import { ProjectsContext } from "../../context/projects/ProjectsContext";
-
 import DropDown from "./DropDown";
 
-export default function Menu() {
+export default function Menu({ modal }) {
   const [isMenuOpen, setMenu] = useState(false);
 
   const [isDropdownOpen, setDropdown] = useState(false);
 
-  const userCtx = useContext(UsersContext);
-  const { projects } = useContext(ProjectsContext);
-
   return (
     <>
       <div
-        className={isDropdownOpen ? styles.menuIconWrap : ""}
+        className={
+          isMenuOpen
+            ? modal || isDropdownOpen
+              ? styles.menuIconWrapOpened
+              : ""
+            : modal
+            ? styles.menuIconWrap
+            : ""
+        }
         onClick={() => setDropdown(!isDropdownOpen)}
       ></div>
       <div
@@ -42,6 +44,10 @@ export default function Menu() {
         }}
       >
         <DropDown isDropdownOpen={isDropdownOpen} setDropdown={setDropdown} />
+        <div className={styles.line}></div>
+        <div className={styles.tasksHeaderWrapper}>
+          <div className={styles.tasksHeader}>TASK NAME</div>
+        </div>
       </div>
     </>
   );

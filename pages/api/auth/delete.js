@@ -13,7 +13,15 @@ export default async (req, res) => {
       const User = getDB("User");
       User.findOneAndDelete({ _id: user.id }, (err, doc) => {
         if (err) return res.status(500).json({ message: "Ошибка базы данных" });
-        res.setHeader("Set-Cookie", `ganttToken=''; max-age=0; Path=/`);
+        res.setHeader(
+          "Set-Cookie",
+          cookie.serialize("ganttToken", "", {
+            maxAge: 0,
+            path: "/",
+            sameSite: true,
+            secure: true,
+          })
+        );
         return res.json({ message: "ok" });
       });
     }

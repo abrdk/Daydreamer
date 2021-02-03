@@ -18,24 +18,23 @@ export function UsersProvider(props) {
   const { id, name, password, token, isUserLoaded } = usersState;
 
   const loadUser = () => {
-    if (document.cookie) {
-      let user;
-      const token = cookie.parse(document.cookie).ganttToken;
-      try {
-        user = jwt.verify(token, "jwtSecret");
-      } catch (e) {}
+    let user;
 
-      if (user) {
-        dispatch({
-          type: "SET_USER",
-          payload: {
-            token,
-            id: user.id,
-            name: user.name,
-            password: user.password,
-          },
-        });
-      }
+    try {
+      const token = cookie.parse(document.cookie).ganttToken;
+      user = jwt.verify(token, "jwtSecret");
+    } catch (e) {}
+
+    if (user) {
+      dispatch({
+        type: "SET_USER",
+        payload: {
+          token,
+          id: user.id,
+          name: user.name,
+          password: user.password,
+        },
+      });
     }
   };
 

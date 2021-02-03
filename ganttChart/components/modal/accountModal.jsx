@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import { useState, useContext } from "react";
 import modalStyles from "../../../styles/modal.module.css";
 import homeStyles from "../../../styles/auth.module.css";
@@ -32,7 +33,8 @@ export default function AccountModal({ setModal }) {
 
   const update = () => {
     if (!isDataUpdating() && !isUpdatingComplete) {
-      Router.push("/logout");
+      Cookies.remove("ganttToken", { path: "/" });
+      Router.reload();
     } else if (isDataUpdating() && !isUpdatingComplete) {
       xhr(
         "/auth/update",

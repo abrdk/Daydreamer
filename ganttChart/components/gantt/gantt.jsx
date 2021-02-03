@@ -43,7 +43,7 @@ export const Gantt = ({
   setMenu,
   addChild,
   hideChildren,
-  list
+  list,
 }) => {
   const wrapperRef = useRef(null);
   const [ganttTasks, setGanttTasks] = useState(tasks);
@@ -64,7 +64,7 @@ export const Gantt = ({
 
   // scroll events
   useEffect(() => {
-    const handleWheel = event => {
+    const handleWheel = (event) => {
       event.preventDefault();
       const newScrollY = scrollY + event.deltaY;
       if (newScrollY < 0) {
@@ -94,14 +94,14 @@ export const Gantt = ({
     };
   }, [scrollY, ganttHeight, ganttTasks, rowHeight, ganttFullHeight]);
 
-  const handleScrollY = event => {
+  const handleScrollY = (event) => {
     if (scrollY !== event.currentTarget.scrollTop && !ignoreScrollEvent) {
       setScrollY(event.currentTarget.scrollTop);
     }
     setIgnoreScrollEvent(false);
   };
 
-  const handleScrollX = event => {
+  const handleScrollX = (event) => {
     if (scrollX !== event.currentTarget.scrollLeft && !ignoreScrollEvent) {
       setScrollX(event.currentTarget.scrollLeft);
     }
@@ -111,7 +111,7 @@ export const Gantt = ({
   /**
    * Handles arrow keys events and transform it to new scroll
    */
-  const handleKeyDown = event => {
+  const handleKeyDown = (event) => {
     event.preventDefault();
     let newScrollY = scrollY;
     let newScrollX = scrollX;
@@ -135,7 +135,8 @@ export const Gantt = ({
       case "ArrowRight":
         newScrollX += columnWidth;
         break;
-      default: newScrollX += 0;
+      default:
+        newScrollX += 0;
     }
     if (isX) {
       if (newScrollX < 0) {
@@ -158,18 +159,18 @@ export const Gantt = ({
   };
 
   // task change event
-  const handleTasksChange = tasks => {
+  const handleTasksChange = (tasks) => {
     setGanttTasks(tasks);
   };
 
   /**
    * Task select event
    */
-  const handleSelectedTask = taskId => {
-    const newSelectedTask = ganttTasks.find(t => t.id === taskId);
+  const handleSelectedTask = (taskId) => {
+    const newSelectedTask = ganttTasks.find((t) => t.id === taskId);
     if (newSelectedTask) {
       if (onSelect) {
-        const oldSelectedTask = ganttTasks.find(t => t.id === selectedTask);
+        const oldSelectedTask = ganttTasks.find((t) => t.id === selectedTask);
         if (oldSelectedTask) {
           onSelect(oldSelectedTask, false);
         }
@@ -178,7 +179,7 @@ export const Gantt = ({
       setSelectedTask(newSelectedTask.id);
     } else {
       if (onSelect) {
-        const oldSelectedTask = ganttTasks.find(t => t.id === selectedTask);
+        const oldSelectedTask = ganttTasks.find((t) => t.id === selectedTask);
         if (oldSelectedTask) {
           onSelect(oldSelectedTask, false);
         }
@@ -251,7 +252,7 @@ export const Gantt = ({
     TaskListTable,
     setMenu,
     addChild,
-    hideChildren
+    hideChildren,
   };
 
   return (
@@ -261,32 +262,17 @@ export const Gantt = ({
       tabIndex={0}
       ref={wrapperRef}
     >
-      {window.innerWidth > 800 ? <>
-        {listCellWidth && <TaskList {...tableProps} addTask={addTask} />}
-        <TaskGantt
-          gridProps={gridProps}
-          calendarProps={calendarProps}
-          barProps={barProps}
-          ganttHeight={ganttHeight}
-          scrollY={scrollY}
-          scrollX={scrollX}
-          onScroll={handleScrollX}
-          addChild={addChild}
-        />
-      </>
-      : <>
-        {list ? <TaskList {...tableProps} addTask={addTask} /> : null}
-        {!list && <TaskGantt
-          gridProps={gridProps}
-          calendarProps={calendarProps}
-          barProps={barProps}
-          ganttHeight={ganttHeight}
-          scrollY={scrollY}
-          scrollX={scrollX}
-          onScroll={handleScrollX}
-          addChild={addChild}
-        />}
-      </>}
+      <TaskGantt
+        gridProps={gridProps}
+        calendarProps={calendarProps}
+        barProps={barProps}
+        ganttHeight={ganttHeight}
+        scrollY={scrollY}
+        scrollX={scrollX}
+        onScroll={handleScrollX}
+        addChild={addChild}
+      />
+
       <Scroll
         ganttFullHeight={ganttFullHeight}
         ganttHeight={ganttHeight}

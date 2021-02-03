@@ -5,7 +5,7 @@ export default function (state, action) {
       return {
         ...state,
         tasks: action.payload,
-        istasksLoaded: true,
+        isTasksLoaded: true,
       };
     case "ADD_TASK":
       return {

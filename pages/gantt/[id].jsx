@@ -12,6 +12,7 @@ import { ViewMode } from "../../ganttChart/types/public-types";
 
 import { UsersContext } from "../../ganttChart/context/users/UsersContext";
 import { ProjectsContext } from "../../ganttChart/context/projects/ProjectsContext";
+import { TasksContext } from "../../ganttChart/context/tasks/TasksContext";
 
 import Menu from "../../ganttChart/components/menu/Menu";
 
@@ -32,6 +33,7 @@ export default function Gantt({ charts: arr, currentChart }) {
 
   const userCtx = useContext(UsersContext);
   const { isProjectsLoaded } = useContext(ProjectsContext);
+  const { isTasksLoaded } = useContext(TasksContext);
 
   const request = (query) => {
     setModal("loader");
@@ -49,7 +51,9 @@ export default function Gantt({ charts: arr, currentChart }) {
         {" "}
         <title> Daydreamer | Put your ideas on a timeline </title>{" "}
       </Head>
-      <When condition={userCtx.isUserLoaded && isProjectsLoaded}>
+      <When
+        condition={userCtx.isUserLoaded && isProjectsLoaded && isTasksLoaded}
+      >
         <Modal
           modal={modal}
           setModal={setModal}
@@ -59,7 +63,7 @@ export default function Gantt({ charts: arr, currentChart }) {
           mapName={name}
         />
         <div className={styles.container}>
-          <Menu />
+          <Menu modal={modal} />
           <div className={styles.header}>
             <ViewSwitcher onViewModeChange={(viewMode) => setView(viewMode)} />
             <div />
@@ -104,18 +108,22 @@ export default function Gantt({ charts: arr, currentChart }) {
   );
 }
 
-export async function getServerSideProps({ req, res }) {
+export async function getServerSideProps(ctx) {
   let user, charts, currentChart;
 
-  if (req.headers.cookie) {
-    const token = cookie.parse(req.headers.cookie).ganttToken;
-    try {
-      user = jwt.verify(token, "jwtSecret");
-    } catch (e) {
-      if (e.name === "TokenExpiredError") {
-        res.setHeader("Set-Cookie", `ganttToken=''; max-age=0; Path=/`);
-      }
-    }
+  try {
+    const token = cookie.parse(ctx.req.headers.cookie).ganttToken;
+    user = jwt.verify(token, "jwtSecret");
+  } catch (e) {
+    ctx.res.setHeader(
+      "Set-Cookie",
+      cookie.serialize("ganttToken", "", {
+        maxAge: 0,
+        path: "/",
+        sameSite: true,
+        secure: true,
+      })
+    );
   }
 
   if (!user) {

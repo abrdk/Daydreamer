@@ -1,4 +1,5 @@
 import * as cookie from "cookie";
+const jwt = require("jsonwebtoken");
 import { xhr } from "../../../helpers/xhr";
 import { v4 as uuidv4 } from "uuid";
 
@@ -80,6 +81,9 @@ export function TasksProvider(props) {
         type: "UPDATE_TASK_ID",
         payload: { _id: fakeId, realId: res.task._id },
       });
+      return {
+        _id: res.task._id,
+      };
     } catch (e) {}
   };
 
@@ -142,6 +146,102 @@ export function TasksProvider(props) {
     } catch (e) {}
   };
 
+  const deleteAllTasks = async () => {
+    try {
+      await xhr("/tasks/delete_all", {}, "DELETE");
+    } catch (e) {}
+  };
+
+  const createInitialTasks = async ({ project }) => {
+    const currentDate = new Date();
+    let afterWeek = currentDate;
+    afterWeek.setDate(afterWeek.getDate() + 7);
+
+    const token = cookie.parse(document.cookie).ganttToken;
+    const user = jwt.verify(token, "jwtSecret");
+
+    createTask({
+      name: "Task name #3",
+      description: "",
+      dateStart: currentDate,
+      dateEnd: afterWeek,
+      color: "FFBC42",
+      owner: user.id,
+      project,
+      root: "",
+      order: 0,
+    });
+    createTask({
+      name: "Task name #2",
+      description: "",
+      dateStart: currentDate,
+      dateEnd: afterWeek,
+      color: "258EFA",
+      owner: user.id,
+      project,
+      root: "",
+      order: 1,
+    });
+    createTask({
+      name: "Task name #4",
+      description: "",
+      dateStart: currentDate,
+      dateEnd: afterWeek,
+      color: "FFBC42",
+      owner: user.id,
+      project,
+      root: "",
+      order: 3,
+    });
+    createTask({
+      name: "Task name #5",
+      description: "",
+      dateStart: currentDate,
+      dateEnd: afterWeek,
+      color: "59CD90",
+      owner: user.id,
+      project,
+      root: "",
+      order: 4,
+    });
+
+    const resTask = await createTask({
+      name: "Task name #3",
+      description: "",
+      dateStart: currentDate,
+      dateEnd: afterWeek,
+      color: "FFBC42",
+      owner: user.id,
+      project,
+      root: "",
+      order: 2,
+    });
+
+    await createTask({
+      name: "Subtask name #1",
+      description: "",
+      dateStart: currentDate,
+      dateEnd: afterWeek,
+      color: "FFBC42",
+      owner: user.id,
+      project,
+      root: resTask._id,
+      order: 0,
+    });
+
+    await createTask({
+      name: "Subtask name #2",
+      description: "",
+      dateStart: currentDate,
+      dateEnd: afterWeek,
+      color: "59CD90",
+      owner: user.id,
+      project,
+      root: resTask._id,
+      order: 1,
+    });
+  };
+
   useEffect(() => {
     loadTasks();
   }, []);
@@ -151,9 +251,12 @@ export function TasksProvider(props) {
       value={{
         tasks,
         isTasksLoaded,
+        loadTasks,
         createTask,
         updateTask,
         deleteTask,
+        deleteAllTasks,
+        createInitialTasks,
       }}
     >
       {props.children}

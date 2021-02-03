@@ -55,6 +55,7 @@ export default async (req, res) => {
       return res.status(201).json({ message: "ok", task: t });
     });
   } catch (e) {
+    console.log(e);
     return res.status(500).json({ message: "Ошибка базы данных" });
   }
 };

@@ -5,18 +5,22 @@ export default function Home() {
   return <></>;
 }
 
-export async function getServerSideProps({ res, req }) {
+export async function getServerSideProps(ctx) {
   let user;
 
-  if (req.headers.cookie) {
-    const token = cookie.parse(req.headers.cookie).ganttToken;
-    try {
-      user = jwt.verify(token, "jwtSecret");
-    } catch (e) {
-      if (e.name === "TokenExpiredError") {
-        res.setHeader("Set-Cookie", `ganttToken=''; max-age=0; Path=/`);
-      }
-    }
+  try {
+    const token = cookie.parse(ctx.req.headers.cookie).ganttToken;
+    user = jwt.verify(token, "jwtSecret");
+  } catch (e) {
+    ctx.res.setHeader(
+      "Set-Cookie",
+      cookie.serialize("ganttToken", "", {
+        maxAge: 0,
+        path: "/",
+        sameSite: true,
+        secure: true,
+      })
+    );
   }
 
   if (user) {

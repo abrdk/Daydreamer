@@ -1,5 +1,6 @@
 import * as cookie from "cookie";
 const jwt = require("jsonwebtoken");
+import cookies from "next-cookies";
 
 import Link from "next/link";
 import { useState, useContext } from "react";
@@ -11,6 +12,7 @@ import FloatingLabel from "floating-label-react";
 
 import { UsersContext } from "../ganttChart/context/users/UsersContext";
 import { ProjectsContext } from "../ganttChart/context/projects/ProjectsContext";
+import { TasksContext } from "../ganttChart/context/tasks/TasksContext";
 
 export default function Signup() {
   const [nameWarn, setNameWarn] = useState("");
@@ -22,28 +24,29 @@ export default function Signup() {
 
   const { setUser } = useContext(UsersContext);
   const { projects, createProject } = useContext(ProjectsContext);
+  const { createInitialTasks } = useContext(TasksContext);
 
-  const query = () => {
-    xhr(
+  const query = async () => {
+    const res = await xhr(
       "/auth/signup",
       {
         name,
         password,
       },
       "POST"
-    ).then((res) => {
-      if (res.message === "ok") {
-        setUser(res.user);
-        createProject(`Project name #${projects.length + 1}`);
-        Router.push("/gantt/new");
-      } else {
-        if (res.errorType === "name") {
-          setNameWarn(res.message);
-        } else if (res.errorType === "password") {
-          setPasswordWarn(res.message);
-        }
+    );
+    if (res.message === "ok") {
+      setUser(res.user);
+      const resProject = await createProject(`Project name #1`);
+      await createInitialTasks({ project: resProject._id });
+      Router.push("/gantt/new");
+    } else {
+      if (res.errorType === "name") {
+        setNameWarn(res.message);
+      } else if (res.errorType === "password") {
+        setPasswordWarn(res.message);
       }
-    });
+    }
   };
 
   return (
@@ -116,18 +119,22 @@ export default function Signup() {
   );
 }
 
-export async function getServerSideProps({ req, res }) {
+export async function getServerSideProps(ctx) {
   let user;
 
-  if (req.headers.cookie) {
-    const token = cookie.parse(req.headers.cookie).ganttToken;
-    try {
-      user = jwt.verify(token, "jwtSecret");
-    } catch (e) {
-      if (e.name === "TokenExpiredError") {
-        res.setHeader("Set-Cookie", `ganttToken=''; max-age=0; Path=/`);
-      }
-    }
+  try {
+    const token = cookie.parse(ctx.req.headers.cookie).ganttToken;
+    user = jwt.verify(token, "jwtSecret");
+  } catch (e) {
+    ctx.res.setHeader(
+      "Set-Cookie",
+      cookie.serialize("ganttToken", "", {
+        maxAge: 0,
+        path: "/",
+        sameSite: true,
+        secure: true,
+      })
+    );
   }
 
   if (user) {

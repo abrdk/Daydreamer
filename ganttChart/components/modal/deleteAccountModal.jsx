@@ -4,13 +4,12 @@ import { xhr } from "../../../helpers/xhr";
 import Router from "next/router";
 import { useContext } from "react";
 
-import { UsersContext } from "../../context/users/UsersContext";
 import { ProjectsContext } from "../../context/projects/ProjectsContext";
+import { TasksContext } from "../../context/tasks/TasksContext";
 
 export default function DeleteAccountModal({ setModal }) {
-  const { token, setUser } = useContext(UsersContext);
-
   const { deleteAllProjects } = useContext(ProjectsContext);
+  const { deleteAllTasks } = useContext(TasksContext);
 
   const outsideClick = (e) => {
     if (e.target.id === "delete_account_wrapper") {
@@ -19,12 +18,10 @@ export default function DeleteAccountModal({ setModal }) {
   };
 
   const deleteQuery = async () => {
-    const isProjectsDeleted = await deleteAllProjects();
-    if (isProjectsDeleted) {
-      const res = await xhr("/auth/delete", {}, "DELETE");
-      setUser({ id: "", token: "", name: "", password: "" });
-      Router.push("/signup");
-    }
+    await deleteAllTasks();
+    await deleteAllProjects();
+    await xhr("/auth/delete", {}, "DELETE");
+    Router.reload();
   };
 
   return (

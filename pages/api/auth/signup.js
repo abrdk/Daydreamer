@@ -1,3 +1,4 @@
+import * as cookie from "cookie";
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const getDB = require("../../../helpers/getDb.js");
@@ -47,7 +48,12 @@ export default async (req, res) => {
     });
     res.setHeader(
       "Set-Cookie",
-      `ganttToken=${token}; max-age=36000000; Path=/`
+      cookie.serialize("ganttToken", token, {
+        maxAge: 24 * 60 * 60,
+        path: "/",
+        sameSite: true,
+        secure: true,
+      })
     );
     res
       .status(201)

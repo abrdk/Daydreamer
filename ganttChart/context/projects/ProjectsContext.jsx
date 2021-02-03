@@ -63,6 +63,7 @@ export function ProjectsProvider(props) {
         type: "UPDATE_PROJECT_ID",
         payload: { _id: fakeId, realId: res.project._id },
       });
+      return { _id: res.project._id };
     } catch (e) {}
   };
 
@@ -107,8 +108,7 @@ export function ProjectsProvider(props) {
 
   const deleteAllProjects = async () => {
     try {
-      const res = await xhr("/projects/delete_all", {}, "DELETE");
-      return true;
+      await xhr("/projects/delete_all", {}, "DELETE");
     } catch (e) {}
   };
 
@@ -121,6 +121,7 @@ export function ProjectsProvider(props) {
       value={{
         projects,
         isProjectsLoaded,
+        loadProjects,
         createProject,
         updateProject,
         deleteProject,

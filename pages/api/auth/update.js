@@ -66,9 +66,15 @@ export default async (req, res) => {
               expiresIn: "24h",
             }
           );
+
           res.setHeader(
             "Set-Cookie",
-            `ganttToken=${token}; max-age=36000000; Path=/`
+            cookie.serialize("ganttToken", token, {
+              maxAge: 24 * 60 * 60,
+              path: "/",
+              sameSite: true,
+              secure: true,
+            })
           );
 
           return res.status(201).json({
