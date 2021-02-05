@@ -1,4 +1,4 @@
-export default function (state, action) {
+export default function ProjectsReducer(state, action) {
   const { _id, realId } = action.payload;
   switch (action.type) {
     case "SET_PROJECTS":

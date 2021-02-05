@@ -1,55 +1,39 @@
-import { useState, useContext } from "react";
-import styles from "../../../styles/tasks.module.css";
-import { v4 as uuidv4 } from "uuid";
-
+import { useContext, useState } from "react";
 import { When } from "react-if";
+import styles from "../../../styles/tasks.module.css";
+
+import Task from "./Task";
 
 import { TasksContext } from "../../context/tasks/TasksContext";
 
 export default function TasksRoot({ root }) {
   const { tasks } = useContext(TasksContext);
-  const tasksComponents = tasks
-    .filter((task) => task.root == root)
+  const filteredTasks = tasks.filter((task) => task.root == root);
+
+  const [isSubtasksOpened, setSubtasksState] = useState(
+    filteredTasks.map(() => false)
+  );
+
+  const tasksComponents = filteredTasks
     .sort((task1, task2) => task1.order > task2.order)
     .map((task, i) => {
       const subTasks = tasks.filter((subTask) => subTask.root == task._id);
-      const [isSubtasksOpened, setSubtasksOpened] = useState(false);
       return (
-        <>
-          <div
-            className={styles.task}
-            onClick={() => setSubtasksOpened(!isSubtasksOpened)}
-            key={uuidv4()}
-          >
-            <span
-              className={task.name ? styles.fakeText : styles.fakeTextVisible}
-              id={`fake-task-${i}`}
-            >
-              {task.name ? task.name : `Task name #${i + 1}`}
-            </span>
-            <When condition={subTasks.length}>
-              <img
-                className={
-                  isSubtasksOpened ? styles.arrowDown : styles.arrowRight
-                }
-                src={
-                  isSubtasksOpened
-                    ? "/img/arrowDown.svg"
-                    : "/img/arrowRightTask.svg"
-                }
-                alt=" "
-              />
-            </When>
-            <div>{task.name}</div>
-          </div>
-          <When condition={isSubtasksOpened}>
+        <div key={task._id}>
+          <Task
+            task={task}
+            hasSubtasks={subTasks.length ? true : false}
+            isSubtasksOpened={isSubtasksOpened}
+            setSubtasksState={setSubtasksState}
+          />
+          <When condition={subTasks.length && isSubtasksOpened[i]}>
             <div className={styles.subtasksWrapper}>
               <TasksRoot root={task._id} />
             </div>
           </When>
-        </>
+        </div>
       );
     });
 
-  return <div>{tasksComponents}</div>;
+  return <>{tasksComponents}</>;
 }

@@ -30,6 +30,8 @@ export default async (req, res) => {
     const user = jwt.verify(token, "jwtSecret");
     const Project = getDB("Project");
 
+    console.log("project", project);
+    console.log("user", user.id);
     Project.findOne({ owner: user.id, _id: project }, async (err, doc) => {
       if (err) return res.status(500).json({ message: "Ошибка базы данных" });
 

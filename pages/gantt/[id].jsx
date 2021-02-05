@@ -92,7 +92,7 @@ export default function Gantt({ charts: arr, currentChart }) {
               </button>
             </div>
           </div>
-          <div className={styles.gantChartWrap}>
+          {/* <div className={styles.gantChartWrap}>
             <div style={{ minWidth: "700px" }}>
               <GantChart
                 chart={chart}
@@ -101,7 +101,7 @@ export default function Gantt({ charts: arr, currentChart }) {
                 view={view}
               />
             </div>
-          </div>
+          </div> */}
         </div>
       </When>
     </>

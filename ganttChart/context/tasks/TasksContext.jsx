@@ -40,7 +40,6 @@ export function TasksProvider(props) {
     dateStart,
     dateEnd,
     color,
-    owner,
     project,
     root,
     order,
@@ -56,7 +55,6 @@ export function TasksProvider(props) {
           dateStart,
           dateEnd,
           color,
-          owner,
           project,
           root,
           order,
@@ -115,7 +113,7 @@ export function TasksProvider(props) {
       const res = await xhr(
         "/tasks/update",
         {
-          id,
+          id: _id,
           name,
           description,
           dateStart,
@@ -157,16 +155,12 @@ export function TasksProvider(props) {
     let afterWeek = currentDate;
     afterWeek.setDate(afterWeek.getDate() + 7);
 
-    const token = cookie.parse(document.cookie).ganttToken;
-    const user = jwt.verify(token, "jwtSecret");
-
     createTask({
       name: "Task name #1",
       description: "",
       dateStart: currentDate,
       dateEnd: afterWeek,
       color: "FFBC42",
-      owner: user.id,
       project,
       root: "",
       order: 0,
@@ -177,7 +171,6 @@ export function TasksProvider(props) {
       dateStart: currentDate,
       dateEnd: afterWeek,
       color: "258EFA",
-      owner: user.id,
       project,
       root: "",
       order: 1,
@@ -188,7 +181,6 @@ export function TasksProvider(props) {
       dateStart: currentDate,
       dateEnd: afterWeek,
       color: "FFBC42",
-      owner: user.id,
       project,
       root: "",
       order: 3,
@@ -199,7 +191,6 @@ export function TasksProvider(props) {
       dateStart: currentDate,
       dateEnd: afterWeek,
       color: "59CD90",
-      owner: user.id,
       project,
       root: "",
       order: 4,
@@ -211,7 +202,6 @@ export function TasksProvider(props) {
       dateStart: currentDate,
       dateEnd: afterWeek,
       color: "FFBC42",
-      owner: user.id,
       project,
       root: "",
       order: 2,
