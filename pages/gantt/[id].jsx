@@ -1,6 +1,3 @@
-import * as cookie from "cookie";
-const jwt = require("jsonwebtoken");
-
 import Head from "next/head";
 import { useState, useContext } from "react";
 import styles from "./Gantt.module.css";
@@ -33,7 +30,12 @@ export default function Gantt() {
         <title> Daydreamer | Put your ideas on a timeline </title>{" "}
       </Head>
       <When
-        condition={userCtx.isUserLoaded && isProjectsLoaded && isTasksLoaded}
+        condition={
+          userCtx.isUserLoaded &&
+          userCtx.name &&
+          isProjectsLoaded &&
+          isTasksLoaded
+        }
       >
         <Modal modal={modal} setModal={setModal} id={id} />
         <div className={styles.container}>
@@ -65,35 +67,4 @@ export default function Gantt() {
       </When>
     </>
   );
-}
-
-export async function getServerSideProps(ctx) {
-  let user;
-
-  try {
-    const token = cookie.parse(ctx.req.headers.cookie).ganttToken;
-    user = jwt.verify(token, "jwtSecret");
-  } catch (e) {
-    ctx.res.setHeader(
-      "Set-Cookie",
-      cookie.serialize("ganttToken", "", {
-        maxAge: 0,
-        path: "/",
-        sameSite: true,
-        secure: true,
-      })
-    );
-  }
-
-  if (!user) {
-    return {
-      redirect: {
-        destination: "/signup",
-        permanent: false,
-      },
-    };
-  }
-  return {
-    props: {},
-  };
 }

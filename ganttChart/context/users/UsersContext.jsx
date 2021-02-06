@@ -1,5 +1,6 @@
 import React, { createContext, useReducer, useEffect } from "react";
 import useSWR from "swr";
+import Router from "next/router";
 
 import UsersReducer from "./UsersReducer";
 
@@ -15,6 +16,17 @@ export function UsersProvider(props) {
           type: "SET_USER",
           payload: data.user,
         });
+        if (Router.pathname != "/gantt/[id]") {
+          Router.push("/gantt/new");
+        }
+      } else {
+        dispatch({
+          type: "SET_USER",
+          payload: { id: "", name: "", password: "" },
+        });
+        if (Router.pathname != "/signup" && Router.pathname != "/login") {
+          Router.push("/signup");
+        }
       }
     }
   }, [data, error]);

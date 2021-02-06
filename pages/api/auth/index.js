@@ -1,3 +1,4 @@
+import * as cookie from "cookie";
 const jwt = require("jsonwebtoken");
 
 export default async (req, res) => {
@@ -10,6 +11,15 @@ export default async (req, res) => {
     }
     const user = jwt.verify(token, "jwtSecret");
     if (!user) {
+      res.setHeader(
+        "Set-Cookie",
+        cookie.serialize("ganttToken", "", {
+          maxAge: 0,
+          path: "/",
+          sameSite: true,
+          secure: true,
+        })
+      );
       return res.status(401).json({ message: "Unauthorized" });
     }
     return res.status(200).json({ message: "ok", user });

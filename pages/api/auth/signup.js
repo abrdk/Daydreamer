@@ -59,7 +59,6 @@ export default async (req, res) => {
       .status(201)
       .json({ message: "ok", user: { token, id: u.id, name, password } });
   } catch (e) {
-    console.log("e", e);
     return res.status(500).json({ message: "Ошибка базы данных" });
   }
 };

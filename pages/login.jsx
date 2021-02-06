@@ -1,17 +1,13 @@
-import * as cookie from "cookie";
-const jwt = require("jsonwebtoken");
-
 import Link from "next/link";
 import { useState, useContext } from "react";
 import { xhr } from "../helpers/xhr";
 import Router from "next/router";
 import styles from "../styles/auth.module.css";
+import { When } from "react-if";
 
 import FloatingLabel from "floating-label-react";
 
 import { UsersContext } from "../ganttChart/context/users/UsersContext";
-import { ProjectsContext } from "../ganttChart/context/projects/ProjectsContext";
-import { TasksContext } from "../ganttChart/context/tasks/TasksContext";
 
 export default function Login() {
   const [nameWarn, setNameWarn] = useState("");
@@ -21,9 +17,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setPasswordVisibility] = useState(false);
 
-  const { setUser } = useContext(UsersContext);
-  const { loadProjects } = useContext(ProjectsContext);
-  const { loadTasks } = useContext(TasksContext);
+  const { setUser, isUserLoaded } = useContext(UsersContext);
 
   const query = async () => {
     const res = await xhr(
@@ -36,7 +30,6 @@ export default function Login() {
     );
     if (res.message === "ok") {
       setUser(res.user);
-      await Promise.all([loadProjects(), loadTasks()]);
       Router.push("/gantt/new");
     } else {
       if (res.errorType === "name") {
@@ -48,102 +41,74 @@ export default function Login() {
   };
 
   return (
-    <div
-      className={styles.container}
-      onClick={() => {
-        setNameWarn(null);
-        setPasswordWarn(null);
-      }}
-    >
-      <div className={styles.form}>
-        <div className={styles.title}>Sign in</div>
-        <div className={styles.description}>
-          Enter your information to sign in <br /> on the service
-        </div>
-        <FloatingLabel
-          id="name"
-          name="name"
-          placeholder="Your name"
-          className={
-            nameWarn
-              ? name
-                ? styles.formInputFilledWarn
-                : styles.formInputWarn
-              : name
-              ? styles.formInputFilled
-              : styles.formInput
-          }
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        {nameWarn && <div className={styles.warn}>{nameWarn}</div>}
-        <div className={styles.passwordContainer}>
+    <When condition={isUserLoaded}>
+      <div
+        className={styles.container}
+        onClick={() => {
+          setNameWarn(null);
+          setPasswordWarn(null);
+        }}
+      >
+        <div className={styles.form}>
+          <div className={styles.title}>Sign in</div>
+          <div className={styles.description}>
+            Enter your information to sign in <br /> on the service
+          </div>
           <FloatingLabel
-            id="password"
-            name="password"
-            placeholder="Your password"
+            id="name"
+            name="name"
+            placeholder="Your name"
             className={
-              passwordWarn
-                ? password
+              nameWarn
+                ? name
                   ? styles.formInputFilledWarn
                   : styles.formInputWarn
-                : password
+                : name
                 ? styles.formInputFilled
                 : styles.formInput
             }
-            type={isPasswordVisible ? "text" : "password"}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
-          <img
-            src="/img/eye.svg"
-            alt=" "
-            className={styles.passwordEye}
-            onClick={() => setPasswordVisibility(!isPasswordVisible)}
-          />
+          {nameWarn && <div className={styles.warn}>{nameWarn}</div>}
+          <div className={styles.passwordContainer}>
+            <FloatingLabel
+              id="password"
+              name="password"
+              placeholder="Your password"
+              className={
+                passwordWarn
+                  ? password
+                    ? styles.formInputFilledWarn
+                    : styles.formInputWarn
+                  : password
+                  ? styles.formInputFilled
+                  : styles.formInput
+              }
+              type={isPasswordVisible ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <img
+              src="/img/eye.svg"
+              alt=" "
+              className={styles.passwordEye}
+              onClick={() => setPasswordVisibility(!isPasswordVisible)}
+            />
+          </div>
+          {passwordWarn && <div className={styles.warn}>{passwordWarn}</div>}
+          <div className={styles.primaryButton} onClick={query}>
+            Sign in
+          </div>
+          <div className={styles.line}></div>
+          <div className={styles.linkDescription}>
+            Don't have an account yet?
+          </div>
+          <Link href="/signup">
+            <a className={styles.link}>Registration</a>
+          </Link>
         </div>
-        {passwordWarn && <div className={styles.warn}>{passwordWarn}</div>}
-        <div className={styles.primaryButton} onClick={query}>
-          Sign in
-        </div>
-        <div className={styles.line}></div>
-        <div className={styles.linkDescription}>Don't have an account yet?</div>
-        <Link href="/signup">
-          <a className={styles.link}>Registration</a>
-        </Link>
       </div>
-    </div>
+    </When>
   );
-}
-
-export async function getServerSideProps(ctx) {
-  let user;
-
-  try {
-    const token = cookie.parse(ctx.req.headers.cookie).ganttToken;
-    user = jwt.verify(token, "jwtSecret");
-  } catch (e) {
-    ctx.res.setHeader(
-      "Set-Cookie",
-      cookie.serialize("ganttToken", "", {
-        maxAge: 0,
-        path: "/",
-        sameSite: true,
-        secure: true,
-      })
-    );
-  }
-
-  if (user) {
-    return {
-      redirect: {
-        destination: "/gantt/new",
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {},
-  };
 }
