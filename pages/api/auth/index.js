@@ -7,7 +7,7 @@ export default async (req, res) => {
   try {
     const token = req.cookies.ganttToken;
     if (!token) {
-      return res.status(401).json({ message: "Unauthorized" });
+      return res.json({ message: "Unauthorized" });
     }
     const user = jwt.verify(token, "jwtSecret");
     if (!user) {
@@ -17,7 +17,6 @@ export default async (req, res) => {
           maxAge: 0,
           path: "/",
           sameSite: true,
-          secure: true,
         })
       );
       return res.status(401).json({ message: "Unauthorized" });

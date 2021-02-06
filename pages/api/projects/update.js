@@ -16,20 +16,18 @@ export default async (req, res) => {
     }
 
     const Project = getDB("Project");
-    Project.findOneAndUpdate(
+    const result = await Project.findOneAndUpdate(
       { _id, owner: user._id },
       { $set: { name, isCurrent } },
       {
         returnOriginal: false,
-      },
-      function (err, result) {
-        if (err) return res.status(500).json({ message: "Ошибка базы данных" });
-        return res.status(201).json({
-          message: "ok",
-          project: result,
-        });
       }
     );
+
+    return res.status(201).json({
+      message: "ok",
+      project: result,
+    });
   } catch (e) {
     return res.status(500).json({ message: "Ошибка базы данных" });
   }

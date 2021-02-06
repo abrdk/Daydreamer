@@ -48,7 +48,6 @@ export default async (req, res) => {
         maxAge: 24 * 60 * 60,
         path: "/",
         sameSite: true,
-        secure: true,
       })
     );
     return res.json({

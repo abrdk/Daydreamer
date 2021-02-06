@@ -40,20 +40,17 @@ export default async (req, res) => {
     }
 
     const Task = getDB("Task");
-    Task.findOneAndUpdate(
+    const result = await Task.findOneAndUpdate(
       { _id, owner: user._id },
       { $set: { name, description, dateStart, dateEnd, color, root, order } },
       {
         returnOriginal: false,
-      },
-      function (err, result) {
-        if (err) return res.status(500).json({ message: "Ошибка базы данных" });
-        return res.status(201).json({
-          message: "ok",
-          task: result,
-        });
       }
     );
+    return res.status(201).json({
+      message: "ok",
+      task: result,
+    });
   } catch (e) {
     return res.status(500).json({ message: "Ошибка базы данных" });
   }

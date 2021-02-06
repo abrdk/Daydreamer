@@ -10,6 +10,10 @@ a {
   text-decoration: none;
 }
 
+* {
+  font-family: "Noto Sans", sans-serif;
+}
+
 button {
   background-color: #3375f5;
   border-radius: 3px;
@@ -92,4 +96,16 @@ input::-moz-focus-inner {
   background-color: #e5e8eb;
   border-radius: 5px;
   border: 3px solid #258efa;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #696f75;
+  -webkit-box-shadow: 0 0 0px 1000px #fff inset;
+  box-shadow: 0 0 0px 1000px #fff inset;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: 21px;
 }

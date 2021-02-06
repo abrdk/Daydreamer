@@ -16,11 +16,8 @@ export default async (req, res) => {
     }
 
     const Task = getDB("Task");
-    Task.findOneAndDelete({ _id: id, owner: user._id }, (err) => {
-      if (err) return res.status(500).json({ message: "Ошибка базы данных" });
-
-      return res.json({ message: "ok" });
-    });
+    await Task.findOneAndDelete({ _id: id, owner: user._id });
+    return res.json({ message: "ok" });
   } catch (e) {
     return res.status(500).json({ message: "Ошибка базы данных" });
   }

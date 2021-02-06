@@ -52,7 +52,6 @@ export default async (req, res) => {
         maxAge: 24 * 60 * 60,
         path: "/",
         sameSite: true,
-        secure: true,
       })
     );
     res.status(201).json({ message: "ok", user: { _id, name, password } });

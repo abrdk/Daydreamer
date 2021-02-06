@@ -55,40 +55,31 @@ export default async (req, res) => {
 
       const hashedPassword = await bcrypt.hash(password, 12);
 
-      User.findOneAndUpdate(
+      const result = await User.findOneAndUpdate(
         { name: user.name },
         { $set: { name, password: hashedPassword } },
         {
           returnOriginal: false,
-        },
-        function (err, result) {
-          if (err)
-            return res.status(500).json({ message: "Ошибка базы данных" });
-
-          const token = jwt.sign(
-            { _id: result._id, name, password },
-            "jwtSecret",
-            {
-              expiresIn: "24h",
-            }
-          );
-
-          res.setHeader(
-            "Set-Cookie",
-            cookie.serialize("ganttToken", token, {
-              maxAge: 24 * 60 * 60,
-              path: "/",
-              sameSite: true,
-              secure: true,
-            })
-          );
-
-          return res.status(201).json({
-            message: "ok",
-            user: { id: user._id, name, password },
-          });
         }
       );
+
+      const token = jwt.sign({ _id: result._id, name, password }, "jwtSecret", {
+        expiresIn: "24h",
+      });
+
+      res.setHeader(
+        "Set-Cookie",
+        cookie.serialize("ganttToken", token, {
+          maxAge: 24 * 60 * 60,
+          path: "/",
+          sameSite: true,
+        })
+      );
+
+      return res.status(201).json({
+        message: "ok",
+        user: { id: user._id, name, password },
+      });
     }
   } catch (e) {
     return res.status(500).json({ message: "Ошибка базы данных" });
