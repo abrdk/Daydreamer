@@ -1,6 +1,6 @@
 export default function TasksReducer(state, action) {
-  const { _id } = action.payload;
   console.log(action.type);
+  const { _id } = action.payload;
   switch (action.type) {
     case "SET_TASKS":
       return {

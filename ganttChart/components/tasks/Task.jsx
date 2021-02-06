@@ -6,7 +6,6 @@ import { TasksContext } from "../../context/tasks/TasksContext";
 import { When, If, Then, Else } from "react-if";
 import TextTruncate from "react-text-truncate";
 import { nanoid } from "nanoid";
-import useSWR from "swr";
 
 export default function Task({
   task,

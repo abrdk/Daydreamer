@@ -1,29 +1,21 @@
 import { xhr } from "../../../helpers/xhr";
 import { nanoid } from "nanoid";
-
+import useSWR from "swr";
 import React, { createContext, useReducer, useEffect } from "react";
+
 import TasksReducer from "./TasksReducer";
 
 export const TasksContext = createContext();
 
 export function TasksProvider(props) {
-  const [tasksState, dispatch] = useReducer(TasksReducer, {
-    tasks: [],
-    isTasksLoaded: false,
-  });
-
-  const colors = ["258EFA", "FFBC42", "59CD90", "D06BF3", "66CEDC", "FF5B79"];
-
-  const { tasks, isTasksLoaded } = tasksState;
-
-  const loadTasks = async () => {
-    try {
-      const res = await xhr("/tasks/", {}, "GET");
-
-      if (res.message === "ok") {
+  const fetcher = (...args) => fetch(...args).then((res) => res.json());
+  const { data, error } = useSWR(`/api/tasks/`, fetcher);
+  useEffect(() => {
+    if (!error && data) {
+      if (data.message == "ok") {
         dispatch({
           type: "SET_TASKS",
-          payload: res.tasks,
+          payload: data.tasks,
         });
       } else {
         dispatch({
@@ -31,8 +23,15 @@ export function TasksProvider(props) {
           payload: [],
         });
       }
-    } catch (e) {}
-  };
+    }
+  }, [data, error]);
+
+  const [tasksState, dispatch] = useReducer(TasksReducer, {
+    tasks: [],
+    isTasksLoaded: false,
+  });
+  const colors = ["258EFA", "FFBC42", "59CD90", "D06BF3", "66CEDC", "FF5B79"];
+  const { tasks, isTasksLoaded } = tasksState;
 
   const createTask = async (task) => {
     try {
@@ -123,16 +122,11 @@ export function TasksProvider(props) {
     ]);
   };
 
-  useEffect(() => {
-    loadTasks();
-  }, []);
-
   return (
     <TasksContext.Provider
       value={{
         tasks,
         isTasksLoaded,
-        loadTasks,
         createTask,
         updateTask,
         deleteTask,

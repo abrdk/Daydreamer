@@ -1,26 +1,20 @@
 import { xhr } from "../../../helpers/xhr";
-
 import React, { createContext, useReducer, useEffect } from "react";
+import useSWR from "swr";
+
 import ProjectsReducer from "./ProjectsReducer";
 
 export const ProjectsContext = createContext();
 
 export function ProjectsProvider(props) {
-  const [projectsState, dispatch] = useReducer(ProjectsReducer, {
-    projects: [],
-    isProjectsLoaded: false,
-  });
-
-  const { projects, isProjectsLoaded } = projectsState;
-
-  const loadProjects = async () => {
-    try {
-      const res = await xhr("/projects/", {}, "GET");
-
-      if (res.message === "ok") {
+  const fetcher = (...args) => fetch(...args).then((res) => res.json());
+  const { data, error } = useSWR(`/api/projects/`, fetcher);
+  useEffect(() => {
+    if (!error && data) {
+      if (data.message == "ok") {
         dispatch({
           type: "SET_PROJECTS",
-          payload: res.projects,
+          payload: data.projects,
         });
       } else {
         dispatch({
@@ -28,8 +22,14 @@ export function ProjectsProvider(props) {
           payload: [],
         });
       }
-    } catch (e) {}
-  };
+    }
+  }, [data, error]);
+
+  const [projectsState, dispatch] = useReducer(ProjectsReducer, {
+    projects: [],
+    isProjectsLoaded: false,
+  });
+  const { projects, isProjectsLoaded } = projectsState;
 
   const createProject = async (project) => {
     try {
@@ -93,16 +93,11 @@ export function ProjectsProvider(props) {
     } catch (e) {}
   };
 
-  useEffect(() => {
-    loadProjects();
-  }, []);
-
   return (
     <ProjectsContext.Provider
       value={{
         projects,
         isProjectsLoaded,
-        loadProjects,
         createProject,
         updateProject,
         deleteProject,

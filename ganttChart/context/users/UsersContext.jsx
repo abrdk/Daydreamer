@@ -1,38 +1,31 @@
-import * as cookie from "cookie";
-const jwt = require("jsonwebtoken");
-
 import React, { createContext, useReducer, useEffect } from "react";
+import useSWR from "swr";
+
 import UsersReducer from "./UsersReducer";
 
 export const UsersContext = createContext();
 
 export function UsersProvider(props) {
+  const fetcher = (...args) => fetch(...args).then((res) => res.json());
+  const { data, error } = useSWR(`/api/auth/`, fetcher);
+  useEffect(() => {
+    if (!error && data) {
+      if (data.message == "ok") {
+        dispatch({
+          type: "SET_USER",
+          payload: data.user,
+        });
+      }
+    }
+  }, [data, error]);
+
   const [usersState, dispatch] = useReducer(UsersReducer, {
     id: "",
     name: "",
     password: "",
     isUserLoaded: false,
   });
-
   const { id, name, password, isUserLoaded } = usersState;
-
-  const loadUser = () => {
-    try {
-      const token = cookie.parse(document.cookie).ganttToken;
-      const user = jwt.verify(token, "jwtSecret");
-
-      if (user) {
-        dispatch({
-          type: "SET_USER",
-          payload: {
-            id: user.id,
-            name: user.name,
-            password: user.password,
-          },
-        });
-      }
-    } catch (e) {}
-  };
 
   const setUser = (user) => {
     dispatch({
@@ -40,10 +33,6 @@ export function UsersProvider(props) {
       payload: user,
     });
   };
-
-  useEffect(() => {
-    loadUser();
-  }, []);
 
   return (
     <UsersContext.Provider
