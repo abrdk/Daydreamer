@@ -1,6 +1,6 @@
 import * as cookie from "cookie";
 const jwt = require("jsonwebtoken");
-import cookies from "next-cookies";
+import { nanoid } from "nanoid";
 
 import Link from "next/link";
 import { useState, useContext } from "react";
@@ -23,13 +23,23 @@ export default function Signup() {
   const [isPasswordVisible, setPasswordVisibility] = useState(false);
 
   const { setUser } = useContext(UsersContext);
-  const { projects, createProject } = useContext(ProjectsContext);
+  const { createProject } = useContext(ProjectsContext);
   const { createInitialTasks } = useContext(TasksContext);
 
   const query = async () => {
+    // const projectId = nanoid();
+    // await Promise.all([
+    //   createProject({
+    //     _id: projectId,
+    //     name: `Project name #1`,
+    //   }),
+    //   createInitialTasks({ project: projectId }),
+    // ]);
+    // console.log("c");
     const res = await xhr(
       "/auth/signup",
       {
+        _id: nanoid(),
         name,
         password,
       },
@@ -37,8 +47,16 @@ export default function Signup() {
     );
     if (res.message === "ok") {
       setUser(res.user);
-      const resProject = await createProject(`Project name #1`);
-      await createInitialTasks({ project: resProject._id });
+
+      const projectId = nanoid();
+      await Promise.all([
+        createProject({
+          _id: projectId,
+          name: `Project name #1`,
+        }),
+        createInitialTasks({ project: projectId }),
+      ]);
+
       Router.push("/gantt/new");
     } else {
       if (res.errorType === "name") {

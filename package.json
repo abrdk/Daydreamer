@@ -15,6 +15,7 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.20",
     "mongoose": "^5.10.10",
+    "nanoid": "^3.1.20",
     "next": "10.0.5",
     "next-cookies": "^2.0.3",
     "rc-color-picker": "^1.2.6",
@@ -24,6 +25,7 @@
     "react-if": "^4.0.1",
     "react-scripts": "3.4.3",
     "react-text-truncate": "^0.16.0",
+    "swr": "^0.4.1",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

@@ -1,10 +1,12 @@
 import { useState, useContext, useEffect, useRef } from "react";
 import styles from "../../../styles/tasks.module.css";
 
+import { TasksContext } from "../../context/tasks/TasksContext";
+
 import { When, If, Then, Else } from "react-if";
 import TextTruncate from "react-text-truncate";
-
-import { TasksContext } from "../../context/tasks/TasksContext";
+import { nanoid } from "nanoid";
+import useSWR from "swr";
 
 export default function Task({
   task,
@@ -78,6 +80,7 @@ export default function Task({
 
     await createTask({
       ...task,
+      _id: nanoid(),
       name: "",
       description: "",
       root: task._id,

@@ -31,30 +31,29 @@ export default function AccountModal({ setModal }) {
   const isDataUpdating = () =>
     !(name === userCtx.name && password === userCtx.password);
 
-  const update = () => {
+  const updateHandler = async () => {
     if (!isDataUpdating() && !isUpdatingComplete) {
       Cookies.remove("ganttToken", { path: "/" });
       Router.reload();
     } else if (isDataUpdating() && !isUpdatingComplete) {
-      xhr(
+      const res = await xhr(
         "/auth/update",
         {
           name,
           password,
         },
         "PUT"
-      ).then((res) => {
-        if (res.message === "ok") {
-          userCtx.setUser(res.user);
-          setUpdateState(true);
-        } else {
-          if (res.errorType === "name") {
-            setNameWarn(res.message);
-          } else if (res.errorType === "password") {
-            setPasswordWarn(res.message);
-          }
+      );
+      if (res.message === "ok") {
+        userCtx.setUser(res.user);
+        setUpdateState(true);
+      } else {
+        if (res.errorType === "name") {
+          setNameWarn(res.message);
+        } else if (res.errorType === "password") {
+          setPasswordWarn(res.message);
         }
-      });
+      }
     }
   };
 
@@ -127,7 +126,7 @@ export default function AccountModal({ setModal }) {
                 ? modalStyles.accountSecondaryButton
                 : modalStyles.accountPrimaryButton
             }
-            onClick={update}
+            onClick={updateHandler}
           >
             {isUpdatingComplete
               ? "Your data was changed"

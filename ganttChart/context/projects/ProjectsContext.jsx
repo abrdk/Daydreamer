@@ -1,6 +1,4 @@
-import * as cookie from "cookie";
 import { xhr } from "../../../helpers/xhr";
-import { v4 as uuidv4 } from "uuid";
 
 import React, { createContext, useReducer, useEffect } from "react";
 import ProjectsReducer from "./ProjectsReducer";
@@ -17,9 +15,9 @@ export function ProjectsProvider(props) {
 
   const loadProjects = async () => {
     try {
-      if (cookie.parse(document.cookie).ganttToken) {
-        const res = await xhr("/projects/show", {}, "GET");
+      const res = await xhr("/projects/", {}, "GET");
 
+      if (res.message === "ok") {
         dispatch({
           type: "SET_PROJECTS",
           payload: res.projects,
@@ -33,7 +31,7 @@ export function ProjectsProvider(props) {
     } catch (e) {}
   };
 
-  const createProject = async (name) => {
+  const createProject = async (project) => {
     try {
       let isCurrent;
       if (projects.length) {
@@ -41,12 +39,11 @@ export function ProjectsProvider(props) {
       } else {
         isCurrent = true;
       }
-      const fakeId = uuidv4();
+
       dispatch({
         type: "ADD_PROJECT",
         payload: {
-          _id: fakeId,
-          name,
+          ...project,
           isCurrent,
         },
       });
@@ -54,35 +51,22 @@ export function ProjectsProvider(props) {
       const res = await xhr(
         "/projects/create",
         {
-          name,
+          ...project,
           isCurrent,
         },
         "POST"
       );
-      dispatch({
-        type: "UPDATE_PROJECT_ID",
-        payload: { _id: fakeId, realId: res.project._id },
-      });
-      return { _id: res.project._id };
     } catch (e) {}
   };
 
-  const updateProject = async ({ _id, name, isCurrent }) => {
+  const updateProject = async (project) => {
     try {
       dispatch({
         type: "UPDATE_PROJECT",
-        payload: { _id, name, isCurrent },
+        payload: project,
       });
 
-      const res = await xhr(
-        "/projects/update",
-        {
-          id: _id,
-          name,
-          isCurrent,
-        },
-        "PUT"
-      );
+      const res = await xhr("/projects/update", project, "PUT");
     } catch (e) {}
   };
 
@@ -93,16 +77,13 @@ export function ProjectsProvider(props) {
         payload: { _id },
       });
 
-      const token = cookie.parse(document.cookie).ganttToken;
       const res = await xhr(
         "/projects/delete",
         {
-          id: _id,
+          _id,
         },
         "DELETE"
       );
-
-      return true;
     } catch (e) {}
   };
 

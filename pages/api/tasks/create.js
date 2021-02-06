@@ -1,10 +1,11 @@
-import * as cookie from "cookie";
 const jwt = require("jsonwebtoken");
 const getDB = require("../../../helpers/getDb.js");
 
 export default async (req, res) => {
+  console.log("req.body");
   res.setHeader("Content-Type", "application/json");
   const {
+    _id,
     name,
     description,
     dateStart,
@@ -25,13 +26,17 @@ export default async (req, res) => {
       });
     }
 
-    const token = cookie.parse(req.headers.cookie).ganttToken;
+    const token = req.cookies.ganttToken;
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
 
     const user = jwt.verify(token, "jwtSecret");
-    const Project = getDB("Project");
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
 
-    console.log("project", project);
-    console.log("user", user.id);
+    const Project = getDB("Project");
     Project.findOne({ owner: user.id, _id: project }, async (err, doc) => {
       if (err) return res.status(500).json({ message: "Ошибка базы данных" });
 
@@ -43,6 +48,7 @@ export default async (req, res) => {
 
       const Task = getDB("Task");
       const task = new Task({
+        _id,
         name,
         description,
         dateStart,
@@ -57,7 +63,6 @@ export default async (req, res) => {
       return res.status(201).json({ message: "ok", task: t });
     });
   } catch (e) {
-    console.log(e);
     return res.status(500).json({ message: "Ошибка базы данных" });
   }
 };

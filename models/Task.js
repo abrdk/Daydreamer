@@ -28,6 +28,7 @@ function isRootRequired() {
 }
 
 const schema = new Schema({
+  _id: { type: String, required: true },
   name: { type: String, required: isNameRequired },
   description: { type: String, required: isDescriptionRequired },
   dateStart: { type: Date, required: true },

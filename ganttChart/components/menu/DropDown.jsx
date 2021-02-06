@@ -1,3 +1,4 @@
+import { nanoid } from "nanoid";
 import { useState, useContext, useEffect } from "react";
 
 import { If, Then, Else, When } from "react-if";
@@ -128,6 +129,11 @@ export default function Menu({ isDropdownOpen, setDropdown }) {
     }
   };
 
+  const createHandler = () => {
+    createProject({ _id: nanoid(), name: "" });
+    startUpdateHandler(projects.length);
+  };
+
   useEffect(() => {
     projects.forEach((project, i) => {
       let input = document.querySelector(`#input-${i}`);
@@ -223,13 +229,7 @@ export default function Menu({ isDropdownOpen, setDropdown }) {
         <div className={styles.triangle}></div>
         <div className={styles.wrapOptions}>
           {options}
-          <div
-            className={styles.newProject}
-            onClick={() => {
-              createProject("");
-              startUpdateHandler(projects.length);
-            }}
-          >
+          <div className={styles.newProject} onClick={createHandler}>
             + New Project
           </div>
         </div>

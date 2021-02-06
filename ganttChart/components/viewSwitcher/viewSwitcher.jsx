@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ViewMode } from "../../types/public-types";
+import { ViewMode } from "../../types/public-types.js";
 import styles from "../../../styles/viewSwitcher.module.css";
 
 const modes = ["Day", "Week", "Month"];

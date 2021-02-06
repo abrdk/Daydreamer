@@ -36,8 +36,7 @@ export default function Login() {
     );
     if (res.message === "ok") {
       setUser(res.user);
-      await loadProjects();
-      await loadTasks();
+      await Promise.all([loadProjects(), loadTasks()]);
       Router.push("/gantt/new");
     } else {
       if (res.errorType === "name") {

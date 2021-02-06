@@ -1,5 +1,5 @@
 export default function TasksReducer(state, action) {
-  const { _id, realId } = action.payload;
+  const { _id } = action.payload;
   console.log(action.type);
   switch (action.type) {
     case "SET_TASKS":
@@ -12,16 +12,6 @@ export default function TasksReducer(state, action) {
       return {
         ...state,
         tasks: [...state.tasks, action.payload],
-      };
-    case "UPDATE_TASK_ID":
-      return {
-        ...state,
-        tasks: state.tasks.map((task) => {
-          if (task._id == _id) {
-            return { ...task, _id: realId };
-          }
-          return task;
-        }),
       };
     case "UPDATE_TASK":
       return {

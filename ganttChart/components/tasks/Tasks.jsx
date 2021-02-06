@@ -5,6 +5,7 @@ import TasksRoot from "./TasksRoot";
 
 import { TasksContext } from "../../context/tasks/TasksContext";
 import { ProjectsContext } from "../../context/projects/ProjectsContext";
+import { nanoid } from "nanoid";
 
 export default function Tasks() {
   const { tasks, createTask } = useContext(TasksContext);
@@ -19,6 +20,7 @@ export default function Tasks() {
     const topLevelTasks = tasks.filter((task) => !task.root);
 
     createTask({
+      _id: nanoid(),
       name: "",
       description: "",
       dateStart: currentDate,

@@ -18,9 +18,11 @@ export default function DeleteAccountModal({ setModal }) {
   };
 
   const deleteQuery = async () => {
-    await deleteAllTasks();
-    await deleteAllProjects();
-    await xhr("/auth/delete", {}, "DELETE");
+    await Promise.all([
+      deleteAllTasks(),
+      deleteAllProjects(),
+      xhr("/auth/delete", {}, "DELETE"),
+    ]);
     Router.reload();
   };
 

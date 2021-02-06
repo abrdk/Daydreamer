@@ -5,7 +5,7 @@ const getDB = require("../../../helpers/getDb.js");
 
 export default async (req, res) => {
   res.setHeader("Content-Type", "application/json");
-  const { name, password } = req.body;
+  const { _id, name, password } = req.body;
 
   if (!name) {
     return res
@@ -41,7 +41,7 @@ export default async (req, res) => {
         .json({ message: "This name already exists", errorType: "name" });
     }
     const hashedPassword = await bcrypt.hash(password, 12);
-    const user = new User({ name, password: hashedPassword });
+    const user = new User({ _id, name, password: hashedPassword });
     const u = await user.save();
     const token = jwt.sign({ id: u.id, name, password }, "jwtSecret", {
       expiresIn: "24h",
@@ -59,6 +59,7 @@ export default async (req, res) => {
       .status(201)
       .json({ message: "ok", user: { token, id: u.id, name, password } });
   } catch (e) {
+    console.log("e", e);
     return res.status(500).json({ message: "Ошибка базы данных" });
   }
 };

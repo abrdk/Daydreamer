@@ -1,5 +1,4 @@
 import "../styles/globals.css";
-import "../ganttChart/components/taskMenu/taskMenu.css";
 
 import { UsersProvider } from "../ganttChart/context/users/UsersContext";
 import { ProjectsProvider } from "../ganttChart/context/projects/ProjectsContext";

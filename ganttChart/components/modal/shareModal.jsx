@@ -1,7 +1,7 @@
 import styles from "../../../styles/modal.module.css";
 
-export default function ShareModal({ setModal, link }) {
-  const copyLink = (e) => {
+export default function ShareModal({ setModal }) {
+  const copyLink = () => {
     document.querySelector("#link").select();
     document.execCommand("copy");
   };
@@ -28,7 +28,7 @@ export default function ShareModal({ setModal, link }) {
               type="text"
               id="link"
               readOnly={true}
-              value={link}
+              value={window.location.href}
               onMouseDown={copyLink}
             />
           </form>

@@ -1,18 +1,23 @@
-import * as cookie from "cookie";
 const jwt = require("jsonwebtoken");
 const getDB = require("../../../helpers/getDb.js");
 
 export default async (req, res) => {
   res.setHeader("Content-Type", "application/json");
-  const { id, name, isCurrent } = req.body;
+  const { _id, name, isCurrent } = req.body;
 
   try {
-    const token = cookie.parse(req.headers.cookie).ganttToken;
+    const token = req.cookies.ganttToken;
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
     const user = jwt.verify(token, "jwtSecret");
-    const Project = getDB("Project");
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
 
+    const Project = getDB("Project");
     Project.findOneAndUpdate(
-      { _id: id, owner: user.id },
+      { _id, owner: user.id },
       { $set: { name, isCurrent } },
       {
         returnOriginal: false,

@@ -1,5 +1,6 @@
 export default function ProjectsReducer(state, action) {
-  const { _id, realId } = action.payload;
+  const { _id } = action.payload;
+  console.log(action.type);
   switch (action.type) {
     case "SET_PROJECTS":
       return {
@@ -11,16 +12,6 @@ export default function ProjectsReducer(state, action) {
       return {
         ...state,
         projects: [...state.projects, action.payload],
-      };
-    case "UPDATE_PROJECT_ID":
-      return {
-        ...state,
-        projects: state.projects.map((project) => {
-          if (project._id == _id) {
-            return { ...project, _id: realId };
-          }
-          return project;
-        }),
       };
     case "UPDATE_PROJECT":
       return {

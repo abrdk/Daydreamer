@@ -1,7 +1,5 @@
-import * as cookie from "cookie";
-const jwt = require("jsonwebtoken");
 import { xhr } from "../../../helpers/xhr";
-import { v4 as uuidv4 } from "uuid";
+import { nanoid } from "nanoid";
 
 import React, { createContext, useReducer, useEffect } from "react";
 import TasksReducer from "./TasksReducer";
@@ -14,13 +12,15 @@ export function TasksProvider(props) {
     isTasksLoaded: false,
   });
 
+  const colors = ["258EFA", "FFBC42", "59CD90", "D06BF3", "66CEDC", "FF5B79"];
+
   const { tasks, isTasksLoaded } = tasksState;
 
   const loadTasks = async () => {
     try {
-      if (cookie.parse(document.cookie).ganttToken) {
-        const res = await xhr("/tasks/show", {}, "GET");
+      const res = await xhr("/tasks/", {}, "GET");
 
+      if (res.message === "ok") {
         dispatch({
           type: "SET_TASKS",
           payload: res.tasks,
@@ -34,96 +34,25 @@ export function TasksProvider(props) {
     } catch (e) {}
   };
 
-  const createTask = async ({
-    name,
-    description,
-    dateStart,
-    dateEnd,
-    color,
-    project,
-    root,
-    order,
-  }) => {
+  const createTask = async (task) => {
     try {
-      const fakeId = uuidv4();
       dispatch({
         type: "ADD_TASK",
-        payload: {
-          _id: fakeId,
-          name,
-          description,
-          dateStart,
-          dateEnd,
-          color,
-          project,
-          root,
-          order,
-        },
+        payload: task,
       });
 
-      const res = await xhr(
-        "/tasks/create",
-        {
-          name,
-          description,
-          dateStart,
-          dateEnd,
-          color,
-          project,
-          root,
-          order,
-        },
-        "POST"
-      );
-      dispatch({
-        type: "UPDATE_TASK_ID",
-        payload: { _id: fakeId, realId: res.task._id },
-      });
-      return {
-        _id: res.task._id,
-      };
+      await xhr("/tasks/create", task, "POST");
     } catch (e) {}
   };
 
-  const updateTask = async ({
-    _id,
-    name,
-    description,
-    dateStart,
-    dateEnd,
-    color,
-    root,
-    order,
-  }) => {
+  const updateTask = async (task) => {
     try {
       dispatch({
         type: "UPDATE_TASK",
-        payload: {
-          _id,
-          name,
-          description,
-          dateStart,
-          dateEnd,
-          color,
-          root,
-          order,
-        },
+        payload: task,
       });
 
-      const res = await xhr(
-        "/tasks/update",
-        {
-          id: _id,
-          name,
-          description,
-          dateStart,
-          dateEnd,
-          color,
-          root,
-          order,
-        },
-        "PUT"
-      );
+      const res = await xhr("/tasks/update", task, "PUT");
     } catch (e) {}
   };
 
@@ -137,7 +66,7 @@ export function TasksProvider(props) {
       const res = await xhr(
         "/tasks/delete",
         {
-          id: _id,
+          _id,
         },
         "DELETE"
       );
@@ -155,81 +84,43 @@ export function TasksProvider(props) {
     let afterWeek = currentDate;
     afterWeek.setDate(afterWeek.getDate() + 7);
 
-    createTask({
-      name: "Task name #1",
-      description: "",
-      dateStart: currentDate,
-      dateEnd: afterWeek,
-      color: "FFBC42",
-      project,
-      root: "",
-      order: 0,
-    });
-    createTask({
-      name: "Task name #2",
-      description: "",
-      dateStart: currentDate,
-      dateEnd: afterWeek,
-      color: "258EFA",
-      project,
-      root: "",
-      order: 1,
-    });
-    createTask({
-      name: "Task name #4",
-      description: "",
-      dateStart: currentDate,
-      dateEnd: afterWeek,
-      color: "FFBC42",
-      project,
-      root: "",
-      order: 3,
-    });
-    createTask({
-      name: "Task name #5",
-      description: "",
-      dateStart: currentDate,
-      dateEnd: afterWeek,
-      color: "59CD90",
-      project,
-      root: "",
-      order: 4,
+    const _ids = [...Array(7).keys()].map(() => nanoid());
+    const newTasks = _ids.map((_id, i) => {
+      if (i < 5) {
+        return {
+          _id,
+          name: `Task name #${i + 1}`,
+          description: "",
+          dateStart: currentDate,
+          dateEnd: afterWeek,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          project,
+          root: "",
+          order: i,
+        };
+      }
+      return {
+        _id,
+        name: `Subtask name #${i + 1 - 5}`,
+        description: "",
+        dateStart: currentDate,
+        dateEnd: afterWeek,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        project,
+        root: _ids[2],
+        order: i - 5,
+      };
     });
 
-    const resTask = await createTask({
-      name: "Task name #3",
-      description: "",
-      dateStart: currentDate,
-      dateEnd: afterWeek,
-      color: "FFBC42",
-      project,
-      root: "",
-      order: 2,
-    });
-
-    await createTask({
-      name: "Subtask name #1",
-      description: "",
-      dateStart: currentDate,
-      dateEnd: afterWeek,
-      color: "FFBC42",
-      owner: user.id,
-      project,
-      root: resTask._id,
-      order: 0,
-    });
-
-    await createTask({
-      name: "Subtask name #2",
-      description: "",
-      dateStart: currentDate,
-      dateEnd: afterWeek,
-      color: "59CD90",
-      owner: user.id,
-      project,
-      root: resTask._id,
-      order: 1,
-    });
+    await Promise.all([
+      createTask(newTasks[0]),
+      createTask(newTasks[1]),
+      createTask(newTasks[2]),
+      createTask(newTasks[3]),
+      createTask(newTasks[4]),
+      createTask(newTasks[5]),
+      createTask(newTasks[6]),
+    ]);
   };
 
   useEffect(() => {
