@@ -1,8 +1,8 @@
 import Cookies from "js-cookie";
 import { useState, useContext } from "react";
-import modalStyles from "../../../styles/modal.module.css";
-import homeStyles from "../../../styles/auth.module.css";
-import globalStyles from "../../../styles/global.module.css";
+import styles from "../../../styles/account.module.scss";
+import authStyles from "../../../styles/auth.module.scss";
+import baseStyles from "../../../styles/base.module.scss";
 import { xhr } from "../../../helpers/xhr";
 import Router from "next/router";
 
@@ -59,20 +59,20 @@ export default function AccountModal({ setModal }) {
 
   return (
     <>
-      <div className={modalStyles.modalBlock} />
+      <div className={styles.modalBlock} />
       <div
-        className={modalStyles.modalWrap}
+        className={styles.modalWrap}
         onClick={outsideClick}
         id="account_wrapper"
       >
         <div
-          className={modalStyles.accountModal}
+          className={styles.accountModal}
           onClick={() => {
             setNameWarn(null);
             setPasswordWarn(null);
           }}
         >
-          <div className={modalStyles.accountTitle}>Personal account</div>
+          <div className={styles.accountTitle}>Personal account</div>
           <FloatingLabel
             id="name"
             name="name"
@@ -80,17 +80,17 @@ export default function AccountModal({ setModal }) {
             className={
               nameWarn
                 ? name
-                  ? homeStyles.formInputFilledWarn
-                  : homeStyles.formInputWarn
+                  ? authStyles.formInputFilledWarn
+                  : authStyles.formInputWarn
                 : name
-                ? homeStyles.formInputFilled
-                : homeStyles.formInput
+                ? authStyles.formInputFilled
+                : authStyles.formInput
             }
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          {nameWarn && <div className={homeStyles.warn}>{nameWarn}</div>}
-          <div className={homeStyles.passwordContainer}>
+          {nameWarn && <div className={authStyles.warn}>{nameWarn}</div>}
+          <div className={authStyles.passwordContainer}>
             <FloatingLabel
               id="password"
               name="password"
@@ -98,11 +98,11 @@ export default function AccountModal({ setModal }) {
               className={
                 passwordWarn
                   ? password
-                    ? homeStyles.formInputFilledWarn
-                    : homeStyles.formInputWarn
+                    ? authStyles.formInputFilledWarn
+                    : authStyles.formInputWarn
                   : password
-                  ? homeStyles.formInputFilled
-                  : homeStyles.formInput
+                  ? authStyles.formInputFilled
+                  : authStyles.formInput
               }
               type={isPasswordVisible ? "text" : "password"}
               value={password}
@@ -111,7 +111,7 @@ export default function AccountModal({ setModal }) {
             <img
               src="/img/eye.svg"
               alt=" "
-              className={homeStyles.passwordEye}
+              className={authStyles.passwordEye}
               onClick={() => setPasswordVisibility(!isPasswordVisible)}
             />
           </div>
@@ -121,10 +121,10 @@ export default function AccountModal({ setModal }) {
           <div
             className={
               isUpdatingComplete
-                ? globalStyles.successButton
+                ? baseStyles.successButton
                 : isDataUpdating()
-                ? modalStyles.accountSecondaryButton
-                : modalStyles.accountPrimaryButton
+                ? styles.accountSecondaryButton
+                : styles.accountPrimaryButton
             }
             onClick={updateHandler}
           >
@@ -137,8 +137,8 @@ export default function AccountModal({ setModal }) {
           <div
             className={
               isDataUpdating() && !isUpdatingComplete
-                ? modalStyles.accountLinkDisabled
-                : modalStyles.accountLink
+                ? styles.accountLinkDisabled
+                : styles.accountLink
             }
             onClick={
               isDataUpdating() && !isUpdatingComplete

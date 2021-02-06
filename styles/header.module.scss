@@ -1,0 +1,45 @@
+.header {
+  height: 89px;
+  width: 100%;
+  padding: 20px 35px 23px 56px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.buttonsContainer {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  align-self: flex-start;
+}
+
+.header button {
+  width: 170px;
+  height: 50px;
+  color: #258efa;
+  border-radius: 3px;
+  opacity: 1;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: 21px;
+}
+
+.share_button {
+  border: 1px solid #258efa;
+  background-color: #ffffff;
+}
+
+.account_button {
+  background: #ecf5ff;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 18px;
+  margin-left: 20px;
+  margin-right: 0;
+}
+
+.account_button img {
+  margin-right: 18px;
+}

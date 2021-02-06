@@ -21,14 +21,14 @@
 }
 
 .title {
-  composes: title from "./global.module.css";
+  composes: title from "./base.module.scss";
   width: 100%;
   text-align: center;
   margin-bottom: 18px;
 }
 
 .description {
-  composes: description from "./global.module.css";
+  composes: description from "./base.module.scss";
   width: 100%;
   text-align: center;
   margin-bottom: 21px;
@@ -43,60 +43,56 @@
   position: relative;
   box-sizing: border-box;
   display: block;
-}
-
-.formInput input {
-  width: 100%;
-  height: 58px;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 15px;
-  line-height: 21px;
-  color: #696f75;
-  border: none;
-  box-sizing: border-box;
-  padding-left: 20px;
-  padding-right: 45px;
-  border-radius: 5px;
-}
-
-.formInput span {
-  font-style: normal;
-  font-weight: normal;
-  font-size: 15px;
-  line-height: 21px;
-  color: #696f75;
-  margin-left: 20px;
-  box-sizing: border-box;
-  left: 0;
-  padding: 20px 0 13px 0;
-  pointer-events: none;
-  position: absolute;
-  top: 0;
-  transition: font-size 200ms, all 200ms;
-  z-index: 1;
-}
-
-.formInput input:focus + span {
-  font-size: 13px;
-  color: #d8d8d8;
-  padding: 5px 4px 5px 4px;
-  top: -15px;
-  margin-left: 16px;
-  background-color: #fff;
+  input {
+    width: 100%;
+    height: 58px;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 15px;
+    line-height: 21px;
+    color: #696f75;
+    border: none;
+    box-sizing: border-box;
+    padding-left: 20px;
+    padding-right: 45px;
+    border-radius: 5px;
+    &:focus + span {
+      font-size: 13px;
+      color: #d8d8d8;
+      padding: 3px 4px 5px 4px;
+      top: -15px;
+      margin-left: 16px;
+      background-color: #fff;
+    }
+  }
+  span {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 15px;
+    line-height: 21px;
+    color: #696f75;
+    margin-left: 20px;
+    box-sizing: border-box;
+    left: 0;
+    padding-top: 18px;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    transition: font-size 200ms, all 200ms;
+    z-index: 1;
+  }
 }
 
 .formInputFilled {
   composes: formInput;
-}
-
-.formInputFilled span {
-  font-size: 13px !important;
-  color: #d8d8d8 !important;
-  padding: 5px 4px 5px 4px;
-  top: -15px;
-  margin-left: 16px;
-  background-color: #fff;
+  span {
+    font-size: 13px !important;
+    color: #d8d8d8 !important;
+    padding: 3px 4px 5px 4px;
+    top: -15px;
+    margin-left: 16px;
+    background-color: #fff;
+  }
 }
 
 .formInputWarn {
@@ -124,7 +120,7 @@
 }
 
 .primaryButton {
-  composes: primaryButton from "./global.module.css";
+  composes: primaryButton from "./base.module.scss";
   width: 100%;
   height: 60px;
   margin-bottom: 24px;
@@ -139,14 +135,14 @@
 }
 
 .linkDescription {
-  composes: description from "./global.module.css";
+  composes: description from "./base.module.scss";
   text-align: center;
   position: absolute;
   top: 421px;
 }
 
 .link {
-  composes: link from "./global.module.css";
+  composes: link from "./base.module.scss";
   text-align: center;
   position: absolute;
   top: 454px;

@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect, useRef } from "react";
-import styles from "../../../styles/dropdown.module.css";
+import styles from "../../../styles/projectsDropdown.module.scss";
 import TextTruncate from "react-text-truncate";
 
 import { If, Then, Else, When } from "react-if";

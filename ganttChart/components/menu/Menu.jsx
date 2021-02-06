@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "../../../pages/gantt/Gantt.module.css";
+import styles from "../../../styles/menu.module.scss";
 
 import ProjectsDropdown from "./ProjectsDropdown";
 import Tasks from "../tasks/Tasks";

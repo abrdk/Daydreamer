@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
 import Link from "next/link";
 import { useState, useContext } from "react";
-import styles from "../styles/auth.module.css";
+import styles from "../styles/auth.module.scss";
 import { xhr } from "../helpers/xhr";
 import Router from "next/router";
 import { When } from "react-if";

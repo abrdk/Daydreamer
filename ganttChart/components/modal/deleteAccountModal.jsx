@@ -1,5 +1,4 @@
-import modalStyles from "../../../styles/modal.module.css";
-import globalStyles from "../../../styles/global.module.css";
+import styles from "../../../styles/deleteAccount.module.scss";
 import { xhr } from "../../../helpers/xhr";
 import Router from "next/router";
 import { useContext } from "react";
@@ -28,28 +27,28 @@ export default function DeleteAccountModal({ setModal }) {
 
   return (
     <>
-      <div className={modalStyles.modalBlock} />
+      <div className={styles.modalBlock} />
       <div
-        className={modalStyles.modalWrap}
+        className={styles.modalWrap}
         onClick={outsideClick}
         id="delete_account_wrapper"
       >
-        <div className={modalStyles.deleteAccountModal}>
+        <div className={styles.deleteAccountModal}>
           <div>
-            <div className={modalStyles.deleteAccountTitle}>Delete account</div>
-            <div className={modalStyles.deleteAccountDescription}>
+            <div className={styles.deleteAccountTitle}>Delete account</div>
+            <div className={styles.deleteAccountDescription}>
               Are you sure you want to <br />
               delete your account?
             </div>
-            <div className={globalStyles.twoButtons}>
+            <div className={styles.twoButtons}>
               <div
-                className={modalStyles.deleteAccountSecondaryButton}
+                className={styles.deleteAccountSecondaryButton}
                 onClick={setModal.bind(null, "account")}
               >
                 No
               </div>
               <div
-                className={modalStyles.deleteAccountPrimaryButton}
+                className={styles.deleteAccountPrimaryButton}
                 onClick={deleteQuery}
               >
                 Yes

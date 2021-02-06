@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect, useRef } from "react";
-import styles from "../../../styles/tasks.module.css";
+import styles from "../../../styles/tasks.module.scss";
 
 import { TasksContext } from "../../context/tasks/TasksContext";
 

@@ -1,0 +1,33 @@
+.mainMenu {
+  z-index: 90;
+  width: 335px;
+  height: 100vh;
+  background: #ffffff;
+  position: fixed;
+  top: 0;
+  left: 0px;
+  transition: 0.3s;
+}
+
+.mainMenuOpened {
+  composes: mainMenu;
+  box-shadow: 50px 0px 50px rgba(9, 40, 72, 0.15);
+}
+
+.menuIconWrap {
+  background: rgba(51, 56, 61, 0.35);
+  z-index: 1000;
+  width: 35px;
+  height: 40px;
+  border-radius: 0px 100px 100px 0px;
+  left: 0;
+  top: 26px;
+  position: absolute;
+}
+
+.menuIconWrapOpened {
+  composes: menuIconWrap;
+  width: 40px;
+  border-radius: 100px;
+  left: 17px;
+}

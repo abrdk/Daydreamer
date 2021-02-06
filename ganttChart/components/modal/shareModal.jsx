@@ -1,4 +1,4 @@
-import styles from "../../../styles/modal.module.css";
+import styles from "../../../styles/share.module.scss";
 
 export default function ShareModal({ setModal }) {
   const copyLink = () => {

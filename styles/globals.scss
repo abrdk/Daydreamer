@@ -26,10 +26,11 @@ button {
   width: 100%;
   padding: 0;
   margin: 0;
+  &:hover {
+    opacity: 1;
+  }
 }
-button:hover {
-  opacity: 1;
-}
+
 input {
   font-family: "Noto Sans", sans-serif !important;
 }
@@ -43,14 +44,6 @@ input:focus {
 input::-moz-focus-inner {
   border: 0 !important;
   font-family: "Noto Sans", sans-serif !important;
-}
-
-input:active,
-input:focus {
-  outline: none !important;
-}
-input::-moz-focus-inner {
-  border: 0 !important;
 }
 
 * {
@@ -79,12 +72,15 @@ input::-moz-focus-inner {
   margin-left: 17px;
 }
 
+// scroll bar
+
 * {
   scrollbar-width: thin;
   scrollbar-color: #258efa #e5e8eb;
 }
 
 /* для Chrome/Edge/Safari */
+
 *::-webkit-scrollbar {
   height: 12px;
   width: 12px;

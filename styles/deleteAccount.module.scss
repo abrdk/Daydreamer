@@ -1,0 +1,65 @@
+/* Base */
+.modalBlock {
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  background: rgba(51, 56, 61, 0.35);
+  z-index: 100;
+}
+
+.modalWrap {
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 101;
+}
+
+.modal {
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  border-radius: 3px;
+  position: relative;
+}
+
+/* Delete Account */
+.deleteAccountModal {
+  composes: modal;
+  width: 420px;
+  height: 270px;
+  padding: 49px 40px 44px 40px;
+}
+
+.deleteAccountTitle {
+  composes: title from "./base.module.scss";
+  margin-bottom: 18px;
+  margin-top: 0;
+  text-align: center;
+}
+
+.deleteAccountDescription {
+  composes: description from "./base.module.scss";
+  margin-bottom: 33px;
+  text-align: center;
+  width: 100%;
+}
+
+.deleteAccountPrimaryButton {
+  composes: primaryButton from "./base.module.scss";
+  width: 160px;
+  height: 60px;
+}
+
+.deleteAccountSecondaryButton {
+  composes: secondaryButton from "./base.module.scss";
+  width: 160px;
+  height: 60px;
+}
+
+.twoButtons {
+  display: flex;
+  justify-content: space-between;
+}

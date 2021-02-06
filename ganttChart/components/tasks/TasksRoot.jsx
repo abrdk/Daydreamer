@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { When } from "react-if";
-import styles from "../../../styles/tasks.module.css";
+import styles from "../../../styles/tasks.module.scss";
 
 import Task from "./Task";
 

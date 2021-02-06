@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useState, useContext } from "react";
-import styles from "./Gantt.module.css";
+import styles from "../../styles/header.module.scss";
 import { When } from "react-if";
 
 import { Modal } from "../../ganttChart/components/modal/modal";

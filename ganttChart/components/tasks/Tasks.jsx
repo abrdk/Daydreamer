@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import styles from "../../../styles/tasks.module.css";
+import styles from "../../../styles/tasks.module.scss";
 
 import TasksRoot from "./TasksRoot";
 

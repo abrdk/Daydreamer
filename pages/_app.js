@@ -1,4 +1,4 @@
-import "../styles/globals.css";
+import "../styles/globals.scss";
 
 import { UsersProvider } from "../ganttChart/context/users/UsersContext";
 import { ProjectsProvider } from "../ganttChart/context/projects/ProjectsContext";

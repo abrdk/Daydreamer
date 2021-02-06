@@ -13,16 +13,14 @@
   line-height: 21px;
   margin: 0;
   border: 1px solid #9ccdff;
-}
-
-.baseButton:nth-child(1) {
-  border-radius: 3px 0px 0px 3px;
-  border-right: none;
-}
-
-.baseButton:nth-child(3) {
-  border-radius: 0px 3px 3px 0px;
-  border-left: none;
+  &:nth-child(1) {
+    border-radius: 3px 0px 0px 3px;
+    border-right: none;
+  }
+  &:nth-child(3) {
+    border-radius: 0px 3px 3px 0px;
+    border-left: none;
+  }
 }
 
 .inactiveButton {
