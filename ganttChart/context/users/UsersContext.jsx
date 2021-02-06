@@ -22,7 +22,7 @@ export function UsersProvider(props) {
       } else {
         dispatch({
           type: "SET_USER",
-          payload: { id: "", name: "", password: "" },
+          payload: { _id: "", name: "", password: "" },
         });
         if (Router.pathname != "/signup" && Router.pathname != "/login") {
           Router.push("/signup");
@@ -32,12 +32,12 @@ export function UsersProvider(props) {
   }, [data, error]);
 
   const [usersState, dispatch] = useReducer(UsersReducer, {
-    id: "",
+    _id: "",
     name: "",
     password: "",
     isUserLoaded: false,
   });
-  const { id, name, password, isUserLoaded } = usersState;
+  const { _id, name, password, isUserLoaded } = usersState;
 
   const setUser = (user) => {
     dispatch({
@@ -49,7 +49,7 @@ export function UsersProvider(props) {
   return (
     <UsersContext.Provider
       value={{
-        id,
+        _id,
         name,
         password,
         setUser,

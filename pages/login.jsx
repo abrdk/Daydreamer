@@ -17,7 +17,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setPasswordVisibility] = useState(false);
 
-  const { setUser, isUserLoaded } = useContext(UsersContext);
+  const { isUserLoaded, _id } = useContext(UsersContext);
 
   const query = async () => {
     const res = await xhr(
@@ -29,8 +29,7 @@ export default function Login() {
       "POST"
     );
     if (res.message === "ok") {
-      setUser(res.user);
-      Router.push("/gantt/new");
+      Router.reload();
     } else {
       if (res.errorType === "name") {
         setNameWarn(res.message);
@@ -41,7 +40,7 @@ export default function Login() {
   };
 
   return (
-    <When condition={isUserLoaded}>
+    <When condition={isUserLoaded && !_id}>
       <div
         className={styles.container}
         onClick={() => {

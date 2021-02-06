@@ -43,7 +43,7 @@ export default async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 12);
     const user = new User({ _id, name, password: hashedPassword });
     const u = await user.save();
-    const token = jwt.sign({ id: u.id, name, password }, "jwtSecret", {
+    const token = jwt.sign({ _id: u._id, name, password }, "jwtSecret", {
       expiresIn: "24h",
     });
     res.setHeader(
@@ -55,9 +55,7 @@ export default async (req, res) => {
         secure: true,
       })
     );
-    res
-      .status(201)
-      .json({ message: "ok", user: { token, id: u.id, name, password } });
+    res.status(201).json({ message: "ok", user: { _id, name, password } });
   } catch (e) {
     return res.status(500).json({ message: "Ошибка базы данных" });
   }

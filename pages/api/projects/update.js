@@ -17,7 +17,7 @@ export default async (req, res) => {
 
     const Project = getDB("Project");
     Project.findOneAndUpdate(
-      { _id, owner: user.id },
+      { _id, owner: user._id },
       { $set: { name, isCurrent } },
       {
         returnOriginal: false,

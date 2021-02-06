@@ -47,7 +47,7 @@ export default async (req, res) => {
       const User = getDB("User");
       const candidate = await User.findOne({ name });
 
-      if (candidate && candidate._id != user.id) {
+      if (candidate && candidate._id != user._id) {
         return res
           .status(400)
           .json({ message: "This name already exists", errorType: "name" });
@@ -66,7 +66,7 @@ export default async (req, res) => {
             return res.status(500).json({ message: "Ошибка базы данных" });
 
           const token = jwt.sign(
-            { id: result._id, name, password },
+            { _id: result._id, name, password },
             "jwtSecret",
             {
               expiresIn: "24h",
@@ -85,7 +85,7 @@ export default async (req, res) => {
 
           return res.status(201).json({
             message: "ok",
-            user: { token, id: result._id, name, password },
+            user: { id: user._id, name, password },
           });
         }
       );

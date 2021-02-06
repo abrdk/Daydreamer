@@ -14,7 +14,7 @@ export default async (req, res) => {
     }
 
     const Task = getDB("Task");
-    Task.find({ owner: user.id }, (err, docs) => {
+    Task.find({ owner: user._id }, (err, docs) => {
       if (err) return res.status(500).json({ message: "Ошибка базы данных" });
 
       return res.status(200).json({

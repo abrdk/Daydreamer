@@ -41,7 +41,7 @@ export default async (req, res) => {
 
     const Task = getDB("Task");
     Task.findOneAndUpdate(
-      { _id, owner: user.id },
+      { _id, owner: user._id },
       { $set: { name, description, dateStart, dateEnd, color, root, order } },
       {
         returnOriginal: false,

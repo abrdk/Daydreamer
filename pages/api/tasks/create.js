@@ -37,7 +37,7 @@ export default async (req, res) => {
     }
 
     const Project = getDB("Project");
-    Project.findOne({ owner: user.id, _id: project }, async (err, doc) => {
+    Project.findOne({ owner: user._id, _id: project }, async (err, doc) => {
       if (err) return res.status(500).json({ message: "Ошибка базы данных" });
 
       if (!doc) {
@@ -54,7 +54,7 @@ export default async (req, res) => {
         dateStart,
         dateEnd,
         color,
-        owner: user.id,
+        owner: user._id,
         project,
         root,
         order,

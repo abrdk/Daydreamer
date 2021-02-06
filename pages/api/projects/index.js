@@ -15,7 +15,7 @@ export default async (req, res) => {
     }
 
     const Project = getDB("Project");
-    Project.find({ owner: user.id }, (err, docs) => {
+    Project.find({ owner: user._id }, (err, docs) => {
       if (err) return res.status(500).json({ message: "Ошибка базы данных" });
 
       return res.status(200).json({

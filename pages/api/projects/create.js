@@ -16,7 +16,7 @@ export default async (req, res) => {
     }
 
     const Project = getDB("Project");
-    const project = new Project({ _id, name, owner: user.id, isCurrent });
+    const project = new Project({ _id, name, owner: user._id, isCurrent });
     const p = await project.save();
 
     return res.status(201).json({ message: "ok", project: p });

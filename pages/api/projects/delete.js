@@ -16,11 +16,11 @@ export default async (req, res) => {
     }
 
     const Project = getDB("Project");
-    Project.find({ owner: user.id }, (err, docs) => {
+    Project.find({ owner: user._id }, (err, docs) => {
       if (err) return res.status(500).json({ message: "Ошибка базы данных" });
 
       if (docs.length > 1) {
-        Project.findOneAndDelete({ _id, owner: user.id }, (err, doc) => {
+        Project.findOneAndDelete({ _id, owner: user._id }, (err, doc) => {
           if (err)
             return res.status(500).json({ message: "Ошибка базы данных" });
 

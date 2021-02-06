@@ -35,9 +35,13 @@ export default async (req, res) => {
         errorType: "password",
       });
     }
-    const token = jwt.sign({ id: candidate.id, name, password }, "jwtSecret", {
-      expiresIn: "24h",
-    });
+    const token = jwt.sign(
+      { _id: candidate._id, name, password },
+      "jwtSecret",
+      {
+        expiresIn: "24h",
+      }
+    );
     res.setHeader(
       "Set-Cookie",
       cookie.serialize("ganttToken", token, {
@@ -49,7 +53,7 @@ export default async (req, res) => {
     );
     return res.json({
       message: "ok",
-      user: { token, id: candidate.id, name, password },
+      user: { _id: candidate._id, name, password },
     });
   } catch (e) {
     return res.status(500).json({ message: "Ошибка базы данных" });

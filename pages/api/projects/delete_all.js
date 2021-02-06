@@ -15,7 +15,7 @@ export default async (req, res) => {
     }
 
     const Project = getDB("Project");
-    Project.deleteMany({ owner: user.id }, (err) => {
+    Project.deleteMany({ owner: user._id }, (err) => {
       if (err) return res.status(500).json({ message: "Ошибка базы данных" });
 
       return res.json({ message: "ok" });

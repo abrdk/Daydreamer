@@ -17,7 +17,7 @@ export default async (req, res) => {
 
     if (user) {
       const User = getDB("User");
-      User.findOneAndDelete({ _id: user.id }, (err, doc) => {
+      User.findOneAndDelete({ _id: user._id }, (err, doc) => {
         if (err) return res.status(500).json({ message: "Ошибка базы данных" });
         res.setHeader(
           "Set-Cookie",

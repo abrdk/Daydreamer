@@ -20,7 +20,7 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setPasswordVisibility] = useState(false);
 
-  const { isUserLoaded, setUser } = useContext(UsersContext);
+  const { isUserLoaded, setUser, _id } = useContext(UsersContext);
   const { createProject } = useContext(ProjectsContext);
   const { createInitialTasks } = useContext(TasksContext);
 
@@ -36,7 +36,6 @@ export default function Signup() {
     );
     if (res.message === "ok") {
       setUser(res.user);
-
       const projectId = nanoid();
       await Promise.all([
         createProject({
@@ -57,7 +56,7 @@ export default function Signup() {
   };
 
   return (
-    <When condition={isUserLoaded}>
+    <When condition={isUserLoaded && !_id}>
       <div
         className={styles.container}
         onClick={() => {
