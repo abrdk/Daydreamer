@@ -43,14 +43,14 @@ export default function Task({
     }
   };
 
-  const handleUpdate = (e) => {
-    updateTask({ ...task, name: e.target.value });
+  const handleUpdate = async (e) => {
+    await updateTask({ ...task, name: e.target.value });
   };
 
-  const handleBlur = (e) => {
+  const handleBlur = async (e) => {
     setTimeout(() => setUpdatingState(false), 150);
     if (!e.target.value) {
-      updateTask({ ...task, name: getDefaultName() });
+      await updateTask({ ...task, name: getDefaultName() });
     }
   };
 

@@ -39,7 +39,7 @@
   align-items: center;
   justify-content: space-between;
   position: relative;
-  padding: 0 16px 0 14px;
+  padding: 0 14px 0 14px;
   composes: placeholder;
 }
 
@@ -70,26 +70,20 @@
   display: block;
 }
 
-.pencilWrapper {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
 .pencil {
   composes: icon;
   width: 12px;
   height: 12px;
   z-index: 2000;
+  position: absolute;
 }
 
 .iconContainer {
   display: none;
-  height: 23px;
-  width: 23px;
+  height: 21px;
+  width: 21px;
   align-items: center;
   justify-content: center;
-  margin-left: 4.5px;
 }
 
 .option:hover .iconContainer {
@@ -124,6 +118,14 @@
   border: none;
   background: transparent;
   cursor: pointer;
+  padding: 0;
+  height: 21px;
+  margin-right: 1px;
+  z-index: 5000;
+}
+
+.option:hover .input {
+  margin-right: 50px;
 }
 
 .input:active,
@@ -153,7 +155,7 @@
 }
 
 .fakeTextWrapper {
-  position: relative;
+  position: absolute;
 }
 
 .fakeText {
@@ -162,7 +164,8 @@
   position: absolute;
   width: max-content;
   top: -10px;
-  left: 2px;
+  left: 0px;
+  white-space: pre;
 }
 
 .fakeTextVisible {
@@ -185,4 +188,26 @@
   justify-content: center;
   color: #258efa;
   cursor: pointer;
+}
+
+.textWrapper {
+  width: 100%;
+  margin-right: 5px;
+  padding-right: 1px;
+}
+
+.textOptionWrapper {
+  width: max-content;
+  padding-right: 1px;
+  margin-right: 35px;
+}
+
+.option:hover .textOptionWrapper {
+  margin-right: 0px;
+}
+
+.trash {
+  composes: icon;
+  position: absolute;
+  right: 14px;
 }

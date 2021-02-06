@@ -11,7 +11,7 @@ export default function Tasks() {
   const { tasks, createTask } = useContext(TasksContext);
   const { projects } = useContext(ProjectsContext);
 
-  const createHandle = () => {
+  const createHandle = async () => {
     const currentDate = new Date();
     let afterWeek = currentDate;
     afterWeek.setDate(afterWeek.getDate() + 7);
@@ -19,7 +19,7 @@ export default function Tasks() {
     const currentProject = projects.find((project) => project.isCurrent);
     const topLevelTasks = tasks.filter((task) => !task.root);
 
-    createTask({
+    await createTask({
       _id: nanoid(),
       name: "",
       description: "",

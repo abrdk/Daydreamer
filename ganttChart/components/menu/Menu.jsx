@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styles from "../../../pages/gantt/Gantt.module.css";
 
-import DropDown from "./DropDown";
+import ProjectsDropdown from "./ProjectsDropdown";
 import Tasks from "../tasks/Tasks";
 
 export default function Menu({ modal }) {
@@ -44,7 +44,10 @@ export default function Menu({ modal }) {
           transform: isMenuOpen ? "translateX(0)" : "translateX(-100%)",
         }}
       >
-        <DropDown isDropdownOpen={isDropdownOpen} setDropdown={setDropdown} />
+        <ProjectsDropdown
+          isDropdownOpen={isDropdownOpen}
+          setDropdown={setDropdown}
+        />
         <Tasks />
       </div>
     </>
