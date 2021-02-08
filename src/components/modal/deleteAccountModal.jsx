@@ -1,14 +1,15 @@
 import styles from "@/styles/deleteAccount.module.scss";
-import { xhr } from "@/helpers/xhr";
 import Router from "next/router";
 import { useContext } from "react";
 
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 import { TasksContext } from "@/src/context/tasks/TasksContext";
+import { UsersContext } from "@/src/context/users/UsersContext";
 
 export default function DeleteAccountModal({ setModal }) {
   const { deleteAllProjects } = useContext(ProjectsContext);
   const { deleteAllTasks } = useContext(TasksContext);
+  const { deleteUser } = useContext(UsersContext);
 
   const outsideClick = (e) => {
     if (e.target.id === "delete_account_wrapper") {
@@ -17,11 +18,8 @@ export default function DeleteAccountModal({ setModal }) {
   };
 
   const deleteQuery = async () => {
-    await Promise.all([
-      deleteAllTasks(),
-      deleteAllProjects(),
-      xhr("/auth/delete", {}, "DELETE"),
-    ]);
+    await Promise.all([deleteAllTasks(), deleteAllProjects()]);
+    await deleteUser();
     Router.reload();
   };
 

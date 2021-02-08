@@ -3,7 +3,6 @@ import { useState, useContext } from "react";
 import styles from "@/styles/account.module.scss";
 import authStyles from "@/styles/auth.module.scss";
 import baseStyles from "@/styles/base.module.scss";
-import { xhr } from "@/helpers/xhr";
 import Router from "next/router";
 import FloatingLabel from "floating-label-react";
 
@@ -35,14 +34,10 @@ export default function AccountModal({ setModal }) {
       Cookies.remove("ganttToken", { path: "/" });
       Router.reload();
     } else if (isDataUpdating() && !isUpdatingComplete) {
-      const res = await xhr(
-        "/auth/update",
-        {
-          name,
-          password,
-        },
-        "PUT"
-      );
+      const res = await userCtx.updateUser({
+        name,
+        password,
+      });
       if (res.message === "ok") {
         userCtx.setUser(res.user);
         setUpdateState(true);

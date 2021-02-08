@@ -1,6 +1,7 @@
 import React, { createContext, useReducer, useEffect } from "react";
 import useSWR from "swr";
 import Router from "next/router";
+import { xhr } from "@/helpers/xhr";
 
 import UsersReducer from "@/src/context/users/UsersReducer";
 
@@ -46,14 +47,45 @@ export function UsersProvider(props) {
     });
   };
 
+  const signup = async (user) => {
+    try {
+      const res = await xhr("/auth/signup", user, "POST");
+      return res;
+    } catch (e) {}
+  };
+
+  const login = async (user) => {
+    try {
+      const res = await xhr("/auth/login", user, "POST");
+      return res;
+    } catch (e) {}
+  };
+
+  const updateUser = async (user) => {
+    try {
+      const res = await xhr("/auth/update", user, "PUT");
+      return res;
+    } catch (e) {}
+  };
+
+  const deleteUser = async () => {
+    try {
+      await xhr("/auth/delete", {}, "DELETE");
+    } catch (e) {}
+  };
+
   return (
     <UsersContext.Provider
       value={{
         _id,
         name,
         password,
-        setUser,
         isUserLoaded,
+        setUser,
+        signup,
+        login,
+        updateUser,
+        deleteUser,
       }}
     >
       {props.children}

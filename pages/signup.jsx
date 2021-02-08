@@ -2,7 +2,6 @@ import { nanoid } from "nanoid";
 import Link from "next/link";
 import { useState, useContext } from "react";
 import styles from "@/styles/auth.module.scss";
-import { xhr } from "@/helpers/xhr";
 import Router from "next/router";
 import { When } from "react-if";
 import FloatingLabel from "floating-label-react";
@@ -19,20 +18,16 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setPasswordVisibility] = useState(false);
 
-  const { isUserLoaded, setUser, _id } = useContext(UsersContext);
+  const { isUserLoaded, setUser, _id, signup } = useContext(UsersContext);
   const { createProject } = useContext(ProjectsContext);
   const { createInitialTasks } = useContext(TasksContext);
 
   const query = async () => {
-    const res = await xhr(
-      "/auth/signup",
-      {
-        _id: nanoid(),
-        name,
-        password,
-      },
-      "POST"
-    );
+    const res = await signup({
+      _id: nanoid(),
+      name,
+      password,
+    });
     if (res.message === "ok") {
       setUser(res.user);
       const projectId = nanoid();
@@ -125,35 +120,3 @@ export default function Signup() {
     </When>
   );
 }
-
-// export async function getServerSideProps(ctx) {
-//   let user;
-
-//   try {
-//     const token = cookie.parse(ctx.req.headers.cookie).ganttToken;
-//     user = jwt.verify(token, "jwtSecret");
-//   } catch (e) {
-//     ctx.res.setHeader(
-//       "Set-Cookie",
-//       cookie.serialize("ganttToken", "", {
-//         maxAge: 0,
-//         path: "/",
-//         sameSite: true,
-//         secure: true,
-//       })
-//     );
-//   }
-
-//   if (user) {
-//     return {
-//       redirect: {
-//         destination: "/gantt/new",
-//         permanent: false,
-//       },
-//     };
-//   }
-
-//   return {
-//     props: {},
-//   };
-// }

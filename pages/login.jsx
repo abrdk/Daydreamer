@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { useState, useContext } from "react";
-import { xhr } from "@/helpers/xhr";
 import Router from "next/router";
 import styles from "@/styles/auth.module.scss";
 import { When } from "react-if";
@@ -16,17 +15,13 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setPasswordVisibility] = useState(false);
 
-  const { isUserLoaded, _id } = useContext(UsersContext);
+  const { isUserLoaded, _id, login } = useContext(UsersContext);
 
   const query = async () => {
-    const res = await xhr(
-      "/auth/login",
-      {
-        name,
-        password,
-      },
-      "POST"
-    );
+    const res = await login({
+      name,
+      password,
+    });
     if (res.message === "ok") {
       Router.reload();
     } else {
