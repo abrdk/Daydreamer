@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import styles from "../../../styles/projectsDropdown.module.scss";
-import TextTruncate from "react-text-truncate";
+import Truncate from "react-truncate";
 import { If, Then, Else, When } from "react-if";
 
 import ProjectOption from "./ProjectOption";
@@ -28,12 +28,9 @@ export default function ProjectsDropdown({ isDropdownOpen, setDropdown }) {
         className={isDropdownOpen ? styles.rootOpened : styles.root}
         onClick={() => setDropdown(!isDropdownOpen)}
       >
-        <TextTruncate
-          line={1}
-          truncateText="…"
-          text={selectedProject.name}
-          containerClassName={styles.textWrapper}
-        />
+        <Truncate lines={1} width={185}>
+          {selectedProject.name}
+        </Truncate>
         <If condition={isDropdownOpen}>
           <Then>
             <img src="/img/arrowUp.svg" alt=" " />

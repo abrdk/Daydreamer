@@ -1,11 +1,11 @@
 import { useContext } from "react";
 import styles from "../../../styles/tasks.module.scss";
+import { nanoid } from "nanoid";
 
 import TasksRoot from "./TasksRoot";
 
 import { TasksContext } from "../../context/tasks/TasksContext";
 import { ProjectsContext } from "../../context/projects/ProjectsContext";
-import { nanoid } from "nanoid";
 
 export default function Tasks() {
   const { tasks, createTask } = useContext(TasksContext);

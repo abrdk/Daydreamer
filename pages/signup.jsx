@@ -5,7 +5,6 @@ import styles from "../styles/auth.module.scss";
 import { xhr } from "../helpers/xhr";
 import Router from "next/router";
 import { When } from "react-if";
-
 import FloatingLabel from "floating-label-react";
 
 import { UsersContext } from "../ganttChart/context/users/UsersContext";

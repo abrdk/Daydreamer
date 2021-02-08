@@ -5,7 +5,6 @@ import authStyles from "../../../styles/auth.module.scss";
 import baseStyles from "../../../styles/base.module.scss";
 import { xhr } from "../../../helpers/xhr";
 import Router from "next/router";
-
 import FloatingLabel from "floating-label-react";
 
 import { UsersContext } from "../../context/users/UsersContext";
@@ -47,6 +46,7 @@ export default function AccountModal({ setModal }) {
       if (res.message === "ok") {
         userCtx.setUser(res.user);
         setUpdateState(true);
+        setTimeout(() => setUpdateState(false), 1000);
       } else {
         if (res.errorType === "name") {
           setNameWarn(res.message);

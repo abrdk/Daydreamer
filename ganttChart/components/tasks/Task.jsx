@@ -1,11 +1,10 @@
 import { useState, useContext, useEffect, useRef } from "react";
 import styles from "../../../styles/tasks.module.scss";
+import { When, If, Then, Else } from "react-if";
+import Truncate from "react-truncate";
+import { nanoid } from "nanoid";
 
 import { TasksContext } from "../../context/tasks/TasksContext";
-
-import { When, If, Then, Else } from "react-if";
-import TextTruncate from "react-text-truncate";
-import { nanoid } from "nanoid";
 
 export default function Task({
   task,
@@ -29,7 +28,7 @@ export default function Task({
       ? `Task name #${task.order + 1}`
       : `Subtask name #${task.order + 1}`;
 
-  const startUpdateHandle = (e) => {
+  const startUpdateHandler = (e) => {
     if (
       e.target != input.current &&
       e.target != arrow.current &&
@@ -43,18 +42,18 @@ export default function Task({
     }
   };
 
-  const handleUpdate = async (e) => {
+  const updateHandler = async (e) => {
     await updateTask({ ...task, name: e.target.value });
   };
 
-  const handleBlur = async (e) => {
+  const blurHandler = async (e) => {
     setTimeout(() => setUpdatingState(false), 150);
     if (!e.target.value) {
       await updateTask({ ...task, name: getDefaultName() });
     }
   };
 
-  const openSubtasksHandle = () => {
+  const openSubtasksHandler = () => {
     setSubtasksState(
       isSubtasksOpened.map((bool, i) => {
         if (i == task.order) {
@@ -74,7 +73,7 @@ export default function Task({
     }
 
     if (!isSubtasksOpened[task.order]) {
-      openSubtasksHandle();
+      openSubtasksHandler();
     }
 
     await createTask({
@@ -100,7 +99,7 @@ export default function Task({
   }, [isUpdating]);
 
   return (
-    <div className={styles.task} onClick={startUpdateHandle}>
+    <div className={styles.task} onClick={startUpdateHandler}>
       <When condition={hasSubtasks}>
         <img
           className={
@@ -113,7 +112,7 @@ export default function Task({
           }
           alt=" "
           ref={arrow}
-          onClick={openSubtasksHandle}
+          onClick={openSubtasksHandler}
         />
       </When>
       <If condition={isUpdating}>
@@ -122,8 +121,8 @@ export default function Task({
             value={task.name}
             className={styles.input}
             ref={input}
-            onChange={handleUpdate}
-            onBlur={handleBlur}
+            onChange={updateHandler}
+            onBlur={blurHandler}
           />
           <span
             className={task.name ? styles.fakeText : styles.fakeTextVisible}
@@ -133,13 +132,9 @@ export default function Task({
           </span>
         </Then>
         <Else>
-          <TextTruncate
-            line={1}
-            element="span"
-            truncateText="…"
-            text={task.name}
-            containerClassName={styles.textWrapper}
-          />
+          <Truncate lines={1} width={240}>
+            {task.name}
+          </Truncate>
         </Else>
       </If>
       <img

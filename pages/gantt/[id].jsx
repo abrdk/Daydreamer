@@ -2,6 +2,7 @@ import Head from "next/head";
 import { useState, useContext } from "react";
 import styles from "../../styles/header.module.scss";
 import { When } from "react-if";
+import Truncate from "react-truncate";
 
 import { Modal } from "../../ganttChart/components/modal/modal";
 import { ViewSwitcher } from "../../ganttChart/components/viewSwitcher/viewSwitcher";
@@ -55,11 +56,9 @@ export default function Gantt() {
                 onClick={setModal.bind(null, "account")}
               >
                 <img src="/img/avatar.svg" alt=" " />{" "}
-                <span>
-                  {userCtx.name.length > 10
-                    ? userCtx.name.slice(0, 10) + "..."
-                    : userCtx.name}
-                </span>
+                <Truncate lines={1} width={100}>
+                  {userCtx.name}
+                </Truncate>
               </button>
             </div>
           </div>

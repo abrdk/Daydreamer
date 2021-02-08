@@ -1,13 +1,12 @@
 import { useState, useContext, useEffect, useRef } from "react";
 import styles from "../../../styles/projectsDropdown.module.scss";
-import TextTruncate from "react-text-truncate";
-
+import Truncate from "react-truncate";
 import { If, Then, Else, When } from "react-if";
 
 import { ProjectsContext } from "../../context/projects/ProjectsContext";
 
 export default function Option({ project, projectIndex }) {
-  const { projects, createProject, updateProject, deleteProject } = useContext(
+  const { projects, updateProject, deleteProject } = useContext(
     ProjectsContext
   );
   let selectedProject = projects.find((project) => project.isCurrent);
@@ -86,7 +85,12 @@ export default function Option({ project, projectIndex }) {
 
   useEffect(() => {
     if (input.current && fakeText.current) {
-      input.current.style.width = fakeText.current.offsetWidth + "px";
+      const textWidth = fakeText.current.offsetWidth;
+      if (textWidth > 295) {
+        input.current.style.width = "295px";
+      } else {
+        input.current.style.width = textWidth + "px";
+      }
     }
     if (pencil.current && fakeText.current) {
       const textWidth = fakeText.current.offsetWidth + 14 + 10;
@@ -120,13 +124,9 @@ export default function Option({ project, projectIndex }) {
           />
         </Then>
         <Else>
-          <TextTruncate
-            line={1}
-            truncateText="…"
-            element="span"
-            text={project.name}
-            containerClassName={styles.textOptionWrapper}
-          />
+          <Truncate lines={1} width={300}>
+            {project.name}
+          </Truncate>
         </Else>
       </If>
       <div className={styles.fakeTextWrapper}>
