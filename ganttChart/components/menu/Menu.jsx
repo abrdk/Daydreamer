@@ -4,38 +4,18 @@ import styles from "../../../styles/menu.module.scss";
 import ProjectsDropdown from "./ProjectsDropdown";
 import Tasks from "../tasks/Tasks";
 
-export default function Menu({ modal }) {
+export default function Menu() {
   const [isMenuOpen, setMenu] = useState(false);
-
   const [isDropdownOpen, setDropdown] = useState(false);
+
+  const openMenuHandler = () => {
+    setMenu(!isMenuOpen);
+  };
 
   return (
     <>
-      <div
-        className={
-          isMenuOpen
-            ? modal || isDropdownOpen
-              ? styles.menuIconWrapOpened
-              : ""
-            : modal
-            ? styles.menuIconWrap
-            : ""
-        }
-        onClick={() => setDropdown(!isDropdownOpen)}
-      ></div>
-      <div
-        id="mainMenuLeft"
-        className="mainMenuLeft"
-        onClick={() => {
-          document.querySelector("#mainMenuLeft").classList.toggle("active");
-          setMenu(!isMenuOpen);
-        }}
-      >
-        {isMenuOpen ? (
-          <img src="/img/arrowLeft.svg" alt="close" />
-        ) : (
-          <img src="/img/arrowRight.svg" alt="close" />
-        )}
+      <div className={styles.iconOpen} onClick={openMenuHandler}>
+        <img src="/img/arrowRight.svg" alt="close" />
       </div>
 
       <div
@@ -44,6 +24,9 @@ export default function Menu({ modal }) {
           transform: isMenuOpen ? "translateX(0)" : "translateX(-100%)",
         }}
       >
+        <div className={styles.iconClose} onClick={openMenuHandler}>
+          <img src="/img/arrowLeft.svg" alt="close" />
+        </div>
         <ProjectsDropdown
           isDropdownOpen={isDropdownOpen}
           setDropdown={setDropdown}
