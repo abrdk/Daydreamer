@@ -1,8 +1,8 @@
 import { useState } from "react";
-import styles from "../../../styles/menu.module.scss";
+import styles from "@/styles/menu.module.scss";
 
-import ProjectsDropdown from "./ProjectsDropdown";
-import Tasks from "../tasks/Tasks";
+import ProjectsDropdown from "@/src/components/projects/ProjectsDropdown";
+import Tasks from "@/src/components/tasks/Tasks";
 
 export default function Menu() {
   const [isMenuOpen, setMenu] = useState(false);

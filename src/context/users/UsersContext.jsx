@@ -2,7 +2,7 @@ import React, { createContext, useReducer, useEffect } from "react";
 import useSWR from "swr";
 import Router from "next/router";
 
-import UsersReducer from "./UsersReducer";
+import UsersReducer from "@/src/context/users/UsersReducer";
 
 export const UsersContext = createContext();
 

@@ -1,9 +1,9 @@
 import { useState, useContext, useEffect, useRef } from "react";
-import styles from "../../../styles/projectsDropdown.module.scss";
+import styles from "@/styles/projectsDropdown.module.scss";
 import Truncate from "react-truncate";
 import { If, Then, Else, When } from "react-if";
 
-import { ProjectsContext } from "../../context/projects/ProjectsContext";
+import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 
 export default function Option({ project, projectIndex }) {
   const { projects, updateProject, deleteProject } = useContext(

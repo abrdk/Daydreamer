@@ -1,15 +1,15 @@
 import { nanoid } from "nanoid";
 import Link from "next/link";
 import { useState, useContext } from "react";
-import styles from "../styles/auth.module.scss";
-import { xhr } from "../helpers/xhr";
+import styles from "@/styles/auth.module.scss";
+import { xhr } from "@/helpers/xhr";
 import Router from "next/router";
 import { When } from "react-if";
 import FloatingLabel from "floating-label-react";
 
-import { UsersContext } from "../ganttChart/context/users/UsersContext";
-import { ProjectsContext } from "../ganttChart/context/projects/ProjectsContext";
-import { TasksContext } from "../ganttChart/context/tasks/TasksContext";
+import { UsersContext } from "@/src/context/users/UsersContext";
+import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
+import { TasksContext } from "@/src/context/tasks/TasksContext";
 
 export default function Signup() {
   const [nameWarn, setNameWarn] = useState("");

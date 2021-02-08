@@ -1,6 +1,6 @@
-import AccountModal from "./accountModal";
-import DeleteAccountModal from "./deleteAccountModal";
-import ShareModal from "./shareModal";
+import AccountModal from "@/src/components/modal/accountModal";
+import DeleteAccountModal from "@/src/components/modal/deleteAccountModal";
+import ShareModal from "@/src/components/modal/shareModal";
 
 export const Modal = ({ modal, setModal, id }) => {
   if (!modal) return null;

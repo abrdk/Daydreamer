@@ -1,7 +1,7 @@
 import * as cookie from "cookie";
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const getDB = require("../../../helpers/getDb.js");
+const getDB = require("@/helpers/getDb.js");
 
 export default async (req, res) => {
   res.setHeader("Content-Type", "application/json");

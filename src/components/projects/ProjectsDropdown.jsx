@@ -1,12 +1,12 @@
 import { nanoid } from "nanoid";
 import { useContext } from "react";
-import styles from "../../../styles/projectsDropdown.module.scss";
+import styles from "@/styles/projectsDropdown.module.scss";
 import Truncate from "react-truncate";
 import { If, Then, Else, When } from "react-if";
 
-import ProjectOption from "./ProjectOption";
+import ProjectOption from "@/src/components/projects/ProjectOption";
 
-import { ProjectsContext } from "../../context/projects/ProjectsContext";
+import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 
 export default function ProjectsDropdown({ isDropdownOpen, setDropdown }) {
   const { projects, createProject } = useContext(ProjectsContext);

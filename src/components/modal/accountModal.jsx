@@ -1,13 +1,13 @@
 import Cookies from "js-cookie";
 import { useState, useContext } from "react";
-import styles from "../../../styles/account.module.scss";
-import authStyles from "../../../styles/auth.module.scss";
-import baseStyles from "../../../styles/base.module.scss";
-import { xhr } from "../../../helpers/xhr";
+import styles from "@/styles/account.module.scss";
+import authStyles from "@/styles/auth.module.scss";
+import baseStyles from "@/styles/base.module.scss";
+import { xhr } from "@/helpers/xhr";
 import Router from "next/router";
 import FloatingLabel from "floating-label-react";
 
-import { UsersContext } from "../../context/users/UsersContext";
+import { UsersContext } from "@/src/context/users/UsersContext";
 
 export default function AccountModal({ setModal }) {
   const userCtx = useContext(UsersContext);

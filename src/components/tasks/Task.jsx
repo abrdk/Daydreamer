@@ -1,10 +1,10 @@
 import { useState, useContext, useEffect, useRef } from "react";
-import styles from "../../../styles/tasks.module.scss";
+import styles from "@/styles/tasks.module.scss";
 import { When, If, Then, Else } from "react-if";
 import Truncate from "react-truncate";
 import { nanoid } from "nanoid";
 
-import { TasksContext } from "../../context/tasks/TasksContext";
+import { TasksContext } from "@/src/context/tasks/TasksContext";
 
 export default function Task({
   task,

@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { useState, useContext } from "react";
-import { xhr } from "../helpers/xhr";
+import { xhr } from "@/helpers/xhr";
 import Router from "next/router";
-import styles from "../styles/auth.module.scss";
+import styles from "@/styles/auth.module.scss";
 import { When } from "react-if";
 import FloatingLabel from "floating-label-react";
 
-import { UsersContext } from "../ganttChart/context/users/UsersContext";
+import { UsersContext } from "@/src/context/users/UsersContext";
 
 export default function Login() {
   const [nameWarn, setNameWarn] = useState("");

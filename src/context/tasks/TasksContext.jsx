@@ -1,9 +1,9 @@
-import { xhr } from "../../../helpers/xhr";
+import { xhr } from "@/helpers/xhr";
 import { nanoid } from "nanoid";
 import useSWR from "swr";
 import React, { createContext, useReducer, useEffect } from "react";
 
-import TasksReducer from "./TasksReducer";
+import TasksReducer from "@/src/context/tasks/TasksReducer";
 
 export const TasksContext = createContext();
 

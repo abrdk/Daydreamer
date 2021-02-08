@@ -1,8 +1,8 @@
-import "../styles/globals.scss";
+import "@/styles/globals.scss";
 
-import { UsersProvider } from "../ganttChart/context/users/UsersContext";
-import { ProjectsProvider } from "../ganttChart/context/projects/ProjectsContext";
-import { TasksProvider } from "../ganttChart/context/tasks/TasksContext";
+import { UsersProvider } from "@/src/context/users/UsersContext";
+import { ProjectsProvider } from "@/src/context/projects/ProjectsContext";
+import { TasksProvider } from "@/src/context/tasks/TasksContext";
 
 export default function MyApp({ Component, pageProps }) {
   return (

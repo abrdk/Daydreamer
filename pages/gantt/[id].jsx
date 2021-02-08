@@ -1,17 +1,17 @@
 import Head from "next/head";
 import { useState, useContext } from "react";
-import styles from "../../styles/header.module.scss";
+import styles from "@/styles/header.module.scss";
 import { When } from "react-if";
 import Truncate from "react-truncate";
 
-import { Modal } from "../../ganttChart/components/modal/modal";
-import { ViewSwitcher } from "../../ganttChart/components/viewSwitcher/viewSwitcher";
-import { ViewMode } from "../../ganttChart/types/public-types";
-import Menu from "../../ganttChart/components/menu/Menu";
+import { Modal } from "@/src/components/modal/modal";
+import { ViewSwitcher } from "@/src/components/viewSwitcher/viewSwitcher";
+import { ViewMode } from "@/src/types/public-types";
+import Menu from "@/src/components/menu/Menu";
 
-import { UsersContext } from "../../ganttChart/context/users/UsersContext";
-import { ProjectsContext } from "../../ganttChart/context/projects/ProjectsContext";
-import { TasksContext } from "../../ganttChart/context/tasks/TasksContext";
+import { UsersContext } from "@/src/context/users/UsersContext";
+import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
+import { TasksContext } from "@/src/context/tasks/TasksContext";
 
 // name of project
 let id = "new";

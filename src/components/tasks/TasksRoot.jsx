@@ -1,10 +1,10 @@
 import { useContext, useState } from "react";
 import { When } from "react-if";
-import styles from "../../../styles/tasks.module.scss";
+import styles from "@/styles/tasks.module.scss";
 
-import Task from "./Task";
+import Task from "@/src/components/tasks/Task";
 
-import { TasksContext } from "../../context/tasks/TasksContext";
+import { TasksContext } from "@/src/context/tasks/TasksContext";
 
 export default function TasksRoot({ root }) {
   const { tasks } = useContext(TasksContext);

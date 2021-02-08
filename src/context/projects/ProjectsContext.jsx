@@ -1,8 +1,8 @@
-import { xhr } from "../../../helpers/xhr";
+import { xhr } from "@/helpers/xhr";
 import React, { createContext, useReducer, useEffect } from "react";
 import useSWR from "swr";
 
-import ProjectsReducer from "./ProjectsReducer";
+import ProjectsReducer from "@/src/context/projects/ProjectsReducer";
 
 export const ProjectsContext = createContext();
 

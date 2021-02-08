@@ -1,10 +1,10 @@
-import styles from "../../../styles/deleteAccount.module.scss";
-import { xhr } from "../../../helpers/xhr";
+import styles from "@/styles/deleteAccount.module.scss";
+import { xhr } from "@/helpers/xhr";
 import Router from "next/router";
 import { useContext } from "react";
 
-import { ProjectsContext } from "../../context/projects/ProjectsContext";
-import { TasksContext } from "../../context/tasks/TasksContext";
+import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
+import { TasksContext } from "@/src/context/tasks/TasksContext";
 
 export default function DeleteAccountModal({ setModal }) {
   const { deleteAllProjects } = useContext(ProjectsContext);
