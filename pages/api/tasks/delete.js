@@ -19,6 +19,6 @@ export default async (req, res) => {
     await Task.findOneAndDelete({ _id: id, owner: user._id });
     return res.json({ message: "ok" });
   } catch (e) {
-    return res.status(500).json({ message: "Ошибка базы данных" });
+    return res.status(500).json({ message: "Server error" });
   }
 };

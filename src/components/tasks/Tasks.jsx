@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import styles from "@/styles/tasks.module.scss";
 import { nanoid } from "nanoid";
+import Scrollbar from "react-scrollbars-custom";
 
 import TasksRoot from "@/src/components/tasks/TasksRoot";
 
@@ -39,9 +40,10 @@ export default function Tasks() {
         <div className={styles.tasksHeader}>TASK NAME</div>
       </div>
       <div className={styles.line}></div>
-      <div className={styles.tasksRoot}>
+      <Scrollbar className={styles.tasksRoot}>
         <TasksRoot root={""} />
-      </div>
+      </Scrollbar>
+      <div className={styles.tasksRoot}></div>
       <div className={styles.newTaskBtn} onClick={createHandle}>
         + New Task
       </div>

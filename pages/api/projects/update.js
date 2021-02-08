@@ -29,6 +29,6 @@ export default async (req, res) => {
       project: result,
     });
   } catch (e) {
-    return res.status(500).json({ message: "Ошибка базы данных" });
+    return res.status(500).json({ message: "Server error" });
   }
 };

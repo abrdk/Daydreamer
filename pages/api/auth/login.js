@@ -55,6 +55,6 @@ export default async (req, res) => {
       user: { _id: candidate._id, name, password },
     });
   } catch (e) {
-    return res.status(500).json({ message: "Ошибка базы данных" });
+    return res.status(500).json({ message: "Server error" });
   }
 };

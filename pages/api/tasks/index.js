@@ -20,6 +20,6 @@ export default async (req, res) => {
       tasks,
     });
   } catch (e) {
-    return res.status(500).json({ message: "Ошибка базы данных", e });
+    return res.status(500).json({ message: "Server error", e });
   }
 };

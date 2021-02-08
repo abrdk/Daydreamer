@@ -38,7 +38,7 @@ export default async (req, res) => {
 
     const Project = getDB("Project");
     Project.findOne({ owner: user._id, _id: project }, async (err, doc) => {
-      if (err) return res.status(500).json({ message: "Ошибка базы данных" });
+      if (err) return res.status(500).json({ message: "Server error" });
 
       if (!doc) {
         return res.status(400).json({
@@ -63,6 +63,6 @@ export default async (req, res) => {
       return res.status(201).json({ message: "ok", task: t });
     });
   } catch (e) {
-    return res.status(500).json({ message: "Ошибка базы данных" });
+    return res.status(500).json({ message: "Server error" });
   }
 };

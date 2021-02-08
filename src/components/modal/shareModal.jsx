@@ -1,8 +1,11 @@
 import styles from "@/styles/share.module.scss";
+import { useRef } from "react";
 
 export default function ShareModal({ setModal }) {
+  const link = useRef(null);
+
   const copyLink = () => {
-    document.querySelector("#link").select();
+    link.current.select();
     document.execCommand("copy");
   };
 
@@ -26,7 +29,7 @@ export default function ShareModal({ setModal }) {
             <label>Your link</label>
             <input
               type="text"
-              id="link"
+              ref={link}
               readOnly={true}
               value={window.location.href}
               onMouseDown={copyLink}
