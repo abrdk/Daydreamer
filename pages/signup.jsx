@@ -39,7 +39,7 @@ export default function Signup() {
         createInitialTasks({ project: projectId }),
       ]);
 
-      Router.push("/gantt/new");
+      Router.reload();
     } else {
       if (res.errorType === "name") {
         setNameWarn(res.message);

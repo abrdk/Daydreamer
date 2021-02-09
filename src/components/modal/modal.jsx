@@ -2,7 +2,7 @@ import AccountModal from "@/src/components/modal/accountModal";
 import DeleteAccountModal from "@/src/components/modal/deleteAccountModal";
 import ShareModal from "@/src/components/modal/shareModal";
 
-export const Modal = ({ modal, setModal, id }) => {
+export const Modal = ({ modal, setModal }) => {
   if (!modal) return null;
 
   if (modal === "share") {

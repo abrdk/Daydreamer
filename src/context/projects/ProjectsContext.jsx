@@ -1,12 +1,14 @@
 import { xhr } from "@/helpers/xhr";
 import React, { createContext, useReducer, useEffect } from "react";
 import useSWR from "swr";
+import { useRouter } from "next/router";
 
 import ProjectsReducer from "@/src/context/projects/ProjectsReducer";
 
 export const ProjectsContext = createContext();
 
 export function ProjectsProvider(props) {
+  const router = useRouter();
   const fetcher = (...args) => fetch(...args).then((res) => res.json());
   const { data, error } = useSWR(`/api/projects/`, fetcher);
   useEffect(() => {
@@ -48,7 +50,7 @@ export function ProjectsProvider(props) {
         },
       });
 
-      const res = await xhr(
+      await xhr(
         "/projects/create",
         {
           ...project,
@@ -66,7 +68,7 @@ export function ProjectsProvider(props) {
         payload: project,
       });
 
-      const res = await xhr("/projects/update", project, "PUT");
+      await xhr("/projects/update", project, "PUT");
     } catch (e) {}
   };
 
@@ -77,7 +79,7 @@ export function ProjectsProvider(props) {
         payload: { _id },
       });
 
-      const res = await xhr(
+      await xhr(
         "/projects/delete",
         {
           _id,
@@ -92,6 +94,33 @@ export function ProjectsProvider(props) {
       await xhr("/projects/delete_all", {}, "DELETE");
     } catch (e) {}
   };
+
+  let currentProject = projects.find((project) => project.isCurrent);
+  if (!currentProject) {
+    currentProject = projects[0];
+  }
+
+  useEffect(async () => {
+    if (currentProject && currentProject._id != router.query.id) {
+      router.push(`/gantt/${currentProject._id}`);
+    }
+  }, [currentProject, router.query.id]);
+
+  useEffect(async () => {
+    if (
+      currentProject &&
+      currentProject._id != router.query.id &&
+      isProjectsLoaded
+    ) {
+      const project = projects.find((p) => p._id == router.query.id);
+      if (project) {
+        await Promise.all([
+          updateProject({ ...currentProject, isCurrent: false }),
+          updateProject({ ...project, isCurrent: true }),
+        ]);
+      }
+    }
+  }, [isProjectsLoaded]);
 
   return (
     <ProjectsContext.Provider

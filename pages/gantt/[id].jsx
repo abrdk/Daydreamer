@@ -3,6 +3,7 @@ import { useState, useContext } from "react";
 import styles from "@/styles/header.module.scss";
 import { When } from "react-if";
 import Truncate from "react-truncate";
+import { useRouter } from "next/router";
 
 import { Modal } from "@/src/components/modal/modal";
 import { ViewSwitcher } from "@/src/components/viewSwitcher/viewSwitcher";
@@ -13,15 +14,14 @@ import { UsersContext } from "@/src/context/users/UsersContext";
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 import { TasksContext } from "@/src/context/tasks/TasksContext";
 
-// name of project
-let id = "new";
-
 export default function Gantt() {
+  const router = useRouter();
+  const { id } = router.query;
   const [modal, setModal] = useState(false);
   const [view, setView] = useState(ViewMode.Day);
 
   const userCtx = useContext(UsersContext);
-  const { isProjectsLoaded } = useContext(ProjectsContext);
+  const { isProjectsLoaded, projects } = useContext(ProjectsContext);
   const { isTasksLoaded } = useContext(TasksContext);
 
   return (
@@ -35,10 +35,11 @@ export default function Gantt() {
           userCtx.isUserLoaded &&
           userCtx.name &&
           isProjectsLoaded &&
-          isTasksLoaded
+          isTasksLoaded &&
+          projects.find((p) => p._id == id)
         }
       >
-        <Modal modal={modal} setModal={setModal} id={id} />
+        <Modal modal={modal} setModal={setModal} />
         <div className={styles.container}>
           <Menu modal={modal} />
           <div className={styles.header}>

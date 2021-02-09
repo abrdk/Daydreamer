@@ -3,17 +3,18 @@ import { useContext } from "react";
 import styles from "@/styles/projectsDropdown.module.scss";
 import Truncate from "react-truncate";
 import { If, Then, Else, When } from "react-if";
+import { useRouter } from "next/router";
 
 import ProjectOption from "@/src/components/projects/ProjectOption";
 
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 
 export default function ProjectsDropdown({ isDropdownOpen, setDropdown }) {
+  const router = useRouter();
   const { projects, createProject } = useContext(ProjectsContext);
-  let selectedProject = projects.find((project) => project.isCurrent);
-  if (!selectedProject) {
-    selectedProject = projects[0];
-  }
+  const selectedProject = projects.find(
+    (project) => project._id == router.query.id
+  );
   const projectsOptions = projects.map((project, i) => (
     <ProjectOption project={project} projectIndex={i} key={project._id} />
   ));

@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, useEffect } from "react";
+import React, { createContext, useReducer, useEffect, useContext } from "react";
 import useSWR from "swr";
 import Router from "next/router";
 import { xhr } from "@/helpers/xhr";
@@ -10,16 +10,13 @@ export const UsersContext = createContext();
 export function UsersProvider(props) {
   const fetcher = (...args) => fetch(...args).then((res) => res.json());
   const { data, error } = useSWR(`/api/auth/`, fetcher);
-  useEffect(() => {
+  useEffect(async () => {
     if (!error && data) {
       if (data.message == "ok") {
         dispatch({
           type: "SET_USER",
           payload: data.user,
         });
-        if (Router.pathname != "/gantt/[id]") {
-          Router.push("/gantt/new");
-        }
       } else {
         dispatch({
           type: "SET_USER",

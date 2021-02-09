@@ -2,17 +2,18 @@ import { useState, useContext, useEffect, useRef } from "react";
 import styles from "@/styles/projectsDropdown.module.scss";
 import Truncate from "react-truncate";
 import { If, Then, Else, When } from "react-if";
+import { useRouter } from "next/router";
 
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 
 export default function Option({ project, projectIndex }) {
+  const router = useRouter();
   const { projects, updateProject, deleteProject } = useContext(
     ProjectsContext
   );
-  let selectedProject = projects.find((project) => project.isCurrent);
-  if (!selectedProject) {
-    selectedProject = projects[0];
-  }
+  const selectedProject = projects.find(
+    (project) => project._id == router.query.id
+  );
   const [isUpdating, setUpdatingState] = useState(!project.name);
   const input = useRef(null);
   const fakeText = useRef(null);
