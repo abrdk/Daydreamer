@@ -142,7 +142,7 @@
 }
 
 .tasksRoot {
-  overflow-y: auto;
+  overflow-y: auto !important;
   max-height: calc(100vh - 166px - 80px);
-  overflow-x: hidden;
+  overflow-x: hidden !important;
 }

@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import styles from "@/styles/tasks.module.scss";
 import { nanoid } from "nanoid";
 import Scrollbar from "react-scrollbars-custom";
@@ -9,16 +9,22 @@ import { TasksContext } from "@/src//context/tasks/TasksContext";
 import { ProjectsContext } from "@/src//context/projects/ProjectsContext";
 
 export default function Tasks() {
+  const [containerHeight, setContainerHeight] = useState(0);
   const { tasks, createTask } = useContext(TasksContext);
   const { projects } = useContext(ProjectsContext);
+  let currentProject = projects.find((project) => project.isCurrent);
+  if (!currentProject) {
+    currentProject = projects[0];
+  }
 
   const createHandle = async () => {
     const currentDate = new Date();
     let afterWeek = currentDate;
     afterWeek.setDate(afterWeek.getDate() + 7);
 
-    const currentProject = projects.find((project) => project.isCurrent);
-    const topLevelTasks = tasks.filter((task) => !task.root);
+    const topLevelTasks = tasks.filter(
+      (task) => !task.root && task.project == currentProject._id
+    );
 
     await createTask({
       _id: nanoid(),
@@ -40,8 +46,11 @@ export default function Tasks() {
         <div className={styles.tasksHeader}>TASK NAME</div>
       </div>
       <div className={styles.line}></div>
-      <Scrollbar className={styles.tasksRoot}>
-        <TasksRoot root={""} />
+      <Scrollbar
+        style={{ height: containerHeight }}
+        className={styles.tasksRoot}
+      >
+        <TasksRoot root={""} setContainerHeight={setContainerHeight} />
       </Scrollbar>
       <div className={styles.tasksRoot}></div>
       <div className={styles.newTaskBtn} onClick={createHandle}>

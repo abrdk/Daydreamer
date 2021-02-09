@@ -51,7 +51,7 @@ export function TasksProvider(props) {
         payload: task,
       });
 
-      const res = await xhr("/tasks/update", task, "PUT");
+      await xhr("/tasks/update", task, "PUT");
     } catch (e) {}
   };
 
@@ -62,7 +62,7 @@ export function TasksProvider(props) {
         payload: { _id },
       });
 
-      const res = await xhr(
+      await xhr(
         "/tasks/delete",
         {
           _id,

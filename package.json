@@ -20,6 +20,7 @@
     "next-cookies": "^2.0.3",
     "rc-color-picker": "^1.2.6",
     "react": "17.0.1",
+    "react-custom-scrollbars": "^4.2.1",
     "react-datepicker": "^3.2.2",
     "react-dom": "17.0.1",
     "react-if": "^4.0.1",

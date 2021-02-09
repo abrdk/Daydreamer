@@ -1,18 +1,30 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { When } from "react-if";
 import styles from "@/styles/tasks.module.scss";
 
 import Task from "@/src/components/tasks/Task";
 
 import { TasksContext } from "@/src/context/tasks/TasksContext";
+import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 
-export default function TasksRoot({ root }) {
+export default function TasksRoot({ root, setContainerHeight }) {
+  const { projects } = useContext(ProjectsContext);
+  let currentProject = projects.find((project) => project.isCurrent);
+  if (!currentProject) {
+    currentProject = projects[0];
+  }
   const { tasks } = useContext(TasksContext);
-  const filteredTasks = tasks.filter((task) => task.root == root);
+  const filteredTasks = tasks.filter(
+    (task) => task.root == root && task.project == currentProject._id
+  );
 
   const [isSubtasksOpened, setSubtasksState] = useState(
     filteredTasks.map(() => false)
   );
+
+  useEffect(() => {
+    setContainerHeight(document.querySelectorAll(".task").length * 55);
+  }, [filteredTasks, isSubtasksOpened]);
 
   const tasksComponents = filteredTasks
     .sort((task1, task2) => task1.order > task2.order)
@@ -28,7 +40,10 @@ export default function TasksRoot({ root }) {
           />
           <When condition={subTasks.length && isSubtasksOpened[i]}>
             <div className={styles.subtasksWrapper}>
-              <TasksRoot root={task._id} />
+              <TasksRoot
+                root={task._id}
+                setContainerHeight={setContainerHeight}
+              />
             </div>
           </When>
         </div>

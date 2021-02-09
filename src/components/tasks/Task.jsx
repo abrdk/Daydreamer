@@ -99,7 +99,7 @@ export default function Task({
   }, [isUpdating]);
 
   return (
-    <div className={styles.task} onClick={startUpdateHandler}>
+    <div className={styles.task + " task"} onClick={startUpdateHandler}>
       <When condition={hasSubtasks}>
         <img
           className={
