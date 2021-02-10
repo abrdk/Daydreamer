@@ -1,0 +1,71 @@
+.wrapper {
+  display: flex;
+}
+
+.wrapperPointer {
+  composes: wrapper;
+  cursor: pointer;
+}
+
+.wrapperGrab {
+  composes: wrapper;
+  cursor: grab;
+}
+
+.day {
+  font-style: normal;
+  font-weight: lighter;
+  font-size: 15px;
+  line-height: 21px;
+  color: #696f75;
+  width: 42px;
+  height: 48px;
+  margin: 0 6.5px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  justify-content: center;
+  align-items: center;
+}
+
+.weekend {
+  composes: day;
+  font-weight: bold;
+}
+
+.today {
+  composes: day;
+  font-weight: bold;
+  background: #ecf5ff;
+  border-radius: 3px;
+  color: #258efa;
+}
+
+.line {
+  width: 1px;
+  height: calc(100vh - 89px - 25px - 10px - 5px - 48px);
+  background: #258efa;
+  margin-left: 27.5px;
+}
+
+.month {
+  display: flex;
+}
+
+.monthName {
+  height: 20px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: 21px;
+  color: #d8d8d8;
+  margin-bottom: 5px;
+  margin-left: 15px;
+}
+
+.wrapperr {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+}

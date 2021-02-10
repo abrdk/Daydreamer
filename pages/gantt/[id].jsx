@@ -4,11 +4,13 @@ import styles from "@/styles/header.module.scss";
 import { When } from "react-if";
 import Truncate from "react-truncate";
 import { useRouter } from "next/router";
+import ReactCursorPosition, { INTERACTIONS } from "react-cursor-position";
 
 import { Modal } from "@/src/components/modal/modal";
 import { ViewSwitcher } from "@/src/components/viewSwitcher/viewSwitcher";
 import { ViewMode } from "@/src/types/public-types";
 import Menu from "@/src/components/menu/Menu";
+import Calendar from "@/src/components/calendar/Calendar";
 
 import { UsersContext } from "@/src/context/users/UsersContext";
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
@@ -40,30 +42,34 @@ export default function Gantt() {
         }
       >
         <Modal modal={modal} setModal={setModal} />
-        <div className={styles.container}>
-          <Menu modal={modal} />
-          <div className={styles.header}>
-            <ViewSwitcher onViewModeChange={(viewMode) => setView(viewMode)} />
-            <div />
-            <div className={styles.buttonsContainer}>
-              <button
-                className={styles.share_button}
-                onClick={setModal.bind(null, "share")}
-              >
-                Share Project
-              </button>
-              <button
-                className={styles.account_button}
-                onClick={setModal.bind(null, "account")}
-              >
-                <img src="/img/avatar.svg" alt=" " />{" "}
-                <Truncate lines={1} width={100}>
-                  {userCtx.name}
-                </Truncate>
-              </button>
+        <ReactCursorPosition>
+          <div className={styles.container}>
+            <Menu modal={modal} />
+            <div className={styles.header}>
+              <ViewSwitcher
+                onViewModeChange={(viewMode) => setView(viewMode)}
+              />
+              <div className={styles.buttonsContainer}>
+                <button
+                  className={styles.share_button}
+                  onClick={setModal.bind(null, "share")}
+                >
+                  Share Project
+                </button>
+                <button
+                  className={styles.account_button}
+                  onClick={setModal.bind(null, "account")}
+                >
+                  <img src="/img/avatar.svg" alt=" " />{" "}
+                  <Truncate lines={1} width={100}>
+                    {userCtx.name}
+                  </Truncate>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+          <Calendar view={view} />
+        </ReactCursorPosition>
       </When>
     </>
   );
