@@ -2,7 +2,6 @@ import styles from "@/styles/calendar.module.scss";
 import Scrollbar from "react-scrollbars-custom";
 import { When } from "react-if";
 import { useEffect, useState, useMemo } from "react";
-import usePrevious from "@react-hook/previous";
 
 const daysOfWeek = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 const monthNames = [
@@ -50,7 +49,6 @@ export default function CalendarDay({
   }, [defaultScrollLeft]);
 
   const today = new Date();
-
   const isLeapYear = (year) => {
     return year % 400 === 0 || (year % 100 !== 0 && year % 4 === 0);
   };
@@ -75,7 +73,12 @@ export default function CalendarDay({
         date.setMonth(0);
         date.setDate(day + 1);
         if (isSameDate(today, date)) {
-          setDefaultScrollLeft((day - 9) * 55);
+          const calculatedDefaultScrollLeft = (day - 9) * 55;
+          if (calculatedDefaultScrollLeft > 0) {
+            setDefaultScrollLeft(calculatedDefaultScrollLeft);
+          } else {
+            setDefaultScrollLeft(0);
+          }
         }
         return (
           <div key={`day-${day}`}>
@@ -107,7 +110,7 @@ export default function CalendarDay({
       }),
     []
   );
-  const daysWithMonthsComponents = useMemo(
+  const daysWithLabelsComponents = useMemo(
     () =>
       numOfDaysInMonths.map((numOfDaysInMonth, i) => {
         return (
@@ -145,7 +148,7 @@ export default function CalendarDay({
             : styles.wrapper
         }
       >
-        {daysWithMonthsComponents}
+        {daysWithLabelsComponents}
       </div>
     </Scrollbar>
   );

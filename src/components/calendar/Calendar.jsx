@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import CalendarDay from "@/src/components/calendar/CalendarDay";
+import CalendarWeek from "@/src/components/calendar/CalendarWeek";
 
 export default function Calendar({ view, position, isPositionOutside }) {
   const [cursor, setCursor] = useState(null);
@@ -54,6 +55,17 @@ export default function Calendar({ view, position, isPositionOutside }) {
   if (view == "Day") {
     return (
       <CalendarDay
+        scrollAt={position.x}
+        cursor={cursor}
+        setCursor={setCursor}
+        isDraggable={isDraggable}
+        setDraggable={setDraggable}
+      />
+    );
+  }
+  if (view == "Week") {
+    return (
+      <CalendarWeek
         scrollAt={position.x}
         cursor={cursor}
         setCursor={setCursor}

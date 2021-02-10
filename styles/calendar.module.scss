@@ -45,7 +45,7 @@
   width: 1px;
   height: calc(100vh - 89px - 25px - 10px - 5px - 48px);
   background: #258efa;
-  margin-left: 27.5px;
+  margin-left: 27px;
 }
 
 .month {
@@ -60,7 +60,7 @@
   line-height: 21px;
   color: #d8d8d8;
   margin-bottom: 5px;
-  margin-left: 15px;
+  text-align: center;
 }
 
 .wrapperr {
@@ -68,4 +68,32 @@
   width: 100vw;
   height: 100vh;
   top: 0;
+}
+
+.week {
+  font-style: normal;
+  font-weight: lighter;
+  font-size: 15px;
+  line-height: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #696f75;
+  width: 120px;
+  height: 42px;
+}
+
+.weekCurrent {
+  composes: week;
+  font-weight: bold;
+  background: #ecf5ff;
+  border-radius: 3px;
+  color: #258efa;
+}
+
+.weekLine {
+  width: 1px;
+  height: calc(100vh - 89px - 25px - 10px - 5px - 42px);
+  background: #258efa;
+  margin-left: 59.5px;
 }
