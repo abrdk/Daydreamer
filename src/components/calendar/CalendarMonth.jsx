@@ -3,7 +3,6 @@ import Scrollbar from "react-scrollbars-custom";
 import { When } from "react-if";
 import { useEffect, useState, useMemo } from "react";
 
-const daysOfWeek = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 const monthNames = [
   "January",
   "February",
@@ -19,7 +18,7 @@ const monthNames = [
   "December",
 ];
 
-export default function CalendarDay({
+export default function CalendarMonth({
   scrollAt,
   cursor,
   setCursor,
@@ -43,59 +42,47 @@ export default function CalendarDay({
     }
   };
   useEffect(() => {
+    const today = new Date();
+    const calculatedDefaultScrollLeft = (today.getMonth() - 2) * 160;
+    if (calculatedDefaultScrollLeft > 0) {
+      setDefaultScrollLeft(calculatedDefaultScrollLeft);
+    } else {
+      setDefaultScrollLeft(0);
+    }
+  }, []);
+
+  useEffect(() => {
     if (typeof defaultScrollLeft != "undefined") {
       setDefaultScrollLeft(undefined);
     }
   }, [defaultScrollLeft]);
 
-  const today = new Date();
-  const isLeapYear = (year) => {
-    return year % 400 === 0 || (year % 100 !== 0 && year % 4 === 0);
-  };
-  const numOfDays = (year) => {
-    return isLeapYear(year) ? 366 : 365;
-  };
-  const isSameDate = (date1, date2) => {
+  const isSameMonth = (date1, date2) => {
     return (
       date1.getFullYear() == date2.getFullYear() &&
-      date1.getMonth() == date2.getMonth() &&
-      date1.getDate() == date2.getDate()
+      date1.getMonth() == date2.getMonth()
     );
   };
-  const daysInMonth = (month, year) => {
-    return new Date(year, month + 1, 0).getDate();
-  };
-
-  const daysComponents = useMemo(
+  const monthsComponents = useMemo(
     () =>
-      [...Array(numOfDays(today.getFullYear())).keys()].map((day) => {
+      [...Array(24).keys()].map((month) => {
         let date = new Date();
         date.setMonth(0);
-        date.setDate(day + 1);
-        if (isSameDate(today, date)) {
-          const calculatedDefaultScrollLeft = (day - 9) * 55;
-          if (calculatedDefaultScrollLeft > 0) {
-            setDefaultScrollLeft(calculatedDefaultScrollLeft);
-          } else {
-            setDefaultScrollLeft(0);
-          }
-        }
+        date.setDate(1);
+        date.setMonth(month);
         return (
-          <div key={`day-${day}`}>
+          <div key={`month-${month}`}>
             <div
               className={
-                isSameDate(today, date)
-                  ? styles.today
-                  : date.getDay() == 0 || date.getDay() == 6
-                  ? styles.weekend
-                  : styles.day
+                isSameMonth(new Date(), date)
+                  ? styles.monthCurrent
+                  : styles.monthWrapper
               }
             >
-              <div>{date.getDate()}</div>
-              <div>{daysOfWeek[date.getDay()]}</div>
+              <div>{monthNames[month % 12]}</div>
             </div>
-            <When condition={isSameDate(today, date)}>
-              <div className={styles.line}></div>
+            <When condition={isSameMonth(new Date(), date)}>
+              <div className={styles.monthLine}></div>
             </When>
           </div>
         );
@@ -103,31 +90,22 @@ export default function CalendarDay({
     []
   );
 
-  const numOfDaysInMonths = useMemo(
+  const monthsWithLabelsComponents = useMemo(
     () =>
-      [...Array(12).keys()].map((m) => {
-        return daysInMonth(m, today.getFullYear());
-      }),
-    []
-  );
-  const daysWithLabelsComponents = useMemo(
-    () =>
-      numOfDaysInMonths.map((numOfDaysInMonth, i) => {
+      [...Array(2).keys()].map((year) => {
+        let date = new Date();
+        date.setFullYear(date.getFullYear() + year);
         return (
-          <div key={`month-${i}`}>
-            <div className={styles.monthName}>{monthNames[i]}</div>
+          <div key={`year-${year}`}>
+            <div className={styles.monthName}>{date.getFullYear()}</div>
             <div className={styles.month}>
-              {daysComponents.slice(
-                numOfDaysInMonths.slice(0, i).reduce((a, sum) => a + sum, 0),
-                numOfDaysInMonths.slice(0, i + 1).reduce((a, sum) => a + sum, 0)
-              )}
+              {monthsComponents.slice(12 * year, 12 + 12 * year)}
             </div>
           </div>
         );
       }),
     []
   );
-
   return (
     <Scrollbar
       onScrollStop={stopScrollHandler}
@@ -148,7 +126,7 @@ export default function CalendarDay({
             : styles.wrapper
         }
       >
-        {daysWithLabelsComponents}
+        {monthsWithLabelsComponents}
       </div>
     </Scrollbar>
   );

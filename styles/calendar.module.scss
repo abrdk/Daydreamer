@@ -97,3 +97,31 @@
   background: #258efa;
   margin-left: 59.5px;
 }
+
+.monthWrapper {
+  width: 160px;
+  height: 42px;
+  font-style: normal;
+  font-weight: lighter;
+  font-size: 15px;
+  line-height: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #696f75;
+}
+
+.monthCurrent {
+  composes: monthWrapper;
+  font-weight: bold;
+  background: #ecf5ff;
+  border-radius: 3px;
+  color: #258efa;
+}
+
+.monthLine {
+  width: 1px;
+  height: calc(100vh - 89px - 25px - 10px - 5px - 42px);
+  background: #258efa;
+  margin-left: 79.5px;
+}

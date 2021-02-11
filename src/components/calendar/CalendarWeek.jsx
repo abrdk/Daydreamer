@@ -37,7 +37,7 @@ export default function CalendarWeek({
     }
   };
   const stopScrollHandler = (scrollValues) => {
-    if (cursor !== "grab") {
+    if (cursor != "grab") {
       setScrollLeft(scrollValues.scrollLeft);
     }
   };
@@ -57,7 +57,7 @@ export default function CalendarWeek({
     }
   }, []);
   useEffect(() => {
-    if (defaultScrollLeft) {
+    if (typeof defaultScrollLeft != "undefined") {
       setDefaultScrollLeft(undefined);
     }
   }, [defaultScrollLeft]);
@@ -195,9 +195,7 @@ export default function CalendarWeek({
       onScrollStop={stopScrollHandler}
       scrollLeft={
         isDraggable
-          ? scrollLeft - scrollAt + initialScrollLeft > 0
-            ? scrollLeft - scrollAt + initialScrollLeft
-            : 0
+          ? scrollLeft - scrollAt + initialScrollLeft
           : defaultScrollLeft
       }
       style={{ height: "calc(100vh - 89px - 10px)", width: "100vw" }}
