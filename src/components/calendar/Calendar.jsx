@@ -7,48 +7,66 @@ export default function Calendar({ view, position, isPositionOutside }) {
   const [cursor, setCursor] = useState(null);
   const [isDraggable, setDraggable] = useState(false);
 
-  const startDragHandler = (e) => {
-    setCursor("pointer");
-  };
-  const stopDragHandler = (e) => {
-    setCursor(null);
-    document.body.style.cursor = "default";
-    setDraggable(false);
-  };
-  const unsetDragHandler = () => {
-    setCursor("pointer");
-    document.body.style.cursor = "default";
-    setDraggable(false);
-  };
-
-  useEffect(() => {
+  const setStartDragEventListener = () => {
     if (!cursor) {
       document.addEventListener(
         "keydown",
         (e) => {
           if (e.key == " ") {
-            startDragHandler(e);
+            startDragHandler();
+          } else {
+            setStartDragEventListener();
           }
         },
         { once: true }
       );
+    }
+  };
+  const setRemoveDragEventListener = () => {
+    if (cursor == "pointer" || cursor == "grab") {
       document.addEventListener(
         "keyup",
         (e) => {
+          console.log("e.key", e.key);
           if (e.key == " ") {
-            stopDragHandler(e);
+            removeDragHandler();
+          } else {
+            setRemoveDragEventListener();
           }
         },
         { once: true }
       );
-    } else if (cursor == "grab") {
-      document.addEventListener("mouseup", unsetDragHandler, { once: true });
     }
+  };
+  const setStopDragEventListener = () => {
+    if (cursor == "grab") {
+      document.addEventListener("mouseup", removeDragHandler, { once: true });
+    }
+  };
+
+  const startDragHandler = () => {
+    setCursor("pointer");
+  };
+  const removeDragHandler = () => {
+    setCursor(null);
+    document.body.style.cursor = "default";
+    setDraggable(false);
+  };
+  const stopDragHandler = () => {
+    setCursor("pointer");
+    document.body.style.cursor = "default";
+    setDraggable(false);
+  };
+
+  useEffect(() => {
+    setStartDragEventListener();
+    setRemoveDragEventListener();
+    setStopDragEventListener();
   }, [cursor]);
 
   useEffect(() => {
-    if (isPositionOutside && cursor) {
-      unsetDragHandler();
+    if (isPositionOutside && cursor == "grab") {
+      stopDragHandler();
     }
   }, [isPositionOutside]);
 
