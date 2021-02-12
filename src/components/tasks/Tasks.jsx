@@ -49,6 +49,9 @@ export default function Tasks() {
       <Scrollbar
         style={{ height: containerHeight }}
         className={styles.tasksRoot}
+        // noScrollY={true}
+        // permanentTracks={false}
+        // removeTracksWhenNotUsed={true}
       >
         <TasksRoot root={""} setContainerHeight={setContainerHeight} />
       </Scrollbar>

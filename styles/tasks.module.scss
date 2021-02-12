@@ -146,3 +146,10 @@
   max-height: calc(100vh - 166px - 80px);
   overflow-x: hidden !important;
 }
+
+.dragged {
+  width: 325px;
+  background: #ffffff;
+  box-shadow: 15px 15px 50px rgba(9, 40, 72, 0.1);
+  border-radius: 3px;
+}

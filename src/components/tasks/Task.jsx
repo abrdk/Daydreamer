@@ -52,6 +52,11 @@ export default function Task({
       await updateTask({ ...task, name: getDefaultName() });
     }
   };
+  useEffect(async () => {
+    if (!isUpdating && !task.name) {
+      await updateTask({ ...task, name: getDefaultName() });
+    }
+  }, [isUpdating]);
 
   const openSubtasksHandler = () => {
     setSubtasksState(
@@ -88,7 +93,7 @@ export default function Task({
 
   useEffect(() => {
     if (input.current && fakeText.current) {
-      input.current.style.width = fakeText.current.offsetWidth + "px";
+      input.current.style.width = fakeText.current.offsetWidth + 2 + "px";
     }
   }, [task, isUpdating]);
 

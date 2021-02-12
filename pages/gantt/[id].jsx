@@ -4,7 +4,7 @@ import styles from "@/styles/header.module.scss";
 import { When } from "react-if";
 import Truncate from "react-truncate";
 import { useRouter } from "next/router";
-import ReactCursorPosition, { INTERACTIONS } from "react-cursor-position";
+import ReactCursorPosition from "react-cursor-position";
 
 import { Modal } from "@/src/components/modal/modal";
 import { ViewSwitcher } from "@/src/components/viewSwitcher/viewSwitcher";
@@ -43,7 +43,7 @@ export default function Gantt() {
       >
         <Modal modal={modal} setModal={setModal} />
         <ReactCursorPosition>
-          <div className={styles.container}>
+          <div className={styles.container} id="container">
             <Menu modal={modal} />
             <div className={styles.header}>
               <ViewSwitcher

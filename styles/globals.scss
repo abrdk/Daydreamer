@@ -93,5 +93,17 @@ input:-webkit-autofill:focus {
 }
 
 .ScrollbarsCustom-Wrapper {
-  inset: 0px 10px 0px 0px !important;
+  inset: 0px 0px 0px 0px !important;
+}
+
+.animMargin {
+  transition: all 0.3s;
+}
+
+.marginBottom55 {
+  margin-bottom: 55px;
+}
+
+.marginTop55 {
+  margin-top: 55px;
 }
