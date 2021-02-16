@@ -148,8 +148,16 @@
 }
 
 .dragged {
+  position: fixed;
   width: 325px;
   background: #ffffff;
   box-shadow: 15px 15px 50px rgba(9, 40, 72, 0.1);
   border-radius: 3px;
+  z-index: 10000;
+}
+
+.hidden {
+  position: fixed;
+  left: -10000px;
+  top: -10000px;
 }

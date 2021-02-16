@@ -100,18 +100,14 @@ export function ProjectsProvider(props) {
     currentProject = projects[0];
   }
 
-  useEffect(async () => {
+  useEffect(() => {
     if (currentProject && currentProject._id != router.query.id) {
       router.push(`/gantt/${currentProject._id}`);
     }
   }, [currentProject, router.query.id]);
 
-  useEffect(async () => {
-    if (
-      currentProject &&
-      currentProject._id != router.query.id &&
-      isProjectsLoaded
-    ) {
+  useEffect(() => {
+    const updateCurrentProject = async () => {
       const project = projects.find((p) => p._id == router.query.id);
       if (project) {
         await Promise.all([
@@ -119,6 +115,14 @@ export function ProjectsProvider(props) {
           updateProject({ ...project, isCurrent: true }),
         ]);
       }
+    };
+
+    if (
+      currentProject &&
+      currentProject._id != router.query.id &&
+      isProjectsLoaded
+    ) {
+      updateCurrentProject();
     }
   }, [isProjectsLoaded]);
 

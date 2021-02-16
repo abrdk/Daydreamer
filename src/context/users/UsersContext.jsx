@@ -10,7 +10,7 @@ export const UsersContext = createContext();
 export function UsersProvider(props) {
   const fetcher = (...args) => fetch(...args).then((res) => res.json());
   const { data, error } = useSWR(`/api/auth/`, fetcher);
-  useEffect(async () => {
+  useEffect(() => {
     if (!error && data) {
       if (data.message == "ok") {
         dispatch({

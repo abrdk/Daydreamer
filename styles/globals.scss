@@ -96,14 +96,20 @@ input:-webkit-autofill:focus {
   inset: 0px 0px 0px 0px !important;
 }
 
-.animMargin {
+.animTranslateY {
   transition: all 0.3s;
 }
 
-.marginBottom55 {
-  margin-bottom: 55px;
+.animTranslateY.plus55 {
+  transform: translateY(55px);
+}
+.plus55 {
+  transform: translateY(55px);
 }
 
-.marginTop55 {
-  margin-top: 55px;
+.animTranslateY.mb55 {
+  margin-bottom: 55px;
+}
+.mb55 {
+  margin-bottom: 55px;
 }
