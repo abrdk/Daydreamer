@@ -1,0 +1,11 @@
+.wrapper {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: calc(100vw - 335px);
+  height: 400px;
+  background: #ffffff;
+  box-shadow: 15px -5px 50px #09284826;
+  z-index: 10000;
+  padding: 30px;
+}

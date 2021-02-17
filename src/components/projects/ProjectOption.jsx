@@ -5,12 +5,14 @@ import { If, Then, Else, When } from "react-if";
 import { useRouter } from "next/router";
 
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
+import { TasksContext } from "@/src/context/tasks/TasksContext";
 
 export default function Option({ project, projectIndex }) {
   const router = useRouter();
   const { projects, updateProject, deleteProject } = useContext(
     ProjectsContext
   );
+  const { deleteTasksByProject } = useContext(TasksContext);
   const selectedProject = projects.find(
     (project) => project._id == router.query.id
   );
@@ -69,6 +71,7 @@ export default function Option({ project, projectIndex }) {
             isCurrent: true,
           }),
           deleteProject(project._id),
+          deleteTasksByProject(project._id),
         ]);
       } else {
         await Promise.all([
@@ -77,10 +80,14 @@ export default function Option({ project, projectIndex }) {
             isCurrent: true,
           }),
           deleteProject(project._id),
+          deleteTasksByProject(project._id),
         ]);
       }
     } else {
-      await deleteProject(project._id);
+      await Promise.all([
+        deleteProject(project._id),
+        deleteTasksByProject(project._id),
+      ]);
     }
   };
 

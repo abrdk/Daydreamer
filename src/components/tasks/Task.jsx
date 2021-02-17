@@ -4,7 +4,7 @@ import { When, If, Then, Else } from "react-if";
 import Truncate from "react-truncate";
 import { nanoid } from "nanoid";
 import useEvent from "@react-hook/event";
-import anime from "animejs/lib/anime.es.js";
+import anime from "animejs";
 
 import TasksRoot from "@/src/components/tasks/TasksRoot";
 
@@ -333,6 +333,7 @@ export default function Task({ task, setContainerHeight }) {
     } else {
       top = 167;
     }
+
     anime({
       targets: ".draggedTask",
       top: `${top}px`,

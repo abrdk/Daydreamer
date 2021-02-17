@@ -42,45 +42,6 @@ export default function Tasks() {
     });
   };
 
-  // drag code
-  // const reorderHandler = ({ oldIndex, newIndex, tasksList }) => {
-  //   if (oldIndex != newIndex) {
-  //     const draggableTask = tasksList[oldIndex];
-  //     updateTask({ ...draggableTask, order: newIndex });
-  //     if (newIndex > oldIndex) {
-  //       tasksList.slice(oldIndex + 1, newIndex + 1).forEach((project) => {
-  //         updateTask({ ...project, order: project.order - 1 });
-  //       });
-  //     } else {
-  //       tasksList.slice(newIndex, oldIndex).forEach((project) => {
-  //         updateTask({ ...project, order: project.order + 1 });
-  //       });
-  //     }
-  //   }
-  // };
-
-  // const dragEndHandler = (result) => {
-  //   const { source, destination } = result;
-  //   if (!destination) {
-  //     return;
-  //   }
-  //   if (source.droppableId === destination.droppableId) {
-  //     reorderHandler({
-  //       tasksList: tasks
-  //         .filter(
-  //           (task) =>
-  //             task.root ==
-  //               source.droppableId.slice(10, source.droppableId.length) &&
-  //             task.project == currentProject._id
-  //         )
-  //         .sort((task1, task2) => task1.order > task2.order),
-  //       oldIndex: source.index,
-  //       newIndex: destination.index,
-  //     });
-  //   } else {
-  //   }
-  // };
-
   return (
     <>
       <div className={styles.line}></div>

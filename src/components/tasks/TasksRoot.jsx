@@ -15,7 +15,7 @@ export default function TasksRoot({ root, setContainerHeight }) {
   const sortedTasks = tasks
     .filter((task) => task.root == root && task.project == currentProject._id)
     .sort((task1, task2) => task1.order > task2.order);
-
+  console.log("sortedTasks", sortedTasks);
   const tasksComponents = sortedTasks.map((task) => (
     <Task key={task._id} task={task} setContainerHeight={setContainerHeight} />
   ));

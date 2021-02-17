@@ -1,6 +1,8 @@
 import { useState } from "react";
 import styles from "@/styles/menu.module.scss";
 
+import TaskEdit from "@/src/components/tasks/TaskEdit";
+
 import ProjectsDropdown from "@/src/components/projects/ProjectsDropdown";
 import Tasks from "@/src/components/tasks/Tasks";
 
@@ -33,6 +35,7 @@ export default function Menu() {
         />
         <Tasks />
       </div>
+      <TaskEdit />
     </>
   );
 }

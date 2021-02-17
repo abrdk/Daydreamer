@@ -1,6 +1,6 @@
 export default function TasksReducer(state, action) {
-  console.log(action.type);
-  const { _id } = action.payload;
+  console.log(action.type, action.payload);
+  const { _id, project } = action.payload;
   switch (action.type) {
     case "SET_TASKS":
       return {
@@ -27,6 +27,11 @@ export default function TasksReducer(state, action) {
       return {
         ...state,
         tasks: state.tasks.filter((task) => task._id != _id),
+      };
+    case "DELETE_TASKS_BY_PROJECT":
+      return {
+        ...state,
+        tasks: state.tasks.filter((task) => task.project != project),
       };
     default:
       return state;
