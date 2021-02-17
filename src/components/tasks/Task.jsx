@@ -40,6 +40,7 @@ export default function Task({ task, setContainerHeight }) {
   const fakeText = useRef(null);
   const arrow = useRef(null);
   const plus = useRef(null);
+  const pencil = useRef(null);
   const [isUpdating, setUpdatingState] = useState(!task.name);
 
   const getDefaultName = () =>
@@ -51,7 +52,8 @@ export default function Task({ task, setContainerHeight }) {
     if (
       e.target != input.current &&
       e.target != arrow.current &&
-      e.target != plus.current
+      e.target != plus.current &&
+      e.target != pencil.current
     ) {
       if (!isUpdating) {
         setUpdatingState(true);
@@ -106,10 +108,25 @@ export default function Task({ task, setContainerHeight }) {
     });
   };
 
+  const editTaskHandler = () => {};
+
   useEffect(() => {
     if (input.current && fakeText.current) {
-      input.current.style.width = fakeText.current.offsetWidth + 2 + "px";
+      const textWidth = fakeText.current.offsetWidth + 2;
+      if (textWidth > 230) {
+        input.current.style.width = "230px";
+      } else {
+        input.current.style.width = textWidth + "px";
+      }
     }
+    // if (pencil.current && fakeText.current) {
+    //   const textWidth = fakeText.current.offsetWidth + 14 + 10 + 20;
+    //   if (textWidth > 272) {
+    //     pencil.current.style.left = "272px";
+    //   } else {
+    //     pencil.current.style.left = textWidth + "px";
+    //   }
+    // }
   }, [task, isUpdating]);
 
   useEffect(() => {
@@ -130,6 +147,8 @@ export default function Task({ task, setContainerHeight }) {
   const [sourceTask, setSourceTask] = useState(null);
   const [beforeTask, setBeforeTask] = useState(null);
   const [afterTask, setAfterTask] = useState(null);
+
+  useEffect(() => {}, [draggedTask.current]);
 
   const reorderHandler = () => {
     const oldIndex = sourceTask.order;
@@ -160,6 +179,23 @@ export default function Task({ task, setContainerHeight }) {
     }
 
     if (!isMoveBetweenRoots) {
+      if (beforeTask) {
+        if (
+          beforeTask.root == sourceTask.root &&
+          beforeTask.order + 1 == sourceTask.order
+        ) {
+          return;
+        }
+      }
+      if (afterTask) {
+        if (
+          afterTask.root == sourceTask.root &&
+          afterTask.order - 1 == sourceTask.order
+        ) {
+          return;
+        }
+      }
+
       if (beforeTask && afterTask) {
         if (beforeTask.order > oldIndex && beforeTask.root == sourceTask.root) {
           newIndex = beforeTask.order;
@@ -210,26 +246,30 @@ export default function Task({ task, setContainerHeight }) {
   };
 
   const addInitialClasses = (e) => {
-    let tasksElements = [];
-    document.querySelectorAll(".task").forEach((taskElement, i) => {
-      if (taskElement.getBoundingClientRect().top > e.clientY) {
-        taskElement.classList.add("plus55");
-      }
-      setTimeout(() => {
-        taskElement.classList.add("animTranslateY");
-      }, 100);
-      tasksElements.push(taskElement);
-    });
+    if (document.querySelectorAll(".task").length > 1) {
+      let tasksElements = [];
+      document.querySelectorAll(".task").forEach((taskElement, i) => {
+        if (taskElement.getBoundingClientRect().top > e.clientY) {
+          taskElement.classList.add("plus55");
+        }
+        setTimeout(() => {
+          taskElement.classList.add("animTranslateY");
+        }, 100);
+        tasksElements.push(taskElement);
+      });
 
-    if (e.target.classList.contains(`task-${task._id}`)) {
-      if (
-        tasksElements[tasksElements.length - 1].classList.contains(
-          `task-${task._id}`
-        )
-      ) {
-        tasksElements[tasksElements.length - 2].classList.add("mb55");
-      } else {
-        tasksElements[tasksElements.length - 1].classList.add("mb55");
+      if (e.target.classList.contains(`task-${task._id}`)) {
+        if (
+          tasksElements[tasksElements.length - 1].classList.contains(
+            `task-${task._id}`
+          )
+        ) {
+          setTimeout(() => {
+            tasksElements[tasksElements.length - 2].classList.add("mb55");
+          }, 100);
+        } else {
+          tasksElements[tasksElements.length - 1].classList.add("mb55");
+        }
       }
     }
   };
@@ -333,7 +373,6 @@ export default function Task({ task, setContainerHeight }) {
     } else {
       top = 167;
     }
-
     anime({
       targets: ".draggedTask",
       top: `${top}px`,
@@ -341,7 +380,9 @@ export default function Task({ task, setContainerHeight }) {
       easing: "easeInOutQuad",
       duration: 300,
       complete: function (anim) {
-        reorderHandler();
+        if (beforeTask || afterTask) {
+          reorderHandler();
+        }
         document.querySelectorAll(".task").forEach((taskElement) => {
           taskElement.classList.remove("animTranslateY");
           taskElement.classList.remove("plus55");
@@ -418,7 +459,7 @@ export default function Task({ task, setContainerHeight }) {
               alt=" "
             />
           </When>
-          <Truncate lines={1} width={240}>
+          <Truncate lines={1} width={230}>
             {task.name}
           </Truncate>
         </div>
@@ -449,13 +490,27 @@ export default function Task({ task, setContainerHeight }) {
         </When>
         <If condition={isUpdating}>
           <Then>
-            <input
-              value={task.name}
-              className={styles.input}
-              ref={input}
-              onChange={updateHandler}
-              onBlur={blurHandler}
-            />
+            <div className={styles.pencilContainer}>
+              <input
+                value={task.name}
+                className={styles.input}
+                ref={input}
+                onChange={updateHandler}
+                onBlur={blurHandler}
+                style={{
+                  maxWidth:
+                    document.querySelector(`.task-${task._id}`).clientWidth -
+                    105,
+                }}
+              />
+              <img
+                src="/img/pencil.svg"
+                alt=" "
+                ref={pencil}
+                className={styles.pencil}
+                onClick={editTaskHandler}
+              />
+            </div>
             <span
               className={task.name ? styles.fakeText : styles.fakeTextVisible}
               ref={fakeText}
@@ -464,11 +519,26 @@ export default function Task({ task, setContainerHeight }) {
             </span>
           </Then>
           <Else>
-            <Truncate lines={1} width={240}>
-              {task.name}
-            </Truncate>
+            <div className={styles.pencilContainer}>
+              <Truncate
+                lines={1}
+                width={
+                  document.querySelector(`.task-${task._id}`).clientWidth - 105
+                }
+              >
+                {task.name}
+              </Truncate>
+              <img
+                src="/img/pencil.svg"
+                alt=" "
+                ref={pencil}
+                className={styles.pencil}
+                onClick={editTaskHandler}
+              />
+            </div>
           </Else>
         </If>
+
         <img
           src="/img/plus.svg"
           alt=" "

@@ -9,6 +9,7 @@ import Tasks from "@/src/components/tasks/Tasks";
 export default function Menu() {
   const [isMenuOpen, setMenu] = useState(false);
   const [isDropdownOpen, setDropdown] = useState(false);
+  const [editedTask, setEditedTask] = useState(null);
 
   const openMenuHandler = () => {
     setMenu(!isMenuOpen);
@@ -35,7 +36,7 @@ export default function Menu() {
         />
         <Tasks />
       </div>
-      <TaskEdit />
+      <TaskEdit task={editedTask} />
     </>
   );
 }

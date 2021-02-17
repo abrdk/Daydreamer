@@ -51,6 +51,7 @@ export default function Tasks() {
       <div className={styles.line}></div>
       <Scrollbar
         style={{ height: containerHeight }}
+        noScrollX={true}
         className={styles.tasksRoot}
       >
         <TasksRoot root={""} setContainerHeight={setContainerHeight} />
