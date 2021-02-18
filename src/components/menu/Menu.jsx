@@ -36,8 +36,8 @@ export default function Menu() {
           setDropdown={setDropdown}
         />
         <Tasks editedTask={editedTask} setEditedTask={setEditedTask} />
+        <TaskEdit taskId={editedTask} setEditedTask={setEditedTask} />
       </div>
-      <TaskEdit taskId={editedTask} setEditedTask={setEditedTask} />
     </>
   );
 }

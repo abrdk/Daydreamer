@@ -22,8 +22,8 @@ export default function Tasks({ editedTask, setEditedTask }) {
 
   const createHandle = async () => {
     const currentDate = new Date();
-    let afterWeek = currentDate;
-    afterWeek.setDate(afterWeek.getDate() + 7);
+    let afterWeek = new Date();
+    afterWeek.setDate(currentDate.getDate() + 7);
 
     const topLevelTasks = tasks.filter(
       (task) => !task.root && task.project == currentProject._id

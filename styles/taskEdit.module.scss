@@ -1,7 +1,7 @@
 .wrapper {
   position: fixed;
   display: flex;
-  right: 0;
+  left: 335px;
   bottom: 0;
   width: calc(100vw - 335px);
   height: 400px;
@@ -15,7 +15,7 @@
 .inputNameFilled {
   composes: formInputFilled from "./auth.module.scss";
   height: 50px;
-  width: calc((100% - 90px) / 2);
+  width: calc(100% - 460px);
   margin-right: 30px;
   margin-bottom: 20px;
   input {
@@ -27,7 +27,7 @@
 .inputName {
   composes: formInput from "./auth.module.scss";
   height: 50px;
-  width: calc((100% - 30px) / 2);
+  width: calc(100% - 591px);
   margin-right: 30px;
   margin-bottom: 15px;
   input {
@@ -82,7 +82,7 @@
   }
 }
 
-.inputsWtapper {
+.inputsWrapper {
   width: calc(100% - 70px);
   margin-right: 35px;
 }
@@ -157,4 +157,121 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.topInputsWrapper {
+  display: flex;
+}
+
+.dateWrapper {
+  width: 200px;
+  height: 50px;
+  background: #ffffff;
+  border: 1px solid #f3f3f3;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: 21px;
+  color: #696f75;
+  margin-right: 30px;
+}
+
+.datesWrapper {
+  width: 430px;
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.dateDash {
+  position: absolute;
+  width: 15px;
+  height: 1px;
+  background: #6f6e6e;
+  left: 207.5px;
+  top: 24.5px;
+}
+
+.calendar {
+  border: 0 !important;
+  border-radius: 5px;
+  filter: drop-shadow(15px 15px 50px rgba(9, 40, 72, 0.15));
+}
+
+.calendarHeader {
+  width: 279px;
+  height: 50px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #696f75;
+  padding-top: 0;
+  border-bottom: 1px solid #ecf5ff;
+}
+
+.arrowLeft {
+  position: absolute;
+  left: 10px;
+  cursor: pointer;
+}
+
+.arrowRight {
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+}
+
+.day {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: 21px;
+}
+
+.dayPast {
+  composes: day;
+  color: #949da7;
+}
+
+.dayFuture {
+  composes: day;
+  color: #6f6e6e;
+}
+
+.dayBetween {
+  background: #ecf5ff;
+}
+
+.dayStart {
+  composes: day;
+  background: #258efa;
+  border-radius: 100px 0px 0px 100px;
+  color: #ffffff;
+}
+
+.dayEnd {
+  composes: day;
+  background: #258efa;
+  border-radius: 0px 100px 100px 0px;
+  color: #ffffff;
+}
+
+.dayStartEnd {
+  composes: day;
+  background: #258efa;
+  color: #ffffff;
 }

@@ -141,3 +141,59 @@ input:-webkit-autofill:focus {
 textarea {
   resize: none;
 }
+
+.react-datepicker__header--custom {
+  padding-top: 0 !important;
+  background: #fff !important;
+  border: 0 !important;
+}
+
+.react-datepicker__day-names {
+  height: 40px;
+  display: flex !important;
+}
+
+.react-datepicker__triangle {
+  left: 25px !important;
+  margin-left: 0 !important;
+  border-bottom-color: #fff !important;
+  border-top-color: #fff !important;
+  border-radius: 5px !important;
+  margin-bottom: -7px !important;
+}
+
+.react-datepicker__triangle::before {
+  border-bottom-color: #fff !important;
+  border-top-color: #fff !important;
+  border-radius: 5px !important;
+}
+
+.react-datepicker__day-name {
+  width: 40px !important;
+  height: 40px;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  font-style: normal !important;
+  font-weight: bold !important;
+  font-size: 15px !important;
+  line-height: 21px !important;
+  color: #34393f !important;
+}
+
+.react-datepicker__month {
+  margin: 0 !important;
+  margin-bottom: 19px !important;
+}
+
+.react-datepicker__week {
+  height: 40px !important;
+}
+
+.react-datepicker__day {
+  height: 40px !important;
+  width: 40px !important;
+  margin: 0 !important;
+  background: transparent !important;
+}
