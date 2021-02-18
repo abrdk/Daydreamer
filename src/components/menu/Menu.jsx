@@ -37,7 +37,7 @@ export default function Menu() {
         />
         <Tasks editedTask={editedTask} setEditedTask={setEditedTask} />
       </div>
-      <TaskEdit taskId={editedTask} />
+      <TaskEdit taskId={editedTask} setEditedTask={setEditedTask} />
     </>
   );
 }

@@ -107,6 +107,12 @@ input:-webkit-autofill:focus {
   top: 0px !important;
 }
 
+.ScrollbarsCustom-EditTask {
+  height: calc(100% - 10px) !important;
+  top: 5px !important;
+  right: 8px !important;
+}
+
 .ScrollbarsCustom-Wrapper {
   inset: 0px 0px 0px 0px !important;
 }
