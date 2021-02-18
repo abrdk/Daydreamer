@@ -3,6 +3,7 @@ body {
   padding: 0;
   margin: 0;
   font-family: "Noto Sans", sans-serif;
+  overflow: hidden;
 }
 
 a {
@@ -35,17 +36,21 @@ button {
   }
 }
 
-input {
+input,
+textarea {
   font-family: "Noto Sans", sans-serif !important;
 }
 
 input:active,
-input:focus {
+input:focus,
+textarea:active,
+textarea:focus {
   outline: none !important;
   font-family: "Noto Sans", sans-serif !important;
 }
 
-input::-moz-focus-inner {
+input::-moz-focus-inner,
+textarea::-moz-focus-inner {
   border: 0 !important;
   font-family: "Noto Sans", sans-serif !important;
 }
@@ -92,6 +97,16 @@ input:-webkit-autofill:focus {
   border-radius: 100px !important;
 }
 
+.ScrollbarsCustom-Calendar {
+  width: calc(100% - 70px) !important;
+  left: 35px !important;
+}
+
+.ScrollbarsCustom-Tasks {
+  height: 100% !important;
+  top: 0px !important;
+}
+
 .ScrollbarsCustom-Wrapper {
   inset: 0px 0px 0px 0px !important;
 }
@@ -115,4 +130,8 @@ input:-webkit-autofill:focus {
 }
 .mt-55 {
   margin-top: -55px;
+}
+
+textarea {
+  resize: none;
 }

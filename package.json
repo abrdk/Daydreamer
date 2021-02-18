@@ -26,8 +26,10 @@
     "react-scripts": "3.4.3",
     "react-scrollbars-custom": "^4.0.25",
     "react-sortable-tree": "^2.8.0",
+    "react-textarea-autosize": "^8.3.1",
     "react-truncate": "^2.4.0",
     "sass": "^1.32.6",
+    "simplebar": "^5.3.0",
     "swr": "^0.4.1"
   },
   "devDependencies": {

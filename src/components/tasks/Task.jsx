@@ -11,7 +11,12 @@ import TasksRoot from "@/src/components/tasks/TasksRoot";
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 import { TasksContext } from "@/src/context/tasks/TasksContext";
 
-export default function Task({ task, setContainerHeight }) {
+export default function Task({
+  task,
+  setContainerHeight,
+  editedTask,
+  setEditedTask,
+}) {
   const { tasks, createTask, updateTask } = useContext(TasksContext);
   const { projects } = useContext(ProjectsContext);
   let currentProject = projects.find((project) => project.isCurrent);
@@ -42,6 +47,13 @@ export default function Task({ task, setContainerHeight }) {
   const plus = useRef(null);
   const pencil = useRef(null);
   const [isUpdating, setUpdatingState] = useState(!task.name);
+
+  const getNameWidth = () => {
+    if (document.querySelector(`.task-${task._id}`)) {
+      return document.querySelector(`.task-${task._id}`).clientWidth - 105;
+    }
+    return 0;
+  };
 
   const getDefaultName = () =>
     !task.root
@@ -108,7 +120,13 @@ export default function Task({ task, setContainerHeight }) {
     });
   };
 
-  const editTaskHandler = () => {};
+  const editTaskHandler = () => {
+    if (editedTask == task._id) {
+      setEditedTask(null);
+    } else {
+      setEditedTask(task._id);
+    }
+  };
 
   useEffect(() => {
     if (input.current && fakeText.current) {
@@ -119,14 +137,14 @@ export default function Task({ task, setContainerHeight }) {
         input.current.style.width = textWidth + "px";
       }
     }
-    // if (pencil.current && fakeText.current) {
-    //   const textWidth = fakeText.current.offsetWidth + 14 + 10 + 20;
-    //   if (textWidth > 272) {
-    //     pencil.current.style.left = "272px";
-    //   } else {
-    //     pencil.current.style.left = textWidth + "px";
-    //   }
-    // }
+    if (fakeText.current && pencil.current) {
+      const offset = fakeText.current.offsetWidth + 43;
+      if (offset - 43 > getNameWidth()) {
+        pencil.current.style.left = getNameWidth() + 43 + "px";
+      } else {
+        pencil.current.style.left = offset + "px";
+      }
+    }
   }, [task, isUpdating]);
 
   useEffect(() => {
@@ -446,6 +464,9 @@ export default function Task({ task, setContainerHeight }) {
             styles.task + ` task-${task._id} draggedTask ` + styles.dragged
           }
         >
+          <When condition={editedTask == task._id}>
+            <div className={styles.verticalLineAbsolute}></div>
+          </When>
           <When condition={subtasks.length}>
             <img
               className={
@@ -475,6 +496,9 @@ export default function Task({ task, setContainerHeight }) {
         onDragStart={dragStartHandler}
         onDragEnd={dragEndHandler}
       >
+        <When condition={editedTask == task._id}>
+          <div className={styles.verticalLine}></div>
+        </When>
         <When condition={subtasks.length}>
           <img
             className={isSubtasksOpened ? styles.arrowDown : styles.arrowRight}
@@ -488,54 +512,36 @@ export default function Task({ task, setContainerHeight }) {
             onClick={openSubtasksHandler}
           />
         </When>
+        <span
+          className={task.name ? styles.fakeText : styles.fakeTextVisible}
+          ref={fakeText}
+        >
+          {task.name ? task.name : getDefaultName()}
+        </span>
+        <img
+          src="/img/pencil.svg"
+          alt=" "
+          ref={pencil}
+          className={styles.pencil}
+          onClick={editTaskHandler}
+        />
         <If condition={isUpdating}>
           <Then>
-            <div className={styles.pencilContainer}>
-              <input
-                value={task.name}
-                className={styles.input}
-                ref={input}
-                onChange={updateHandler}
-                onBlur={blurHandler}
-                style={{
-                  maxWidth:
-                    document.querySelector(`.task-${task._id}`).clientWidth -
-                    105,
-                }}
-              />
-              <img
-                src="/img/pencil.svg"
-                alt=" "
-                ref={pencil}
-                className={styles.pencil}
-                onClick={editTaskHandler}
-              />
-            </div>
-            <span
-              className={task.name ? styles.fakeText : styles.fakeTextVisible}
-              ref={fakeText}
-            >
-              {task.name ? task.name : getDefaultName()}
-            </span>
+            <input
+              value={task.name}
+              className={styles.input}
+              ref={input}
+              onChange={updateHandler}
+              onBlur={blurHandler}
+              style={{
+                maxWidth: getNameWidth(),
+              }}
+            />
           </Then>
           <Else>
-            <div className={styles.pencilContainer}>
-              <Truncate
-                lines={1}
-                width={
-                  document.querySelector(`.task-${task._id}`).clientWidth - 105
-                }
-              >
-                {task.name}
-              </Truncate>
-              <img
-                src="/img/pencil.svg"
-                alt=" "
-                ref={pencil}
-                className={styles.pencil}
-                onClick={editTaskHandler}
-              />
-            </div>
+            <Truncate lines={1} width={getNameWidth()}>
+              {task.name}
+            </Truncate>
           </Else>
         </If>
 
@@ -550,7 +556,12 @@ export default function Task({ task, setContainerHeight }) {
 
       <When condition={subtasks.length && isSubtasksOpened}>
         <div className={styles.subtasksWrapper}>
-          <TasksRoot root={task._id} setContainerHeight={setContainerHeight} />
+          <TasksRoot
+            root={task._id}
+            setContainerHeight={setContainerHeight}
+            editedTask={editedTask}
+            setEditedTask={setEditedTask}
+          />
         </div>
       </When>
     </>

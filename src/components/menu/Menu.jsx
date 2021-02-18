@@ -12,6 +12,7 @@ export default function Menu() {
   const [editedTask, setEditedTask] = useState(null);
 
   const openMenuHandler = () => {
+    setEditedTask(null);
     setMenu(!isMenuOpen);
   };
 
@@ -34,9 +35,9 @@ export default function Menu() {
           isDropdownOpen={isDropdownOpen}
           setDropdown={setDropdown}
         />
-        <Tasks />
+        <Tasks editedTask={editedTask} setEditedTask={setEditedTask} />
       </div>
-      <TaskEdit task={editedTask} />
+      <TaskEdit taskId={editedTask} />
     </>
   );
 }

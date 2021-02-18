@@ -5,7 +5,12 @@ import Task from "@/src/components/tasks/Task";
 import { TasksContext } from "@/src/context/tasks/TasksContext";
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 
-export default function TasksRoot({ root, setContainerHeight }) {
+export default function TasksRoot({
+  root,
+  setContainerHeight,
+  editedTask,
+  setEditedTask,
+}) {
   const { projects } = useContext(ProjectsContext);
   let currentProject = projects.find((project) => project.isCurrent);
   if (!currentProject) {
@@ -17,7 +22,13 @@ export default function TasksRoot({ root, setContainerHeight }) {
     .sort((task1, task2) => task1.order > task2.order);
 
   const tasksComponents = sortedTasks.map((task) => (
-    <Task key={task._id} task={task} setContainerHeight={setContainerHeight} />
+    <Task
+      key={task._id}
+      task={task}
+      setContainerHeight={setContainerHeight}
+      editedTask={editedTask}
+      setEditedTask={setEditedTask}
+    />
   ));
 
   return tasksComponents;

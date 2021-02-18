@@ -115,6 +115,18 @@ export default function CalendarMonth({
           : defaultScrollLeft
       }
       style={{ height: "calc(100vh - 89px - 10px)", width: "100vw" }}
+      trackXProps={{
+        renderer: (props) => {
+          const { elementRef, ...restProps } = props;
+          return (
+            <span
+              {...restProps}
+              ref={elementRef}
+              className="ScrollbarsCustom-Track ScrollbarsCustom-TrackX ScrollbarsCustom-Calendar"
+            />
+          );
+        },
+      }}
     >
       <div
         onMouseDown={startScrollHandler}

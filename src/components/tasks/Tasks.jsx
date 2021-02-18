@@ -8,9 +8,9 @@ import TasksRoot from "@/src/components/tasks/TasksRoot";
 import { TasksContext } from "@/src//context/tasks/TasksContext";
 import { ProjectsContext } from "@/src//context/projects/ProjectsContext";
 
-export default function Tasks() {
+export default function Tasks({ editedTask, setEditedTask }) {
   const [containerHeight, setContainerHeight] = useState(0);
-  const { tasks, createTask, updateTask } = useContext(TasksContext);
+  const { tasks, createTask } = useContext(TasksContext);
   const { projects } = useContext(ProjectsContext);
   let currentProject = projects.find((project) => project.isCurrent);
   if (!currentProject) {
@@ -53,8 +53,25 @@ export default function Tasks() {
         style={{ height: containerHeight }}
         noScrollX={true}
         className={styles.tasksRoot}
+        trackYProps={{
+          renderer: (props) => {
+            const { elementRef, ...restProps } = props;
+            return (
+              <span
+                {...restProps}
+                ref={elementRef}
+                className="ScrollbarsCustom-Track ScrollbarsCustom-TrackY ScrollbarsCustom-Tasks"
+              />
+            );
+          },
+        }}
       >
-        <TasksRoot root={""} setContainerHeight={setContainerHeight} />
+        <TasksRoot
+          root={""}
+          setContainerHeight={setContainerHeight}
+          editedTask={editedTask}
+          setEditedTask={setEditedTask}
+        />
       </Scrollbar>
       <div className={styles.tasksRoot}></div>
       <div className={styles.newTaskBtn} onClick={createHandle}>

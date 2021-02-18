@@ -39,12 +39,8 @@
   display: none;
   width: 12px;
   height: 12px;
-  z-index: 2000;
-  margin-left: 10px;
-}
-.pencilContainer {
-  display: flex;
-  align-items: center;
+  z-index: 5000;
+  position: absolute;
 }
 
 .arrowRight {
@@ -97,6 +93,7 @@
   font-family: "Noto Sans", sans-serif !important;
   z-index: 5000;
   max-width: 230px;
+  margin-right: -2px;
 }
 
 .fakeText {
@@ -175,4 +172,20 @@
   position: fixed;
   left: -10000px;
   top: -10000px;
+}
+
+.verticalLine {
+  width: 3px;
+  height: 55px;
+  background: #258efa;
+  position: fixed;
+  left: 0;
+}
+
+.verticalLineAbsolute {
+  width: 3px;
+  height: 55px;
+  background: #258efa;
+  position: absolute;
+  left: 0;
 }
