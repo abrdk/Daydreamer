@@ -35,7 +35,7 @@ export default function Tasks({ editedTask, setEditedTask }) {
       description: "",
       dateStart: currentDate,
       dateEnd: afterWeek,
-      color: "FFBC42",
+      color: "258EFA",
       project: currentProject._id,
       root: "",
       order: topLevelTasks.length,

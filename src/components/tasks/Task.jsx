@@ -117,6 +117,7 @@ export default function Task({
       description: "",
       root: task._id,
       order,
+      color: "258EFA",
     });
   };
 

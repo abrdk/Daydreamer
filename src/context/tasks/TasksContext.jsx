@@ -12,7 +12,15 @@ export function TasksProvider(props) {
     tasks: [],
     isTasksLoaded: false,
   });
-  const colors = ["258EFA", "FFBC42", "59CD90", "D06BF3", "66CEDC", "FF5B79"];
+  const colors = [
+    "FFBC42",
+    "258EFA",
+    "FFBC42",
+    "FFBC42",
+    "59CD90",
+    "59CD90",
+    "258EFA",
+  ];
   const { tasks, isTasksLoaded } = tasksState;
 
   const loadTasks = async () => {
@@ -58,20 +66,49 @@ export function TasksProvider(props) {
     } catch (e) {}
   };
 
-  const deleteTask = async (_id) => {
+  const deleteTask = (_id) => {
     try {
-      dispatch({
-        type: "DELETE_TASK",
-        payload: { _id },
-      });
+      const findSubtasksIds = (_id) =>
+        tasks
+          .filter((t) => t.root == _id)
+          .map((t) => [t._id, ...findSubtasksIds(t._id)]);
 
-      await xhr(
-        "/tasks/delete",
-        {
-          _id,
-        },
-        "DELETE"
-      );
+      const findTaskWithSubtaskIds = (_id) => [_id, ...findSubtasksIds(_id)];
+
+      function flatten(array, mutable) {
+        let toString = Object.prototype.toString;
+        let arrayTypeStr = "[object Array]";
+        let result = [];
+        let nodes = (mutable && array) || array.slice();
+        let node;
+        if (!array.length) {
+          return result;
+        }
+        node = nodes.pop();
+        do {
+          if (toString.call(node) === arrayTypeStr) {
+            nodes.push.apply(nodes, node);
+          } else {
+            result.push(node);
+          }
+        } while (nodes.length && (node = nodes.pop()) !== undefined);
+        result.reverse();
+        return result;
+      }
+
+      flatten(findTaskWithSubtaskIds(_id)).forEach((id) => {
+        dispatch({
+          type: "DELETE_TASK",
+          payload: { _id: id },
+        });
+        xhr(
+          "/tasks/delete",
+          {
+            _id: id,
+          },
+          "DELETE"
+        );
+      });
     } catch (e) {}
   };
 
@@ -106,7 +143,7 @@ export function TasksProvider(props) {
           description: "",
           dateStart: currentDate,
           dateEnd: afterWeek,
-          color: colors[Math.floor(Math.random() * colors.length)],
+          color: colors[i],
           project,
           root: "",
           order: i,
@@ -118,7 +155,7 @@ export function TasksProvider(props) {
         description: "",
         dateStart: currentDate,
         dateEnd: afterWeek,
-        color: colors[Math.floor(Math.random() * colors.length)],
+        color: colors[i],
         project,
         root: _ids[2],
         order: i - 5,

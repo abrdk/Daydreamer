@@ -16,7 +16,7 @@ export default async (req, res) => {
     }
 
     const Task = getDB("Task");
-    await Task.findOneAndDelete({ _id: id, owner: user._id });
+    await Task.findOneAndDelete({ _id, owner: user._id });
     return res.json({ message: "ok" });
   } catch (e) {
     return res.status(500).json({ message: "Server error" });

@@ -4,6 +4,8 @@ import Scrollbar from "react-scrollbars-custom";
 import FloatingLabel from "floating-label-react";
 import usePrevious from "@react-hook/previous";
 import { When } from "react-if";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 import { TasksContext } from "@/src/context/tasks/TasksContext";
 
@@ -110,7 +112,7 @@ export default function TasksEdit({ taskId, setEditedTask }) {
                 ? styles.descriptionFilled
                 : styles.description
             }
-            for="taskDescription"
+            htmlFor="taskDescription"
           >
             <div className={styles.teaxtareaWrapper}>
               <Scrollbar
@@ -130,7 +132,7 @@ export default function TasksEdit({ taskId, setEditedTask }) {
               >
                 <textarea
                   ref={textArea}
-                  spellcheck="false"
+                  spellCheck="false"
                   id="taskDescription"
                   name="description"
                   value={editedDescription}
