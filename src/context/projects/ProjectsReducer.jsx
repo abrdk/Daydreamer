@@ -1,6 +1,6 @@
 export default function ProjectsReducer(state, action) {
+  console.log(action.type, action.payload);
   const { _id } = action.payload;
-  console.log(action.type);
   switch (action.type) {
     case "SET_PROJECTS":
       return {
@@ -27,6 +27,11 @@ export default function ProjectsReducer(state, action) {
       return {
         ...state,
         projects: state.projects.filter((project) => project._id != _id),
+      };
+    case "SET_PROJECT_BY_QUERY_ID":
+      return {
+        ...state,
+        projectByQueryId: action.payload,
       };
     default:
       return state;

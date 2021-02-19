@@ -12,10 +12,6 @@ import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 
 export default function TasksEdit({ taskId, setEditedTask }) {
   const { projects } = useContext(ProjectsContext);
-  let currentProject = projects.find((project) => project.isCurrent);
-  if (!currentProject) {
-    currentProject = projects[0];
-  }
 
   const { tasks, updateTask, deleteTask } = useContext(TasksContext);
   const task = tasks.find((t) => t._id == taskId);

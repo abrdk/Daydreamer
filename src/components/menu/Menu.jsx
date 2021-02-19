@@ -1,23 +1,21 @@
 import { useState, useContext } from "react";
 import styles from "@/styles/menu.module.scss";
 import { nanoid } from "nanoid";
+import { When } from "react-if";
 
 import TaskEdit from "@/src/components/tasks/TaskEdit";
 import ProjectsDropdown from "@/src/components/projects/ProjectsDropdown";
 import Tasks from "@/src/components/tasks/Tasks";
 
 import { TasksContext } from "@/src//context/tasks/TasksContext";
+import { UsersContext } from "@/src/context/users/UsersContext";
 import { ProjectsContext } from "@/src//context/projects/ProjectsContext";
 
-export default function Menu() {
+export default function Menu({ isMenuOpen, setMenu }) {
+  const userCtx = useContext(UsersContext);
   const { tasks, createTask } = useContext(TasksContext);
-  const { projects } = useContext(ProjectsContext);
-  let currentProject = projects.find((project) => project.isCurrent);
-  if (!currentProject) {
-    currentProject = projects[0];
-  }
+  const { projectByQueryId } = useContext(ProjectsContext);
 
-  const [isMenuOpen, setMenu] = useState(false);
   const [isDropdownOpen, setDropdown] = useState(false);
   const [editedTask, setEditedTask] = useState(null);
 
@@ -34,7 +32,7 @@ export default function Menu() {
     afterWeek.setDate(currentDate.getDate() + 7);
 
     const topLevelTasks = tasks.filter(
-      (task) => !task.root && task.project == currentProject._id
+      (task) => !task.root && task.project == projectByQueryId._id
     );
 
     await createTask({
@@ -44,7 +42,7 @@ export default function Menu() {
       dateStart: currentDate,
       dateEnd: afterWeek,
       color: "258EFA",
-      project: currentProject._id,
+      project: projectByQueryId._id,
       root: "",
       order: topLevelTasks.length,
     });
@@ -72,12 +70,14 @@ export default function Menu() {
         <Tasks editedTask={editedTask} setEditedTask={setEditedTask} />
         <TaskEdit taskId={editedTask} setEditedTask={setEditedTask} />
       </div>
-      <img
-        src="/img/plus.svg"
-        alt=" "
-        className={styles.bigPlus}
-        onClick={createTaskHandler}
-      />
+      <When condition={projectByQueryId.owner == userCtx._id}>
+        <img
+          src="/img/plus.svg"
+          alt=" "
+          className={styles.bigPlus}
+          onClick={createTaskHandler}
+        />
+      </When>
     </>
   );
 }

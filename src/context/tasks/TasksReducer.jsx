@@ -33,6 +33,11 @@ export default function TasksReducer(state, action) {
         ...state,
         tasks: state.tasks.filter((task) => task.project != project),
       };
+    case "SET_TASKS_BY_PROJECT_ID":
+      return {
+        ...state,
+        tasksByProjectId: action.payload,
+      };
     default:
       return state;
   }

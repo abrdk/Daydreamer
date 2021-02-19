@@ -22,21 +22,24 @@ export default function Option({ project, projectIndex }) {
   const pencil = useRef(null);
   const trash = useRef(null);
 
-  const selectHandler = (e) => {
+  const selectHandler = async (e) => {
     if (
       e.target != trash.current &&
       e.target != pencil.current &&
       e.target != input.current &&
-      !project.isCurrent
+      project._id != router.query.id
     ) {
-      updateProject({
-        ...project,
-        isCurrent: true,
-      });
-      updateProject({
-        ...selectedProject,
-        isCurrent: false,
-      });
+      router.push(`/gantt/${project._id}`);
+      await Promise.all([
+        updateProject({
+          ...project,
+          isCurrent: true,
+        }),
+        updateProject({
+          ...selectedProject,
+          isCurrent: false,
+        }),
+      ]);
     }
   };
 
@@ -63,8 +66,9 @@ export default function Option({ project, projectIndex }) {
   };
 
   const deleteHandler = async () => {
-    if (project.isCurrent) {
+    if (project._id == router.query.id) {
       if (projectIndex === projects.length - 1) {
+        router.push(`/gantt/${projects[projectIndex - 1]._id}`);
         await Promise.all([
           updateProject({
             ...projects[projectIndex - 1],
@@ -74,6 +78,7 @@ export default function Option({ project, projectIndex }) {
           deleteTasksByProject(project._id),
         ]);
       } else {
+        router.push(`/gantt/${projects[projectIndex + 1]._id}`);
         await Promise.all([
           updateProject({
             ...projects[projectIndex + 1],
@@ -118,7 +123,9 @@ export default function Option({ project, projectIndex }) {
 
   return (
     <div
-      className={project.isCurrent ? styles.optionSelected : styles.option}
+      className={
+        project._id == router.query.id ? styles.optionSelected : styles.option
+      }
       onClick={selectHandler}
     >
       <If condition={isUpdating}>

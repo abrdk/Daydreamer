@@ -1,9 +1,10 @@
 import Head from "next/head";
 import { useState, useContext } from "react";
 import styles from "@/styles/header.module.scss";
-import { When } from "react-if";
+import { When, If, Then, Else } from "react-if";
 import Truncate from "react-truncate";
 import { useRouter } from "next/router";
+import { nanoid } from "nanoid";
 import ReactCursorPosition from "react-cursor-position";
 
 import { Modal } from "@/src/components/modal/modal";
@@ -18,13 +19,39 @@ import { TasksContext } from "@/src/context/tasks/TasksContext";
 
 export default function Gantt() {
   const router = useRouter();
-  const { id } = router.query;
+
   const [modal, setModal] = useState(false);
   const [view, setView] = useState(ViewMode.Day);
+  const [isMenuOpen, setMenu] = useState(false);
 
   const userCtx = useContext(UsersContext);
-  const { isProjectsLoaded, projects } = useContext(ProjectsContext);
-  const { isTasksLoaded } = useContext(TasksContext);
+  const { isProjectsLoaded, projectByQueryId, createProject } = useContext(
+    ProjectsContext
+  );
+  const { isTasksLoaded, createTask, tasksByProjectId } = useContext(
+    TasksContext
+  );
+
+  const copyAndEdit = async () => {
+    if (userCtx._id) {
+      setMenu(false);
+      const newProjectId = nanoid();
+      await createProject({
+        _id: newProjectId,
+        name: projectByQueryId.name,
+        owner: userCtx._id,
+      });
+      tasksByProjectId.forEach((t) =>
+        createTask({
+          ...t,
+          _id: nanoid(),
+          project: newProjectId,
+          owner: userCtx._id,
+        })
+      );
+      router.push(`/gantt/${newProjectId}`);
+    }
+  };
 
   return (
     <>
@@ -35,36 +62,48 @@ export default function Gantt() {
       <When
         condition={
           userCtx.isUserLoaded &&
-          userCtx.name &&
           isProjectsLoaded &&
           isTasksLoaded &&
-          projects.find((p) => p._id == id)
+          projectByQueryId._id
         }
       >
         <Modal modal={modal} setModal={setModal} />
         <ReactCursorPosition>
           <div className={styles.container} id="container">
-            <Menu />
+            <Menu isMenuOpen={isMenuOpen} setMenu={setMenu} />
             <div className={styles.header}>
               <ViewSwitcher
+                isMenuOpen={isMenuOpen}
                 onViewModeChange={(viewMode) => setView(viewMode)}
               />
               <div className={styles.buttonsContainer}>
-                <button
-                  className={styles.share_button}
-                  onClick={setModal.bind(null, "share")}
-                >
-                  Share Project
-                </button>
-                <button
-                  className={styles.account_button}
-                  onClick={setModal.bind(null, "account")}
-                >
-                  <img src="/img/avatar.svg" alt=" " />{" "}
-                  <Truncate lines={1} width={100}>
-                    {userCtx.name}
-                  </Truncate>
-                </button>
+                <If condition={projectByQueryId.owner == userCtx._id}>
+                  <Then>
+                    <button
+                      className={styles.share_button}
+                      onClick={setModal.bind(null, "share")}
+                    >
+                      Share Project
+                    </button>
+                    <button
+                      className={styles.account_button}
+                      onClick={setModal.bind(null, "account")}
+                    >
+                      <img src="/img/avatar.svg" alt=" " />{" "}
+                      <Truncate lines={1} width={100}>
+                        {userCtx.name}
+                      </Truncate>
+                    </button>
+                  </Then>
+                  <Else>
+                    <button
+                      className={styles.share_button}
+                      onClick={copyAndEdit}
+                    >
+                      Copy and Edit
+                    </button>
+                  </Else>
+                </If>
               </div>
             </div>
           </div>

@@ -1,6 +1,6 @@
 import { xhr } from "@/helpers/xhr";
+import { useRouter } from "next/router";
 import { nanoid } from "nanoid";
-import useSWR from "swr";
 import React, { createContext, useReducer, useEffect } from "react";
 
 import TasksReducer from "@/src/context/tasks/TasksReducer";
@@ -8,8 +8,10 @@ import TasksReducer from "@/src/context/tasks/TasksReducer";
 export const TasksContext = createContext();
 
 export function TasksProvider(props) {
+  const router = useRouter();
   const [tasksState, dispatch] = useReducer(TasksReducer, {
     tasks: [],
+    tasksByProjectId: [],
     isTasksLoaded: false,
   });
   const colors = [
@@ -21,7 +23,7 @@ export function TasksProvider(props) {
     "59CD90",
     "258EFA",
   ];
-  const { tasks, isTasksLoaded } = tasksState;
+  const { tasks, isTasksLoaded, tasksByProjectId } = tasksState;
 
   const loadTasks = async () => {
     try {
@@ -43,6 +45,37 @@ export function TasksProvider(props) {
   useEffect(() => {
     loadTasks();
   }, []);
+
+  const loadTasksByProjectId = async (project) => {
+    try {
+      const tasksByProject = tasks.filter((t) => t.project == project);
+      if (tasksByProject.length) {
+        dispatch({
+          type: "SET_TASKS_BY_PROJECT_ID",
+          payload: tasksByProject,
+        });
+      } else {
+        const res = await xhr("/tasks/show", { project }, "POST");
+        if (res.message == "ok" && res.tasks) {
+          dispatch({
+            type: "SET_TASKS_BY_PROJECT_ID",
+            payload: res.tasks,
+          });
+        } else {
+          dispatch({
+            type: "SET_TASKS_BY_PROJECT_ID",
+            payload: [],
+          });
+        }
+      }
+    } catch (e) {}
+  };
+
+  useEffect(() => {
+    if (router.query.id) {
+      loadTasksByProjectId(router.query.id);
+    }
+  }, [router.query.id]);
 
   const createTask = async (task) => {
     try {
@@ -178,6 +211,7 @@ export function TasksProvider(props) {
       value={{
         tasks,
         isTasksLoaded,
+        tasksByProjectId,
         createTask,
         updateTask,
         deleteTask,

@@ -22,9 +22,9 @@ export function UsersProvider(props) {
           type: "SET_USER",
           payload: { _id: "", name: "", password: "" },
         });
-        if (Router.pathname != "/signup" && Router.pathname != "/login") {
-          Router.push("/signup");
-        }
+        // if (Router.pathname != "/signup" && Router.pathname != "/login") {
+        //   Router.push("/signup");
+        // }
       }
     }
   }, [data, error]);

@@ -3,34 +3,38 @@ import { useContext } from "react";
 import styles from "@/styles/projectsDropdown.module.scss";
 import Truncate from "react-truncate";
 import { If, Then, Else, When } from "react-if";
-import { useRouter } from "next/router";
 
 import ProjectOption from "@/src/components/projects/ProjectOption";
 
+import { UsersContext } from "@/src/context/users/UsersContext";
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 
 export default function ProjectsDropdown({ isDropdownOpen, setDropdown }) {
-  const router = useRouter();
-  const { projects, createProject } = useContext(ProjectsContext);
-  const selectedProject = projects.find(
-    (project) => project._id == router.query.id
+  const userCtx = useContext(UsersContext);
+  const { projects, createProject, projectByQueryId } = useContext(
+    ProjectsContext
   );
+
   const projectsOptions = projects.map((project, i) => (
     <ProjectOption project={project} projectIndex={i} key={project._id} />
   ));
 
   const createHandler = () => {
-    createProject({ _id: nanoid(), name: "" });
+    createProject({ _id: nanoid(), name: "", owner: userCtx._id });
   };
 
   return (
     <>
       <div
         className={isDropdownOpen ? styles.rootOpened : styles.root}
-        onClick={() => setDropdown(!isDropdownOpen)}
+        onClick={
+          projectByQueryId.owner == userCtx._id
+            ? () => setDropdown(!isDropdownOpen)
+            : () => {}
+        }
       >
         <Truncate lines={1} width={185}>
-          {selectedProject.name}
+          {projectByQueryId.name}
         </Truncate>
         <If condition={isDropdownOpen}>
           <Then>

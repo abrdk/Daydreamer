@@ -4,7 +4,7 @@ import styles from "@/styles/viewSwitcher.module.scss";
 
 const modes = ["Day", "Week", "Month"];
 
-export const ViewSwitcher = ({ onViewModeChange }) => {
+export const ViewSwitcher = ({ onViewModeChange, isMenuOpen }) => {
   const [scale, setScale] = useState(0);
 
   const buttons = [0, 1, 2].map((i) => (
@@ -20,5 +20,15 @@ export const ViewSwitcher = ({ onViewModeChange }) => {
     </div>
   ));
 
-  return <div className={styles.buttonsWrapper}>{buttons}</div>;
+  return (
+    <div
+      className={
+        isMenuOpen
+          ? styles.buttonsWrapper + " " + styles.offset
+          : styles.buttonsWrapper
+      }
+    >
+      {buttons}
+    </div>
+  );
 };

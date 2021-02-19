@@ -32,7 +32,7 @@ export default function AccountModal({ setModal }) {
   const updateHandler = async () => {
     if (!isDataUpdating() && !isUpdatingComplete) {
       Cookies.remove("ganttToken", { path: "/" });
-      Router.reload();
+      Router.push("/signup");
     } else if (isDataUpdating() && !isUpdatingComplete) {
       const res = await userCtx.updateUser({
         name,

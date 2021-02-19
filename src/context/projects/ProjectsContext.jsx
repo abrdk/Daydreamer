@@ -29,9 +29,10 @@ export function ProjectsProvider(props) {
 
   const [projectsState, dispatch] = useReducer(ProjectsReducer, {
     projects: [],
+    projectByQueryId: {},
     isProjectsLoaded: false,
   });
-  const { projects, isProjectsLoaded } = projectsState;
+  const { projects, isProjectsLoaded, projectByQueryId } = projectsState;
 
   const createProject = async (project) => {
     try {
@@ -95,42 +96,38 @@ export function ProjectsProvider(props) {
     } catch (e) {}
   };
 
-  let currentProject = projects.find((project) => project.isCurrent);
-  if (!currentProject) {
-    currentProject = projects[0];
-  }
-
-  useEffect(() => {
-    if (currentProject && currentProject._id != router.query.id) {
-      router.push(`/gantt/${currentProject._id}`);
-    }
-  }, [currentProject, router.query.id]);
-
-  useEffect(() => {
-    const updateCurrentProject = async () => {
-      const project = projects.find((p) => p._id == router.query.id);
+  const loadProjectByQuery = async (_id) => {
+    try {
+      const project = projects.find((p) => p._id == _id);
       if (project) {
-        await Promise.all([
-          updateProject({ ...currentProject, isCurrent: false }),
-          updateProject({ ...project, isCurrent: true }),
-        ]);
+        dispatch({
+          type: "SET_PROJECT_BY_QUERY_ID",
+          payload: project,
+        });
+      } else {
+        const res = await xhr("/projects/show", { _id }, "POST");
+        if (res.message == "ok" && res.project) {
+          dispatch({
+            type: "SET_PROJECT_BY_QUERY_ID",
+            payload: res.project,
+          });
+        }
       }
-    };
+    } catch (e) {}
+  };
 
-    if (
-      currentProject &&
-      currentProject._id != router.query.id &&
-      isProjectsLoaded
-    ) {
-      updateCurrentProject();
+  useEffect(() => {
+    if (router.query.id) {
+      loadProjectByQuery(router.query.id);
     }
-  }, [isProjectsLoaded]);
+  }, [router.query.id]);
 
   return (
     <ProjectsContext.Provider
       value={{
         projects,
         isProjectsLoaded,
+        projectByQueryId,
         createProject,
         updateProject,
         deleteProject,

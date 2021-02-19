@@ -1,5 +1,14 @@
 .buttonsWrapper {
   display: flex;
+  position: relative;
+  transition: all 300ms;
+  left: 0px;
+}
+
+.buttonsWrapper.offset {
+  display: flex;
+  position: relative;
+  left: 304px;
 }
 
 .baseButton {

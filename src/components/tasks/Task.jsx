@@ -8,6 +8,7 @@ import anime from "animejs";
 
 import TasksRoot from "@/src/components/tasks/TasksRoot";
 
+import { UsersContext } from "@/src/context/users/UsersContext";
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 import { TasksContext } from "@/src/context/tasks/TasksContext";
 
@@ -17,28 +18,40 @@ export default function Task({
   editedTask,
   setEditedTask,
 }) {
-  const { tasks, createTask, updateTask } = useContext(TasksContext);
-  const { projects } = useContext(ProjectsContext);
-  let currentProject = projects.find((project) => project.isCurrent);
-  if (!currentProject) {
-    currentProject = projects[0];
-  }
+  const userCtx = useContext(UsersContext);
+
+  const { tasks, createTask, updateTask, tasksByProjectId } = useContext(
+    TasksContext
+  );
+  const { projectByQueryId } = useContext(ProjectsContext);
 
   //subtasks
   const [isSubtasksOpened, setSubtasksState] = useState(false);
-  const filteredTasks = tasks.filter(
-    (t) => t.root == task.root && t.project == currentProject._id
-  );
-  const sortedTasks = filteredTasks.sort(
-    (task1, task2) => task1.order > task2.order
-  );
-  const subtasks = tasks
-    .filter((subtask) => subtask.root == task._id)
-    .sort((task1, task2) => task1.order > task2.order);
+  let sortedTasks;
+  if (projectByQueryId.owner == userCtx._id) {
+    sortedTasks = tasks
+      .filter((t) => t.root == task.root && t.project == projectByQueryId._id)
+      .sort((task1, task2) => task1.order > task2.order);
+  } else {
+    sortedTasks = tasksByProjectId
+      .filter((t) => t.root == task.root)
+      .sort((task1, task2) => task1.order > task2.order);
+  }
+
+  let subtasks;
+  if (projectByQueryId.owner == userCtx._id) {
+    subtasks = tasks
+      .filter((subtask) => subtask.root == task._id)
+      .sort((task1, task2) => task1.order > task2.order);
+  } else {
+    subtasks = tasksByProjectId
+      .filter((subtask) => subtask.root == task._id)
+      .sort((task1, task2) => task1.order > task2.order);
+  }
 
   useEffect(() => {
     setContainerHeight(document.querySelectorAll(".task").length * 55);
-  }, [filteredTasks, isSubtasksOpened]);
+  }, [sortedTasks, isSubtasksOpened]);
 
   // task
   const input = useRef(null);
@@ -61,16 +74,18 @@ export default function Task({
       : `Subtask name #${task.order + 1}`;
 
   const startUpdateHandler = (e) => {
-    if (
-      e.target != input.current &&
-      e.target != arrow.current &&
-      e.target != plus.current &&
-      e.target != pencil.current
-    ) {
-      if (!isUpdating) {
-        setUpdatingState(true);
-      } else if (e.target != input.current) {
-        setUpdatingState(false);
+    if (projectByQueryId.owner == userCtx._id) {
+      if (
+        e.target != input.current &&
+        e.target != arrow.current &&
+        e.target != plus.current &&
+        e.target != pencil.current
+      ) {
+        if (!isUpdating) {
+          setUpdatingState(true);
+        } else if (e.target != input.current) {
+          setUpdatingState(false);
+        }
       }
     }
   };
@@ -244,7 +259,7 @@ export default function Task({
 
       notUpdatedTasks
         .filter(
-          (t) => t.root == sourceTask.root && t.project == currentProject._id
+          (t) => t.root == sourceTask.root && t.project == projectByQueryId._id
         )
         .sort((task1, task2) => task1.order > task2.order)
         .slice(oldIndex + 1)
@@ -253,7 +268,7 @@ export default function Task({
         });
 
       notUpdatedTasks
-        .filter((t) => t.root == newRoot && t.project == currentProject._id)
+        .filter((t) => t.root == newRoot && t.project == projectByQueryId._id)
         .sort((task1, task2) => task1.order > task2.order)
         .slice(newIndex)
         .forEach((t) => {
@@ -372,14 +387,16 @@ export default function Task({
   };
 
   const dragStartHandler = (e) => {
-    setSubtasksState(false);
-    setDraggingState(true);
-    setInitialMousePisition({
-      shiftX: e.clientX - e.target.getBoundingClientRect().left,
-      shiftY: e.clientY - e.target.getBoundingClientRect().top,
-    });
-    addInitialClasses(e);
-    setSourceTask(task);
+    if (projectByQueryId.owner == userCtx._id) {
+      setSubtasksState(false);
+      setDraggingState(true);
+      setInitialMousePisition({
+        shiftX: e.clientX - e.target.getBoundingClientRect().left,
+        shiftY: e.clientY - e.target.getBoundingClientRect().top,
+      });
+      addInitialClasses(e);
+      setSourceTask(task);
+    }
   };
 
   const dragEndHandler = () => {
@@ -519,13 +536,15 @@ export default function Task({
         >
           {task.name ? task.name : getDefaultName()}
         </span>
-        <img
-          src="/img/pencil.svg"
-          alt=" "
-          ref={pencil}
-          className={styles.pencil}
-          onClick={editTaskHandler}
-        />
+        <When condition={projectByQueryId.owner == userCtx._id}>
+          <img
+            src="/img/pencil.svg"
+            alt=" "
+            ref={pencil}
+            className={styles.pencil}
+            onClick={editTaskHandler}
+          />
+        </When>
         <If condition={isUpdating}>
           <Then>
             <input
@@ -545,14 +564,15 @@ export default function Task({
             </Truncate>
           </Else>
         </If>
-
-        <img
-          src="/img/plus.svg"
-          alt=" "
-          ref={plus}
-          className={styles.plus}
-          onClick={createSubtask}
-        />
+        <When condition={projectByQueryId.owner == userCtx._id}>
+          <img
+            src="/img/plus.svg"
+            alt=" "
+            ref={plus}
+            className={styles.plus}
+            onClick={createSubtask}
+          />
+        </When>
       </div>
 
       <When condition={subtasks.length && isSubtasksOpened}>
