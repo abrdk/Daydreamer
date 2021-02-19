@@ -3,6 +3,8 @@ import Scrollbar from "react-scrollbars-custom";
 import { When } from "react-if";
 import { useEffect, useState, useMemo } from "react";
 
+import LineTasks from "@/src/components/tasks/LineTasks";
+
 const daysOfWeek = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 const monthNames = [
   "January",
@@ -161,6 +163,7 @@ export default function CalendarDay({
         }
       >
         {daysWithLabelsComponents}
+        <LineTasks />
       </div>
     </Scrollbar>
   );

@@ -75,7 +75,7 @@ export function TasksProvider(props) {
     if (router.query.id) {
       loadTasksByProjectId(router.query.id);
     }
-  }, [router.query.id]);
+  }, [router.query.id, tasks]);
 
   const createTask = async (task) => {
     try {

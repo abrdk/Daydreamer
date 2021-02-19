@@ -21,7 +21,7 @@ const monthNames = [
 import { TasksContext } from "@/src/context/tasks/TasksContext";
 
 export default function TasksEdit({ task }) {
-  const { tasks, updateTask } = useContext(TasksContext);
+  const { updateTask } = useContext(TasksContext);
 
   const [dateStart, setDateStart] = useState(null);
   const [dateEnd, setDateEnd] = useState(null);

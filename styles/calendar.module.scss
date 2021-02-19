@@ -1,5 +1,6 @@
 .wrapper {
   display: flex;
+  position: relative;
 }
 
 .wrapperPointer {
@@ -124,4 +125,26 @@
   height: calc(100vh - 89px - 25px - 10px - 5px - 42px);
   background: #258efa;
   margin-left: 79.5px;
+}
+
+.lineTasksWrapper {
+  position: absolute;
+  top: 88px;
+}
+
+.lineTask {
+  position: absolute;
+  // top: 88px;
+  background: #258efa;
+  border-radius: 3px;
+  height: 35px;
+  width: 330px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 21px;
+  color: #f3f3f3;
 }

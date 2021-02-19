@@ -1,18 +1,16 @@
 import { useContext, useState, useEffect } from "react";
 import styles from "@/styles/tasks.module.scss";
 import { nanoid } from "nanoid";
-import { useRouter } from "next/router";
 import Scrollbar from "react-scrollbars-custom";
+import { When } from "react-if";
 
 import TasksRoot from "@/src/components/tasks/TasksRoot";
 
 import { TasksContext } from "@/src//context/tasks/TasksContext";
 import { ProjectsContext } from "@/src//context/projects/ProjectsContext";
 import { UsersContext } from "@/src/context/users/UsersContext";
-import { When } from "react-if";
 
 export default function Tasks({ editedTask, setEditedTask }) {
-  const router = useRouter();
   const userCtx = useContext(UsersContext);
 
   const [containerHeight, setContainerHeight] = useState(0);
