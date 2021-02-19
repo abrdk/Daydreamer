@@ -1,11 +1,15 @@
 .container {
+  z-index: 100;
+  position: absolute;
+  top: 0;
   min-height: 100vh;
+  min-width: 100vw;
   padding: 0 0.5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #e5e5e5;
+  background: rgba(51, 56, 61, 0.35);
 }
 
 .form {

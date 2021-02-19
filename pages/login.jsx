@@ -5,6 +5,8 @@ import styles from "@/styles/auth.module.scss";
 import { When } from "react-if";
 import FloatingLabel from "floating-label-react";
 
+import DefaultGantt from "@/src/components/gantt/DefaultGantt";
+
 import { UsersContext } from "@/src/context/users/UsersContext";
 
 export default function Login() {
@@ -35,6 +37,7 @@ export default function Login() {
 
   return (
     <When condition={isUserLoaded && !_id}>
+      <DefaultGantt />
       <div
         className={styles.container}
         onClick={() => {

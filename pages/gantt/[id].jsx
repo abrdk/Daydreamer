@@ -44,7 +44,7 @@ export default function Gantt() {
         <Modal modal={modal} setModal={setModal} />
         <ReactCursorPosition>
           <div className={styles.container} id="container">
-            <Menu modal={modal} />
+            <Menu />
             <div className={styles.header}>
               <ViewSwitcher
                 onViewModeChange={(viewMode) => setView(viewMode)}
