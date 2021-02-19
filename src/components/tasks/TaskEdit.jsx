@@ -4,22 +4,8 @@ import Scrollbar from "react-scrollbars-custom";
 import FloatingLabel from "floating-label-react";
 import usePrevious from "@react-hook/previous";
 import { When } from "react-if";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-const monthNames = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+
+import TaskCalendar from "@/src/components/tasks/TaskCalendar";
 
 import { TasksContext } from "@/src/context/tasks/TasksContext";
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
@@ -43,12 +29,6 @@ export default function TasksEdit({ taskId, setEditedTask }) {
   );
   const prevDescription = usePrevious(editedDescription);
   const [isTextareaFocused, setTextareaFocused] = useState(false);
-  const [dateStart, setDateStart] = useState(() =>
-    task ? new Date(task.dateStart) : null
-  );
-  const [dateEnd, setDateEnd] = useState(() =>
-    task ? new Date(task.dateEnd) : null
-  );
 
   const nameUpdateHandler = (e) => {
     if (e.target.value.length <= 100) {
@@ -89,8 +69,6 @@ export default function TasksEdit({ taskId, setEditedTask }) {
     if (task) {
       setEditedName(task.name);
       setEditedDescription(task.description);
-      setDateStart(new Date(task.dateStart));
-      setDateEnd(new Date(task.dateEnd));
     }
   }, [task]);
 
@@ -139,108 +117,7 @@ export default function TasksEdit({ taskId, setEditedTask }) {
               onChange={nameUpdateHandler}
               onBlur={setDefaultName}
             />
-            <div className={styles.datesWrapper}>
-              <DatePicker
-                selected={dateStart}
-                onChange={(date) => setDateStart(date)}
-                selectsStart
-                startDate={dateStart}
-                endDate={dateEnd}
-                className={styles.dateWrapper}
-                dateFormat="MMMM d, yyyy"
-                calendarClassName={styles.calendar}
-                popperPlacement="top-start"
-                popperModifiers={{
-                  offset: {
-                    enabled: true,
-                    offset: "0px, 9px",
-                  },
-                }}
-                renderDayContents={(day, date) => {
-                  const today = new Date();
-                  today.setHours(0);
-                  today.setMinutes(0);
-                  today.setSeconds(0);
-                  const numOfDaysFromToday =
-                    (today.getTime() - date.getTime()) / 1000 / 60 / 60 / 24;
-                  const numOfDaysFromDateStart =
-                    (dateStart.getTime() - date.getTime()) /
-                    1000 /
-                    60 /
-                    60 /
-                    24;
-                  const numOfDaysFromDateEnd =
-                    (dateEnd.getTime() - date.getTime()) / 1000 / 60 / 60 / 24;
-                  const getClassName = () => {
-                    if (
-                      numOfDaysFromDateStart < 1 &&
-                      numOfDaysFromDateStart > 0 &&
-                      numOfDaysFromDateEnd < 1 &&
-                      numOfDaysFromDateEnd > 0
-                    ) {
-                      return styles.dayStartEnd;
-                    }
-                    if (
-                      numOfDaysFromDateStart < 1 &&
-                      numOfDaysFromDateStart > 0
-                    ) {
-                      return styles.dayStart;
-                    }
-                    if (numOfDaysFromDateEnd < 1 && numOfDaysFromDateEnd > 0) {
-                      return styles.dayEnd;
-                    }
-                    if (numOfDaysFromToday > 1) {
-                      if (
-                        numOfDaysFromDateEnd > 0 &&
-                        numOfDaysFromDateStart < 1
-                      ) {
-                        return styles.dayPast + " " + styles.dayBetween;
-                      }
-                      return styles.dayPast;
-                    } else {
-                      if (
-                        numOfDaysFromDateEnd > 0 &&
-                        numOfDaysFromDateStart < 1
-                      ) {
-                        return styles.dayFuture + " " + styles.dayBetween;
-                      }
-                      return styles.dayFuture;
-                    }
-                  };
-                  return <div className={getClassName()}>{day}</div>;
-                }}
-                renderCustomHeader={({
-                  date,
-                  decreaseMonth,
-                  increaseMonth,
-                }) => (
-                  <div className={styles.calendarHeader}>
-                    <img
-                      src="/img/calendarArrowLeft.svg"
-                      onClick={decreaseMonth}
-                      className={styles.arrowLeft}
-                    />
-                    <div>{monthNames[date.getMonth()]}</div>
-                    <img
-                      src="/img/calendarArrowRight.svg"
-                      onClick={increaseMonth}
-                      className={styles.arrowRight}
-                    />
-                  </div>
-                )}
-              />
-              <div className={styles.dateDash}></div>
-              <DatePicker
-                selected={dateEnd}
-                onChange={(date) => setDateEnd(date)}
-                selectsEnd
-                startDate={dateStart}
-                endDate={dateEnd}
-                minDate={dateStart}
-                className={styles.dateWrapper}
-                dateFormat="MMMM d, yyyy"
-              />
-            </div>
+            <TaskCalendar task={task} />
           </div>
           <div ref={fakeText} className={styles.fakeText}>
             {editedDescription}
