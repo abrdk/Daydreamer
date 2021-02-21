@@ -68,7 +68,6 @@ export default function Option({ project, projectIndex }) {
   const deleteHandler = async () => {
     if (project._id == router.query.id) {
       if (projectIndex === projects.length - 1) {
-        router.push(`/gantt/${projects[projectIndex - 1]._id}`);
         await Promise.all([
           updateProject({
             ...projects[projectIndex - 1],
@@ -77,8 +76,8 @@ export default function Option({ project, projectIndex }) {
           deleteProject(project._id),
           deleteTasksByProject(project._id),
         ]);
+        router.push(`/gantt/${projects[projectIndex - 1]._id}`);
       } else {
-        router.push(`/gantt/${projects[projectIndex + 1]._id}`);
         await Promise.all([
           updateProject({
             ...projects[projectIndex + 1],
@@ -87,6 +86,7 @@ export default function Option({ project, projectIndex }) {
           deleteProject(project._id),
           deleteTasksByProject(project._id),
         ]);
+        router.push(`/gantt/${projects[projectIndex + 1]._id}`);
       }
     } else {
       await Promise.all([

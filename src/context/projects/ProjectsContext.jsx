@@ -120,7 +120,7 @@ export function ProjectsProvider(props) {
     if (router.query.id) {
       loadProjectByQuery(router.query.id);
     }
-  }, [router.query.id]);
+  }, [router.query.id, projects]);
 
   return (
     <ProjectsContext.Provider

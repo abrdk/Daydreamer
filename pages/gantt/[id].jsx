@@ -23,6 +23,7 @@ export default function Gantt() {
   const [modal, setModal] = useState(false);
   const [view, setView] = useState(ViewMode.Day);
   const [isMenuOpen, setMenu] = useState(false);
+  const [editedTask, setEditedTask] = useState(null);
 
   const userCtx = useContext(UsersContext);
   const { isProjectsLoaded, projectByQueryId, createProject } = useContext(
@@ -68,46 +69,53 @@ export default function Gantt() {
         }
       >
         <Modal modal={modal} setModal={setModal} />
-        <ReactCursorPosition>
-          <div className={styles.container} id="container">
-            <Menu isMenuOpen={isMenuOpen} setMenu={setMenu} />
-            <div className={styles.header}>
-              <ViewSwitcher
-                isMenuOpen={isMenuOpen}
-                onViewModeChange={(viewMode) => setView(viewMode)}
-              />
-              <div className={styles.buttonsContainer}>
-                <If condition={projectByQueryId.owner == userCtx._id}>
-                  <Then>
-                    <button
-                      className={styles.share_button}
-                      onClick={setModal.bind(null, "share")}
-                    >
-                      Share Project
-                    </button>
-                    <button
-                      className={styles.account_button}
-                      onClick={setModal.bind(null, "account")}
-                    >
-                      <img src="/img/avatar.svg" alt=" " />{" "}
-                      <Truncate lines={1} width={100}>
-                        {userCtx.name}
-                      </Truncate>
-                    </button>
-                  </Then>
-                  <Else>
-                    <button
-                      className={styles.share_button}
-                      onClick={copyAndEdit}
-                    >
-                      Copy and Edit
-                    </button>
-                  </Else>
-                </If>
-              </div>
+        <div className={styles.container} id="container">
+          <Menu
+            isMenuOpen={isMenuOpen}
+            setMenu={setMenu}
+            editedTask={editedTask}
+            setEditedTask={setEditedTask}
+          />
+          <div className={styles.header}>
+            <ViewSwitcher
+              isMenuOpen={isMenuOpen}
+              onViewModeChange={(viewMode) => setView(viewMode)}
+            />
+            <div className={styles.buttonsContainer}>
+              <If condition={projectByQueryId.owner == userCtx._id}>
+                <Then>
+                  <button
+                    className={styles.share_button}
+                    onClick={setModal.bind(null, "share")}
+                  >
+                    Share Project
+                  </button>
+                  <button
+                    className={styles.account_button}
+                    onClick={setModal.bind(null, "account")}
+                  >
+                    <img src="/img/avatar.svg" alt=" " />{" "}
+                    <Truncate lines={1} width={100}>
+                      {userCtx.name}
+                    </Truncate>
+                  </button>
+                </Then>
+                <Else>
+                  <button className={styles.share_button} onClick={copyAndEdit}>
+                    Copy and Edit
+                  </button>
+                </Else>
+              </If>
             </div>
           </div>
-          <Calendar view={view} />
+        </div>
+        <ReactCursorPosition>
+          <Calendar
+            setMenu={setMenu}
+            view={view}
+            editedTask={editedTask}
+            setEditedTask={setEditedTask}
+          />
         </ReactCursorPosition>
       </When>
     </>

@@ -117,6 +117,13 @@ input:-webkit-autofill:focus {
   inset: 0px 0px 0px 0px !important;
 }
 
+.ScrollbarsCustom-TaskLines {
+  position: fixed !important;
+  top: 182px !important;
+  height: calc(100% - 182px - 37px) !important;
+}
+
+//dnd
 .animTranslateY {
   transition: all 0.3s;
 }

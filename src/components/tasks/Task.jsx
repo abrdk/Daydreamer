@@ -154,9 +154,9 @@ export default function Task({
       }
     }
     if (fakeText.current && pencil.current) {
-      const offset = fakeText.current.offsetWidth + 43;
-      if (offset - 43 > getNameWidth()) {
-        pencil.current.style.left = getNameWidth() + 43 + "px";
+      const offset = fakeText.current.offsetWidth + 41;
+      if (offset - 41 > getNameWidth()) {
+        pencil.current.style.left = getNameWidth() + 41 + "px";
       } else {
         pencil.current.style.left = offset + "px";
       }
@@ -537,13 +537,13 @@ export default function Task({
           {task.name ? task.name : getDefaultName()}
         </span>
         <When condition={projectByQueryId.owner == userCtx._id}>
-          <img
-            src="/img/pencil.svg"
-            alt=" "
+          <div
+            className={styles.pencilContainer}
             ref={pencil}
-            className={styles.pencil}
             onClick={editTaskHandler}
-          />
+          >
+            <img src="/img/pencil.svg" alt=" " className={styles.pencil} />
+          </div>
         </When>
         <If condition={isUpdating}>
           <Then>

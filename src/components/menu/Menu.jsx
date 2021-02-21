@@ -11,13 +11,17 @@ import { TasksContext } from "@/src//context/tasks/TasksContext";
 import { UsersContext } from "@/src/context/users/UsersContext";
 import { ProjectsContext } from "@/src//context/projects/ProjectsContext";
 
-export default function Menu({ isMenuOpen, setMenu }) {
+export default function Menu({
+  isMenuOpen,
+  setMenu,
+  editedTask,
+  setEditedTask,
+}) {
   const userCtx = useContext(UsersContext);
   const { tasks, createTask } = useContext(TasksContext);
   const { projectByQueryId } = useContext(ProjectsContext);
 
   const [isDropdownOpen, setDropdown] = useState(false);
-  const [editedTask, setEditedTask] = useState(null);
 
   const openMenuHandler = () => {
     setEditedTask(null);
@@ -27,9 +31,23 @@ export default function Menu({ isMenuOpen, setMenu }) {
   const createTaskHandler = async () => {
     setMenu(true);
 
-    const currentDate = new Date();
-    let afterWeek = new Date();
-    afterWeek.setDate(currentDate.getDate() + 7);
+    const today = new Date();
+    const currentDate = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
+      0,
+      0,
+      0
+    );
+    let afterWeek = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() + 7,
+      23,
+      59,
+      59
+    );
 
     const topLevelTasks = tasks.filter(
       (task) => !task.root && task.project == projectByQueryId._id

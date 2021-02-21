@@ -70,7 +70,7 @@ export default async (req, res) => {
       res.setHeader(
         "Set-Cookie",
         cookie.serialize("ganttToken", token, {
-          maxAge: 24 * 60 * 60,
+          maxAge: 365 * 24 * 60 * 60,
           path: "/",
           sameSite: true,
         })

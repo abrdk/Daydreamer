@@ -55,13 +55,13 @@ export default function TasksEdit({ task }) {
     const getClassName = () => {
       if (
         numOfDaysFromDateStart < 1 &&
-        numOfDaysFromDateStart > 0 &&
+        numOfDaysFromDateStart >= 0 &&
         numOfDaysFromDateEnd < 1 &&
         numOfDaysFromDateEnd > 0
       ) {
         return styles.dayStartEnd;
       }
-      if (numOfDaysFromDateStart < 1 && numOfDaysFromDateStart > 0) {
+      if (numOfDaysFromDateStart < 1 && numOfDaysFromDateStart >= 0) {
         return styles.dayStart;
       }
       if (numOfDaysFromDateEnd < 1 && numOfDaysFromDateEnd > 0) {

@@ -27,6 +27,9 @@ export default function CalendarDay({
   setCursor,
   isDraggable,
   setDraggable,
+  setMenu,
+  editedTask,
+  setEditedTask,
 }) {
   const [defaultScrollLeft, setDefaultScrollLeft] = useState(undefined);
   const [scrollLeft, setScrollLeft] = useState(0);
@@ -116,7 +119,7 @@ export default function CalendarDay({
     () =>
       numOfDaysInMonths.map((numOfDaysInMonth, i) => {
         return (
-          <div key={`month-${i}`}>
+          <div className="month" key={`month-${i}`}>
             <div className={styles.monthName}>{monthNames[i]}</div>
             <div className={styles.month}>
               {daysComponents.slice(
@@ -138,6 +141,7 @@ export default function CalendarDay({
           ? scrollLeft - scrollAt + initialScrollLeft
           : defaultScrollLeft
       }
+      noScrollY={true}
       style={{ height: "calc(100vh - 89px - 10px)", width: "100vw" }}
       trackXProps={{
         renderer: (props) => {
@@ -147,6 +151,18 @@ export default function CalendarDay({
               {...restProps}
               ref={elementRef}
               className="ScrollbarsCustom-Track ScrollbarsCustom-TrackX ScrollbarsCustom-Calendar"
+            />
+          );
+        },
+      }}
+      scrollerProps={{
+        renderer: (props) => {
+          const { elementRef, ...restProps } = props;
+          return (
+            <div
+              {...restProps}
+              ref={elementRef}
+              className="ScrollbarsCustom-Scroller Calendar-Scroller"
             />
           );
         },
@@ -163,7 +179,11 @@ export default function CalendarDay({
         }
       >
         {daysWithLabelsComponents}
-        <LineTasks />
+        <LineTasks
+          setMenu={setMenu}
+          editedTask={editedTask}
+          setEditedTask={setEditedTask}
+        />
       </div>
     </Scrollbar>
   );

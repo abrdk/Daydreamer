@@ -38,6 +38,11 @@ export default function TasksReducer(state, action) {
         ...state,
         tasksByProjectId: action.payload,
       };
+    case "SET_SORTED_TASKS_IDS":
+      return {
+        ...state,
+        sortedTasksIds: action.payload,
+      };
     default:
       return state;
   }

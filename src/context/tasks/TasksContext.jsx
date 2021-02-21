@@ -12,6 +12,7 @@ export function TasksProvider(props) {
   const [tasksState, dispatch] = useReducer(TasksReducer, {
     tasks: [],
     tasksByProjectId: [],
+    sortedTasksIds: [],
     isTasksLoaded: false,
   });
   const colors = [
@@ -23,7 +24,36 @@ export function TasksProvider(props) {
     "59CD90",
     "258EFA",
   ];
-  const { tasks, isTasksLoaded, tasksByProjectId } = tasksState;
+  const { tasks, isTasksLoaded, tasksByProjectId, sortedTasksIds } = tasksState;
+
+  const findSubtasksIds = (_id) =>
+    tasks
+      .filter((t) => t.root == _id)
+      .sort((task1, task2) => task1.order > task2.order)
+      .map((t) => [t._id, ...findSubtasksIds(t._id)]);
+
+  const findTaskWithSubtaskIds = (_id) => [_id, ...findSubtasksIds(_id)];
+
+  function flatten(array, mutable) {
+    let toString = Object.prototype.toString;
+    let arrayTypeStr = "[object Array]";
+    let result = [];
+    let nodes = (mutable && array) || array.slice();
+    let node;
+    if (!array.length) {
+      return result;
+    }
+    node = nodes.pop();
+    do {
+      if (toString.call(node) === arrayTypeStr) {
+        nodes.push.apply(nodes, node);
+      } else {
+        result.push(node);
+      }
+    } while (nodes.length && (node = nodes.pop()) !== undefined);
+    result.reverse();
+    return result;
+  }
 
   const loadTasks = async () => {
     try {
@@ -49,6 +79,7 @@ export function TasksProvider(props) {
   const loadTasksByProjectId = async (project) => {
     try {
       const tasksByProject = tasks.filter((t) => t.project == project);
+      console.log("tasksByProject", tasksByProject);
       if (tasksByProject.length) {
         dispatch({
           type: "SET_TASKS_BY_PROJECT_ID",
@@ -77,6 +108,18 @@ export function TasksProvider(props) {
     }
   }, [router.query.id, tasks]);
 
+  useEffect(() => {
+    dispatch({
+      type: "SET_SORTED_TASKS_IDS",
+      payload: flatten(
+        tasksByProjectId
+          .filter((t) => t.root == "")
+          .sort((task1, task2) => task1.order > task2.order)
+          .map((t) => flatten(findTaskWithSubtaskIds(t._id)))
+      ),
+    });
+  }, [tasksByProjectId]);
+
   const createTask = async (task) => {
     try {
       dispatch({
@@ -101,34 +144,6 @@ export function TasksProvider(props) {
 
   const deleteTask = (_id) => {
     try {
-      const findSubtasksIds = (_id) =>
-        tasks
-          .filter((t) => t.root == _id)
-          .map((t) => [t._id, ...findSubtasksIds(t._id)]);
-
-      const findTaskWithSubtaskIds = (_id) => [_id, ...findSubtasksIds(_id)];
-
-      function flatten(array, mutable) {
-        let toString = Object.prototype.toString;
-        let arrayTypeStr = "[object Array]";
-        let result = [];
-        let nodes = (mutable && array) || array.slice();
-        let node;
-        if (!array.length) {
-          return result;
-        }
-        node = nodes.pop();
-        do {
-          if (toString.call(node) === arrayTypeStr) {
-            nodes.push.apply(nodes, node);
-          } else {
-            result.push(node);
-          }
-        } while (nodes.length && (node = nodes.pop()) !== undefined);
-        result.reverse();
-        return result;
-      }
-
       flatten(findTaskWithSubtaskIds(_id)).forEach((id) => {
         dispatch({
           type: "DELETE_TASK",
@@ -163,9 +178,23 @@ export function TasksProvider(props) {
   };
 
   const createInitialTasks = async ({ project }) => {
-    const currentDate = new Date();
-    let afterWeek = currentDate;
-    afterWeek.setDate(afterWeek.getDate() + 7);
+    const today = new Date();
+    const currentDate = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
+      0,
+      0,
+      0
+    );
+    let afterWeek = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() + 7,
+      23,
+      59,
+      59
+    );
 
     const _ids = [...Array(7).keys()].map(() => nanoid());
     const newTasks = _ids.map((_id, i) => {
@@ -212,6 +241,7 @@ export function TasksProvider(props) {
         tasks,
         isTasksLoaded,
         tasksByProjectId,
+        sortedTasksIds,
         createTask,
         updateTask,
         deleteTask,
