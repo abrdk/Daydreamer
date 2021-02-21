@@ -43,7 +43,7 @@ export default function Menu({
     let afterWeek = new Date(
       today.getFullYear(),
       today.getMonth(),
-      today.getDate() + 7,
+      today.getDate() + 6,
       23,
       59,
       59
@@ -77,6 +77,7 @@ export default function Menu({
         style={{
           transform: isMenuOpen ? "translateX(0)" : "translateX(-100%)",
         }}
+        id={isMenuOpen ? "openedMenu" : "closedMenu"}
       >
         <div className={styles.iconClose} onClick={openMenuHandler}>
           <img src="/img/arrowLeft.svg" alt="close" />

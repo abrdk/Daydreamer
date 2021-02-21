@@ -1,6 +1,5 @@
 import React, { createContext, useReducer, useEffect, useContext } from "react";
 import useSWR from "swr";
-import Router from "next/router";
 import { xhr } from "@/helpers/xhr";
 
 import UsersReducer from "@/src/context/users/UsersReducer";
@@ -22,9 +21,6 @@ export function UsersProvider(props) {
           type: "SET_USER",
           payload: { _id: "", name: "", password: "" },
         });
-        // if (Router.pathname != "/signup" && Router.pathname != "/login") {
-        //   Router.push("/signup");
-        // }
       }
     }
   }, [data, error]);

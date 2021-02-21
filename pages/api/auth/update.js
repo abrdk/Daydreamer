@@ -78,7 +78,7 @@ export default async (req, res) => {
 
       return res.status(201).json({
         message: "ok",
-        user: { id: user._id, name, password },
+        user: { _id: user._id, name, password },
       });
     }
   } catch (e) {

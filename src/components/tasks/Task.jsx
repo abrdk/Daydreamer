@@ -25,6 +25,13 @@ export default function Task({
   );
   const { projectByQueryId } = useContext(ProjectsContext);
 
+  let taskDepth = -1;
+  let currentTask = task;
+  while (currentTask) {
+    currentTask = tasksByProjectId.find((t) => t._id == currentTask.root);
+    taskDepth += 1;
+  }
+
   //subtasks
   const [isSubtasksOpened, setSubtasksState] = useState(false);
   let sortedTasks;
@@ -154,9 +161,9 @@ export default function Task({
       }
     }
     if (fakeText.current && pencil.current) {
-      const offset = fakeText.current.offsetWidth + 41;
-      if (offset - 41 > getNameWidth()) {
-        pencil.current.style.left = getNameWidth() + 41 + "px";
+      const offset = fakeText.current.offsetWidth + 39;
+      if (offset - 39 > getNameWidth()) {
+        pencil.current.style.left = getNameWidth() + 39 + "px";
       } else {
         pencil.current.style.left = offset + "px";
       }
@@ -515,7 +522,10 @@ export default function Task({
         onDragEnd={dragEndHandler}
       >
         <When condition={editedTask == task._id}>
-          <div className={styles.verticalLine}></div>
+          <div
+            className={styles.verticalLine}
+            style={{ left: -14 * taskDepth + "px" }}
+          ></div>
         </When>
         <When condition={subtasks.length}>
           <img

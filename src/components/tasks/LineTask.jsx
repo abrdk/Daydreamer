@@ -213,7 +213,7 @@ export default function LineTask({
       (line.current.getBoundingClientRect().right -
         line.current.getBoundingClientRect().width / 2) +
       offsetFromCenter;
-    if (offset >= 30 || offset <= -30) {
+    if (offset >= 25 || offset <= -40) {
       line.current.style.left =
         Number(line.current.style.left.slice(0, -2)) +
         Math.floor(offset / 55) * 55 +
@@ -222,7 +222,14 @@ export default function LineTask({
   };
 
   const addScroll = (e) => {
-    if (mouseX < 100) {
+    let minX;
+    if (document.querySelector("#openedMenu")) {
+      minX = document.querySelector("#openedMenu").clientWidth + 100;
+    } else {
+      minX = 100;
+    }
+
+    if (mouseX < minX) {
       if (scrollingSpeed >= 0) {
         console.log("a");
         clearInterval(scrollingTimer);
@@ -306,6 +313,12 @@ export default function LineTask({
       setTextWidth(Number(line.current.style.width.slice(0, -2)) - 36);
     }
   }, [line.current]);
+
+  useEffect(() => {
+    if (line.current) {
+      setTextWidth(taskWidth - 36);
+    }
+  }, [taskWidth]);
 
   return (
     <>

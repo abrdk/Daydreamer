@@ -8,18 +8,16 @@ import { When } from "react-if";
 import TaskCalendar from "@/src/components/tasks/TaskCalendar";
 
 import { TasksContext } from "@/src/context/tasks/TasksContext";
-import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 
 export default function TasksEdit({ taskId, setEditedTask }) {
-  const { projects } = useContext(ProjectsContext);
-
   const { tasks, updateTask, deleteTask } = useContext(TasksContext);
   const task = tasks.find((t) => t._id == taskId);
 
   const fakeText = useRef(null);
   const textArea = useRef(null);
 
-  const [editedName, setEditedName] = useState(() => (task ? task.name : ""));
+  const [editedName, setEditedName] = useState("");
+  const [editedColor, setEditedColor] = useState("");
   const [editedDescription, setEditedDescription] = useState(() =>
     task ? task.description : ""
   );
@@ -28,7 +26,6 @@ export default function TasksEdit({ taskId, setEditedTask }) {
 
   const nameUpdateHandler = (e) => {
     if (e.target.value.length <= 100) {
-      updateTask({ ...task, name: e.target.value });
       setEditedName(e.target.value);
     }
   };
@@ -36,18 +33,25 @@ export default function TasksEdit({ taskId, setEditedTask }) {
     !task.root
       ? `Task name #${task.order + 1}`
       : `Subtask name #${task.order + 1}`;
-  const setDefaultName = (e) => {
+
+  const setName = (e) => {
     if (!e.target.value) {
       updateTask({ ...task, name: getDefaultName() });
+    } else {
+      updateTask({ ...task, name: e.target.value });
     }
   };
 
   const descriptionUpdateHandler = (e) => {
-    updateTask({ ...task, description: e.target.value });
     setEditedDescription(e.target.value);
+  };
+  const setDescription = (e) => {
+    setTextareaFocused(false);
+    updateTask({ ...task, description: e.target.value });
   };
 
   const colorUpdateHandler = (color) => {
+    setEditedColor(color);
     updateTask({ ...task, color });
   };
 
@@ -59,12 +63,14 @@ export default function TasksEdit({ taskId, setEditedTask }) {
         updateTask({ ...t, order: t.order - 1 });
       });
     deleteTask(taskId);
+    setEditedTask(null);
   };
 
   useEffect(() => {
     if (task) {
       setEditedName(task.name);
       setEditedDescription(task.description);
+      setEditedColor(task.color);
     }
   }, [task]);
 
@@ -85,14 +91,14 @@ export default function TasksEdit({ taskId, setEditedTask }) {
     ].map((color) => (
       <div
         key={color}
-        className={task.color == color ? styles.colorPicked : styles.color}
+        className={editedColor == color ? styles.colorPicked : styles.color}
         style={{
           background: `#${color}`,
-          border: task.color == color ? `1px solid #${color}` : 0,
+          border: editedColor == color ? `1px solid #${color}` : 0,
         }}
         onClick={() => colorUpdateHandler(color)}
       >
-        <When condition={task.color == color}>
+        <When condition={editedColor == color}>
           <div
             className={styles.colorInner}
             style={{ background: `#${color}` }}
@@ -101,7 +107,7 @@ export default function TasksEdit({ taskId, setEditedTask }) {
       </div>
     ));
     return (
-      <div className={styles.wrapper}>
+      <div className={styles.wrapper} id="editTask">
         <div className={styles.inputsWrapper}>
           <div className={styles.topInputsWrapper}>
             <FloatingLabel
@@ -111,7 +117,7 @@ export default function TasksEdit({ taskId, setEditedTask }) {
               className={styles.inputNameFilled}
               value={editedName}
               onChange={nameUpdateHandler}
-              onBlur={setDefaultName}
+              onBlur={setName}
             />
             <TaskCalendar task={task} />
           </div>
@@ -150,7 +156,7 @@ export default function TasksEdit({ taskId, setEditedTask }) {
                   value={editedDescription}
                   onChange={descriptionUpdateHandler}
                   onFocus={() => setTextareaFocused(true)}
-                  onBlur={() => setTextareaFocused(false)}
+                  onBlur={setDescription}
                 ></textarea>
               </Scrollbar>
             </div>

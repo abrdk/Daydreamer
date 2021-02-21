@@ -42,7 +42,7 @@ export default function Tasks({ editedTask, setEditedTask }) {
     let afterWeek = new Date(
       today.getFullYear(),
       today.getMonth(),
-      today.getDate() + 7,
+      today.getDate() + 6,
       23,
       59,
       59

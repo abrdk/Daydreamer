@@ -14,6 +14,7 @@ export default function LineTasksRoot({
   setEditedTask,
 }) {
   const { tasksByProjectId, sortedTasksIds } = useContext(TasksContext);
+
   const sortedTasksComponents = useMemo(
     () =>
       tasksByProjectId
@@ -31,5 +32,6 @@ export default function LineTasksRoot({
         )),
     [tasksByProjectId, sortedTasksIds]
   );
+
   return sortedTasksComponents;
 }

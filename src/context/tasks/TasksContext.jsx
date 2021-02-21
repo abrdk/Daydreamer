@@ -79,7 +79,6 @@ export function TasksProvider(props) {
   const loadTasksByProjectId = async (project) => {
     try {
       const tasksByProject = tasks.filter((t) => t.project == project);
-      console.log("tasksByProject", tasksByProject);
       if (tasksByProject.length) {
         dispatch({
           type: "SET_TASKS_BY_PROJECT_ID",
@@ -190,7 +189,7 @@ export function TasksProvider(props) {
     let afterWeek = new Date(
       today.getFullYear(),
       today.getMonth(),
-      today.getDate() + 7,
+      today.getDate() + 6,
       23,
       59,
       59
