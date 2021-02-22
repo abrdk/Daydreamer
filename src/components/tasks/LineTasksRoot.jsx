@@ -14,28 +14,26 @@ export default function LineTasksRoot({
   setEditedTask,
   isSubtasksOpened,
   setIsSubtasksOpened,
+  view,
 }) {
   const { tasksByProjectId, sortedTasksIds } = useContext(TasksContext);
 
-  const sortedTasksComponents = useMemo(
-    () =>
-      tasksByProjectId
-        .filter((t) => t.root == root)
-        .sort((task1, task2) => task1.order > task2.order)
-        .map((t, i) => (
-          <LineTask
-            key={t._id}
-            editedTask={editedTask}
-            setEditedTask={setEditedTask}
-            setMenu={setMenu}
-            task={t}
-            index={sortedTasksIds.indexOf(t._id)}
-            isSubtasksOpened={isSubtasksOpened}
-            setIsSubtasksOpened={setIsSubtasksOpened}
-          />
-        )),
-    [tasksByProjectId, sortedTasksIds, isSubtasksOpened]
-  );
+  const sortedTasksComponents = tasksByProjectId
+    .filter((t) => t.root == root)
+    .sort((task1, task2) => task1.order > task2.order)
+    .map((t, i) => (
+      <LineTask
+        key={t._id}
+        editedTask={editedTask}
+        setEditedTask={setEditedTask}
+        setMenu={setMenu}
+        task={t}
+        index={sortedTasksIds.indexOf(t._id)}
+        isSubtasksOpened={isSubtasksOpened}
+        setIsSubtasksOpened={setIsSubtasksOpened}
+        view={view}
+      />
+    ));
 
   return sortedTasksComponents;
 }

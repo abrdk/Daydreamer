@@ -11,6 +11,7 @@ export default function LineTasks({
   setEditedTask,
   isSubtasksOpened,
   setIsSubtasksOpened,
+  view,
 }) {
   let calendarWidth = 0;
   document.querySelectorAll(".month").forEach((el) => {
@@ -18,7 +19,10 @@ export default function LineTasks({
   });
 
   return (
-    <div className={styles.scrollContainer}>
+    <div
+      className={styles.scrollContainer}
+      style={{ top: view == "Day" ? 73 : view == "Week" ? 68 : 68 }}
+    >
       <Scrollbar
         style={{
           height: editedTask ? "calc(100vh - 563px)" : "calc(100vh - 177px)",
@@ -50,6 +54,7 @@ export default function LineTasks({
             isSubtasksOpened={isSubtasksOpened}
             setIsSubtasksOpened={setIsSubtasksOpened}
             root={""}
+            view={view}
           />
         </div>
       </Scrollbar>

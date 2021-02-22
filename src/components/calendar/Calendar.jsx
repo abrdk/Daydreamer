@@ -92,6 +92,7 @@ export default function Calendar({
         setEditedTask={setEditedTask}
         isSubtasksOpened={isSubtasksOpened}
         setIsSubtasksOpened={setIsSubtasksOpened}
+        view={view}
       />
     );
   }
@@ -103,6 +104,12 @@ export default function Calendar({
         setCursor={setCursor}
         isDraggable={isDraggable}
         setDraggable={setDraggable}
+        setMenu={setMenu}
+        editedTask={editedTask}
+        setEditedTask={setEditedTask}
+        isSubtasksOpened={isSubtasksOpened}
+        setIsSubtasksOpened={setIsSubtasksOpened}
+        view={view}
       />
     );
   }
@@ -114,6 +121,12 @@ export default function Calendar({
         setCursor={setCursor}
         isDraggable={isDraggable}
         setDraggable={setDraggable}
+        setMenu={setMenu}
+        editedTask={editedTask}
+        setEditedTask={setEditedTask}
+        isSubtasksOpened={isSubtasksOpened}
+        setIsSubtasksOpened={setIsSubtasksOpened}
+        view={view}
       />
     );
   }

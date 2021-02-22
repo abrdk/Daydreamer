@@ -32,6 +32,7 @@ export default function CalendarDay({
   setEditedTask,
   isSubtasksOpened,
   setIsSubtasksOpened,
+  view,
 }) {
   const [defaultScrollLeft, setDefaultScrollLeft] = useState(undefined);
   const [scrollLeft, setScrollLeft] = useState(0);
@@ -187,6 +188,7 @@ export default function CalendarDay({
           setEditedTask={setEditedTask}
           isSubtasksOpened={isSubtasksOpened}
           setIsSubtasksOpened={setIsSubtasksOpened}
+          view={view}
         />
       </div>
     </Scrollbar>

@@ -114,6 +114,7 @@ export default function CalendarMonth({
           ? scrollLeft - scrollAt + initialScrollLeft
           : defaultScrollLeft
       }
+      noScrollY={true}
       style={{ height: "calc(100vh - 89px - 10px)", width: "100vw" }}
       trackXProps={{
         renderer: (props) => {
@@ -123,6 +124,18 @@ export default function CalendarMonth({
               {...restProps}
               ref={elementRef}
               className="ScrollbarsCustom-Track ScrollbarsCustom-TrackX ScrollbarsCustom-Calendar"
+            />
+          );
+        },
+      }}
+      scrollerProps={{
+        renderer: (props) => {
+          const { elementRef, ...restProps } = props;
+          return (
+            <div
+              {...restProps}
+              ref={elementRef}
+              className="ScrollbarsCustom-Scroller Calendar-Scroller"
             />
           );
         },

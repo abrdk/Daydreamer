@@ -9,6 +9,20 @@ import LineTasksRoot from "@/src/components/tasks/LineTasksRoot";
 
 import { TasksContext } from "@/src//context/tasks/TasksContext";
 
+const views = ["Day", "Week", "Month"];
+const width = [55, 120 / 7];
+const minWidth = [42, 120 / 7];
+const extraWidth = [42, 120 / 7];
+const left = [55, 17.142];
+const extraLeft = [6.5, 0];
+const minOffsetLeft = [60, 5];
+const maxOffsetLeft = [-25, -5];
+const minOffsetRight = [-60, -5];
+const maxOffsetRight = [25, 5];
+const minOffsetMove = [25, 5];
+const maxOffsetMove = [-40, -5];
+const minTextWidth = [6, -2];
+
 export default function LineTask({
   task,
   index,
@@ -17,6 +31,7 @@ export default function LineTask({
   setEditedTask,
   isSubtasksOpened,
   setIsSubtasksOpened,
+  view,
 }) {
   const { updateTask, tasksByProjectId, createTask } = useContext(TasksContext);
   const subtasks = tasksByProjectId.filter((t) => t.root == task._id);
@@ -34,24 +49,25 @@ export default function LineTask({
   const [textWidth, setTextWidth] = useState(0);
 
   const today = new Date();
-  const startOfYear = new Date(today.getFullYear(), 0, 1, 0, 0, 0, 0);
-  const numOfDaysFrom1January = useMemo(
-    () =>
-      Math.floor(
-        (dateStart.getTime() - startOfYear.getTime()) / 1000 / 60 / 60 / 24
-      ),
-    [dateStart]
+  let startOfYear = new Date(today.getFullYear(), 0, 1, 0, 0, 0, 0);
+  if (view == "Week") {
+    startOfYear = new Date(today.getFullYear(), 0, 1, 0, 0, 0, 0);
+    startOfYear.setDate(1 - startOfYear.getDay() + 1);
+  }
+  const numOfDaysFromStart = Math.floor(
+    (dateStart.getTime() - startOfYear.getTime()) / 1000 / 60 / 60 / 24
   );
-  const taskDuration = useMemo(
-    () =>
-      Math.floor(
-        (dateEnd.getTime() - dateStart.getTime()) / 1000 / 60 / 60 / 24
-      ),
-    [dateEnd, dateStart]
+  const taskDuration = Math.floor(
+    (dateEnd.getTime() - dateStart.getTime()) / 1000 / 60 / 60 / 24
   );
 
-  const taskWidth = 55 * taskDuration + 42;
-  const taskLeft = 55 * numOfDaysFrom1January + 6.5;
+  const taskWidth =
+    width[views.indexOf(view)] * taskDuration + extraWidth[views.indexOf(view)];
+
+  const taskLeft =
+    left[views.indexOf(view)] * numOfDaysFromStart +
+    extraLeft[views.indexOf(view)];
+
   const taskTop = 20 + index * 55;
   let moveAreaCenterWidth;
   if (taskWidth >= 136) {
@@ -108,16 +124,18 @@ export default function LineTask({
     );
 
     const distance = taskLeft - Number(line.current.style.left.slice(0, -2));
-    if (distance <= -55 || distance >= 0) {
-      newDateStart.setDate(dateStart.getDate() - Math.floor(distance / 55));
-      newDateEnd.setDate(dateEnd.getDate() - Math.floor(distance / 55));
 
-      setDateStart(newDateStart);
-      setDateEnd(newDateEnd);
-      updateTask({ ...task, dateStart: newDateStart, dateEnd: newDateEnd });
-    } else {
-      line.current.style.left = taskLeft + "px";
-    }
+    newDateStart.setDate(
+      dateStart.getDate() -
+        Math.floor((distance + 1) / width[views.indexOf(view)])
+    );
+    newDateEnd.setDate(
+      dateEnd.getDate() -
+        Math.floor((distance + 1) / width[views.indexOf(view)])
+    );
+    setDateStart(newDateStart);
+    setDateEnd(newDateEnd);
+    updateTask({ ...task, dateStart: newDateStart, dateEnd: newDateEnd });
   };
 
   const stopResizeRight = () => {
@@ -131,13 +149,12 @@ export default function LineTask({
     );
     const distance = taskWidth - Number(line.current.style.width.slice(0, -2));
 
-    if (distance <= 0 || distance >= 55) {
-      date.setDate(dateEnd.getDate() - Math.floor(distance / 55));
-      setDateEnd(date);
-      updateTask({ ...task, dateEnd: date });
-    } else {
-      line.current.style.width = taskWidth + "px";
-    }
+    date.setDate(
+      dateEnd.getDate() -
+        Math.floor((distance + 1) / width[views.indexOf(view)])
+    );
+    setDateEnd(date);
+    updateTask({ ...task, dateEnd: date });
   };
 
   const stopResizeLeft = () => {
@@ -151,14 +168,12 @@ export default function LineTask({
     );
     const distance = Number(line.current.style.left.slice(0, -2)) - taskLeft;
 
-    if (distance <= 0 || distance >= 55) {
-      date.setDate(dateStart.getDate() + Math.floor(distance / 55));
-      setDateStart(date);
-      updateTask({ ...task, dateStart: date });
-    } else {
-      line.current.style.left = taskLeft + "px";
-      line.current.style.width = taskWidth + "px";
-    }
+    date.setDate(
+      dateStart.getDate() +
+        Math.floor((distance + 1) / width[views.indexOf(view)])
+    );
+    setDateStart(date);
+    updateTask({ ...task, dateStart: date });
   };
 
   useEvent(document, "mouseup", (e) => {
@@ -183,18 +198,27 @@ export default function LineTask({
 
   const resizeLeftHandler = (e) => {
     const offset = mouseX - line.current.getBoundingClientRect().left;
-    if (Number(line.current.style.width.slice(0, -2)) - offset <= 42) {
-      line.current.style.width = "42px";
-      setTextWidth(6);
-      line.current.style.left = taskLeft + taskWidth - 42 + "px";
-    } else if (offset <= -25 || offset >= 60) {
+    if (
+      Number(line.current.style.width.slice(0, -2)) - offset <=
+      minWidth[views.indexOf(view)]
+    ) {
+      line.current.style.width = minWidth[views.indexOf(view)] + "px";
+      setTextWidth(minTextWidth[views.indexOf(view)]);
+      line.current.style.left =
+        taskLeft + taskWidth - minWidth[views.indexOf(view)] + "px";
+    } else if (
+      offset <= maxOffsetLeft[views.indexOf(view)] ||
+      offset >= minOffsetLeft[views.indexOf(view)]
+    ) {
       line.current.style.left =
         Number(line.current.style.left.slice(0, -2)) +
-        Math.floor(offset / 55) * 55 +
+        Math.floor(offset / width[views.indexOf(view)]) *
+          width[views.indexOf(view)] +
         "px";
       const newLineWidth =
         Number(line.current.style.width.slice(0, -2)) -
-        Math.floor(offset / 55) * 55;
+        Math.floor(offset / width[views.indexOf(view)]) *
+          width[views.indexOf(view)];
       line.current.style.width = newLineWidth + "px";
       setTextWidth(newLineWidth - 36);
     }
@@ -203,13 +227,20 @@ export default function LineTask({
   const resizeRightHandler = (e) => {
     const offset = mouseX - line.current.getBoundingClientRect().right;
 
-    if (Number(line.current.style.width.slice(0, -2)) + offset <= 42) {
-      setTextWidth(6);
-      line.current.style.width = "42px";
-    } else if (offset >= 25 || offset <= -60) {
+    if (
+      Number(line.current.style.width.slice(0, -2)) + offset <=
+      minWidth[views.indexOf(view)]
+    ) {
+      setTextWidth(minTextWidth[views.indexOf(view)]);
+      line.current.style.width = minWidth[views.indexOf(view)] + "px";
+    } else if (
+      offset >= maxOffsetRight[views.indexOf(view)] ||
+      offset <= minOffsetRight[views.indexOf(view)]
+    ) {
       const newLineWidth =
         Number(line.current.style.width.slice(0, -2)) +
-        (Math.floor(offset / 55) + 1) * 55;
+        (Math.floor(offset / width[views.indexOf(view)]) + 1) *
+          width[views.indexOf(view)];
       line.current.style.width = newLineWidth + "px";
       setTextWidth(newLineWidth - 36);
     }
@@ -221,10 +252,14 @@ export default function LineTask({
       (line.current.getBoundingClientRect().right -
         line.current.getBoundingClientRect().width / 2) +
       offsetFromCenter;
-    if (offset >= 25 || offset <= -40) {
+    if (
+      offset >= minOffsetMove[views.indexOf(view)] ||
+      offset <= maxOffsetMove[views.indexOf(view)]
+    ) {
       line.current.style.left =
         Number(line.current.style.left.slice(0, -2)) +
-        Math.floor(offset / 55) * 55 +
+        Math.floor(offset / width[views.indexOf(view)]) *
+          width[views.indexOf(view)] +
         "px";
     }
   };
@@ -239,15 +274,12 @@ export default function LineTask({
 
     if (mouseX < minX) {
       if (scrollingSpeed >= 0) {
-        console.log("a");
         clearInterval(scrollingTimer);
         setScrollingTimer(null);
         setScrollingSpeed(-4);
       }
     } else if (mouseX > window.innerWidth - 100) {
       if (scrollingSpeed <= 0) {
-        console.log("b");
-
         clearInterval(scrollingTimer);
         setScrollingTimer(null);
         setScrollingSpeed(4);
@@ -337,6 +369,7 @@ export default function LineTask({
           width: taskWidth,
           background: `#${task.color}`,
           top: taskTop,
+          paddingLeft: textWidth > -2 ? "8px" : "7px",
         }}
         ref={line}
       >
@@ -367,36 +400,40 @@ export default function LineTask({
             <img src="/img/plusLine.svg" alt=" " />
           </div>
         </div>
-        <div
-          className={styles.resizeAreaLeft}
-          onMouseDown={(e) => {
-            setMouseX(e.clientX);
-            setResizeLeft(true);
-            document.body.style.cursor = "grab";
-          }}
-          style={{
-            cursor: isResizeLeft ? "grab" : "pointer",
-          }}
-        ></div>
-        <div className={styles.stick}></div>
-        <div
-          className={styles.moveAreaCenter}
-          style={{
-            width: moveAreaCenterWidth,
-            left: (taskWidth - moveAreaCenterWidth) / 2,
-            cursor: isMove ? "grab" : "pointer",
-          }}
-          onMouseDown={(e) => {
-            setMouseX(e.clientX);
-            setMove(true);
-            document.body.style.cursor = "grab";
-            const rect = line.current.getBoundingClientRect();
-            setOffsetFromCenter(rect.left + rect.width / 2 - e.clientX);
-          }}
-        ></div>
-        <Truncate lines={1} width={textWidth}>
-          {task.name}
-        </Truncate>
+        <When condition={textWidth > -5}>
+          <div
+            className={styles.resizeAreaLeft}
+            onMouseDown={(e) => {
+              setMouseX(e.clientX);
+              setResizeLeft(true);
+              document.body.style.cursor = "grab";
+            }}
+            style={{
+              cursor: isResizeLeft ? "grab" : "pointer",
+            }}
+          ></div>
+          <div className={styles.stick}></div>
+        </When>
+        <When condition={textWidth > 0}>
+          <div
+            className={styles.moveAreaCenter}
+            style={{
+              width: moveAreaCenterWidth,
+              left: (taskWidth - moveAreaCenterWidth) / 2,
+              cursor: isMove ? "grab" : "pointer",
+            }}
+            onMouseDown={(e) => {
+              setMouseX(e.clientX);
+              setMove(true);
+              document.body.style.cursor = "grab";
+              const rect = line.current.getBoundingClientRect();
+              setOffsetFromCenter(rect.left + rect.width / 2 - e.clientX);
+            }}
+          ></div>
+          <Truncate lines={1} width={textWidth}>
+            {task.name}
+          </Truncate>
+        </When>
         <div className={styles.stick}></div>
         <div
           className={styles.resizeAreaRight}
@@ -418,6 +455,7 @@ export default function LineTask({
           setMenu={setMenu}
           isSubtasksOpened={isSubtasksOpened}
           setIsSubtasksOpened={setIsSubtasksOpened}
+          view={view}
         />
       </When>
     </>

@@ -3,6 +3,8 @@ import Scrollbar from "react-scrollbars-custom";
 import { When } from "react-if";
 import { useEffect, useState, useMemo } from "react";
 
+import LineTasks from "@/src/components/tasks/LineTasks";
+
 const monthNames = [
   "January",
   "February",
@@ -24,6 +26,12 @@ export default function CalendarWeek({
   setCursor,
   isDraggable,
   setDraggable,
+  setMenu,
+  editedTask,
+  setEditedTask,
+  isSubtasksOpened,
+  setIsSubtasksOpened,
+  view,
 }) {
   const [defaultScrollLeft, setDefaultScrollLeft] = useState(undefined);
   const [scrollLeft, setScrollLeft] = useState(0);
@@ -158,14 +166,13 @@ export default function CalendarWeek({
       isWeekStartOfMonthArr
         .map((bool, i) => {
           if (bool) {
-            let numOfWeeksInMonth = 0;
-            for (let b in isWeekStartOfMonthArr.slice(i + 1, i + 5)) {
+            let numOfWeeksInMonth = 1;
+            isWeekStartOfMonthArr.slice(i + 1, i + 5).forEach((b) => {
               if (!b) {
                 numOfWeeksInMonth += 1;
-              } else {
-                break;
               }
-            }
+            });
+
             const monthIndex = isWeekStartOfMonthArr
               .slice(0, i + 1)
               .reduce((sum, bool) => {
@@ -175,12 +182,12 @@ export default function CalendarWeek({
                 return sum;
               }, 0);
             return (
-              <div key={`month-${i}`}>
+              <div key={`month-${i}`} className="month">
                 <div className={styles.monthName}>
                   {monthNames[monthIndex - 1]}
                 </div>
                 <div className={styles.month}>
-                  {weeksComponents.slice(i, i + 4)}
+                  {weeksComponents.slice(i, i + numOfWeeksInMonth)}
                 </div>
               </div>
             );
@@ -198,6 +205,7 @@ export default function CalendarWeek({
           ? scrollLeft - scrollAt + initialScrollLeft
           : defaultScrollLeft
       }
+      noScrollY={true}
       style={{ height: "calc(100vh - 89px - 10px)", width: "100vw" }}
       trackXProps={{
         renderer: (props) => {
@@ -207,6 +215,18 @@ export default function CalendarWeek({
               {...restProps}
               ref={elementRef}
               className="ScrollbarsCustom-Track ScrollbarsCustom-TrackX ScrollbarsCustom-Calendar"
+            />
+          );
+        },
+      }}
+      scrollerProps={{
+        renderer: (props) => {
+          const { elementRef, ...restProps } = props;
+          return (
+            <div
+              {...restProps}
+              ref={elementRef}
+              className="ScrollbarsCustom-Scroller Calendar-Scroller"
             />
           );
         },
@@ -223,6 +243,14 @@ export default function CalendarWeek({
         }
       >
         {weeksWithLabelsComponents}
+        <LineTasks
+          setMenu={setMenu}
+          editedTask={editedTask}
+          setEditedTask={setEditedTask}
+          isSubtasksOpened={isSubtasksOpened}
+          setIsSubtasksOpened={setIsSubtasksOpened}
+          view={view}
+        />
       </div>
     </Scrollbar>
   );
