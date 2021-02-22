@@ -642,15 +642,13 @@ export default function Task({
         >
           {task.name ? task.name : getDefaultName()}
         </span>
-        <When condition={projectByQueryId.owner == userCtx._id}>
-          <div
-            className={styles.pencilContainer}
-            ref={pencil}
-            onClick={editTaskHandler}
-          >
-            <img src="/img/pencil.svg" alt=" " className={styles.pencil} />
-          </div>
-        </When>
+        <div
+          className={styles.pencilContainer}
+          ref={pencil}
+          onClick={editTaskHandler}
+        >
+          <img src="/img/pencil.svg" alt=" " className={styles.pencil} />
+        </div>
         <If condition={isUpdating}>
           <Then>
             <input

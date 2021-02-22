@@ -34,7 +34,7 @@ export function TasksProvider(props) {
   } = tasksState;
 
   const findSubtasksIds = (_id) =>
-    tasks
+    tasksByProjectId
       .filter((t) => t.root == _id)
       .sort((task1, task2) => task1.order > task2.order)
       .map((t) => [t._id, ...findSubtasksIds(t._id)]);
@@ -115,7 +115,7 @@ export function TasksProvider(props) {
   }, [router.query.id, tasks]);
 
   useEffect(() => {
-    // console.log("tasksByProjectId", tasksByProjectId);
+    console.log("tasksByProjectId", tasksByProjectId);
     dispatch({
       type: "SET_SORTED_TASKS_IDS",
       payload: flatten(

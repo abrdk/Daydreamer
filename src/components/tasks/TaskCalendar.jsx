@@ -19,8 +19,13 @@ const monthNames = [
 ];
 
 import { TasksContext } from "@/src/context/tasks/TasksContext";
+import { UsersContext } from "@/src/context/users/UsersContext";
+import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 
 export default function TasksEdit({ task }) {
+  const { projectByQueryId } = useContext(ProjectsContext);
+  const userCtx = useContext(UsersContext);
+
   const { updateTask } = useContext(TasksContext);
 
   const [dateStart, setDateStart] = useState(null);
@@ -123,6 +128,7 @@ export default function TasksEdit({ task }) {
         shouldCloseOnSelect={false}
         renderDayContents={customDay}
         renderCustomHeader={customHeader}
+        disabled={projectByQueryId.owner != userCtx._id ? true : false}
       />
       <div className={styles.dateDash}></div>
       <DatePicker
@@ -148,6 +154,7 @@ export default function TasksEdit({ task }) {
         shouldCloseOnSelect={false}
         renderDayContents={customDay}
         renderCustomHeader={customHeader}
+        disabled={projectByQueryId.owner != userCtx._id ? true : false}
       />
     </div>
   );

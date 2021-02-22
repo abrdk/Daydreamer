@@ -8,8 +8,13 @@ import { When } from "react-if";
 import TaskCalendar from "@/src/components/tasks/TaskCalendar";
 
 import { TasksContext } from "@/src/context/tasks/TasksContext";
+import { UsersContext } from "@/src/context/users/UsersContext";
+import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 
 export default function TasksEdit({ taskId, setEditedTask }) {
+  const { projectByQueryId } = useContext(ProjectsContext);
+  const userCtx = useContext(UsersContext);
+
   const { tasksByProjectId, updateTask, deleteTask } = useContext(TasksContext);
   const task = tasksByProjectId.find((t) => t._id == taskId);
 
@@ -117,6 +122,11 @@ export default function TasksEdit({ taskId, setEditedTask }) {
               value={editedName}
               onChange={nameUpdateHandler}
               onBlur={setName}
+              onFocus={(e) => {
+                if (projectByQueryId.owner != userCtx._id) {
+                  e.target.blur();
+                }
+              }}
             />
             <TaskCalendar task={task} />
           </div>
@@ -154,7 +164,13 @@ export default function TasksEdit({ taskId, setEditedTask }) {
                   name="description"
                   value={editedDescription}
                   onChange={descriptionUpdateHandler}
-                  onFocus={() => setTextareaFocused(true)}
+                  onFocus={(e) => {
+                    if (projectByQueryId.owner != userCtx._id) {
+                      e.target.blur();
+                    } else {
+                      setTextareaFocused(true);
+                    }
+                  }}
                   onBlur={setDescription}
                 ></textarea>
               </Scrollbar>
@@ -180,15 +196,17 @@ export default function TasksEdit({ taskId, setEditedTask }) {
               onClick={() => setEditedTask(null)}
             />
           </div>
-          <div className={styles.colorsWrapper}>{colorsElements}</div>
-          <div className={styles.trashWrapper}>
-            <img
-              src="/img/trashBlue.svg"
-              alt=" "
-              className={styles.icon}
-              onClick={deleteHandler}
-            />
-          </div>
+          <When condition={projectByQueryId.owner == userCtx._id}>
+            <div className={styles.colorsWrapper}>{colorsElements}</div>
+            <div className={styles.trashWrapper}>
+              <img
+                src="/img/trashBlue.svg"
+                alt=" "
+                className={styles.icon}
+                onClick={deleteHandler}
+              />
+            </div>
+          </When>
         </div>
       </div>
     );

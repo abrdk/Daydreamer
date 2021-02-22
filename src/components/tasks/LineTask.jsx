@@ -9,6 +9,8 @@ const dateFormat = require("dateformat");
 import LineTasksRoot from "@/src/components/tasks/LineTasksRoot";
 
 import { TasksContext } from "@/src//context/tasks/TasksContext";
+import { UsersContext } from "@/src/context/users/UsersContext";
+import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 
 export default function LineTask({
   task,
@@ -20,6 +22,9 @@ export default function LineTask({
   setIsSubtasksOpened,
   view,
 }) {
+  const { projectByQueryId } = useContext(ProjectsContext);
+  const userCtx = useContext(UsersContext);
+
   const [dateStart, setDateStart] = useState(new Date());
   const [dateEnd, setDateEnd] = useState(new Date());
   const [temporaryDateEnd, setTemporaryDateEnd] = useState(new Date());
@@ -471,15 +476,19 @@ export default function LineTask({
             </div>
           </div>
         </When>
-        <div className={calendarStyles.addSubtaskWrapper}>
-          <div
-            className={calendarStyles.addSubtaskIcon}
-            onClick={() => createSubtask()}
-          >
-            <img src="/img/plusLine.svg" alt=" " />
+        <When condition={projectByQueryId.owner == userCtx._id}>
+          <div className={calendarStyles.addSubtaskWrapper}>
+            <div
+              className={calendarStyles.addSubtaskIcon}
+              onClick={() => createSubtask()}
+            >
+              <img src="/img/plusLine.svg" alt=" " />
+            </div>
           </div>
-        </div>
-        <When condition={textWidth > -5}>
+        </When>
+        <When
+          condition={textWidth > -5 && projectByQueryId.owner == userCtx._id}
+        >
           <div
             className={calendarStyles.resizeAreaLeft}
             onMouseDown={(e) => {
@@ -491,9 +500,13 @@ export default function LineTask({
               cursor: isResizeLeft ? "grab" : "pointer",
             }}
           ></div>
+        </When>
+        <When condition={textWidth > -5}>
           <div className={calendarStyles.stick}></div>
         </When>
-        <When condition={textWidth > 0}>
+        <When
+          condition={textWidth > 0 && projectByQueryId.owner == userCtx._id}
+        >
           <div
             className={calendarStyles.moveAreaCenter}
             style={{
@@ -509,22 +522,26 @@ export default function LineTask({
               setOffsetFromCenter(rect.left + rect.width / 2 - e.clientX);
             }}
           ></div>
+        </When>
+        <When condition={textWidth > 0}>
           <Truncate lines={1} width={textWidth}>
             {task.name}
           </Truncate>
         </When>
         <div className={calendarStyles.stick}></div>
-        <div
-          className={calendarStyles.resizeAreaRight}
-          onMouseDown={(e) => {
-            setResizeRight(true);
-            document.body.style.cursor = "grab";
-            setMouseX(e.clientX);
-          }}
-          style={{
-            cursor: isResizeRight ? "grab" : "pointer",
-          }}
-        ></div>
+        <When condition={projectByQueryId.owner == userCtx._id}>
+          <div
+            className={calendarStyles.resizeAreaRight}
+            onMouseDown={(e) => {
+              setResizeRight(true);
+              document.body.style.cursor = "grab";
+              setMouseX(e.clientX);
+            }}
+            style={{
+              cursor: isResizeRight ? "grab" : "pointer",
+            }}
+          ></div>
+        </When>
       </div>
 
       <When condition={isSubtasksOpened[index]}>
