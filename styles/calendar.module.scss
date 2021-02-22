@@ -125,7 +125,7 @@
   width: 1px;
   height: calc(100vh - 89px - 25px - 10px - 5px - 42px);
   background: #258efa;
-  margin-left: 79.5px;
+  position: absolute;
 }
 
 .lineTasksWrapper {
@@ -280,6 +280,13 @@
 .dashedContainerWeek {
   composes: dashedContainer;
   width: 120px;
+  top: 53px;
+  height: calc(100vh - 168px);
+}
+
+.dashedContainerMonth {
+  composes: dashedContainer;
+  width: 161px;
   top: 53px;
   height: calc(100vh - 168px);
 }

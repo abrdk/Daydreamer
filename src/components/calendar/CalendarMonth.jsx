@@ -71,6 +71,9 @@ export default function CalendarMonth({
       date1.getMonth() == date2.getMonth()
     );
   };
+  const daysInMonth = (month, year) => {
+    return new Date(year, month + 1, 0).getDate();
+  };
   const monthsComponents = useMemo(
     () =>
       [...Array(24).keys()].map((month) => {
@@ -79,7 +82,11 @@ export default function CalendarMonth({
         date.setDate(1);
         date.setMonth(month);
         return (
-          <div key={`month-${month}`} className="month">
+          <div
+            key={`month-${month}`}
+            style={{ position: "relative" }}
+            className="month"
+          >
             <div
               className={
                 isSameMonth(new Date(), date)
@@ -90,8 +97,16 @@ export default function CalendarMonth({
               <div>{monthNames[month % 12]}</div>
             </div>
             <When condition={isSameMonth(new Date(), date)}>
-              <div className={styles.monthLine}></div>
+              <div
+                className={styles.monthLine}
+                style={{
+                  left:
+                    (160 / daysInMonth(month, date.getFullYear())) *
+                    (new Date().getDate() - 1),
+                }}
+              ></div>
             </When>
+            <div className={styles.dashedContainerMonth}></div>
           </div>
         );
       }),
