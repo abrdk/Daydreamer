@@ -232,3 +232,32 @@
   display: flex;
   align-items: center;
 }
+
+.tooltip {
+  width: 80px;
+  height: 30px;
+  background: #ffffff;
+  filter: drop-shadow(15px 15px 50px rgba(9, 40, 72, 0.15));
+  z-index: 100;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 13px;
+  line-height: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #696f75;
+  border-radius: 0px;
+  position: absolute;
+  top: 47px;
+}
+
+.triangle {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 6px 6px 6px;
+  border-color: transparent transparent #ffffff;
+  position: absolute;
+  top: -6px;
+}

@@ -1,9 +1,10 @@
-import styles from "@/styles/calendar.module.scss";
+import calendarStyles from "@/styles/calendar.module.scss";
 import { When } from "react-if";
 import { useEffect, useState, useMemo, useContext, useRef } from "react";
 import useEvent from "@react-hook/event";
 import Truncate from "react-truncate";
 import { nanoid } from "nanoid";
+const dateFormat = require("dateformat");
 
 import LineTasksRoot from "@/src/components/tasks/LineTasksRoot";
 
@@ -36,12 +37,14 @@ export default function LineTask({
   const { updateTask, tasksByProjectId, createTask } = useContext(TasksContext);
   const subtasks = tasksByProjectId.filter((t) => t.root == task._id);
 
+  const line = useRef(null);
   const [dateStart, setDateStart] = useState(new Date());
   const [dateEnd, setDateEnd] = useState(new Date());
+  const [temporaryDateEnd, setTemporaryDateEnd] = useState(new Date());
+  const [temporaryDateStart, setTemporaryDateStart] = useState(new Date());
   const [isResizeRight, setResizeRight] = useState(false);
   const [isResizeLeft, setResizeLeft] = useState(false);
   const [isMove, setMove] = useState(false);
-  const line = useRef(null);
   const [scrollingSpeed, setScrollingSpeed] = useState(0);
   const [scrollingTimer, setScrollingTimer] = useState(null);
   const [mouseX, setMouseX] = useState(0);
@@ -206,6 +209,7 @@ export default function LineTask({
       setTextWidth(minTextWidth[views.indexOf(view)]);
       line.current.style.left =
         taskLeft + taskWidth - minWidth[views.indexOf(view)] + "px";
+      setTemporaryDateStart(dateEnd);
     } else if (
       offset <= maxOffsetLeft[views.indexOf(view)] ||
       offset >= minOffsetLeft[views.indexOf(view)]
@@ -221,6 +225,14 @@ export default function LineTask({
           width[views.indexOf(view)];
       line.current.style.width = newLineWidth + "px";
       setTextWidth(newLineWidth - 36);
+      setTemporaryDateStart(
+        new Date(
+          temporaryDateStart.getFullYear(),
+          temporaryDateStart.getMonth(),
+          temporaryDateStart.getDate() +
+            Math.floor(offset / width[views.indexOf(view)])
+        )
+      );
     }
   };
 
@@ -233,6 +245,7 @@ export default function LineTask({
     ) {
       setTextWidth(minTextWidth[views.indexOf(view)]);
       line.current.style.width = minWidth[views.indexOf(view)] + "px";
+      setTemporaryDateEnd(dateStart);
     } else if (
       offset >= maxOffsetRight[views.indexOf(view)] ||
       offset <= minOffsetRight[views.indexOf(view)]
@@ -243,6 +256,14 @@ export default function LineTask({
           width[views.indexOf(view)];
       line.current.style.width = newLineWidth + "px";
       setTextWidth(newLineWidth - 36);
+      setTemporaryDateEnd(
+        new Date(
+          temporaryDateEnd.getFullYear(),
+          temporaryDateEnd.getMonth(),
+          temporaryDateEnd.getDate() +
+            (Math.floor(offset / width[views.indexOf(view)]) + 1)
+        )
+      );
     }
   };
 
@@ -337,13 +358,17 @@ export default function LineTask({
     if (task) {
       if (typeof task.dateStart == "string") {
         setDateStart(new Date(task.dateStart));
+        setTemporaryDateStart(new Date(task.dateStart));
       } else {
         setDateStart(task.dateStart);
+        setTemporaryDateStart(task.dateStart);
       }
       if (typeof task.dateEnd == "string") {
         setDateEnd(new Date(task.dateEnd));
+        setTemporaryDateEnd(new Date(task.dateEnd));
       } else {
         setDateEnd(task.dateEnd);
+        setTemporaryDateEnd(task.dateEnd);
       }
     }
   }, [task]);
@@ -363,7 +388,7 @@ export default function LineTask({
   return (
     <>
       <div
-        className={styles.lineTask}
+        className={calendarStyles.lineTask}
         style={{
           left: taskLeft,
           width: taskWidth,
@@ -373,10 +398,34 @@ export default function LineTask({
         }}
         ref={line}
       >
+        <When condition={isResizeRight && view != "Day"}>
+          <div
+            className={calendarStyles.tooltip}
+            style={{
+              left: line.current
+                ? Number(line.current.style.width.slice(0, -2)) - 50
+                : taskWidth - 50,
+            }}
+          >
+            {dateFormat(temporaryDateEnd, "dd-mm-yyyy")}
+            <div className={calendarStyles.triangle}></div>
+          </div>
+        </When>
+        <When condition={isResizeLeft && view != "Day"}>
+          <div
+            className={calendarStyles.tooltip}
+            style={{
+              left: -30,
+            }}
+          >
+            {dateFormat(temporaryDateStart, "dd-mm-yyyy")}
+            <div className={calendarStyles.triangle}></div>
+          </div>
+        </When>
         <When condition={subtasks.length}>
-          <div className={styles.openSubtasksWrapper}>
+          <div className={calendarStyles.openSubtasksWrapper}>
             <div
-              className={styles.openSubtasksIcon}
+              className={calendarStyles.openSubtasksIcon}
               onClick={() => {
                 setIsSubtasksOpened(
                   isSubtasksOpened.map((bool, i) => {
@@ -392,9 +441,9 @@ export default function LineTask({
             </div>
           </div>
         </When>
-        <div className={styles.addSubtaskWrapper}>
+        <div className={calendarStyles.addSubtaskWrapper}>
           <div
-            className={styles.addSubtaskIcon}
+            className={calendarStyles.addSubtaskIcon}
             onClick={() => createSubtask()}
           >
             <img src="/img/plusLine.svg" alt=" " />
@@ -402,7 +451,7 @@ export default function LineTask({
         </div>
         <When condition={textWidth > -5}>
           <div
-            className={styles.resizeAreaLeft}
+            className={calendarStyles.resizeAreaLeft}
             onMouseDown={(e) => {
               setMouseX(e.clientX);
               setResizeLeft(true);
@@ -412,11 +461,11 @@ export default function LineTask({
               cursor: isResizeLeft ? "grab" : "pointer",
             }}
           ></div>
-          <div className={styles.stick}></div>
+          <div className={calendarStyles.stick}></div>
         </When>
         <When condition={textWidth > 0}>
           <div
-            className={styles.moveAreaCenter}
+            className={calendarStyles.moveAreaCenter}
             style={{
               width: moveAreaCenterWidth,
               left: (taskWidth - moveAreaCenterWidth) / 2,
@@ -434,9 +483,9 @@ export default function LineTask({
             {task.name}
           </Truncate>
         </When>
-        <div className={styles.stick}></div>
+        <div className={calendarStyles.stick}></div>
         <div
-          className={styles.resizeAreaRight}
+          className={calendarStyles.resizeAreaRight}
           onMouseDown={(e) => {
             setResizeRight(true);
             document.body.style.cursor = "grab";
@@ -447,6 +496,7 @@ export default function LineTask({
           }}
         ></div>
       </div>
+
       <When condition={isSubtasksOpened[index]}>
         <LineTasksRoot
           root={task._id}
