@@ -10,8 +10,8 @@ import TaskCalendar from "@/src/components/tasks/TaskCalendar";
 import { TasksContext } from "@/src/context/tasks/TasksContext";
 
 export default function TasksEdit({ taskId, setEditedTask }) {
-  const { tasks, updateTask, deleteTask } = useContext(TasksContext);
-  const task = tasks.find((t) => t._id == taskId);
+  const { tasksByProjectId, updateTask, deleteTask } = useContext(TasksContext);
+  const task = tasksByProjectId.find((t) => t._id == taskId);
 
   const fakeText = useRef(null);
   const textArea = useRef(null);
@@ -27,6 +27,7 @@ export default function TasksEdit({ taskId, setEditedTask }) {
   const nameUpdateHandler = (e) => {
     if (e.target.value.length <= 100) {
       setEditedName(e.target.value);
+      updateTask({ ...task, name: e.target.value });
     }
   };
   const getDefaultName = () =>
@@ -37,8 +38,6 @@ export default function TasksEdit({ taskId, setEditedTask }) {
   const setName = (e) => {
     if (!e.target.value) {
       updateTask({ ...task, name: getDefaultName() });
-    } else {
-      updateTask({ ...task, name: e.target.value });
     }
   };
 
@@ -56,7 +55,7 @@ export default function TasksEdit({ taskId, setEditedTask }) {
   };
 
   const deleteHandler = () => {
-    tasks
+    tasksByProjectId
       .filter((t) => t.root == task.root)
       .slice(task.order + 1)
       .forEach((t) => {

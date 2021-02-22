@@ -10,7 +10,12 @@ import { TasksContext } from "@/src//context/tasks/TasksContext";
 import { ProjectsContext } from "@/src//context/projects/ProjectsContext";
 import { UsersContext } from "@/src/context/users/UsersContext";
 
-export default function Tasks({ editedTask, setEditedTask }) {
+export default function Tasks({
+  editedTask,
+  setEditedTask,
+  isSubtasksOpened,
+  setIsSubtasksOpened,
+}) {
   const userCtx = useContext(UsersContext);
 
   const [containerHeight, setContainerHeight] = useState(0);
@@ -94,6 +99,8 @@ export default function Tasks({ editedTask, setEditedTask }) {
           setContainerHeight={setContainerHeight}
           editedTask={editedTask}
           setEditedTask={setEditedTask}
+          isSubtasksOpened={isSubtasksOpened}
+          setIsSubtasksOpened={setIsSubtasksOpened}
         />
       </Scrollbar>
       <When condition={projectByQueryId.owner == userCtx._id}>

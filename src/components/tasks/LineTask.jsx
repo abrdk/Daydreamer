@@ -15,6 +15,8 @@ export default function LineTask({
   setMenu,
   editedTask,
   setEditedTask,
+  isSubtasksOpened,
+  setIsSubtasksOpened,
 }) {
   const { updateTask, tasksByProjectId, createTask } = useContext(TasksContext);
   const subtasks = tasksByProjectId.filter((t) => t.root == task._id);
@@ -29,7 +31,6 @@ export default function LineTask({
   const [scrollingTimer, setScrollingTimer] = useState(null);
   const [mouseX, setMouseX] = useState(0);
   const [offsetFromCenter, setOffsetFromCenter] = useState(0);
-  const [isSubtasksOpened, setIsSubtasksOpened] = useState(true);
   const [textWidth, setTextWidth] = useState(0);
 
   const today = new Date();
@@ -67,7 +68,14 @@ export default function LineTask({
       order = 0;
     }
     const newSubtaskId = nanoid();
-    setIsSubtasksOpened(true);
+    setIsSubtasksOpened(
+      isSubtasksOpened.map((bool, i) => {
+        if (i == index) {
+          return true;
+        }
+        return bool;
+      })
+    );
     setMenu(true);
     await createTask({
       ...task,
@@ -336,7 +344,16 @@ export default function LineTask({
           <div className={styles.openSubtasksWrapper}>
             <div
               className={styles.openSubtasksIcon}
-              onClick={() => setIsSubtasksOpened(!isSubtasksOpened)}
+              onClick={() => {
+                setIsSubtasksOpened(
+                  isSubtasksOpened.map((bool, i) => {
+                    if (i == index) {
+                      return !bool;
+                    }
+                    return bool;
+                  })
+                );
+              }}
             >
               <img src="/img/arrowDownLine.svg" alt=" " />
             </div>
@@ -393,12 +410,14 @@ export default function LineTask({
           }}
         ></div>
       </div>
-      <When condition={isSubtasksOpened}>
+      <When condition={isSubtasksOpened[index]}>
         <LineTasksRoot
           root={task._id}
           editedTask={editedTask}
           setEditedTask={setEditedTask}
           setMenu={setMenu}
+          isSubtasksOpened={isSubtasksOpened}
+          setIsSubtasksOpened={setIsSubtasksOpened}
         />
       </When>
     </>

@@ -11,6 +11,8 @@ export default function TasksRoot({
   setContainerHeight,
   editedTask,
   setEditedTask,
+  isSubtasksOpened,
+  setIsSubtasksOpened,
 }) {
   const userCtx = useContext(UsersContext);
   const { projectByQueryId } = useContext(ProjectsContext);
@@ -36,6 +38,8 @@ export default function TasksRoot({
       setContainerHeight={setContainerHeight}
       editedTask={editedTask}
       setEditedTask={setEditedTask}
+      isSubtasksOpened={isSubtasksOpened}
+      setIsSubtasksOpened={setIsSubtasksOpened}
     />
   ));
 

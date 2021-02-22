@@ -13,6 +13,7 @@ export function TasksProvider(props) {
     tasks: [],
     tasksByProjectId: [],
     sortedTasksIds: [],
+    isSorting: false,
     isTasksLoaded: false,
   });
   const colors = [
@@ -24,7 +25,13 @@ export function TasksProvider(props) {
     "59CD90",
     "258EFA",
   ];
-  const { tasks, isTasksLoaded, tasksByProjectId, sortedTasksIds } = tasksState;
+  const {
+    tasks,
+    isTasksLoaded,
+    tasksByProjectId,
+    sortedTasksIds,
+    isSorting,
+  } = tasksState;
 
   const findSubtasksIds = (_id) =>
     tasks
@@ -108,6 +115,7 @@ export function TasksProvider(props) {
   }, [router.query.id, tasks]);
 
   useEffect(() => {
+    // console.log("tasksByProjectId", tasksByProjectId);
     dispatch({
       type: "SET_SORTED_TASKS_IDS",
       payload: flatten(
@@ -234,6 +242,8 @@ export function TasksProvider(props) {
     ]);
   };
 
+  const setIsSorting = () => {};
+
   return (
     <TasksContext.Provider
       value={{
@@ -241,6 +251,7 @@ export function TasksProvider(props) {
         isTasksLoaded,
         tasksByProjectId,
         sortedTasksIds,
+        isSorting,
         createTask,
         updateTask,
         deleteTask,

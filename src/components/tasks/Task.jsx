@@ -17,12 +17,18 @@ export default function Task({
   setContainerHeight,
   editedTask,
   setEditedTask,
+  isSubtasksOpened,
+  setIsSubtasksOpened,
 }) {
   const userCtx = useContext(UsersContext);
 
-  const { tasks, createTask, updateTask, tasksByProjectId } = useContext(
-    TasksContext
-  );
+  const {
+    tasks,
+    createTask,
+    updateTask,
+    tasksByProjectId,
+    sortedTasksIds,
+  } = useContext(TasksContext);
   const { projectByQueryId } = useContext(ProjectsContext);
 
   let taskDepth = -1;
@@ -33,7 +39,6 @@ export default function Task({
   }
 
   //subtasks
-  const [isSubtasksOpened, setSubtasksState] = useState(false);
   let sortedTasks;
   if (projectByQueryId.owner == userCtx._id) {
     sortedTasks = tasks
@@ -117,7 +122,14 @@ export default function Task({
   }, [isUpdating]);
 
   const openSubtasksHandler = () => {
-    setSubtasksState(!isSubtasksOpened);
+    setIsSubtasksOpened(
+      isSubtasksOpened.map((bool, i) => {
+        if (i == sortedTasksIds.indexOf(task._id)) {
+          return !bool;
+        }
+        return bool;
+      })
+    );
   };
 
   const createSubtask = async () => {
@@ -128,7 +140,7 @@ export default function Task({
       order = 0;
     }
 
-    if (!isSubtasksOpened) {
+    if (!isSubtasksOpened[sortedTasksIds.indexOf(task._id)]) {
       openSubtasksHandler();
     }
 
@@ -189,25 +201,44 @@ export default function Task({
   const [beforeTask, setBeforeTask] = useState(null);
   const [afterTask, setAfterTask] = useState(null);
 
-  useEffect(() => {}, [draggedTask.current]);
-
   const reorderHandler = () => {
+    if (
+      beforeTask &&
+      beforeTask._id == sourceTask.root &&
+      (!afterTask || afterTask.order == 1)
+    ) {
+      return;
+    }
     const oldIndex = sourceTask.order;
     let isMoveBetweenRoots = false;
     let newRoot;
     let newIndex;
 
     if (beforeTask) {
-      if (
-        beforeTask.root != sourceTask.root &&
-        sourceTask.root != beforeTask._id
+      if (beforeTask.root != sourceTask.root) {
+        isMoveBetweenRoots = true;
+        if (afterTask) {
+          if (afterTask.order == 0) {
+            newRoot = afterTask.root;
+            newIndex = 0;
+          } else {
+            newRoot = beforeTask.root;
+            newIndex = beforeTask.order + 1;
+          }
+        } else {
+          newRoot = beforeTask.root;
+          newIndex = beforeTask.order + 1;
+        }
+      } else if (
+        afterTask &&
+        afterTask.order == 0 &&
+        afterTask.root != sourceTask.root
       ) {
         isMoveBetweenRoots = true;
-        newRoot = beforeTask.root;
-        newIndex = beforeTask.order + 1;
+        newRoot = afterTask.root;
+        newIndex = 0;
       }
-    }
-    if (afterTask && !newIndex) {
+    } else if (afterTask && !newIndex) {
       if (afterTask.root != sourceTask.root) {
         isMoveBetweenRoots = true;
         newRoot = afterTask.root;
@@ -238,10 +269,14 @@ export default function Task({
       }
 
       if (beforeTask && afterTask) {
-        if (beforeTask.order > oldIndex && beforeTask.root == sourceTask.root) {
-          newIndex = beforeTask.order;
+        if (beforeTask.root == sourceTask.root) {
+          if (beforeTask.order > oldIndex) {
+            newIndex = beforeTask.order;
+          } else {
+            newIndex = afterTask.order;
+          }
         } else {
-          newIndex = afterTask.order;
+          newIndex = 0;
         }
       } else if (!beforeTask) {
         newIndex = 0;
@@ -328,6 +363,7 @@ export default function Task({
   const addAnimationClassesAndSetTasks = () => {
     let beforeTasks = [];
     let afterTasks = [];
+    draggedTask.current.style.transitionDuration = "0.3s";
     const tasksElements = document.querySelectorAll(".task");
     tasksElements.forEach((taskElement, i) => {
       const currentTask = getTaskFromDomElement(taskElement);
@@ -357,6 +393,48 @@ export default function Task({
       setAfterTask(null);
     }
   };
+
+  const getCurrenRoot = () => {
+    if (beforeTask) {
+      if (beforeTask.root != sourceTask.root) {
+        if (afterTask) {
+          if (afterTask.order == 0 || afterTask.order == 1) {
+            return afterTask.root;
+          }
+          return beforeTask.root;
+        }
+        return beforeTask.root;
+      } else if (
+        afterTask &&
+        afterTask.order == 0 &&
+        afterTask.root != sourceTask.root
+      ) {
+        return afterTask.root;
+      }
+    } else if (afterTask) {
+      if (afterTask.root != sourceTask.root) {
+        return afterTask.root;
+      }
+    }
+    return sourceTask.root;
+  };
+  useEffect(() => {
+    if (draggedTask.current) {
+      const currentRoot = getCurrenRoot();
+      let taskDepth = -1;
+      let currentTask = tasksByProjectId.find((t) => t.root == currentRoot);
+      while (currentTask) {
+        currentTask = tasksByProjectId.find((t) => t._id == currentTask.root);
+        taskDepth += 1;
+      }
+      draggedTask.current.style.paddingLeft = 33 + 14 * taskDepth + "px";
+      if (taskDepth) {
+        draggedTask.current.style.color = "#949da7";
+      } else {
+        draggedTask.current.style.color = "#696f75";
+      }
+    }
+  }, [afterTask, beforeTask, sourceTask]);
 
   const addScroll = () => {
     let scrollbar = document.querySelector(".ScrollbarsCustom-Scroller");
@@ -395,7 +473,14 @@ export default function Task({
 
   const dragStartHandler = (e) => {
     if (projectByQueryId.owner == userCtx._id) {
-      setSubtasksState(false);
+      setIsSubtasksOpened(
+        isSubtasksOpened.map((bool, i) => {
+          if (i == sortedTasksIds.indexOf(task._id)) {
+            return false;
+          }
+          return bool;
+        })
+      );
       setDraggingState(true);
       setInitialMousePisition({
         shiftX: e.clientX - e.target.getBoundingClientRect().left,
@@ -407,6 +492,10 @@ export default function Task({
   };
 
   const dragEndHandler = () => {
+    clearInterval(scrollingTimer);
+    setScrollingTimer(null);
+    setScrollingSpeed(0);
+
     let top;
     if (beforeTask) {
       const beforeTaskElement = document.querySelector(
@@ -420,6 +509,10 @@ export default function Task({
       targets: ".draggedTask",
       top: `${top}px`,
       left: "0px",
+      boxShadow: [
+        "15px 15px 50px rgba(9, 40, 72, 0.1)",
+        "15px 15px 50px rgba(9, 40, 72, 0)",
+      ],
       easing: "easeInOutQuad",
       duration: 300,
       complete: function (anim) {
@@ -431,9 +524,6 @@ export default function Task({
           taskElement.classList.remove("plus55");
           taskElement.classList.remove("mb55");
         });
-        clearInterval(scrollingTimer);
-        setScrollingTimer(null);
-        setScrollingSpeed(0);
         setDraggingState(false);
         setInitialMousePisition({
           shiftX: 0,
@@ -495,10 +585,12 @@ export default function Task({
           <When condition={subtasks.length}>
             <img
               className={
-                isSubtasksOpened ? styles.arrowDown : styles.arrowRight
+                isSubtasksOpened[sortedTasksIds.indexOf(task._id)]
+                  ? styles.arrowDown
+                  : styles.arrowRight
               }
               src={
-                isSubtasksOpened
+                isSubtasksOpened[sortedTasksIds.indexOf(task._id)]
                   ? "/img/arrowDown.svg"
                   : "/img/arrowRightTask.svg"
               }
@@ -529,9 +621,13 @@ export default function Task({
         </When>
         <When condition={subtasks.length}>
           <img
-            className={isSubtasksOpened ? styles.arrowDown : styles.arrowRight}
+            className={
+              isSubtasksOpened[sortedTasksIds.indexOf(task._id)]
+                ? styles.arrowDown
+                : styles.arrowRight
+            }
             src={
-              isSubtasksOpened
+              isSubtasksOpened[sortedTasksIds.indexOf(task._id)]
                 ? "/img/arrowDown.svg"
                 : "/img/arrowRightTask.svg"
             }
@@ -585,13 +681,19 @@ export default function Task({
         </When>
       </div>
 
-      <When condition={subtasks.length && isSubtasksOpened}>
+      <When
+        condition={
+          subtasks.length && isSubtasksOpened[sortedTasksIds.indexOf(task._id)]
+        }
+      >
         <div className={styles.subtasksWrapper}>
           <TasksRoot
             root={task._id}
             setContainerHeight={setContainerHeight}
             editedTask={editedTask}
             setEditedTask={setEditedTask}
+            isSubtasksOpened={isSubtasksOpened}
+            setIsSubtasksOpened={setIsSubtasksOpened}
           />
         </div>
       </When>

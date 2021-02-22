@@ -12,6 +12,8 @@ export default function LineTasksRoot({
   setMenu,
   editedTask,
   setEditedTask,
+  isSubtasksOpened,
+  setIsSubtasksOpened,
 }) {
   const { tasksByProjectId, sortedTasksIds } = useContext(TasksContext);
 
@@ -22,15 +24,17 @@ export default function LineTasksRoot({
         .sort((task1, task2) => task1.order > task2.order)
         .map((t, i) => (
           <LineTask
+            key={t._id}
             editedTask={editedTask}
             setEditedTask={setEditedTask}
             setMenu={setMenu}
             task={t}
-            key={t._id}
             index={sortedTasksIds.indexOf(t._id)}
+            isSubtasksOpened={isSubtasksOpened}
+            setIsSubtasksOpened={setIsSubtasksOpened}
           />
         )),
-    [tasksByProjectId, sortedTasksIds]
+    [tasksByProjectId, sortedTasksIds, isSubtasksOpened]
   );
 
   return sortedTasksComponents;

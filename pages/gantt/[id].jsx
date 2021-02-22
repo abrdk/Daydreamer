@@ -1,11 +1,12 @@
 import Head from "next/head";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import styles from "@/styles/header.module.scss";
 import { When, If, Then, Else } from "react-if";
 import Truncate from "react-truncate";
 import { useRouter } from "next/router";
 import { nanoid } from "nanoid";
 import ReactCursorPosition from "react-cursor-position";
+import usePrevious from "@react-hook/previous";
 
 import { Modal } from "@/src/components/modal/modal";
 import { ViewSwitcher } from "@/src/components/viewSwitcher/viewSwitcher";
@@ -29,9 +30,43 @@ export default function Gantt() {
   const { isProjectsLoaded, projectByQueryId, createProject } = useContext(
     ProjectsContext
   );
-  const { isTasksLoaded, createTask, tasksByProjectId } = useContext(
+  const { isTasksLoaded, createTask, sortedTasksIds } = useContext(
     TasksContext
   );
+  const prevSortedTasksIds = usePrevious(sortedTasksIds);
+  const [isSubtasksOpened, setIsSubtasksOpened] = useState([]);
+  useEffect(() => {
+    if (prevSortedTasksIds) {
+      if (sortedTasksIds.length > prevSortedTasksIds.length) {
+        let newSubtasksOpenedList = sortedTasksIds.map((t) => false);
+        prevSortedTasksIds.forEach((_id, i) => {
+          if (sortedTasksIds.indexOf(_id) >= 0) {
+            newSubtasksOpenedList[sortedTasksIds.indexOf(_id)] =
+              isSubtasksOpened[sortedTasksIds.indexOf(_id)];
+          }
+        });
+        setIsSubtasksOpened(newSubtasksOpenedList);
+      } else if (sortedTasksIds.length < prevSortedTasksIds.length) {
+        let newSubtasksOpenedList = sortedTasksIds.map((t) => false);
+        prevSortedTasksIds.forEach((_id, i) => {
+          if (sortedTasksIds.indexOf(_id) >= 0) {
+            newSubtasksOpenedList[sortedTasksIds.indexOf(_id)] =
+              isSubtasksOpened[i];
+          }
+        });
+        setIsSubtasksOpened(newSubtasksOpenedList);
+      } else {
+        let newSubtasksOpenedList = sortedTasksIds.map((t) => false);
+        prevSortedTasksIds.forEach((_id, i) => {
+          if (sortedTasksIds.indexOf(_id) >= 0) {
+            newSubtasksOpenedList[sortedTasksIds.indexOf(_id)] =
+              isSubtasksOpened[i];
+          }
+        });
+        setIsSubtasksOpened(newSubtasksOpenedList);
+      }
+    }
+  }, [sortedTasksIds]);
 
   const copyAndEdit = async () => {
     if (userCtx._id) {
@@ -75,6 +110,8 @@ export default function Gantt() {
             setMenu={setMenu}
             editedTask={editedTask}
             setEditedTask={setEditedTask}
+            isSubtasksOpened={isSubtasksOpened}
+            setIsSubtasksOpened={setIsSubtasksOpened}
           />
           <div className={styles.header}>
             <ViewSwitcher
@@ -115,6 +152,8 @@ export default function Gantt() {
             view={view}
             editedTask={editedTask}
             setEditedTask={setEditedTask}
+            isSubtasksOpened={isSubtasksOpened}
+            setIsSubtasksOpened={setIsSubtasksOpened}
           />
         </ReactCursorPosition>
       </When>

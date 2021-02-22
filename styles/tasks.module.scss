@@ -84,10 +84,8 @@
   .input {
     color: #949da7;
   }
-  div {
-    color: #949da7;
-  }
-  span {
+
+  .task {
     color: #949da7;
   }
 }
@@ -175,13 +173,15 @@
   overflow-x: hidden !important;
 }
 
-.dragged {
+.task.dragged {
   position: fixed;
-  width: 325px;
+  width: 330px;
   background: #ffffff;
-  box-shadow: 15px 15px 50px rgba(9, 40, 72, 0.1) !important;
+  box-shadow: 15px 15px 50px rgba(9, 40, 72, 0.1);
   border-radius: 3px;
   z-index: 92;
+  transition-property: padding-left, color;
+  transition-duration: 0s;
 }
 
 .hidden {

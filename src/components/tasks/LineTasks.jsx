@@ -5,7 +5,13 @@ import Scrollbar from "react-scrollbars-custom";
 
 import LineTasksRoot from "@/src/components/tasks/LineTasksRoot";
 
-export default function LineTasks({ setMenu, editedTask, setEditedTask }) {
+export default function LineTasks({
+  setMenu,
+  editedTask,
+  setEditedTask,
+  isSubtasksOpened,
+  setIsSubtasksOpened,
+}) {
   let calendarWidth = 0;
   document.querySelectorAll(".month").forEach((el) => {
     calendarWidth += el.offsetWidth;
@@ -41,6 +47,8 @@ export default function LineTasks({ setMenu, editedTask, setEditedTask }) {
             setMenu={setMenu}
             editedTask={editedTask}
             setEditedTask={setEditedTask}
+            isSubtasksOpened={isSubtasksOpened}
+            setIsSubtasksOpened={setIsSubtasksOpened}
             root={""}
           />
         </div>
