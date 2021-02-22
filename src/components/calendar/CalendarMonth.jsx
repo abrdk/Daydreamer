@@ -3,6 +3,8 @@ import Scrollbar from "react-scrollbars-custom";
 import { When } from "react-if";
 import { useEffect, useState, useMemo } from "react";
 
+import LineTasks from "@/src/components/tasks/LineTasks";
+
 const monthNames = [
   "January",
   "February",
@@ -24,6 +26,12 @@ export default function CalendarMonth({
   setCursor,
   isDraggable,
   setDraggable,
+  setMenu,
+  editedTask,
+  setEditedTask,
+  isSubtasksOpened,
+  setIsSubtasksOpened,
+  view,
 }) {
   const [defaultScrollLeft, setDefaultScrollLeft] = useState(undefined);
   const [scrollLeft, setScrollLeft] = useState(0);
@@ -71,7 +79,7 @@ export default function CalendarMonth({
         date.setDate(1);
         date.setMonth(month);
         return (
-          <div key={`month-${month}`}>
+          <div key={`month-${month}`} className="month">
             <div
               className={
                 isSameMonth(new Date(), date)
@@ -115,7 +123,7 @@ export default function CalendarMonth({
           : defaultScrollLeft
       }
       noScrollY={true}
-      style={{ height: "calc(100vh - 89px - 10px)", width: "100vw" }}
+      style={{ height: "calc(100vh - 89px)", width: "100vw" }}
       trackXProps={{
         renderer: (props) => {
           const { elementRef, ...restProps } = props;
@@ -152,6 +160,14 @@ export default function CalendarMonth({
         }
       >
         {monthsWithLabelsComponents}
+        <LineTasks
+          setMenu={setMenu}
+          editedTask={editedTask}
+          setEditedTask={setEditedTask}
+          isSubtasksOpened={isSubtasksOpened}
+          setIsSubtasksOpened={setIsSubtasksOpened}
+          view={view}
+        />
       </div>
     </Scrollbar>
   );

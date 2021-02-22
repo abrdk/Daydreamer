@@ -89,7 +89,7 @@ export default function CalendarDay({
           }
         }
         return (
-          <div key={`day-${day}`}>
+          <div key={`day-${day}`} style={{ position: "relative" }}>
             <div
               className={
                 isSameDate(today, date)
@@ -105,6 +105,13 @@ export default function CalendarDay({
             <When condition={isSameDate(today, date)}>
               <div className={styles.line}></div>
             </When>
+            <div
+              className={
+                date.getDay() == 0 || date.getDay() == 6
+                  ? styles.dashedContainerWeekend
+                  : styles.dashedContainer
+              }
+            ></div>
           </div>
         );
       }),
@@ -137,60 +144,62 @@ export default function CalendarDay({
   );
 
   return (
-    <Scrollbar
-      onScrollStop={stopScrollHandler}
-      scrollLeft={
-        isDraggable
-          ? scrollLeft - scrollAt + initialScrollLeft
-          : defaultScrollLeft
-      }
-      noScrollY={true}
-      style={{ height: "calc(100vh - 89px - 10px)", width: "100vw" }}
-      trackXProps={{
-        renderer: (props) => {
-          const { elementRef, ...restProps } = props;
-          return (
-            <span
-              {...restProps}
-              ref={elementRef}
-              className="ScrollbarsCustom-Track ScrollbarsCustom-TrackX ScrollbarsCustom-Calendar"
-            />
-          );
-        },
-      }}
-      scrollerProps={{
-        renderer: (props) => {
-          const { elementRef, ...restProps } = props;
-          return (
-            <div
-              {...restProps}
-              ref={elementRef}
-              className="ScrollbarsCustom-Scroller Calendar-Scroller"
-            />
-          );
-        },
-      }}
-    >
-      <div
-        onMouseDown={startScrollHandler}
-        className={
-          cursor == "pointer"
-            ? styles.wrapperPointer
-            : cursor == "grab"
-            ? styles.wrapperGrab
-            : styles.wrapper
+    <>
+      <Scrollbar
+        onScrollStop={stopScrollHandler}
+        scrollLeft={
+          isDraggable
+            ? scrollLeft - scrollAt + initialScrollLeft
+            : defaultScrollLeft
         }
+        noScrollY={true}
+        style={{ height: "calc(100vh - 89px - 0px)", width: "100vw" }}
+        trackXProps={{
+          renderer: (props) => {
+            const { elementRef, ...restProps } = props;
+            return (
+              <span
+                {...restProps}
+                ref={elementRef}
+                className="ScrollbarsCustom-Track ScrollbarsCustom-TrackX ScrollbarsCustom-Calendar"
+              />
+            );
+          },
+        }}
+        scrollerProps={{
+          renderer: (props) => {
+            const { elementRef, ...restProps } = props;
+            return (
+              <div
+                {...restProps}
+                ref={elementRef}
+                className="ScrollbarsCustom-Scroller Calendar-Scroller"
+              />
+            );
+          },
+        }}
       >
-        {daysWithLabelsComponents}
-        <LineTasks
-          setMenu={setMenu}
-          editedTask={editedTask}
-          setEditedTask={setEditedTask}
-          isSubtasksOpened={isSubtasksOpened}
-          setIsSubtasksOpened={setIsSubtasksOpened}
-          view={view}
-        />
-      </div>
-    </Scrollbar>
+        <div
+          onMouseDown={startScrollHandler}
+          className={
+            cursor == "pointer"
+              ? styles.wrapperPointer
+              : cursor == "grab"
+              ? styles.wrapperGrab
+              : styles.wrapper
+          }
+        >
+          {daysWithLabelsComponents}
+          <LineTasks
+            setMenu={setMenu}
+            editedTask={editedTask}
+            setEditedTask={setEditedTask}
+            isSubtasksOpened={isSubtasksOpened}
+            setIsSubtasksOpened={setIsSubtasksOpened}
+            view={view}
+          />
+        </div>
+      </Scrollbar>
+    </>
   );
 }

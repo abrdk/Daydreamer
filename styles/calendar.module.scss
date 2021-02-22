@@ -44,9 +44,10 @@
 
 .line {
   width: 1px;
-  height: calc(100vh - 89px - 25px - 10px - 5px - 48px);
+  height: calc(100vh - 177px);
   background: #258efa;
-  margin-left: 27px;
+  position: absolute;
+  left: 27px;
 }
 
 .month {
@@ -96,7 +97,7 @@
   width: 1px;
   height: calc(100vh - 89px - 25px - 10px - 5px - 42px);
   background: #258efa;
-  margin-left: 59.5px;
+  position: absolute;
 }
 
 .monthWrapper {
@@ -260,4 +261,25 @@
   border-color: transparent transparent #ffffff;
   position: absolute;
   top: -6px;
+}
+
+.dashedContainer {
+  width: 55px;
+  height: calc(100vh - 174px);
+  top: 60px;
+  border-right: 1px dashed #ecf5ff;
+  position: absolute;
+  left: 0;
+}
+
+.dashedContainerWeekend {
+  composes: dashedContainer;
+  background: #fafcff;
+}
+
+.dashedContainerWeek {
+  composes: dashedContainer;
+  width: 120px;
+  top: 53px;
+  height: calc(100vh - 168px);
 }

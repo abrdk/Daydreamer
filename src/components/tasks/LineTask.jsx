@@ -10,20 +10,6 @@ import LineTasksRoot from "@/src/components/tasks/LineTasksRoot";
 
 import { TasksContext } from "@/src//context/tasks/TasksContext";
 
-const views = ["Day", "Week", "Month"];
-const width = [55, 120 / 7];
-const minWidth = [42, 120 / 7];
-const extraWidth = [42, 120 / 7];
-const left = [55, 17.142];
-const extraLeft = [6.5, 0];
-const minOffsetLeft = [60, 5];
-const maxOffsetLeft = [-25, -5];
-const minOffsetRight = [-60, -5];
-const maxOffsetRight = [25, 5];
-const minOffsetMove = [25, 5];
-const maxOffsetMove = [-40, -5];
-const minTextWidth = [6, -2];
-
 export default function LineTask({
   task,
   index,
@@ -34,14 +20,74 @@ export default function LineTask({
   setIsSubtasksOpened,
   view,
 }) {
-  const { updateTask, tasksByProjectId, createTask } = useContext(TasksContext);
-  const subtasks = tasksByProjectId.filter((t) => t.root == task._id);
-
-  const line = useRef(null);
   const [dateStart, setDateStart] = useState(new Date());
   const [dateEnd, setDateEnd] = useState(new Date());
   const [temporaryDateEnd, setTemporaryDateEnd] = useState(new Date());
   const [temporaryDateStart, setTemporaryDateStart] = useState(new Date());
+
+  const daysInMonth = (month, year) => {
+    return new Date(year, month + 1, 0).getDate();
+  };
+
+  const getMonthLeft = () => {
+    let monthLeft = 0;
+    [...Array(temporaryDateStart.getMonth() + 1).keys()].forEach((m) => {
+      if (m == temporaryDateStart.getMonth()) {
+        monthLeft +=
+          (160 / daysInMonth(m, temporaryDateStart.getFullYear())) *
+          (temporaryDateStart.getDate() - 1);
+      } else {
+        monthLeft += 160;
+      }
+    });
+    return monthLeft;
+  };
+  const getMonthWidth = () => {
+    const range = (start, stop, step = 1) =>
+      Array(Math.ceil((stop - start) / step))
+        .fill(start)
+        .map((x, y) => x + y * step);
+
+    let monthWidth = 0;
+    range(
+      temporaryDateStart.getMonth(),
+      temporaryDateEnd.getMonth() + 1
+    ).forEach((m) => {
+      if (m == temporaryDateStart.getMonth()) {
+        monthWidth +=
+          (160 / daysInMonth(m, temporaryDateStart.getFullYear())) *
+          (daysInMonth(m, temporaryDateStart.getFullYear()) -
+            temporaryDateStart.getDate() +
+            1);
+      } else if (m == temporaryDateEnd.getMonth()) {
+        monthWidth +=
+          (160 / daysInMonth(m, temporaryDateEnd.getFullYear())) *
+          temporaryDateEnd.getDate();
+      } else {
+        monthWidth += 160;
+      }
+    });
+    return monthWidth;
+  };
+
+  const views = ["Day", "Week", "Month"];
+  const width = [55, 120 / 7, 160 / 30];
+  const minWidth = [55, 120 / 7, 160 / 30];
+  const extraWidth = [56, 120 / 7 + 1, 160 / 30 + 1];
+  const left = [55, 120 / 7, 160 / 30];
+  const extraLeft = [-1, -1, -1];
+  const minOffsetLeft = [70, 5, 0];
+  const maxOffsetLeft = [-15, -5, 0];
+  const minOffsetRight = [-70, -5, 0];
+  const maxOffsetRight = [15, 5, 0];
+  const minOffsetMove = [25, 5, 2];
+  const maxOffsetMove = [-40, -5, -2];
+  const minTextWidth = [6, -2, -2];
+
+  const { updateTask, tasksByProjectId, createTask } = useContext(TasksContext);
+  const subtasks = tasksByProjectId.filter((t) => t.root == task._id);
+
+  const line = useRef(null);
   const [isResizeRight, setResizeRight] = useState(false);
   const [isResizeLeft, setResizeLeft] = useState(false);
   const [isMove, setMove] = useState(false);
@@ -64,13 +110,16 @@ export default function LineTask({
     (dateEnd.getTime() - dateStart.getTime()) / 1000 / 60 / 60 / 24
   );
 
-  const taskWidth =
+  let taskWidth =
     width[views.indexOf(view)] * taskDuration + extraWidth[views.indexOf(view)];
 
-  const taskLeft =
+  let taskLeft =
     left[views.indexOf(view)] * numOfDaysFromStart +
     extraLeft[views.indexOf(view)];
-
+  if (view == "Month") {
+    taskLeft = getMonthLeft();
+    taskWidth = getMonthWidth();
+  }
   const taskTop = 20 + index * 55;
   let moveAreaCenterWidth;
   if (taskWidth >= 136) {
@@ -109,74 +158,20 @@ export default function LineTask({
   };
 
   const stopMove = () => {
-    let newDateStart = new Date(
-      dateStart.getFullYear(),
-      dateStart.getMonth(),
-      1,
-      0,
-      0,
-      0
-    );
-    let newDateEnd = new Date(
-      dateEnd.getFullYear(),
-      dateEnd.getMonth(),
-      1,
-      23,
-      59,
-      59
-    );
-
-    const distance = taskLeft - Number(line.current.style.left.slice(0, -2));
-
-    newDateStart.setDate(
-      dateStart.getDate() -
-        Math.floor((distance + 1) / width[views.indexOf(view)])
-    );
-    newDateEnd.setDate(
-      dateEnd.getDate() -
-        Math.floor((distance + 1) / width[views.indexOf(view)])
-    );
-    setDateStart(newDateStart);
-    setDateEnd(newDateEnd);
-    updateTask({ ...task, dateStart: newDateStart, dateEnd: newDateEnd });
+    line.current.style.width = getMonthWidth();
+    updateTask({
+      ...task,
+      dateStart: temporaryDateStart,
+      dateEnd: temporaryDateEnd,
+    });
   };
 
   const stopResizeRight = () => {
-    let date = new Date(
-      dateEnd.getFullYear(),
-      dateEnd.getMonth(),
-      1,
-      23,
-      59,
-      59
-    );
-    const distance = taskWidth - Number(line.current.style.width.slice(0, -2));
-
-    date.setDate(
-      dateEnd.getDate() -
-        Math.floor((distance + 1) / width[views.indexOf(view)])
-    );
-    setDateEnd(date);
-    updateTask({ ...task, dateEnd: date });
+    updateTask({ ...task, dateEnd: temporaryDateEnd });
   };
 
   const stopResizeLeft = () => {
-    let date = new Date(
-      dateStart.getFullYear(),
-      dateStart.getMonth(),
-      1,
-      0,
-      0,
-      0
-    );
-    const distance = Number(line.current.style.left.slice(0, -2)) - taskLeft;
-
-    date.setDate(
-      dateStart.getDate() +
-        Math.floor((distance + 1) / width[views.indexOf(view)])
-    );
-    setDateStart(date);
-    updateTask({ ...task, dateStart: date });
+    updateTask({ ...task, dateStart: temporaryDateStart });
   };
 
   useEvent(document, "mouseup", (e) => {
@@ -201,6 +196,15 @@ export default function LineTask({
 
   const resizeLeftHandler = (e) => {
     const offset = mouseX - line.current.getBoundingClientRect().left;
+    let currentWidth = width[views.indexOf(view)];
+    if (view == "Month") {
+      currentWidth =
+        160 /
+        daysInMonth(
+          temporaryDateStart.getMonth(),
+          temporaryDateStart.getFullYear()
+        );
+    }
     if (
       Number(line.current.style.width.slice(0, -2)) - offset <=
       minWidth[views.indexOf(view)]
@@ -216,21 +220,18 @@ export default function LineTask({
     ) {
       line.current.style.left =
         Number(line.current.style.left.slice(0, -2)) +
-        Math.floor(offset / width[views.indexOf(view)]) *
-          width[views.indexOf(view)] +
+        Math.floor(offset / currentWidth) * currentWidth +
         "px";
       const newLineWidth =
         Number(line.current.style.width.slice(0, -2)) -
-        Math.floor(offset / width[views.indexOf(view)]) *
-          width[views.indexOf(view)];
+        Math.floor(offset / currentWidth) * currentWidth;
       line.current.style.width = newLineWidth + "px";
       setTextWidth(newLineWidth - 36);
       setTemporaryDateStart(
         new Date(
           temporaryDateStart.getFullYear(),
           temporaryDateStart.getMonth(),
-          temporaryDateStart.getDate() +
-            Math.floor(offset / width[views.indexOf(view)])
+          temporaryDateStart.getDate() + Math.floor(offset / currentWidth)
         )
       );
     }
@@ -238,7 +239,15 @@ export default function LineTask({
 
   const resizeRightHandler = (e) => {
     const offset = mouseX - line.current.getBoundingClientRect().right;
-
+    let currentWidth = width[views.indexOf(view)];
+    if (view == "Month") {
+      currentWidth =
+        160 /
+        daysInMonth(
+          temporaryDateEnd.getMonth(),
+          temporaryDateEnd.getFullYear()
+        );
+    }
     if (
       Number(line.current.style.width.slice(0, -2)) + offset <=
       minWidth[views.indexOf(view)]
@@ -252,16 +261,14 @@ export default function LineTask({
     ) {
       const newLineWidth =
         Number(line.current.style.width.slice(0, -2)) +
-        (Math.floor(offset / width[views.indexOf(view)]) + 1) *
-          width[views.indexOf(view)];
+        (Math.floor(offset / currentWidth) + 1) * currentWidth;
       line.current.style.width = newLineWidth + "px";
       setTextWidth(newLineWidth - 36);
       setTemporaryDateEnd(
         new Date(
           temporaryDateEnd.getFullYear(),
           temporaryDateEnd.getMonth(),
-          temporaryDateEnd.getDate() +
-            (Math.floor(offset / width[views.indexOf(view)]) + 1)
+          temporaryDateEnd.getDate() + (Math.floor(offset / currentWidth) + 1)
         )
       );
     }
@@ -273,15 +280,38 @@ export default function LineTask({
       (line.current.getBoundingClientRect().right -
         line.current.getBoundingClientRect().width / 2) +
       offsetFromCenter;
+
+    let currentLeft = width[views.indexOf(view)];
+    if (view == "Month") {
+      currentLeft =
+        160 /
+        daysInMonth(
+          temporaryDateStart.getMonth(),
+          temporaryDateStart.getFullYear()
+        );
+    }
     if (
       offset >= minOffsetMove[views.indexOf(view)] ||
       offset <= maxOffsetMove[views.indexOf(view)]
     ) {
       line.current.style.left =
         Number(line.current.style.left.slice(0, -2)) +
-        Math.floor(offset / width[views.indexOf(view)]) *
-          width[views.indexOf(view)] +
+        Math.floor(offset / currentLeft) * currentLeft +
         "px";
+      setTemporaryDateStart(
+        new Date(
+          temporaryDateStart.getFullYear(),
+          temporaryDateStart.getMonth(),
+          temporaryDateStart.getDate() + Math.floor(offset / currentLeft)
+        )
+      );
+      setTemporaryDateEnd(
+        new Date(
+          temporaryDateEnd.getFullYear(),
+          temporaryDateEnd.getMonth(),
+          temporaryDateEnd.getDate() + Math.floor(offset / currentLeft)
+        )
+      );
     }
   };
 

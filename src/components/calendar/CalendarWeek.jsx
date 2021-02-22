@@ -106,7 +106,7 @@ export default function CalendarWeek({
           }
           if (date.getDay() == 1) {
             return (
-              <div key={`week-${day}`}>
+              <div key={`week-${day}`} style={{ position: "relative" }}>
                 <div
                   className={
                     isDayBetweenTwoDays(today, date, weekLater)
@@ -117,8 +117,24 @@ export default function CalendarWeek({
                   <div>{`${date.getDate()} - ${weekLater.getDate()}`}</div>
                 </div>
                 <When condition={isDayBetweenTwoDays(today, date, weekLater)}>
-                  <div className={styles.weekLine}></div>
+                  <div
+                    className={styles.weekLine}
+                    style={{
+                      left:
+                        (Math.floor(
+                          (today.getTime() - date.getTime()) /
+                            1000 /
+                            60 /
+                            60 /
+                            24
+                        ) *
+                          120) /
+                          7 -
+                        1,
+                    }}
+                  ></div>
                 </When>
+                <div className={styles.dashedContainerWeek}></div>
               </div>
             );
           }
@@ -206,7 +222,7 @@ export default function CalendarWeek({
           : defaultScrollLeft
       }
       noScrollY={true}
-      style={{ height: "calc(100vh - 89px - 10px)", width: "100vw" }}
+      style={{ height: "calc(100vh - 89px)", width: "100vw" }}
       trackXProps={{
         renderer: (props) => {
           const { elementRef, ...restProps } = props;
