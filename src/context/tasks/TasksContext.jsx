@@ -186,22 +186,24 @@ export function TasksProvider(props) {
 
   const createInitialTasks = async ({ project }) => {
     const today = new Date();
-    const currentDate = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate(),
-      0,
-      0,
-      0
-    );
-    let afterWeek = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate() + 6,
-      23,
-      59,
-      59
-    );
+    const datesStart = [
+      new Date(today.getFullYear(), today.getMonth(), today.getDate() - 6),
+      new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1),
+      new Date(today.getFullYear(), today.getMonth(), today.getDate() - 3),
+      new Date(today.getFullYear(), today.getMonth(), today.getDate() + 6),
+      new Date(today.getFullYear(), today.getMonth(), today.getDate() - 2),
+      new Date(today.getFullYear(), today.getMonth(), today.getDate()),
+      new Date(today.getFullYear(), today.getMonth(), today.getDate() + 3),
+    ];
+    const datesEnd = [
+      new Date(today.getFullYear(), today.getMonth(), today.getDate()),
+      new Date(today.getFullYear(), today.getMonth(), today.getDate() + 5),
+      new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1),
+      new Date(today.getFullYear(), today.getMonth(), today.getDate() + 12),
+      new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7),
+      new Date(today.getFullYear(), today.getMonth(), today.getDate() + 3),
+      new Date(today.getFullYear(), today.getMonth(), today.getDate() + 8),
+    ];
 
     const _ids = [...Array(7).keys()].map(() => nanoid());
     const newTasks = _ids.map((_id, i) => {
@@ -210,8 +212,8 @@ export function TasksProvider(props) {
           _id,
           name: `Task name #${i + 1}`,
           description: "",
-          dateStart: currentDate,
-          dateEnd: afterWeek,
+          dateStart: datesStart[i],
+          dateEnd: datesEnd[i],
           color: colors[i],
           project,
           root: "",
@@ -222,8 +224,8 @@ export function TasksProvider(props) {
         _id,
         name: `Subtask name #${i + 1 - 5}`,
         description: "",
-        dateStart: currentDate,
-        dateEnd: afterWeek,
+        dateStart: datesStart[i],
+        dateEnd: datesEnd[i],
         color: colors[i],
         project,
         root: _ids[2],
