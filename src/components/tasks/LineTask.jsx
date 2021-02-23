@@ -236,7 +236,10 @@ export default function LineTask({
         new Date(
           temporaryDateStart.getFullYear(),
           temporaryDateStart.getMonth(),
-          temporaryDateStart.getDate() + Math.floor(offset / currentWidth)
+          temporaryDateStart.getDate() + Math.floor(offset / currentWidth),
+          0,
+          0,
+          0
         )
       );
     }
@@ -273,7 +276,10 @@ export default function LineTask({
         new Date(
           temporaryDateEnd.getFullYear(),
           temporaryDateEnd.getMonth(),
-          temporaryDateEnd.getDate() + (Math.floor(offset / currentWidth) + 1)
+          temporaryDateEnd.getDate() + (Math.floor(offset / currentWidth) + 1),
+          23,
+          59,
+          59
         )
       );
     }
@@ -307,14 +313,20 @@ export default function LineTask({
         new Date(
           temporaryDateStart.getFullYear(),
           temporaryDateStart.getMonth(),
-          temporaryDateStart.getDate() + Math.floor(offset / currentLeft)
+          temporaryDateStart.getDate() + Math.floor(offset / currentLeft),
+          0,
+          0,
+          0
         )
       );
       setTemporaryDateEnd(
         new Date(
           temporaryDateEnd.getFullYear(),
           temporaryDateEnd.getMonth(),
-          temporaryDateEnd.getDate() + Math.floor(offset / currentLeft)
+          temporaryDateEnd.getDate() + Math.floor(offset / currentLeft),
+          23,
+          59,
+          59
         )
       );
     }
