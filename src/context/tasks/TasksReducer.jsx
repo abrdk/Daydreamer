@@ -42,6 +42,11 @@ export default function TasksReducer(state, action) {
         ...state,
         sortedTasksIds: action.payload,
       };
+    case "SET_IS_SORTING":
+      return {
+        ...state,
+        isSorting: action.payload,
+      };
     default:
       return state;
   }

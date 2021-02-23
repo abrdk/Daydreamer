@@ -243,7 +243,12 @@ export function TasksProvider(props) {
     ]);
   };
 
-  const setIsSorting = () => {};
+  const setIsSorting = (bool) => {
+    dispatch({
+      type: "SET_IS_SORTING",
+      payload: bool,
+    });
+  };
 
   return (
     <TasksContext.Provider
@@ -253,6 +258,7 @@ export function TasksProvider(props) {
         tasksByProjectId,
         sortedTasksIds,
         isSorting,
+        setIsSorting,
         createTask,
         updateTask,
         deleteTask,

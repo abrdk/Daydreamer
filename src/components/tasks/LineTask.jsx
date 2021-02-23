@@ -1,6 +1,6 @@
 import calendarStyles from "@/styles/calendar.module.scss";
 import { When } from "react-if";
-import { useEffect, useState, useMemo, useContext, useRef } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import useEvent from "@react-hook/event";
 import Truncate from "react-truncate";
 import { nanoid } from "nanoid";
@@ -77,7 +77,7 @@ export default function LineTask({
 
   const views = ["Day", "Week", "Month"];
   const width = [55, 120 / 7, 160 / 30];
-  const minWidth = [55, 120 / 7, 160 / 30];
+  const minWidth = [55, 120 / 7, 160 / 31];
   const extraWidth = [56, 120 / 7 + 1, 160 / 30 + 1];
   const left = [55, 120 / 7, 160 / 30];
   const extraLeft = [-1, -1, -1];
