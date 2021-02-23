@@ -1,5 +1,4 @@
 export default function TasksReducer(state, action) {
-  console.log(action.type, action.payload);
   const { _id, project } = action.payload;
   switch (action.type) {
     case "SET_TASKS":

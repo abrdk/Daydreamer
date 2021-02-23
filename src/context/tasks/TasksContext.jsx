@@ -115,7 +115,6 @@ export function TasksProvider(props) {
   }, [router.query.id, tasks]);
 
   useEffect(() => {
-    console.log("tasksByProjectId", tasksByProjectId);
     dispatch({
       type: "SET_SORTED_TASKS_IDS",
       payload: flatten(

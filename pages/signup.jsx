@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import { When } from "react-if";
 import FloatingLabel from "floating-label-react";
 
-import DefaultGantt from "@/src/components/gantt/DefaultGantt";
+import DefaultGantt from "@/src/components/default/DefaultGantt";
 
 import { UsersContext } from "@/src/context/users/UsersContext";
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";

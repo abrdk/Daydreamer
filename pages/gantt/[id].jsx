@@ -30,9 +30,12 @@ export default function Gantt() {
   const { isProjectsLoaded, projectByQueryId, createProject } = useContext(
     ProjectsContext
   );
-  const { isTasksLoaded, createTask, sortedTasksIds } = useContext(
-    TasksContext
-  );
+  const {
+    isTasksLoaded,
+    createTask,
+    sortedTasksIds,
+    tasksByProjectId,
+  } = useContext(TasksContext);
   const prevSortedTasksIds = usePrevious(sortedTasksIds);
   const [isSubtasksOpened, setIsSubtasksOpened] = useState([]);
   useEffect(() => {
@@ -77,15 +80,33 @@ export default function Gantt() {
         name: projectByQueryId.name,
         owner: userCtx._id,
       });
-      tasksByProjectId.forEach((t) =>
-        createTask({
-          ...t,
-          _id: nanoid(),
-          project: newProjectId,
-          owner: userCtx._id,
-        })
-      );
+      const new_ids = tasksByProjectId.map((t) => nanoid());
+      const old_ids = tasksByProjectId.map((t) => t._id);
+
+      async function processArray(array) {
+        for (const t of array) {
+          const i = array.indexOf(t);
+          if (t.root) {
+            await createTask({
+              ...t,
+              _id: new_ids[i],
+              project: newProjectId,
+              owner: userCtx._id,
+              root: new_ids[old_ids.indexOf(t.root)],
+            });
+          } else {
+            await createTask({
+              ...t,
+              _id: new_ids[i],
+              project: newProjectId,
+              owner: userCtx._id,
+            });
+          }
+        }
+      }
+      await processArray(tasksByProjectId);
       router.push(`/gantt/${newProjectId}`);
+      setTimeout(() => router.reload(), 100);
     }
   };
 

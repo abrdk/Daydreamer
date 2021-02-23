@@ -1,5 +1,4 @@
 export default function UsersReducer(state, action) {
-  console.log(action.type, action.payload);
   switch (action.type) {
     case "SET_USER":
       const { _id, name, password } = action.payload;
