@@ -1,9 +1,17 @@
-import '../styles/globals.css';
-import '../ganttChart/components/taskMenu/taskMenu.css';
-import '../ganttChart/components/viewSwitcher/viewSwitcher.css';
+import "@/styles/globals.scss";
 
-function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
+import { UsersProvider } from "@/src/context/users/UsersContext";
+import { ProjectsProvider } from "@/src/context/projects/ProjectsContext";
+import { TasksProvider } from "@/src/context/tasks/TasksContext";
+
+export default function MyApp({ Component, pageProps }) {
+  return (
+    <UsersProvider>
+      <ProjectsProvider>
+        <TasksProvider>
+          <Component {...pageProps} />
+        </TasksProvider>
+      </ProjectsProvider>
+    </UsersProvider>
+  );
 }
-
-export default MyApp

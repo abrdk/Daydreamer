@@ -1,0 +1,45 @@
+.buttonsWrapper {
+  display: flex;
+  position: relative;
+  transition: all 300ms;
+  left: 0px;
+}
+
+.buttonsWrapper.offset {
+  display: flex;
+  position: relative;
+  left: 304px;
+}
+
+.baseButton {
+  width: 80px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: 21px;
+  margin: 0;
+  border: 1px solid #9ccdff;
+  &:nth-child(1) {
+    border-radius: 3px 0px 0px 3px;
+    border-right: none;
+  }
+  &:nth-child(3) {
+    border-radius: 0px 3px 3px 0px;
+    border-left: none;
+  }
+}
+
+.inactiveButton {
+  composes: baseButton;
+  background: #ffffff;
+  color: #9ccdff;
+  cursor: pointer;
+}
+.activeButton {
+  composes: baseButton;
+  background: #ecf5ff;
+  color: #258efa;
+}

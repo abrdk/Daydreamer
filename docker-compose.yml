@@ -1,0 +1,19 @@
+version: "3"
+services:
+  daydreamer:
+    image: daydreamer
+    build: .
+    ports:
+      - "3000:3000"
+    network_mode: "host"
+    environment:
+      - MONGO_URI="mongodb://localhost:27017"
+    depends_on:
+      - mongodb
+  mongodb:
+    image: mongo:latest
+    container_name: "mongodb"
+    command: mongod --port 27017 --bind_ip_all
+    network_mode: "host"
+    ports:
+      - "27017:27017"

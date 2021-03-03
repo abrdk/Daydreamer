@@ -1,55 +1,34 @@
-import React, { useState } from "react";
-import './viewSwitcher.css';
-import { ViewMode } from "../../types/public-types";
+import { useState } from "react";
+import { ViewMode } from "@/src/types/public-types.js";
+import styles from "@/styles/viewSwitcher.module.scss";
 
-const modes = ['QuarterDay', 'HalfDay', 'Day', 'Week', 'Month'];
-const titles = ['1/4 Дня', '1/2 Дня', 'День', 'Неделя', 'Месяц'];
+const modes = ["Day", "Week", "Month"];
 
-export const ViewSwitcher = ({
-  onViewModeChange,
-  onViewListChange,
-  isChecked,
-  setMobile
-}) => {
+export const ViewSwitcher = ({ onViewModeChange, isMenuOpen }) => {
+  const [scale, setScale] = useState(0);
 
-  const [scale, setScale] = useState(2)
+  const buttons = [0, 1, 2].map((i) => (
+    <div
+      key={i}
+      className={scale === i ? styles.activeButton : styles.inactiveButton}
+      onClick={() => {
+        setScale(i);
+        onViewModeChange(ViewMode[modes[i]]);
+      }}
+    >
+      {modes[i]}
+    </div>
+  ));
 
   return (
-    <>
-      <div className="mobile-switch">
-        <span onClick={setMobile.bind(null, 0)}>Диаграмма</span>
-        <span onClick={setMobile.bind(null, 1)}>Список задач</span>
-        <div className="scale">
-          <div className="scale-title">{titles[scale]}</div>
-          <input type="range" min="0" max="4" 
-            value={scale} onChange={e => {
-              const i = parseInt(e.target.value);
-              setScale(i);
-              onViewModeChange(ViewMode[modes[i]])
-            }}
-          />
-        </div>
-      </div>
-      <div className="switch-module">
-        <div className="scale">
-          <div className="scale-title">{titles[scale]}</div>
-          <input type="range" min="0" max="4" 
-            value={scale} onChange={e => {
-              const i = parseInt(e.target.value);
-              setScale(i);
-              onViewModeChange(ViewMode[modes[i]])
-            }}
-          />
-        </div>
-        <label className="task-list">
-          <input
-            type="checkbox"
-            defaultChecked={isChecked}
-            onClick={() => onViewListChange(!isChecked)}
-          />
-          Показать список задач
-        </label>
-      </div>
-    </>
+    <div
+      className={
+        isMenuOpen
+          ? styles.buttonsWrapper + " " + styles.offset
+          : styles.buttonsWrapper
+      }
+    >
+      {buttons}
+    </div>
   );
 };

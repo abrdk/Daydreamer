@@ -1,137 +1,183 @@
-import * as cookie from 'cookie';
-const jwt = require('jsonwebtoken');
+import Head from "next/head";
+import { useState, useContext, useEffect } from "react";
+import styles from "@/styles/header.module.scss";
+import { When, If, Then, Else } from "react-if";
+import Truncate from "react-truncate";
+import { useRouter } from "next/router";
+import { nanoid } from "nanoid";
+import ReactCursorPosition from "react-cursor-position";
+import usePrevious from "@react-hook/previous";
 
-import Head from 'next/head';
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import styles from './Gantt.module.css';
-import { xhr } from "../../helpers/xhr";
-import GantChart from '../../ganttChart/ganttChart';
-import { Modal } from '../../modal/modal';
+import { Modal } from "@/src/components/modal/modal";
+import { ViewSwitcher } from "@/src/components/viewSwitcher/viewSwitcher";
+import { ViewMode } from "@/src/types/public-types";
+import Menu from "@/src/components/menu/Menu";
+import Calendar from "@/src/components/calendar/Calendar";
 
-let id;
+import { UsersContext } from "@/src/context/users/UsersContext";
+import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
+import { TasksContext } from "@/src/context/tasks/TasksContext";
 
-export default function Gantt({charts: arr, currentChart, user}) {
-	if(currentChart) currentChart = JSON.parse(currentChart).chart;
+export default function Gantt() {
+  const router = useRouter();
 
-	const [charts, setCharts] = useState(arr ? JSON.parse(arr) : []);
-	const [name, setName] = useState('');
-	const [load, setLoad] = useState(currentChart ? currentChart : []);
-	const [chart, setChart] = useState(currentChart ? currentChart : []);
-	const [menu, setMenu] = useState(false);
-	const [modal, setModal] = useState(false);
+  const [modal, setModal] = useState(false);
+  const [view, setView] = useState(ViewMode.Day);
+  const [isMenuOpen, setMenu] = useState(false);
+  const [editedTask, setEditedTask] = useState(null);
 
-	const request = (query) => {
-		setModal('loader')
-		xhr('/gantt', {...query}, 'POST').then(res => {
-			if(res.message === 'ok') {
-				setModal(false);
-				setCharts(res.charts);
-			}
-			else setModal(res.message);
-		});
-	}
+  const userCtx = useContext(UsersContext);
+  const { isProjectsLoaded, projectByQueryId, createProject } = useContext(
+    ProjectsContext
+  );
+  const {
+    isTasksLoaded,
+    createTask,
+    sortedTasksIds,
+    tasksByProjectId,
+  } = useContext(TasksContext);
+  const prevSortedTasksIds = usePrevious(sortedTasksIds);
+  const [isSubtasksOpened, setIsSubtasksOpened] = useState([]);
+  useEffect(() => {
+    if (prevSortedTasksIds) {
+      if (sortedTasksIds.length > prevSortedTasksIds.length) {
+        let newSubtasksOpenedList = sortedTasksIds.map((t) => false);
+        prevSortedTasksIds.forEach((_id, i) => {
+          if (sortedTasksIds.indexOf(_id) >= 0) {
+            newSubtasksOpenedList[sortedTasksIds.indexOf(_id)] =
+              isSubtasksOpened[sortedTasksIds.indexOf(_id)];
+          }
+        });
+        setIsSubtasksOpened(newSubtasksOpenedList);
+      } else if (sortedTasksIds.length < prevSortedTasksIds.length) {
+        let newSubtasksOpenedList = sortedTasksIds.map((t) => false);
+        prevSortedTasksIds.forEach((_id, i) => {
+          if (sortedTasksIds.indexOf(_id) >= 0) {
+            newSubtasksOpenedList[sortedTasksIds.indexOf(_id)] =
+              isSubtasksOpened[i];
+          }
+        });
+        setIsSubtasksOpened(newSubtasksOpenedList);
+      } else {
+        let newSubtasksOpenedList = sortedTasksIds.map((t) => false);
+        prevSortedTasksIds.forEach((_id, i) => {
+          if (sortedTasksIds.indexOf(_id) >= 0) {
+            newSubtasksOpenedList[sortedTasksIds.indexOf(_id)] =
+              isSubtasksOpened[i];
+          }
+        });
+        setIsSubtasksOpened(newSubtasksOpenedList);
+      }
+    }
+  }, [sortedTasksIds]);
 
-	return (
-		<>
-		<Head> <title> Daydreamer | Put your ideas on a timeline </title> </Head>
-			<Modal modal={modal} 
-				setModal={setModal}
-				request={request}
-				chart={chart}
-				id={id}
-				mapName={name}
-			/>
-			<div className={styles.container}>
-				<div className={styles.mainMenuLeft}>
-					{menu ? <img src="/img/closeMenu.png" alt="close" onClick={() => setMenu(false)}/>
-					: <img src="/img/openMenu.png" alt="close" onClick={() => setMenu(true)} />}
-				</div>
-				<div className={styles.mainMenu}
-					style={{transform: menu ? 'translateX(0)' : 'translateX(-100%)'}}
-				>
-					<div className={styles.mainMenuHeader}>
-						Проекты
-						<img src="/img/add.png" alt="add" onClick={() => setModal('create')} />
-					</div>
-					{charts.map(k => (
-						<div key={k._id} className={styles.mainMenuRow}
-							style={{backgroundColor: k._id === id ? '#4D527F' : ''}}
-						>
-							<div>
-								{k.name}
-								<img style={{marginLeft: '8px'}} src="/img/edit.png" alt="edit"
-									onClick={() => {
-										setLoad(k.chart);
-										setName(k.name);
-										id = k._id;
-									}}
-								/>
-							</div>
-							<img src="/img/delete.png" alt="delete" onClick={() => {
-								setName(k.name);
-								id = k._id;
-								setModal('delete');
-							}} />
-						</div>
-					))}
-					{user ?	<Link href="/logout">
-						<a className={styles.logOut}>Выйти из аккаунта</a>
-					</Link> 
-					: <Link href="/signup">
-						<a className={styles.logOut}>Регистрация</a>
-					</Link>}
-				</div>
-				<div className={styles.header}>
-					<div />
-						{name && <div>Текущий проект - <b>{name}</b></div>}
-					<div>
-						<button style={{width: '120px', height: '33px', marginRight: '15px'}}
-							onClick={request.bind(null, {
-								query: 'update', chart, id
-							})} 
-						>
-							Записать
-						</button>
-						<button style={{width: '120px', height: '33px'}}
-							onClick={setModal.bind(null, 'share')}
-						>
-							Поделиться
-						</button>
-					</div>
-				</div>
-				<div className={styles.gantChartWrap}>
-					<div style={{minWidth: '700px'}}>
-						<GantChart chart={chart} setChart={setChart} load={load} />
-					</div>
-				</div>
-			</div>
-		</>
-	)
-}
+  const copyAndEdit = async () => {
+    if (userCtx._id) {
+      setMenu(false);
+      const newProjectId = nanoid();
+      await createProject({
+        _id: newProjectId,
+        name: projectByQueryId.name,
+        owner: userCtx._id,
+      });
+      const new_ids = tasksByProjectId.map((t) => nanoid());
+      const old_ids = tasksByProjectId.map((t) => t._id);
 
-export async function getServerSideProps(ctx) {
-	let user, charts, currentChart;
+      async function processArray(array) {
+        for (const t of array) {
+          const i = array.indexOf(t);
+          if (t.root) {
+            await createTask({
+              ...t,
+              _id: new_ids[i],
+              project: newProjectId,
+              owner: userCtx._id,
+              root: new_ids[old_ids.indexOf(t.root)],
+            });
+          } else {
+            await createTask({
+              ...t,
+              _id: new_ids[i],
+              project: newProjectId,
+              owner: userCtx._id,
+            });
+          }
+        }
+      }
+      await processArray(tasksByProjectId);
+      router.push(`/gantt/${newProjectId}`);
+      setTimeout(() => router.reload(), 100);
+    }
+  };
 
-	try {
-		const token = cookie.parse(ctx.req.headers.cookie).ganttToken;
-		const decoded = jwt.verify(token, 'jwtSecret');
-		user = decoded.userId;
-	} catch(e) {}
-
-	
-	try {
-		const getDB = require('../../helpers/getDb');
-		const Gantt = getDB('Gantt');
-		if(user) charts = await Gantt.find({user});
-		currentChart = await Gantt.findOne({_id: ctx.query.id});
-	} catch(e) {}
-
-	return {
-		props: {
-			charts: charts ? JSON.stringify(charts) : null,
-			currentChart: currentChart ? JSON.stringify(currentChart) : null,
-			user: user ? JSON.stringify(user) : null
-		}
-	}
+  return (
+    <>
+      <Head>
+        {" "}
+        <title> Daydreamer | Put your ideas on a timeline </title>{" "}
+      </Head>
+      <When
+        condition={
+          userCtx.isUserLoaded &&
+          isProjectsLoaded &&
+          isTasksLoaded &&
+          projectByQueryId._id
+        }
+      >
+        <Modal modal={modal} setModal={setModal} />
+        <div className={styles.container} id="container">
+          <Menu
+            isMenuOpen={isMenuOpen}
+            setMenu={setMenu}
+            editedTask={editedTask}
+            setEditedTask={setEditedTask}
+            isSubtasksOpened={isSubtasksOpened}
+            setIsSubtasksOpened={setIsSubtasksOpened}
+          />
+          <div className={styles.header}>
+            <ViewSwitcher
+              isMenuOpen={isMenuOpen}
+              onViewModeChange={(viewMode) => setView(viewMode)}
+            />
+            <div className={styles.buttonsContainer}>
+              <If condition={projectByQueryId.owner == userCtx._id}>
+                <Then>
+                  <button
+                    className={styles.share_button}
+                    onClick={setModal.bind(null, "share")}
+                  >
+                    Share Project
+                  </button>
+                  <button
+                    className={styles.account_button}
+                    onClick={setModal.bind(null, "account")}
+                  >
+                    <img src="/img/avatar.svg" alt=" " />{" "}
+                    <Truncate lines={1} width={100}>
+                      {userCtx.name}
+                    </Truncate>
+                  </button>
+                </Then>
+                <Else>
+                  <button className={styles.share_button} onClick={copyAndEdit}>
+                    Copy and Edit
+                  </button>
+                </Else>
+              </If>
+            </div>
+          </div>
+        </div>
+        <ReactCursorPosition>
+          <Calendar
+            setMenu={setMenu}
+            view={view}
+            editedTask={editedTask}
+            setEditedTask={setEditedTask}
+            isSubtasksOpened={isSubtasksOpened}
+            setIsSubtasksOpened={setIsSubtasksOpened}
+          />
+        </ReactCursorPosition>
+      </When>
+    </>
+  );
 }

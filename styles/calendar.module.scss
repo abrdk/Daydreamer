@@ -1,0 +1,292 @@
+.wrapper {
+  display: flex;
+  position: relative;
+}
+
+.wrapperPointer {
+  composes: wrapper;
+  cursor: pointer;
+}
+
+.wrapperGrab {
+  composes: wrapper;
+  cursor: grab;
+}
+
+.day {
+  font-style: normal;
+  font-weight: lighter;
+  font-size: 15px;
+  line-height: 21px;
+  color: #696f75;
+  width: 42px;
+  height: 48px;
+  margin: 0 6.5px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  justify-content: center;
+  align-items: center;
+}
+
+.weekend {
+  composes: day;
+  font-weight: bold;
+}
+
+.today {
+  composes: day;
+  font-weight: bold;
+  background: #ecf5ff;
+  border-radius: 3px;
+  color: #258efa;
+}
+
+.line {
+  width: 1px;
+  height: calc(100vh - 177px);
+  background: #258efa;
+  position: absolute;
+  left: 27px;
+}
+
+.month {
+  display: flex;
+}
+
+.monthName {
+  height: 20px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: 21px;
+  color: #d8d8d8;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.wrapperr {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+}
+
+.week {
+  font-style: normal;
+  font-weight: lighter;
+  font-size: 15px;
+  line-height: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #696f75;
+  width: 120px;
+  height: 42px;
+}
+
+.weekCurrent {
+  composes: week;
+  font-weight: bold;
+  background: #ecf5ff;
+  border-radius: 3px;
+  color: #258efa;
+}
+
+.weekLine {
+  width: 1px;
+  height: calc(100vh - 89px - 25px - 10px - 5px - 42px);
+  background: #258efa;
+  position: absolute;
+}
+
+.monthWrapper {
+  width: 160px;
+  height: 42px;
+  font-style: normal;
+  font-weight: lighter;
+  font-size: 15px;
+  line-height: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #696f75;
+}
+
+.monthCurrent {
+  composes: monthWrapper;
+  font-weight: bold;
+  background: #ecf5ff;
+  border-radius: 3px;
+  color: #258efa;
+}
+
+.monthLine {
+  width: 1px;
+  height: calc(100vh - 89px - 25px - 10px - 5px - 42px);
+  background: #258efa;
+  position: absolute;
+}
+
+.lineTasksWrapper {
+  position: absolute;
+  top: 88px;
+}
+
+.lineTask {
+  position: absolute;
+  background: #258efa;
+  border-radius: 3px;
+  height: 35px;
+  width: 330px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 21px;
+  color: #f3f3f3;
+  padding-left: 8px;
+  padding-right: 8px;
+  margin-bottom: 20px;
+  &:hover {
+    .openSubtasksIcon {
+      display: flex;
+    }
+  }
+}
+
+.stick {
+  width: 2px;
+  height: 25px;
+  background: #fff;
+  border-radius: 3px;
+}
+
+.resizeAreaLeft {
+  position: absolute;
+  width: 18px;
+  height: 35px;
+  border-radius: 3px;
+  left: 0;
+  cursor: pointer;
+}
+
+.resizeAreaRight {
+  position: absolute;
+  width: 18px;
+  height: 35px;
+  border-radius: 3px;
+  right: 0;
+  cursor: pointer;
+}
+
+.moveAreaCenter {
+  position: absolute;
+  height: 35px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.scrollContainer {
+  position: absolute;
+  top: 73px;
+}
+
+.rootWrapper {
+  position: absolute;
+}
+
+.openSubtasksIcon {
+  display: none;
+  position: absolute;
+  left: 0px;
+  background: #fff;
+  width: 25px;
+  height: 25px;
+  border: 1px solid #9ccdff;
+  border-radius: 100px;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.addSubtaskIcon {
+  composes: openSubtasksIcon;
+}
+
+.openSubtasksWrapper {
+  position: absolute;
+  width: 31px;
+  height: 35px;
+  left: -66px;
+  display: flex;
+  align-items: center;
+}
+
+.addSubtaskWrapper {
+  position: absolute;
+  width: 35px;
+  height: 35px;
+  left: -35px;
+  display: flex;
+  align-items: center;
+}
+
+.tooltip {
+  width: 80px;
+  height: 30px;
+  background: #ffffff;
+  filter: drop-shadow(15px 15px 50px rgba(9, 40, 72, 0.15));
+  z-index: 100;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 13px;
+  line-height: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #696f75;
+  border-radius: 0px;
+  position: absolute;
+  top: 47px;
+}
+
+.triangle {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 6px 6px 6px;
+  border-color: transparent transparent #ffffff;
+  position: absolute;
+  top: -6px;
+}
+
+.dashedContainer {
+  width: 55px;
+  height: calc(100vh - 174px);
+  top: 60px;
+  border-right: 1px dashed #ecf5ff;
+  position: absolute;
+  left: 0;
+}
+
+.dashedContainerWeekend {
+  composes: dashedContainer;
+  background: #fafcff;
+}
+
+.dashedContainerWeek {
+  composes: dashedContainer;
+  width: 120px;
+  top: 53px;
+  height: calc(100vh - 168px);
+}
+
+.dashedContainerMonth {
+  composes: dashedContainer;
+  width: 161px;
+  top: 53px;
+  height: calc(100vh - 168px);
+}

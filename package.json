@@ -1,6 +1,6 @@
 {
   "name": "daydreamer",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -8,15 +8,27 @@
     "start": "next start"
   },
   "dependencies": {
+    "@react-hook/event": "^1.2.3",
+    "@react-hook/previous": "^1.0.1",
+    "animejs": "^3.2.1",
     "bcryptjs": "^2.4.3",
+    "dateformat": "^4.5.1",
+    "floating-label-react": "^1.0.3",
+    "js-cookie": "^2.2.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.10",
-    "next": "9.5.5",
-    "rc-color-picker": "^1.2.6",
-    "react": "17.0.1",
-    "react-datepicker": "^3.2.2",
-    "react-dom": "17.0.1",
-    "react-scripts": "3.4.3"
+    "nanoid": "^3.1.20",
+    "next": "10.0.5",
+    "react": "^16.14.0",
+    "react-cursor-position": "^3.0.3",
+    "react-datepicker": "^3.5.0",
+    "react-dom": "^16.14.0",
+    "react-if": "^4.0.1",
+    "react-scripts": "3.4.3",
+    "react-scrollbars-custom": "^4.0.25",
+    "react-truncate": "^2.4.0",
+    "sass": "^1.32.6",
+    "swr": "^0.4.1"
   },
   "devDependencies": {
     "@types/react": "^16.9.56",

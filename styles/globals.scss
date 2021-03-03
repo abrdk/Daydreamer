@@ -1,0 +1,207 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: "Noto Sans", sans-serif;
+  overflow: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  font-family: "Noto Sans", sans-serif;
+}
+
+button {
+  background-color: #3375f5;
+  border-radius: 3px;
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 21px;
+  color: #ffffff;
+  height: 50px;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: 0.3s;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  &:hover {
+    opacity: 1;
+  }
+}
+
+input,
+textarea {
+  font-family: "Noto Sans", sans-serif !important;
+}
+
+input:active,
+input:focus,
+textarea:active,
+textarea:focus {
+  outline: none !important;
+  font-family: "Noto Sans", sans-serif !important;
+}
+
+input::-moz-focus-inner,
+textarea::-moz-focus-inner {
+  border: 0 !important;
+  font-family: "Noto Sans", sans-serif !important;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #696f75;
+  -webkit-box-shadow: 0 0 0px 1000px #fff inset;
+  box-shadow: 0 0 0px 1000px #fff inset;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: 21px;
+}
+
+// scrollbar
+
+.ScrollbarsCustom-TrackY {
+  width: 5px !important;
+  background: #e5e8eb !important;
+  border-radius: 100px !important;
+}
+
+.ScrollbarsCustom-ThumbY {
+  background: #258efa !important;
+  border: 1px solid #258efa !important;
+  border-radius: 100px !important;
+}
+
+.ScrollbarsCustom-TrackX {
+  height: 5px !important;
+  background: #e5e8eb !important;
+  border-radius: 100px !important;
+}
+
+.ScrollbarsCustom-ThumbX {
+  background: #258efa !important;
+  border: 1px solid #258efa !important;
+  border-radius: 100px !important;
+}
+
+.ScrollbarsCustom-Calendar {
+  width: calc(100% - 70px) !important;
+  left: 35px !important;
+  bottom: 10px !important;
+}
+
+.ScrollbarsCustom-Tasks {
+  height: 100% !important;
+  top: 0px !important;
+}
+
+.ScrollbarsCustom-EditTask {
+  height: calc(100% - 10px) !important;
+  top: 5px !important;
+  right: 8px !important;
+}
+
+.ScrollbarsCustom-Wrapper {
+  inset: 0px 0px 0px 0px !important;
+}
+
+.ScrollbarsCustom-TaskLines {
+  position: fixed !important;
+  top: 182px !important;
+  right: 0px !important;
+}
+
+//dnd
+.animTranslateY {
+  transition: all 0.3s;
+}
+
+.animTranslateY.plus55 {
+  transform: translateY(55px);
+}
+.plus55 {
+  transform: translateY(55px);
+}
+
+.animTranslateY.mb55 {
+  margin-bottom: 55px;
+}
+.mb55 {
+  margin-bottom: 55px;
+}
+.mt-55 {
+  margin-top: -55px;
+}
+
+textarea {
+  resize: none;
+}
+
+.react-datepicker__header--custom {
+  padding-top: 0 !important;
+  background: #fff !important;
+  border: 0 !important;
+}
+
+.react-datepicker__day-names {
+  height: 40px;
+  display: flex !important;
+}
+
+.react-datepicker__triangle {
+  left: 25px !important;
+  margin-left: 0 !important;
+  border-bottom-color: #fff !important;
+  border-top-color: #fff !important;
+  border-radius: 5px !important;
+  margin-bottom: -7px !important;
+}
+
+.react-datepicker__triangle::before {
+  border-bottom-color: #fff !important;
+  border-top-color: #fff !important;
+  border-radius: 5px !important;
+}
+
+.react-datepicker__day-name {
+  width: 40px !important;
+  height: 40px;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  font-style: normal !important;
+  font-weight: bold !important;
+  font-size: 15px !important;
+  line-height: 21px !important;
+  color: #34393f !important;
+}
+
+.react-datepicker__month {
+  margin: 0 !important;
+  margin-bottom: 19px !important;
+}
+
+.react-datepicker__week {
+  height: 40px !important;
+}
+
+.react-datepicker__day {
+  height: 40px !important;
+  width: 40px !important;
+  margin: 0 !important;
+  background: transparent !important;
+}

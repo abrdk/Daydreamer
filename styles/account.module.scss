@@ -1,0 +1,66 @@
+/* Base */
+.modalBlock {
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  background: rgba(51, 56, 61, 0.35);
+  z-index: 100;
+}
+
+.modalWrap {
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 101;
+}
+
+.modal {
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  border-radius: 3px;
+  position: relative;
+}
+
+/* Account */
+
+.accountModal {
+  composes: modal;
+  width: 420px;
+  padding: 49px 40px 29px 40px;
+  align-items: center;
+}
+
+.accountTitle {
+  composes: title from "./base.module.scss";
+  margin-bottom: 48px;
+  margin-top: 0;
+  text-align: center;
+}
+
+.accountLink {
+  composes: link from "./base.module.scss";
+  width: max-content;
+}
+
+.accountLinkDisabled {
+  composes: accountLink;
+  composes: linkDisabled from "./base.module.scss";
+}
+
+.accountPrimaryButton {
+  composes: primaryButton from "../styles/base.module.scss";
+  width: 100%;
+  height: 60px;
+  margin-bottom: 24px;
+}
+
+.accountSecondaryButton {
+  composes: secondaryButton from "../styles/base.module.scss";
+  width: 100%;
+  height: 60px;
+  margin-bottom: 24px;
+}
