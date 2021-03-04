@@ -27,8 +27,7 @@
     "react-scripts": "3.4.3",
     "react-scrollbars-custom": "^4.0.25",
     "react-truncate": "^2.4.0",
-    "sass": "^1.32.6",
-    "swr": "^0.4.1"
+    "sass": "^1.32.6"
   },
   "devDependencies": {
     "@types/react": "^16.9.56",

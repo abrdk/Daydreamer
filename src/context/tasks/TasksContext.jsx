@@ -118,12 +118,14 @@ export function TasksProvider(props) {
     });
   }, [tasksByProjectId]);
 
-  const createTask = (task) => {
-    dispatch({
-      type: "ADD_TASK",
-      payload: task,
-    });
-    xhr("/tasks/create", task, "POST");
+  const createTask = async (task) => {
+    try {
+      dispatch({
+        type: "ADD_TASK",
+        payload: task,
+      });
+      await xhr("/tasks/create", task, "POST");
+    } catch (e) {}
   };
 
   const updateTask = (task) => {
@@ -195,10 +197,9 @@ export function TasksProvider(props) {
     ];
 
     const _ids = [...Array(7).keys()].map(() => nanoid());
-    _ids.forEach((_id, i) => {
-      let task;
+    const tasks = _ids.map((_id, i) => {
       if (i < 5) {
-        task = {
+        return {
           _id,
           name: `Task name #${i + 1}`,
           description: "",
@@ -209,21 +210,26 @@ export function TasksProvider(props) {
           root: "",
           order: i,
         };
-      } else {
-        task = {
-          _id,
-          name: `Subtask name #${i + 1 - 5}`,
-          description: "",
-          dateStart: datesStart[i],
-          dateEnd: datesEnd[i],
-          color: colors[i],
-          project,
-          root: _ids[2],
-          order: i - 5,
-        };
       }
-      createTask(task);
+      return {
+        _id,
+        name: `Subtask name #${i + 1 - 5}`,
+        description: "",
+        dateStart: datesStart[i],
+        dateEnd: datesEnd[i],
+        color: colors[i],
+        project,
+        root: _ids[2],
+        order: i - 5,
+      };
     });
+    async function createTasks() {
+      const promises = tasks.map(async (task) => {
+        await createTask(task);
+      });
+      await Promise.all(promises);
+    }
+    await createTasks();
   };
 
   const setIsTasksSorting = (bool) => {

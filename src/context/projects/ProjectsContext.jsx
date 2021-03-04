@@ -39,25 +39,27 @@ export function ProjectsProvider(props) {
     loadProjects();
   }, []);
 
-  const createProject = (project) => {
-    const isCurrent = projects.length == 0;
+  const createProject = async (project) => {
+    try {
+      const isCurrent = projects.length == 0;
 
-    dispatch({
-      type: "ADD_PROJECT",
-      payload: {
-        ...project,
-        isCurrent,
-      },
-    });
+      dispatch({
+        type: "ADD_PROJECT",
+        payload: {
+          ...project,
+          isCurrent,
+        },
+      });
 
-    xhr(
-      "/projects/create",
-      {
-        ...project,
-        isCurrent,
-      },
-      "POST"
-    );
+      await xhr(
+        "/projects/create",
+        {
+          ...project,
+          isCurrent,
+        },
+        "POST"
+      );
+    } catch (e) {}
   };
 
   const updateProject = (project) => {
