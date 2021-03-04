@@ -35,11 +35,15 @@ export default function Gantt() {
     createTask,
     sortedTasksIds,
     tasksByProjectId,
+    isTasksSorting,
   } = useContext(TasksContext);
+
   const prevSortedTasksIds = usePrevious(sortedTasksIds);
+
   const [isSubtasksOpened, setIsSubtasksOpened] = useState([]);
+
   useEffect(() => {
-    if (prevSortedTasksIds) {
+    if (prevSortedTasksIds && !isTasksSorting) {
       if (sortedTasksIds.length > prevSortedTasksIds.length) {
         let newSubtasksOpenedList = sortedTasksIds.map((t) => false);
         prevSortedTasksIds.forEach((_id, i) => {
@@ -83,28 +87,34 @@ export default function Gantt() {
       const new_ids = tasksByProjectId.map((t) => nanoid());
       const old_ids = tasksByProjectId.map((t) => t._id);
 
-      async function processArray(array) {
-        for (const t of array) {
-          const i = array.indexOf(t);
-          if (t.root) {
-            await createTask({
-              ...t,
-              _id: new_ids[i],
-              project: newProjectId,
-              owner: userCtx._id,
-              root: new_ids[old_ids.indexOf(t.root)],
-            });
-          } else {
-            await createTask({
-              ...t,
-              _id: new_ids[i],
-              project: newProjectId,
-              owner: userCtx._id,
-            });
-          }
+      const newTasks = tasksByProjectId.map((t) => {
+        const i = tasksByProjectId.indexOf(t);
+        if (t.root) {
+          return {
+            ...t,
+            _id: new_ids[i],
+            project: newProjectId,
+            owner: userCtx._id,
+            root: new_ids[old_ids.indexOf(t.root)],
+          };
+        } else {
+          return {
+            ...t,
+            _id: new_ids[i],
+            project: newProjectId,
+            owner: userCtx._id,
+          };
         }
+      });
+
+      async function createTasks() {
+        const promises = newTasks.map(async (task) => {
+          await createTask(task);
+        });
+        await Promise.all(promises);
       }
-      await processArray(tasksByProjectId);
+      await createTasks();
+
       router.push(`/gantt/${newProjectId}`);
       setTimeout(() => router.reload(), 100);
     }
