@@ -51,8 +51,8 @@ export default function Option({ project, projectIndex }) {
     }
   };
 
-  const updateHandler = async (e) => {
-    await updateProject({ ...project, name: e.target.value });
+  const updateHandler = (e) => {
+    updateProject({ ...project, name: e.target.value });
   };
 
   const blurHandler = async (e) => {

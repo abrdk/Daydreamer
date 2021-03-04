@@ -1,12 +1,7 @@
 const { Schema, model, Types } = require("mongoose");
 
 function isNameRequired() {
-  if (this.name == "") {
-    return false;
-  } else if (typeof this.name == "string") {
-    return false;
-  }
-  return true;
+  return typeof this.name === "string" ? false : true;
 }
 
 const schema = new Schema({

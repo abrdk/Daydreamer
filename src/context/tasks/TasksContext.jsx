@@ -2,6 +2,7 @@ import { xhr } from "@/helpers/xhr";
 import { useRouter } from "next/router";
 import { nanoid } from "nanoid";
 import React, { createContext, useReducer, useEffect } from "react";
+import usePrevious from "@react-hook/previous";
 
 import TasksReducer from "@/src/context/tasks/TasksReducer";
 
@@ -9,28 +10,21 @@ export const TasksContext = createContext();
 
 export function TasksProvider(props) {
   const router = useRouter();
+  const previousRouterId = usePrevious(router.query.id);
+
   const [tasksState, dispatch] = useReducer(TasksReducer, {
     tasks: [],
     tasksByProjectId: [],
     sortedTasksIds: [],
-    isSorting: false,
+    isTasksSorting: false,
     isTasksLoaded: false,
   });
-  const colors = [
-    "FFBC42",
-    "258EFA",
-    "FFBC42",
-    "FFBC42",
-    "59CD90",
-    "59CD90",
-    "258EFA",
-  ];
   const {
     tasks,
     isTasksLoaded,
     tasksByProjectId,
     sortedTasksIds,
-    isSorting,
+    isTasksSorting,
   } = tasksState;
 
   const findSubtasksIds = (_id) =>
@@ -38,9 +32,7 @@ export function TasksProvider(props) {
       .filter((t) => t.root == _id)
       .sort((task1, task2) => task1.order > task2.order)
       .map((t) => [t._id, ...findSubtasksIds(t._id)]);
-
   const findTaskWithSubtaskIds = (_id) => [_id, ...findSubtasksIds(_id)];
-
   function flatten(array, mutable) {
     let toString = Object.prototype.toString;
     let arrayTypeStr = "[object Array]";
@@ -91,7 +83,7 @@ export function TasksProvider(props) {
           type: "SET_TASKS_BY_PROJECT_ID",
           payload: tasksByProject,
         });
-      } else {
+      } else if (router.query.id != previousRouterId) {
         const res = await xhr("/tasks/show", { project }, "POST");
         if (res.message == "ok" && res.tasks) {
           dispatch({
@@ -126,55 +118,44 @@ export function TasksProvider(props) {
     });
   }, [tasksByProjectId]);
 
-  const createTask = async (task) => {
-    try {
-      dispatch({
-        type: "ADD_TASK",
-        payload: task,
-      });
-
-      await xhr("/tasks/create", task, "POST");
-    } catch (e) {}
+  const createTask = (task) => {
+    dispatch({
+      type: "ADD_TASK",
+      payload: task,
+    });
+    xhr("/tasks/create", task, "POST");
   };
 
-  const updateTask = async (task) => {
-    try {
-      dispatch({
-        type: "UPDATE_TASK",
-        payload: task,
-      });
-
-      await xhr("/tasks/update", task, "PUT");
-    } catch (e) {}
+  const updateTask = (task) => {
+    dispatch({
+      type: "UPDATE_TASK",
+      payload: task,
+    });
+    xhr("/tasks/update", task, "PUT");
   };
 
   const deleteTask = (_id) => {
-    try {
-      flatten(findTaskWithSubtaskIds(_id)).forEach((id) => {
-        dispatch({
-          type: "DELETE_TASK",
-          payload: { _id: id },
-        });
-        xhr(
-          "/tasks/delete",
-          {
-            _id: id,
-          },
-          "DELETE"
-        );
+    flatten(findTaskWithSubtaskIds(_id)).forEach((id) => {
+      dispatch({
+        type: "DELETE_TASK",
+        payload: { _id: id },
       });
-    } catch (e) {}
+      xhr(
+        "/tasks/delete",
+        {
+          _id: id,
+        },
+        "DELETE"
+      );
+    });
   };
 
   const deleteTasksByProject = async (project) => {
-    try {
-      dispatch({
-        type: "DELETE_TASKS_BY_PROJECT",
-        payload: { project },
-      });
-
-      await xhr("/tasks/delete_by_project", { project }, "DELETE");
-    } catch (e) {}
+    dispatch({
+      type: "DELETE_TASKS_BY_PROJECT",
+      payload: { project },
+    });
+    xhr("/tasks/delete_by_project", { project }, "DELETE");
   };
 
   const deleteAllTasks = async () => {
@@ -184,6 +165,15 @@ export function TasksProvider(props) {
   };
 
   const createInitialTasks = async ({ project }) => {
+    const colors = [
+      "FFBC42",
+      "258EFA",
+      "FFBC42",
+      "FFBC42",
+      "59CD90",
+      "59CD90",
+      "258EFA",
+    ];
     const today = new Date();
     const datesStart = [
       new Date(today.getFullYear(), today.getMonth(), today.getDate() - 6),
@@ -205,9 +195,10 @@ export function TasksProvider(props) {
     ];
 
     const _ids = [...Array(7).keys()].map(() => nanoid());
-    const newTasks = _ids.map((_id, i) => {
+    _ids.forEach((_id, i) => {
+      let task;
       if (i < 5) {
-        return {
+        task = {
           _id,
           name: `Task name #${i + 1}`,
           description: "",
@@ -218,34 +209,26 @@ export function TasksProvider(props) {
           root: "",
           order: i,
         };
+      } else {
+        task = {
+          _id,
+          name: `Subtask name #${i + 1 - 5}`,
+          description: "",
+          dateStart: datesStart[i],
+          dateEnd: datesEnd[i],
+          color: colors[i],
+          project,
+          root: _ids[2],
+          order: i - 5,
+        };
       }
-      return {
-        _id,
-        name: `Subtask name #${i + 1 - 5}`,
-        description: "",
-        dateStart: datesStart[i],
-        dateEnd: datesEnd[i],
-        color: colors[i],
-        project,
-        root: _ids[2],
-        order: i - 5,
-      };
+      createTask(task);
     });
-
-    await Promise.all([
-      createTask(newTasks[0]),
-      createTask(newTasks[1]),
-      createTask(newTasks[2]),
-      createTask(newTasks[3]),
-      createTask(newTasks[4]),
-      createTask(newTasks[5]),
-      createTask(newTasks[6]),
-    ]);
   };
 
-  const setIsSorting = (bool) => {
+  const setIsTasksSorting = (bool) => {
     dispatch({
-      type: "SET_IS_SORTING",
+      type: "SET_IS_TASKS_SORTING",
       payload: bool,
     });
   };
@@ -257,8 +240,8 @@ export function TasksProvider(props) {
         isTasksLoaded,
         tasksByProjectId,
         sortedTasksIds,
-        isSorting,
-        setIsSorting,
+        isTasksSorting,
+        setIsTasksSorting,
         createTask,
         updateTask,
         deleteTask,

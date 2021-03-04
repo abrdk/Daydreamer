@@ -24,11 +24,47 @@ export default function Login() {
   const { isUserLoaded, _id, login } = useContext(UsersContext);
   const { projects } = useContext(ProjectsContext);
   let currentProject = projects.find((project) => project.isCurrent);
-  if (!currentProject) {
+  if (!currentProject && projects.length) {
     currentProject = projects[0];
   }
 
-  const query = async () => {
+  const unsetWarnings = () => {
+    setNameWarn(null);
+    setPasswordWarn(null);
+  };
+
+  const getNameInputClass = () => {
+    if (nameWarn) {
+      if (name) {
+        return styles.formInputFilledWarn;
+      }
+      return styles.formInputWarn;
+    }
+    if (name) {
+      return styles.formInputFilled;
+    }
+    return styles.formInput;
+  };
+
+  const getPasswordInputClass = () => {
+    if (passwordWarn) {
+      if (password) {
+        return styles.formInputFilledWarn;
+      }
+      return styles.formInputWarn;
+    }
+    if (password) {
+      return styles.formInputFilled;
+    }
+    return styles.formInput;
+  };
+
+  const nameUpdateHandler = (e) => setName(e.target.value);
+  const passwordUpdateHandler = (e) => setPassword(e.target.value);
+  const togglePasswordVisibility = () =>
+    setPasswordVisibility(!isPasswordVisible);
+
+  const loginHandler = async () => {
     const res = await login({
       name,
       password,
@@ -58,13 +94,7 @@ export default function Login() {
       </Head>
       <When condition={isUserLoaded && !_id}>
         <DefaultGantt />
-        <div
-          className={styles.container}
-          onClick={() => {
-            setNameWarn(null);
-            setPasswordWarn(null);
-          }}
-        >
+        <div className={styles.container} onClick={unsetWarnings}>
           <div className={styles.form}>
             <div className={styles.title}>Sign in</div>
             <div className={styles.description}>
@@ -74,46 +104,34 @@ export default function Login() {
               id="name"
               name="name"
               placeholder="Your name"
-              className={
-                nameWarn
-                  ? name
-                    ? styles.formInputFilledWarn
-                    : styles.formInputWarn
-                  : name
-                  ? styles.formInputFilled
-                  : styles.formInput
-              }
+              className={getNameInputClass()}
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={nameUpdateHandler}
             />
-            {nameWarn && <div className={styles.warn}>{nameWarn}</div>}
+            {nameWarn && (
+              <div className={styles.warningContainer}>{nameWarn}</div>
+            )}
             <div className={styles.passwordContainer}>
               <FloatingLabel
                 id="password"
                 name="password"
                 placeholder="Your password"
-                className={
-                  passwordWarn
-                    ? password
-                      ? styles.formInputFilledWarn
-                      : styles.formInputWarn
-                    : password
-                    ? styles.formInputFilled
-                    : styles.formInput
-                }
+                className={getPasswordInputClass()}
                 type={isPasswordVisible ? "text" : "password"}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={passwordUpdateHandler}
               />
               <img
                 src="/img/eye.svg"
                 alt=" "
                 className={styles.passwordEye}
-                onClick={() => setPasswordVisibility(!isPasswordVisible)}
+                onClick={togglePasswordVisibility}
               />
             </div>
-            {passwordWarn && <div className={styles.warn}>{passwordWarn}</div>}
-            <div className={styles.primaryButton} onClick={query}>
+            {passwordWarn && (
+              <div className={styles.warningContainer}>{passwordWarn}</div>
+            )}
+            <div className={styles.primaryButton} onClick={loginHandler}>
               Sign in
             </div>
             <div className={styles.line}></div>

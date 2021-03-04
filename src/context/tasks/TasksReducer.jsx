@@ -1,4 +1,5 @@
 export default function TasksReducer(state, action) {
+  // console.log(action.type, action.payload);
   const { _id, project } = action.payload;
   switch (action.type) {
     case "SET_TASKS":
@@ -42,7 +43,7 @@ export default function TasksReducer(state, action) {
         ...state,
         sortedTasksIds: action.payload,
       };
-    case "SET_IS_SORTING":
+    case "SET_IS_TASKS_SORTING":
       return {
         ...state,
         isSorting: action.payload,

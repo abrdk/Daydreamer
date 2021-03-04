@@ -25,14 +25,22 @@
 }
 
 .title {
-  composes: title from "./base.module.scss";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 28px;
+  line-height: 21px;
+  color: #505356;
   width: 100%;
   text-align: center;
   margin-bottom: 18px;
 }
 
 .description {
-  composes: description from "./base.module.scss";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: 21px;
+  color: #6f6e6e;
   width: 100%;
   text-align: center;
   margin-bottom: 21px;
@@ -125,7 +133,17 @@
 }
 
 .primaryButton {
-  composes: primaryButton from "./base.module.scss";
+  background: #258efa;
+  border-radius: 3px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 21px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  cursor: pointer;
   width: 100%;
   height: 60px;
   margin-bottom: 24px;
@@ -140,20 +158,30 @@
 }
 
 .linkDescription {
-  composes: description from "./base.module.scss";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: 21px;
+  color: #6f6e6e;
   text-align: center;
   position: absolute;
   top: 421px;
 }
 
 .link {
-  composes: link from "./base.module.scss";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 21px;
+  text-decoration-line: underline;
+  color: #258efa;
+  cursor: pointer;
   text-align: center;
   position: absolute;
   top: 454px;
 }
 
-.warn {
+.warningContainer {
   font-style: normal;
   font-weight: normal;
   font-size: 13px;
