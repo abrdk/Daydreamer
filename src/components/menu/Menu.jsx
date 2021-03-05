@@ -3,13 +3,13 @@ import styles from "@/styles/menu.module.scss";
 import { nanoid } from "nanoid";
 import { When } from "react-if";
 
-import TaskEdit from "@/src/components/tasks/TaskEdit";
+import TaskEdit from "@/src/components/tasks/Edit/TaskEdit";
 import ProjectsDropdown from "@/src/components/projects/ProjectsDropdown";
 import Tasks from "@/src/components/tasks/Tasks";
 
 import { TasksContext } from "@/src//context/tasks/TasksContext";
 import { UsersContext } from "@/src/context/users/UsersContext";
-import { ProjectsContext } from "@/src//context/projects/ProjectsContext";
+import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 
 export default function Menu({
   isMenuOpen,
@@ -20,7 +20,7 @@ export default function Menu({
   setIsSubtasksOpened,
 }) {
   const userCtx = useContext(UsersContext);
-  const { tasks, createTask } = useContext(TasksContext);
+  const { createTask, tasksByProjectId } = useContext(TasksContext);
   const { projectByQueryId } = useContext(ProjectsContext);
 
   const [isDropdownOpen, setDropdown] = useState(false);
@@ -30,7 +30,7 @@ export default function Menu({
     setMenu(!isMenuOpen);
   };
 
-  const createTaskHandler = async () => {
+  const createTaskHandler = () => {
     setMenu(true);
 
     const today = new Date();
@@ -51,11 +51,9 @@ export default function Menu({
       59
     );
 
-    const topLevelTasks = tasks.filter(
-      (task) => !task.root && task.project == projectByQueryId._id
-    );
+    const topLevelTasks = tasksByProjectId.filter((task) => !task.root);
 
-    await createTask({
+    createTask({
       _id: nanoid(),
       name: "",
       description: "",

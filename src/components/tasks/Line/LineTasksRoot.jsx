@@ -3,7 +3,7 @@ import { When } from "react-if";
 import { useEffect, useState, useMemo, useContext } from "react";
 import Scrollbar from "react-scrollbars-custom";
 
-import LineTask from "@/src/components/tasks/LineTask";
+import LineTask from "@/src/components/tasks/Line/LineTask";
 
 import { TasksContext } from "@/src//context/tasks/TasksContext";
 

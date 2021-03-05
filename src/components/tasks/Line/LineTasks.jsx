@@ -3,7 +3,7 @@ import { When } from "react-if";
 import { useEffect, useState, useMemo, useContext } from "react";
 import Scrollbar from "react-scrollbars-custom";
 
-import LineTasksRoot from "@/src/components/tasks/LineTasksRoot";
+import LineTasksRoot from "@/src/components/tasks/Line/LineTasksRoot";
 
 export default function LineTasks({
   setMenu,

@@ -1,42 +1,31 @@
 import Head from "next/head";
 import { useState, useContext, useEffect } from "react";
 import styles from "@/styles/header.module.scss";
-import { When, If, Then, Else } from "react-if";
-import Truncate from "react-truncate";
-import { useRouter } from "next/router";
-import { nanoid } from "nanoid";
+import { When } from "react-if";
 import ReactCursorPosition from "react-cursor-position";
 import usePrevious from "@react-hook/previous";
 
 import { Modal } from "@/src/components/modal/modal";
-import { ViewSwitcher } from "@/src/components/viewSwitcher/viewSwitcher";
 import { ViewMode } from "@/src/types/public-types";
 import Menu from "@/src/components/menu/Menu";
 import Calendar from "@/src/components/calendar/Calendar";
+import Header from "@/src/components/header/Header";
 
 import { UsersContext } from "@/src/context/users/UsersContext";
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 import { TasksContext } from "@/src/context/tasks/TasksContext";
 
 export default function Gantt() {
-  const router = useRouter();
-
   const [modal, setModal] = useState(false);
   const [view, setView] = useState(ViewMode.Day);
   const [isMenuOpen, setMenu] = useState(false);
   const [editedTask, setEditedTask] = useState(null);
 
   const userCtx = useContext(UsersContext);
-  const { isProjectsLoaded, projectByQueryId, createProject } = useContext(
-    ProjectsContext
+  const { isProjectsLoaded, projectByQueryId } = useContext(ProjectsContext);
+  const { isTasksLoaded, sortedTasksIds, isTasksSorting } = useContext(
+    TasksContext
   );
-  const {
-    isTasksLoaded,
-    createTask,
-    sortedTasksIds,
-    tasksByProjectId,
-    isTasksSorting,
-  } = useContext(TasksContext);
 
   const prevSortedTasksIds = usePrevious(sortedTasksIds);
 
@@ -79,53 +68,6 @@ export default function Gantt() {
     }
   }, [sortedTasksIds]);
 
-  const copyAndEdit = async () => {
-    if (userCtx._id) {
-      setMenu(false);
-      const newProjectId = nanoid();
-      await createProject({
-        _id: newProjectId,
-        name: projectByQueryId.name,
-        owner: userCtx._id,
-      });
-      const new_ids = tasksByProjectId.map((t) => nanoid());
-      const old_ids = tasksByProjectId.map((t) => t._id);
-
-      const newTasks = tasksByProjectId.map((t) => {
-        const i = tasksByProjectId.indexOf(t);
-        if (t.root) {
-          return {
-            ...t,
-            _id: new_ids[i],
-            project: newProjectId,
-            owner: userCtx._id,
-            root: new_ids[old_ids.indexOf(t.root)],
-          };
-        } else {
-          return {
-            ...t,
-            _id: new_ids[i],
-            project: newProjectId,
-            owner: userCtx._id,
-          };
-        }
-      });
-
-      async function createTasks() {
-        const promises = newTasks.map(async (task) => {
-          await createTask(task);
-        });
-        await Promise.all(promises);
-      }
-      await createTasks();
-
-      router.push(`/gantt/${newProjectId}`);
-      setTimeout(() => router.reload(), 100);
-    } else {
-      setModal("signup");
-    }
-  };
-
   return (
     <>
       <Head>
@@ -150,38 +92,12 @@ export default function Gantt() {
             isSubtasksOpened={isSubtasksOpened}
             setIsSubtasksOpened={setIsSubtasksOpened}
           />
-          <div className={styles.header}>
-            <ViewSwitcher
-              isMenuOpen={isMenuOpen}
-              onViewModeChange={(viewMode) => setView(viewMode)}
-            />
-            <div className={styles.buttonsContainer}>
-              <If condition={projectByQueryId.owner == userCtx._id}>
-                <Then>
-                  <button
-                    className={styles.share_button}
-                    onClick={setModal.bind(null, "share")}
-                  >
-                    Share Project
-                  </button>
-                  <button
-                    className={styles.account_button}
-                    onClick={setModal.bind(null, "account")}
-                  >
-                    <img src="/img/avatar.svg" alt=" " />{" "}
-                    <Truncate lines={1} width={100}>
-                      {userCtx.name}
-                    </Truncate>
-                  </button>
-                </Then>
-                <Else>
-                  <button className={styles.share_button} onClick={copyAndEdit}>
-                    Copy and Edit
-                  </button>
-                </Else>
-              </If>
-            </div>
-          </div>
+          <Header
+            setMenu={setMenu}
+            setView={setView}
+            isMenuOpen={isMenuOpen}
+            setModal={setModal}
+          />
         </div>
         <ReactCursorPosition>
           <Calendar

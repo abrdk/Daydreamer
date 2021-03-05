@@ -96,6 +96,11 @@ export function TasksProvider(props) {
             payload: [],
           });
         }
+      } else {
+        dispatch({
+          type: "SET_TASKS_BY_PROJECT_ID",
+          payload: [],
+        });
       }
     } catch (e) {}
   };
@@ -152,7 +157,7 @@ export function TasksProvider(props) {
     });
   };
 
-  const deleteTasksByProject = async (project) => {
+  const deleteTasksByProject = (project) => {
     dispatch({
       type: "DELETE_TASKS_BY_PROJECT",
       payload: { project },

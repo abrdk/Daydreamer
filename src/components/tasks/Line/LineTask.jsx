@@ -6,7 +6,7 @@ import Truncate from "react-truncate";
 import { nanoid } from "nanoid";
 const dateFormat = require("dateformat");
 
-import LineTasksRoot from "@/src/components/tasks/LineTasksRoot";
+import LineTasksRoot from "@/src/components/tasks/Line/LineTasksRoot";
 
 import { TasksContext } from "@/src//context/tasks/TasksContext";
 import { UsersContext } from "@/src/context/users/UsersContext";
