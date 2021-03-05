@@ -21,10 +21,23 @@ export default function DefaultLines() {
       </div>
       <div
         className={lineStyles.lineTask}
-        style={{ left: 985, top: 182 + (35 + 20) * 4, background: `#FFBC42` }}
+        style={{
+          left: 362,
+          top: 182 + (35 + 20) * 2,
+          width: 141,
+          background: `#FFBC42`,
+        }}
       >
         <div className={lineStyles.stick}></div>
         Task name #3
+        <div className={lineStyles.stick}></div>
+      </div>
+      <div
+        className={lineStyles.lineTask}
+        style={{ left: 985, top: 182 + (35 + 20) * 4, background: `#FFBC42` }}
+      >
+        <div className={lineStyles.stick}></div>
+        Task name #4
         <div className={lineStyles.stick}></div>
       </div>
       <div
@@ -37,7 +50,7 @@ export default function DefaultLines() {
         }}
       >
         <div className={lineStyles.stick}></div>
-        Task name #4
+        Task name #5
         <div className={lineStyles.stick}></div>
       </div>
     </>

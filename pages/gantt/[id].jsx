@@ -42,36 +42,40 @@ export default function Gantt() {
 
   const [isSubtasksOpened, setIsSubtasksOpened] = useState([]);
 
+  const reorderIsSubtasksOpened = () => {
+    if (sortedTasksIds.length > prevSortedTasksIds.length) {
+      let newSubtasksOpenedList = sortedTasksIds.map((t) => false);
+      prevSortedTasksIds.forEach((_id, i) => {
+        if (sortedTasksIds.indexOf(_id) >= 0) {
+          newSubtasksOpenedList[sortedTasksIds.indexOf(_id)] =
+            isSubtasksOpened[sortedTasksIds.indexOf(_id)];
+        }
+      });
+      setIsSubtasksOpened(newSubtasksOpenedList);
+    } else if (sortedTasksIds.length < prevSortedTasksIds.length) {
+      let newSubtasksOpenedList = sortedTasksIds.map((t) => false);
+      prevSortedTasksIds.forEach((_id, i) => {
+        if (sortedTasksIds.indexOf(_id) >= 0) {
+          newSubtasksOpenedList[sortedTasksIds.indexOf(_id)] =
+            isSubtasksOpened[i];
+        }
+      });
+      setIsSubtasksOpened(newSubtasksOpenedList);
+    } else {
+      let newSubtasksOpenedList = sortedTasksIds.map((t) => false);
+      prevSortedTasksIds.forEach((_id, i) => {
+        if (sortedTasksIds.indexOf(_id) >= 0) {
+          newSubtasksOpenedList[sortedTasksIds.indexOf(_id)] =
+            isSubtasksOpened[i];
+        }
+      });
+      setIsSubtasksOpened(newSubtasksOpenedList);
+    }
+  };
+
   useEffect(() => {
     if (prevSortedTasksIds && !isTasksSorting) {
-      if (sortedTasksIds.length > prevSortedTasksIds.length) {
-        let newSubtasksOpenedList = sortedTasksIds.map((t) => false);
-        prevSortedTasksIds.forEach((_id, i) => {
-          if (sortedTasksIds.indexOf(_id) >= 0) {
-            newSubtasksOpenedList[sortedTasksIds.indexOf(_id)] =
-              isSubtasksOpened[sortedTasksIds.indexOf(_id)];
-          }
-        });
-        setIsSubtasksOpened(newSubtasksOpenedList);
-      } else if (sortedTasksIds.length < prevSortedTasksIds.length) {
-        let newSubtasksOpenedList = sortedTasksIds.map((t) => false);
-        prevSortedTasksIds.forEach((_id, i) => {
-          if (sortedTasksIds.indexOf(_id) >= 0) {
-            newSubtasksOpenedList[sortedTasksIds.indexOf(_id)] =
-              isSubtasksOpened[i];
-          }
-        });
-        setIsSubtasksOpened(newSubtasksOpenedList);
-      } else {
-        let newSubtasksOpenedList = sortedTasksIds.map((t) => false);
-        prevSortedTasksIds.forEach((_id, i) => {
-          if (sortedTasksIds.indexOf(_id) >= 0) {
-            newSubtasksOpenedList[sortedTasksIds.indexOf(_id)] =
-              isSubtasksOpened[i];
-          }
-        });
-        setIsSubtasksOpened(newSubtasksOpenedList);
-      }
+      reorderIsSubtasksOpened();
     }
   }, [sortedTasksIds]);
 
@@ -117,6 +121,8 @@ export default function Gantt() {
 
       router.push(`/gantt/${newProjectId}`);
       setTimeout(() => router.reload(), 100);
+    } else {
+      setModal("signup");
     }
   };
 

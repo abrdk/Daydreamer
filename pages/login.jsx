@@ -80,10 +80,14 @@ export default function Login() {
     }
   };
 
-  useEffect(() => {
+  const redirectHandler = () => {
     if (isUserLoaded && _id && currentProject) {
       router.push(`/gantt/${currentProject._id}`);
     }
+  };
+
+  useEffect(() => {
+    redirectHandler();
   }, [isUserLoaded, _id, currentProject]);
 
   return (
