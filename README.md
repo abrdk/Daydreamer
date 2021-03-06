@@ -24,7 +24,7 @@ The UI specification is available at [Figma](https://www.figma.com/file/5TvJ1XE0
 v0.4   
 &nbsp;&nbsp;&nbsp; Design - [Vitaliy Kravchuk](https://freelancehunt.com/freelancer/DemonStrike.html)   
 &nbsp;&nbsp;&nbsp; Programming - [Maxim Pozdnyakov](https://freelancehunt.com/freelancer/maxim_pozdnyakow.html)   
-[v0.3](https://github.com/abrdk/Daydreamer/releases/tag/v0.3_backend)   
+[v0.3](https://github.com/abrdk/Daydreamer/tree/v0.3_backend)   
 &nbsp;&nbsp;&nbsp; Design - [Ilya Steki](https://www.fl.ru/users/stekivac/portfolio/)   
 &nbsp;&nbsp;&nbsp; Programming - [Vitaliy Surikov](https://www.fl.ru/users/zizizi-ru/portfolio/)   
 [v0.2 (as Dreamcatcher)](https://github.com/abrdk/Daydreamer/tree/v0.2)   
