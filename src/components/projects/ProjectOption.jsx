@@ -94,7 +94,7 @@ export default function Option({ project, projectIndex }) {
       if (textWidth > 295) {
         input.current.style.width = "295px";
       } else {
-        input.current.style.width = textWidth + "px";
+        input.current.style.width = textWidth + 5 + "px";
       }
     }
     if (pencil.current && fakeText.current) {

@@ -16,8 +16,6 @@ export default function Menu({
   setMenu,
   editedTask,
   setEditedTask,
-  isSubtasksOpened,
-  setIsSubtasksOpened,
 }) {
   const userCtx = useContext(UsersContext);
   const { createTask, tasksByProjectId } = useContext(TasksContext);
@@ -86,12 +84,7 @@ export default function Menu({
           isDropdownOpen={isDropdownOpen}
           setDropdown={setDropdown}
         />
-        <Tasks
-          editedTask={editedTask}
-          setEditedTask={setEditedTask}
-          isSubtasksOpened={isSubtasksOpened}
-          setIsSubtasksOpened={setIsSubtasksOpened}
-        />
+        <Tasks editedTask={editedTask} setEditedTask={setEditedTask} />
         <TaskEdit taskId={editedTask} setEditedTask={setEditedTask} />
       </div>
       <When condition={projectByQueryId.owner == userCtx._id}>

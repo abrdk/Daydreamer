@@ -16,16 +16,9 @@ export function TasksProvider(props) {
     tasks: [],
     tasksByProjectId: [],
     sortedTasksIds: [],
-    isTasksSorting: false,
     isTasksLoaded: false,
   });
-  const {
-    tasks,
-    isTasksLoaded,
-    tasksByProjectId,
-    sortedTasksIds,
-    isTasksSorting,
-  } = tasksState;
+  const { tasks, isTasksLoaded, tasksByProjectId, sortedTasksIds } = tasksState;
 
   const findSubtasksIds = (_id) =>
     tasksByProjectId
@@ -133,12 +126,14 @@ export function TasksProvider(props) {
     } catch (e) {}
   };
 
-  const updateTask = (task) => {
-    dispatch({
-      type: "UPDATE_TASK",
-      payload: task,
-    });
-    xhr("/tasks/update", task, "PUT");
+  const updateTask = async (task) => {
+    try {
+      dispatch({
+        type: "UPDATE_TASK",
+        payload: task,
+      });
+      await xhr("/tasks/update", task, "PUT");
+    } catch (e) {}
   };
 
   const deleteTask = (_id) => {
@@ -237,10 +232,10 @@ export function TasksProvider(props) {
     await createTasks();
   };
 
-  const setIsTasksSorting = (bool) => {
+  const updateIsOpened = ({ _id, isOpened }) => {
     dispatch({
-      type: "SET_IS_TASKS_SORTING",
-      payload: bool,
+      type: "UPDATE_IS_OPENED",
+      payload: { _id, isOpened },
     });
   };
 
@@ -251,14 +246,13 @@ export function TasksProvider(props) {
         isTasksLoaded,
         tasksByProjectId,
         sortedTasksIds,
-        isTasksSorting,
-        setIsTasksSorting,
         createTask,
         updateTask,
         deleteTask,
         deleteAllTasks,
         createInitialTasks,
         deleteTasksByProject,
+        updateIsOpened,
       }}
     >
       {props.children}

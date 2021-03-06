@@ -30,8 +30,6 @@ export default function CalendarDay({
   setMenu,
   editedTask,
   setEditedTask,
-  isSubtasksOpened,
-  setIsSubtasksOpened,
   view,
 }) {
   const [defaultScrollLeft, setDefaultScrollLeft] = useState(undefined);
@@ -194,8 +192,6 @@ export default function CalendarDay({
             setMenu={setMenu}
             editedTask={editedTask}
             setEditedTask={setEditedTask}
-            isSubtasksOpened={isSubtasksOpened}
-            setIsSubtasksOpened={setIsSubtasksOpened}
             view={view}
           />
         </div>

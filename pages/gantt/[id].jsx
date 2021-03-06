@@ -1,9 +1,8 @@
 import Head from "next/head";
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import styles from "@/styles/header.module.scss";
 import { When } from "react-if";
 import ReactCursorPosition from "react-cursor-position";
-import usePrevious from "@react-hook/previous";
 
 import { Modal } from "@/src/components/modal/modal";
 import { ViewMode } from "@/src/types/public-types";
@@ -23,50 +22,7 @@ export default function Gantt() {
 
   const userCtx = useContext(UsersContext);
   const { isProjectsLoaded, projectByQueryId } = useContext(ProjectsContext);
-  const { isTasksLoaded, sortedTasksIds, isTasksSorting } = useContext(
-    TasksContext
-  );
-
-  const prevSortedTasksIds = usePrevious(sortedTasksIds);
-
-  const [isSubtasksOpened, setIsSubtasksOpened] = useState([]);
-
-  const reorderIsSubtasksOpened = () => {
-    if (sortedTasksIds.length > prevSortedTasksIds.length) {
-      let newSubtasksOpenedList = sortedTasksIds.map((t) => false);
-      prevSortedTasksIds.forEach((_id, i) => {
-        if (sortedTasksIds.indexOf(_id) >= 0) {
-          newSubtasksOpenedList[sortedTasksIds.indexOf(_id)] =
-            isSubtasksOpened[sortedTasksIds.indexOf(_id)];
-        }
-      });
-      setIsSubtasksOpened(newSubtasksOpenedList);
-    } else if (sortedTasksIds.length < prevSortedTasksIds.length) {
-      let newSubtasksOpenedList = sortedTasksIds.map((t) => false);
-      prevSortedTasksIds.forEach((_id, i) => {
-        if (sortedTasksIds.indexOf(_id) >= 0) {
-          newSubtasksOpenedList[sortedTasksIds.indexOf(_id)] =
-            isSubtasksOpened[i];
-        }
-      });
-      setIsSubtasksOpened(newSubtasksOpenedList);
-    } else {
-      let newSubtasksOpenedList = sortedTasksIds.map((t) => false);
-      prevSortedTasksIds.forEach((_id, i) => {
-        if (sortedTasksIds.indexOf(_id) >= 0) {
-          newSubtasksOpenedList[sortedTasksIds.indexOf(_id)] =
-            isSubtasksOpened[i];
-        }
-      });
-      setIsSubtasksOpened(newSubtasksOpenedList);
-    }
-  };
-
-  useEffect(() => {
-    if (prevSortedTasksIds && !isTasksSorting) {
-      reorderIsSubtasksOpened();
-    }
-  }, [sortedTasksIds]);
+  const { isTasksLoaded } = useContext(TasksContext);
 
   return (
     <>
@@ -89,8 +45,6 @@ export default function Gantt() {
             setMenu={setMenu}
             editedTask={editedTask}
             setEditedTask={setEditedTask}
-            isSubtasksOpened={isSubtasksOpened}
-            setIsSubtasksOpened={setIsSubtasksOpened}
           />
           <Header
             setMenu={setMenu}
@@ -105,8 +59,6 @@ export default function Gantt() {
             view={view}
             editedTask={editedTask}
             setEditedTask={setEditedTask}
-            isSubtasksOpened={isSubtasksOpened}
-            setIsSubtasksOpened={setIsSubtasksOpened}
           />
         </ReactCursorPosition>
       </When>

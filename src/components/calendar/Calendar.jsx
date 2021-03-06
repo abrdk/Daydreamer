@@ -11,8 +11,6 @@ export default function Calendar({
   setMenu,
   editedTask,
   setEditedTask,
-  isSubtasksOpened,
-  setIsSubtasksOpened,
 }) {
   const [cursor, setCursor] = useState(null);
   const [isDraggable, setDraggable] = useState(false);
@@ -90,8 +88,6 @@ export default function Calendar({
         setMenu={setMenu}
         editedTask={editedTask}
         setEditedTask={setEditedTask}
-        isSubtasksOpened={isSubtasksOpened}
-        setIsSubtasksOpened={setIsSubtasksOpened}
         view={view}
       />
     );
@@ -107,8 +103,6 @@ export default function Calendar({
         setMenu={setMenu}
         editedTask={editedTask}
         setEditedTask={setEditedTask}
-        isSubtasksOpened={isSubtasksOpened}
-        setIsSubtasksOpened={setIsSubtasksOpened}
         view={view}
       />
     );
@@ -124,8 +118,6 @@ export default function Calendar({
         setMenu={setMenu}
         editedTask={editedTask}
         setEditedTask={setEditedTask}
-        isSubtasksOpened={isSubtasksOpened}
-        setIsSubtasksOpened={setIsSubtasksOpened}
         view={view}
       />
     );

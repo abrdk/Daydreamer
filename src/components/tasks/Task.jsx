@@ -17,8 +17,6 @@ export default function Task({
   setContainerHeight,
   editedTask,
   setEditedTask,
-  isSubtasksOpened,
-  setIsSubtasksOpened,
 }) {
   const userCtx = useContext(UsersContext);
 
@@ -27,7 +25,7 @@ export default function Task({
     createTask,
     updateTask,
     tasksByProjectId,
-    sortedTasksIds,
+    updateIsOpened,
   } = useContext(TasksContext);
   const { projectByQueryId } = useContext(ProjectsContext);
 
@@ -39,31 +37,17 @@ export default function Task({
   }
 
   //subtasks
-  let sortedTasks;
-  if (projectByQueryId.owner == userCtx._id) {
-    sortedTasks = tasks
-      .filter((t) => t.root == task.root && t.project == projectByQueryId._id)
-      .sort((task1, task2) => task1.order > task2.order);
-  } else {
-    sortedTasks = tasksByProjectId
-      .filter((t) => t.root == task.root)
-      .sort((task1, task2) => task1.order > task2.order);
-  }
+  const sortedTasks = tasksByProjectId
+    .filter((t) => t.root == task.root)
+    .sort((task1, task2) => task1.order > task2.order);
 
-  let subtasks;
-  if (projectByQueryId.owner == userCtx._id) {
-    subtasks = tasks
-      .filter((subtask) => subtask.root == task._id)
-      .sort((task1, task2) => task1.order > task2.order);
-  } else {
-    subtasks = tasksByProjectId
-      .filter((subtask) => subtask.root == task._id)
-      .sort((task1, task2) => task1.order > task2.order);
-  }
+  const subtasks = tasksByProjectId
+    .filter((subtask) => subtask.root == task._id)
+    .sort((task1, task2) => task1.order > task2.order);
 
   useEffect(() => {
     setContainerHeight(document.querySelectorAll(".task").length * 55);
-  }, [sortedTasks, isSubtasksOpened]);
+  }, [sortedTasks, task.isOpened]);
 
   // task
   const input = useRef(null);
@@ -102,45 +86,30 @@ export default function Task({
     }
   };
 
-  const updateHandler = async (e) => {
-    await updateTask({ ...task, name: e.target.value });
+  const updateHandler = (e) => {
+    updateTask({ ...task, name: e.target.value });
   };
 
-  const blurHandler = async (e) => {
+  const blurHandler = (e) => {
     setTimeout(() => setUpdatingState(false), 150);
     if (!e.target.value) {
-      await updateTask({ ...task, name: getDefaultName() });
+      updateTask({ ...task, name: getDefaultName() });
     }
   };
   useEffect(() => {
-    const setDefaultName = async () => {
-      await updateTask({ ...task, name: getDefaultName() });
-    };
     if (!isUpdating && !task.name) {
-      setDefaultName();
+      updateTask({ ...task, name: getDefaultName() });
     }
   }, [isUpdating]);
 
   const openSubtasksHandler = () => {
-    setIsSubtasksOpened(
-      isSubtasksOpened.map((bool, i) => {
-        if (i == sortedTasksIds.indexOf(task._id)) {
-          return !bool;
-        }
-        return bool;
-      })
-    );
+    updateIsOpened({ _id: task._id, isOpened: !task.isOpened });
   };
 
   const createSubtask = async () => {
-    let order;
-    if (subtasks.length) {
-      order = subtasks[subtasks.length - 1].order + 1;
-    } else {
-      order = 0;
-    }
+    const order = subtasks.length ? subtasks[subtasks.length - 1].order + 1 : 0;
 
-    if (!isSubtasksOpened[sortedTasksIds.indexOf(task._id)]) {
+    if (!task.isOpened) {
       openSubtasksHandler();
     }
 
@@ -151,7 +120,6 @@ export default function Task({
       description: "",
       root: task._id,
       order,
-      color: "258EFA",
     });
   };
 
@@ -163,7 +131,7 @@ export default function Task({
     }
   };
 
-  useEffect(() => {
+  const setTextWidth = () => {
     if (input.current && fakeText.current) {
       const textWidth = fakeText.current.offsetWidth + 2;
       if (textWidth > 230) {
@@ -180,6 +148,10 @@ export default function Task({
         pencil.current.style.left = offset + "px";
       }
     }
+  };
+
+  useEffect(() => {
+    setTextWidth();
   }, [task, isUpdating]);
 
   useEffect(() => {
@@ -201,7 +173,7 @@ export default function Task({
   const [beforeTask, setBeforeTask] = useState(null);
   const [afterTask, setAfterTask] = useState(null);
 
-  const reorderHandler = () => {
+  const reorderHandler = async () => {
     if (
       beforeTask &&
       beforeTask._id == sourceTask.root &&
@@ -219,8 +191,14 @@ export default function Task({
         isMoveBetweenRoots = true;
         if (afterTask) {
           if (afterTask.order == 0) {
-            newRoot = afterTask.root;
-            newIndex = 0;
+            if (afterTask.root == sourceTask.root) {
+              isMoveBetweenRoots = false;
+              newRoot = sourceTask.root;
+              newIndex = 0;
+            } else {
+              newRoot = afterTask.root;
+              newIndex = 0;
+            }
           } else {
             newRoot = beforeTask.root;
             newIndex = beforeTask.order + 1;
@@ -297,26 +275,21 @@ export default function Task({
         }
       }
     } else {
-      const notUpdatedTasks = tasks;
-
-      notUpdatedTasks
-        .filter(
-          (t) => t.root == sourceTask.root && t.project == projectByQueryId._id
-        )
+      tasksByProjectId
+        .filter((t) => t.root == sourceTask.root)
         .sort((task1, task2) => task1.order > task2.order)
         .slice(oldIndex + 1)
         .forEach((t) => {
           updateTask({ ...t, order: t.order - 1 });
         });
 
-      notUpdatedTasks
-        .filter((t) => t.root == newRoot && t.project == projectByQueryId._id)
+      tasksByProjectId
+        .filter((t) => t.root == newRoot)
         .sort((task1, task2) => task1.order > task2.order)
         .slice(newIndex)
         .forEach((t) => {
           updateTask({ ...t, order: t.order + 1 });
         });
-
       updateTask({ ...sourceTask, order: newIndex, root: newRoot });
     }
   };
@@ -363,7 +336,7 @@ export default function Task({
   const addAnimationClassesAndSetTasks = () => {
     let beforeTasks = [];
     let afterTasks = [];
-    draggedTask.current.style.transitionDuration = "0.3s";
+    draggedTask.current.style.transitionDuration = "0.2s";
     const tasksElements = document.querySelectorAll(".task");
     tasksElements.forEach((taskElement, i) => {
       const currentTask = getTaskFromDomElement(taskElement);
@@ -418,21 +391,26 @@ export default function Task({
     }
     return sourceTask.root;
   };
+
+  const changeStylesForDraggedTask = () => {
+    const currentRoot = getCurrenRoot();
+    let taskDepth = -1;
+    let currentTask = tasksByProjectId.find((t) => t.root == currentRoot);
+    while (currentTask) {
+      currentTask = tasksByProjectId.find((t) => t._id == currentTask.root);
+      taskDepth += 1;
+    }
+    draggedTask.current.style.paddingLeft = 33 + 14 * taskDepth + "px";
+    if (taskDepth) {
+      draggedTask.current.style.color = "#949da7";
+    } else {
+      draggedTask.current.style.color = "#696f75";
+    }
+  };
+
   useEffect(() => {
     if (draggedTask.current) {
-      const currentRoot = getCurrenRoot();
-      let taskDepth = -1;
-      let currentTask = tasksByProjectId.find((t) => t.root == currentRoot);
-      while (currentTask) {
-        currentTask = tasksByProjectId.find((t) => t._id == currentTask.root);
-        taskDepth += 1;
-      }
-      draggedTask.current.style.paddingLeft = 33 + 14 * taskDepth + "px";
-      if (taskDepth) {
-        draggedTask.current.style.color = "#949da7";
-      } else {
-        draggedTask.current.style.color = "#696f75";
-      }
+      changeStylesForDraggedTask();
     }
   }, [afterTask, beforeTask, sourceTask]);
 
@@ -473,14 +451,7 @@ export default function Task({
 
   const dragStartHandler = (e) => {
     if (projectByQueryId.owner == userCtx._id) {
-      setIsSubtasksOpened(
-        isSubtasksOpened.map((bool, i) => {
-          if (i == sortedTasksIds.indexOf(task._id)) {
-            return false;
-          }
-          return bool;
-        })
-      );
+      updateIsOpened({ _id: task._id, isOpened: false });
       setDraggingState(true);
       setInitialMousePisition({
         shiftX: e.clientX - e.target.getBoundingClientRect().left,
@@ -514,7 +485,7 @@ export default function Task({
         "15px 15px 50px rgba(9, 40, 72, 0)",
       ],
       easing: "easeInOutQuad",
-      duration: 300,
+      duration: 200,
       complete: function (anim) {
         if (beforeTask || afterTask) {
           reorderHandler();
@@ -584,15 +555,9 @@ export default function Task({
           </When>
           <When condition={subtasks.length}>
             <img
-              className={
-                isSubtasksOpened[sortedTasksIds.indexOf(task._id)]
-                  ? styles.arrowDown
-                  : styles.arrowRight
-              }
+              className={task.isOpened ? styles.arrowDown : styles.arrowRight}
               src={
-                isSubtasksOpened[sortedTasksIds.indexOf(task._id)]
-                  ? "/img/arrowDown.svg"
-                  : "/img/arrowRightTask.svg"
+                task.isOpened ? "/img/arrowDown.svg" : "/img/arrowRightTask.svg"
               }
               alt=" "
             />
@@ -602,6 +567,7 @@ export default function Task({
           </Truncate>
         </div>
       </When>
+
       <div
         className={
           isDragging
@@ -619,29 +585,26 @@ export default function Task({
             style={{ left: -14 * taskDepth + "px" }}
           ></div>
         </When>
+
         <When condition={subtasks.length}>
           <img
-            className={
-              isSubtasksOpened[sortedTasksIds.indexOf(task._id)]
-                ? styles.arrowDown
-                : styles.arrowRight
-            }
+            className={task.isOpened ? styles.arrowDown : styles.arrowRight}
             src={
-              isSubtasksOpened[sortedTasksIds.indexOf(task._id)]
-                ? "/img/arrowDown.svg"
-                : "/img/arrowRightTask.svg"
+              task.isOpened ? "/img/arrowDown.svg" : "/img/arrowRightTask.svg"
             }
             alt=" "
             ref={arrow}
             onClick={openSubtasksHandler}
           />
         </When>
+
         <span
           className={task.name ? styles.fakeText : styles.fakeTextVisible}
           ref={fakeText}
         >
           {task.name ? task.name : getDefaultName()}
         </span>
+
         <div
           className={styles.pencilContainer}
           ref={pencil}
@@ -649,6 +612,7 @@ export default function Task({
         >
           <img src="/img/pencil.svg" alt=" " className={styles.pencil} />
         </div>
+
         <If condition={isUpdating}>
           <Then>
             <input
@@ -662,12 +626,16 @@ export default function Task({
               }}
             />
           </Then>
+
           <Else>
-            <Truncate lines={1} width={getNameWidth()}>
-              {task.name}
-            </Truncate>
+            <div className={styles.taskName}>
+              <Truncate lines={1} width={getNameWidth()}>
+                {task.name}
+              </Truncate>
+            </div>
           </Else>
         </If>
+
         <When condition={projectByQueryId.owner == userCtx._id}>
           <img
             src="/img/plus.svg"
@@ -679,19 +647,13 @@ export default function Task({
         </When>
       </div>
 
-      <When
-        condition={
-          subtasks.length && isSubtasksOpened[sortedTasksIds.indexOf(task._id)]
-        }
-      >
+      <When condition={subtasks.length && task.isOpened}>
         <div className={styles.subtasksWrapper}>
           <TasksRoot
             root={task._id}
             setContainerHeight={setContainerHeight}
             editedTask={editedTask}
             setEditedTask={setEditedTask}
-            isSubtasksOpened={isSubtasksOpened}
-            setIsSubtasksOpened={setIsSubtasksOpened}
           />
         </div>
       </When>

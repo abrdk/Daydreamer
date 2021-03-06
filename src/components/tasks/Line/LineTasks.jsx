@@ -9,8 +9,7 @@ export default function LineTasks({
   setMenu,
   editedTask,
   setEditedTask,
-  isSubtasksOpened,
-  setIsSubtasksOpened,
+
   view,
 }) {
   let calendarWidth = 0;
@@ -51,8 +50,6 @@ export default function LineTasks({
             setMenu={setMenu}
             editedTask={editedTask}
             setEditedTask={setEditedTask}
-            isSubtasksOpened={isSubtasksOpened}
-            setIsSubtasksOpened={setIsSubtasksOpened}
             root={""}
             view={view}
           />

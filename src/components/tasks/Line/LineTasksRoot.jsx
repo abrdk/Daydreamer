@@ -12,8 +12,6 @@ export default function LineTasksRoot({
   setMenu,
   editedTask,
   setEditedTask,
-  isSubtasksOpened,
-  setIsSubtasksOpened,
   view,
 }) {
   const { tasksByProjectId, sortedTasksIds } = useContext(TasksContext);
@@ -29,8 +27,6 @@ export default function LineTasksRoot({
         setMenu={setMenu}
         task={t}
         index={sortedTasksIds.indexOf(t._id)}
-        isSubtasksOpened={isSubtasksOpened}
-        setIsSubtasksOpened={setIsSubtasksOpened}
         view={view}
       />
     ));

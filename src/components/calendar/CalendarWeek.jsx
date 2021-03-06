@@ -29,8 +29,6 @@ export default function CalendarWeek({
   setMenu,
   editedTask,
   setEditedTask,
-  isSubtasksOpened,
-  setIsSubtasksOpened,
   view,
 }) {
   const [defaultScrollLeft, setDefaultScrollLeft] = useState(undefined);
@@ -263,8 +261,6 @@ export default function CalendarWeek({
           setMenu={setMenu}
           editedTask={editedTask}
           setEditedTask={setEditedTask}
-          isSubtasksOpened={isSubtasksOpened}
-          setIsSubtasksOpened={setIsSubtasksOpened}
           view={view}
         />
       </div>
