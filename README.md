@@ -1,27 +1,35 @@
 ### Daydreamer
-Put your ideas on a timeline. [Start now!](https://daydreamer-demo.herokuapp.com)
+Put ideas on a timeline. [Start now!](http://165.227.130.78:3000/signup)
 
 <p align="center">
-    <a href="https://daydreamer-demo.herokuapp.com">
-        <img src="https://i.ibb.co/qCP3DHD/daydreamer-v03-backend.png" width="600"/>
+    <a href="http://165.227.130.78:3000/signup">
+        <img src="https://i.ibb.co/qNTQ5hg/daydreamer-v04-example.png" width="600"/>
     </a>
 </p>
 
-Docker version can be started with the following commands:
+Commands below start the app at [http://localhost:3000](http://localhost:3000):
 ``` bash
 git clone https://github.com/abrdk/Daydreamer
 cd Daydreamer
-git checkout docker
 docker-compose up
 ```
-Open [http://localhost:3000](http://localhost:3000) to see the app.
 
+To run the app without Docker, install dependencies (`yarn install`)
+and [specify MongoDB path](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-debian/)
+in `MONGO_URI` environment variable. `yarn dev` starts the app in the development mode.
 
-To run the app on localhost it is necessary to install dependencies (`yarn install`)
-and [have MongoDB listening on port 27017](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-debian/).
-After that `yarn dev` starts the app in the development mode.
-The service should be available at [http://localhost:3000](http://localhost:3000).
+The UI specification is available at [Figma](https://www.figma.com/file/5TvJ1XE0h5pL2uUu1inhYv/DayDreamer_v0.4_new_UI?node-id=150%3A1876).
 
-
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-Gantt chart functionality is inspired by [Frappe Gantt](https://github.com/frappe/gantt).
+### Version History
+v0.4   
+&nbsp;&nbsp;&nbsp; Design - [Vitaliy Kravchuk](https://freelancehunt.com/freelancer/DemonStrike.html)   
+&nbsp;&nbsp;&nbsp; Programming - [Maxim Pozdnyakov](https://freelancehunt.com/freelancer/maxim_pozdnyakow.html)   
+[v0.3](https://github.com/abrdk/Daydreamer/releases/tag/v0.3_backend)   
+&nbsp;&nbsp;&nbsp; Design - [Ilya Steki](https://www.fl.ru/users/stekivac/portfolio/)   
+&nbsp;&nbsp;&nbsp; Programming - [Vitaliy Surikov](https://www.fl.ru/users/zizizi-ru/portfolio/)   
+[v0.2 (as Dreamcatcher)](https://github.com/abrdk/Daydreamer/tree/v0.2)   
+&nbsp;&nbsp;&nbsp; Programming - Andrew   
+[v0.1 (as GanttBox)](https://github.com/abrdk/ganttbox)   
+&nbsp;&nbsp;&nbsp; Programming - [Fedor Tukmakov](https://freelance.habr.com/freelancers/impfromliga)   
+[v0.01 (as Unholy Mess)](https://github.com/noooway/unholy_mess)   
+&nbsp;&nbsp;&nbsp; Programming - Andrew   
