@@ -1,55 +1,19 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import useEvent from "@react-hook/event";
+import useMouse from "@react-hook/mouse-position";
 
 import CalendarDay from "@/src/components/calendar/CalendarDay";
 import CalendarWeek from "@/src/components/calendar/CalendarWeek";
 import CalendarMonth from "@/src/components/calendar/CalendarMonth";
 
-export default function Calendar({
-  view,
-  position,
-  isPositionOutside,
-  setMenu,
-  editedTask,
-  setEditedTask,
-}) {
+export default function Calendar({ view, setMenu, editedTask, setEditedTask }) {
   const [cursor, setCursor] = useState(null);
   const [isDraggable, setDraggable] = useState(false);
 
-  const setStartDragEventListener = () => {
-    if (!cursor) {
-      document.addEventListener(
-        "keydown",
-        (e) => {
-          if (e.key == " ") {
-            startDragHandler();
-          } else {
-            setStartDragEventListener();
-          }
-        },
-        { once: true }
-      );
-    }
-  };
-  const setRemoveDragEventListener = () => {
-    if (cursor == "pointer" || cursor == "grab") {
-      document.addEventListener(
-        "keyup",
-        (e) => {
-          if (e.key == " ") {
-            removeDragHandler();
-          } else {
-            setRemoveDragEventListener();
-          }
-        },
-        { once: true }
-      );
-    }
-  };
-  const setStopDragEventListener = () => {
-    if (cursor == "grab") {
-      document.addEventListener("mouseup", removeDragHandler, { once: true });
-    }
-  };
+  const mouse = useMouse(document.querySelector("#__next"), {
+    enterDelay: 100,
+    leaveDelay: 100,
+  });
 
   const startDragHandler = () => {
     setCursor("pointer");
@@ -65,22 +29,28 @@ export default function Calendar({
     setDraggable(false);
   };
 
-  useEffect(() => {
-    setStartDragEventListener();
-    setRemoveDragEventListener();
-    setStopDragEventListener();
-  }, [cursor]);
-
-  useEffect(() => {
-    if (isPositionOutside && cursor == "grab") {
-      stopDragHandler();
+  useEvent(document, "keydown", (e) => {
+    if (!cursor) {
+      if (e.key == " ") {
+        startDragHandler();
+      }
     }
-  }, [isPositionOutside]);
+  });
+
+  useEvent(document, "keyup", (e) => {
+    if (e.key == " ") {
+      removeDragHandler();
+    }
+  });
+
+  useEvent(document, "mouseup", (e) => {
+    removeDragHandler();
+  });
 
   if (view == "Day") {
     return (
       <CalendarDay
-        scrollAt={position.x}
+        scrollAt={mouse.x}
         cursor={cursor}
         setCursor={setCursor}
         isDraggable={isDraggable}
@@ -95,7 +65,7 @@ export default function Calendar({
   if (view == "Week") {
     return (
       <CalendarWeek
-        scrollAt={position.x}
+        scrollAt={mouse.x}
         cursor={cursor}
         setCursor={setCursor}
         isDraggable={isDraggable}
@@ -110,7 +80,7 @@ export default function Calendar({
   if (view == "Month") {
     return (
       <CalendarMonth
-        scrollAt={position.x}
+        scrollAt={mouse.x}
         cursor={cursor}
         setCursor={setCursor}
         isDraggable={isDraggable}

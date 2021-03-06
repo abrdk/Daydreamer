@@ -1,7 +1,4 @@
-import styles from "@/styles/calendar.module.scss";
-import { When } from "react-if";
-import { useEffect, useState, useMemo, useContext } from "react";
-import Scrollbar from "react-scrollbars-custom";
+import { useContext } from "react";
 
 import LineTask from "@/src/components/tasks/Line/LineTask";
 
@@ -16,6 +13,26 @@ export default function LineTasksRoot({
 }) {
   const { tasksByProjectId, sortedTasksIds } = useContext(TasksContext);
 
+  const getTaskIndex = (_id) => {
+    let index = 0;
+    for (let currentId of sortedTasksIds) {
+      if (currentId == _id) {
+        return index;
+      }
+      const currentTask = tasksByProjectId.find((t) => t._id == currentId);
+      if (!currentTask.root) {
+        index += 1;
+      } else {
+        const rootOfCurrentTask = tasksByProjectId.find(
+          (t) => t._id == currentTask.root
+        );
+        if (rootOfCurrentTask.isOpened) {
+          index += 1;
+        }
+      }
+    }
+  };
+
   const sortedTasksComponents = tasksByProjectId
     .filter((t) => t.root == root)
     .sort((task1, task2) => task1.order > task2.order)
@@ -26,7 +43,7 @@ export default function LineTasksRoot({
         setEditedTask={setEditedTask}
         setMenu={setMenu}
         task={t}
-        index={sortedTasksIds.indexOf(t._id)}
+        index={getTaskIndex(t._id)}
         view={view}
       />
     ));

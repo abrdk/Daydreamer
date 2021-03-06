@@ -43,6 +43,7 @@ export default function CalendarDay({
       setCursor("grab");
     }
   };
+
   const stopScrollHandler = (scrollValues) => {
     if (cursor != "grab") {
       setScrollLeft(scrollValues.scrollLeft);

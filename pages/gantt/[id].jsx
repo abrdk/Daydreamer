@@ -2,7 +2,6 @@ import Head from "next/head";
 import { useState, useContext } from "react";
 import styles from "@/styles/header.module.scss";
 import { When } from "react-if";
-import ReactCursorPosition from "react-cursor-position";
 
 import { Modal } from "@/src/components/modal/modal";
 import { ViewMode } from "@/src/types/public-types";
@@ -53,14 +52,12 @@ export default function Gantt() {
             setModal={setModal}
           />
         </div>
-        <ReactCursorPosition>
-          <Calendar
-            setMenu={setMenu}
-            view={view}
-            editedTask={editedTask}
-            setEditedTask={setEditedTask}
-          />
-        </ReactCursorPosition>
+        <Calendar
+          setMenu={setMenu}
+          view={view}
+          editedTask={editedTask}
+          setEditedTask={setEditedTask}
+        />
       </When>
     </>
   );
