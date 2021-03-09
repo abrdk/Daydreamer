@@ -1,6 +1,4 @@
 import styles from "@/styles/calendar.module.scss";
-import { When } from "react-if";
-import { useEffect, useState, useMemo, useContext } from "react";
 import Scrollbar from "react-scrollbars-custom";
 
 import LineTasksRoot from "@/src/components/tasks/Line/LineTasksRoot";
@@ -9,7 +7,7 @@ export default function LineTasks({
   setMenu,
   editedTask,
   setEditedTask,
-
+  calendarStartDate,
   view,
 }) {
   let calendarWidth = 0;
@@ -20,13 +18,14 @@ export default function LineTasks({
   return (
     <div
       className={styles.scrollContainer}
-      style={{ top: view == "Day" ? 73 : view == "Week" ? 68 : 68 }}
+      style={{ top: view == "Day" ? 73 : 68 }}
     >
       <Scrollbar
         style={{
           height: editedTask ? "calc(100vh - 563px)" : "calc(100vh - 177px)",
           width: calendarWidth,
         }}
+        noScrollX={true}
         trackYProps={{
           renderer: (props) => {
             const { elementRef, ...restProps } = props;
@@ -47,6 +46,7 @@ export default function LineTasks({
       >
         <div>
           <LineTasksRoot
+            calendarStartDate={calendarStartDate}
             setMenu={setMenu}
             editedTask={editedTask}
             setEditedTask={setEditedTask}

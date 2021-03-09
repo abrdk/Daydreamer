@@ -18,6 +18,7 @@ export default function LineTask({
   setMenu,
   editedTask,
   setEditedTask,
+  calendarStartDate,
   view,
 }) {
   const { projectByQueryId } = useContext(ProjectsContext);
@@ -112,7 +113,7 @@ export default function LineTask({
     startOfYear.setDate(1 - startOfYear.getDay() + 1);
   }
   const numOfDaysFromStart = Math.floor(
-    (dateStart.getTime() - startOfYear.getTime()) / 1000 / 60 / 60 / 24
+    (dateStart.getTime() - calendarStartDate.getTime()) / 1000 / 60 / 60 / 24
   );
   const taskDuration = Math.floor(
     (dateEnd.getTime() - dateStart.getTime()) / 1000 / 60 / 60 / 24
@@ -385,6 +386,12 @@ export default function LineTask({
     }
   });
 
+  useEvent(document, "mousemove", (e) => {
+    if (isResizeLeft || isResizeRight || isMove) {
+      e.target.ownerDocument.defaultView.getSelection().removeAllRanges();
+    }
+  });
+
   useEffect(() => {
     if (scrollingSpeed) {
       setScrollingTimer(
@@ -552,6 +559,7 @@ export default function LineTask({
           setEditedTask={setEditedTask}
           setMenu={setMenu}
           view={view}
+          calendarStartDate={calendarStartDate}
         />
       </When>
     </>

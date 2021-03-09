@@ -10,6 +10,7 @@ export default function LineTasksRoot({
   editedTask,
   setEditedTask,
   view,
+  calendarStartDate,
 }) {
   const { tasksByProjectId, sortedTasksIds } = useContext(TasksContext);
 
@@ -20,9 +21,9 @@ export default function LineTasksRoot({
         return index;
       }
       const currentTask = tasksByProjectId.find((t) => t._id == currentId);
-      if (!currentTask.root) {
+      if (currentTask && !currentTask.root) {
         index += 1;
-      } else {
+      } else if (currentTask) {
         const rootOfCurrentTask = tasksByProjectId.find(
           (t) => t._id == currentTask.root
         );
@@ -45,6 +46,7 @@ export default function LineTasksRoot({
         task={t}
         index={getTaskIndex(t._id)}
         view={view}
+        calendarStartDate={calendarStartDate}
       />
     ));
 
