@@ -77,9 +77,9 @@ export default function LineTask({
   const views = ["Day", "Week", "Month"];
   const width = [55, 120 / 7, 160 / 30];
   const minWidth = [55, 120 / 7, 160 / 31];
-  const extraWidth = [56, 120 / 7 + 1, 160 / 30 + 1];
+  const extraWidth = [56, 120 / 7, 160 / 30 + 1];
   const left = [55, 120 / 7, 160 / 30];
-  const extraLeft = [-1, -1, -1];
+  const extraLeft = [-1, 0, -1];
   const minOffsetLeft = [70, 5, 0];
   const maxOffsetLeft = [-15, -5, 0];
   const minOffsetRight = [-70, -5, 0];
@@ -112,8 +112,11 @@ export default function LineTask({
     startOfYear = new Date(today.getFullYear(), 0, 1, 0, 0, 0, 0);
     startOfYear.setDate(1 - startOfYear.getDay() + 1);
   }
+  if (calendarStartDate) {
+    startOfYear = calendarStartDate;
+  }
   const numOfDaysFromStart = Math.floor(
-    (dateStart.getTime() - calendarStartDate.getTime()) / 1000 / 60 / 60 / 24
+    (dateStart.getTime() - startOfYear.getTime()) / 1000 / 60 / 60 / 24
   );
   const taskDuration = Math.floor(
     (dateEnd.getTime() - dateStart.getTime()) / 1000 / 60 / 60 / 24

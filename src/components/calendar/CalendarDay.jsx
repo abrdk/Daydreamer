@@ -81,10 +81,8 @@ export default function CalendarDay({
           calendarStartDate.getFullYear()
         ) * 55;
       const lastMonthWidth =
-        daysInMonth(
-          calendarStartDate.getMonth(),
-          calendarStartDate.getFullYear()
-        ) * 55;
+        daysInMonth(calendarEndDate.getMonth(), calendarEndDate.getFullYear()) *
+        55;
       if (scrollValues.scrollLeft < firstMonthWidth) {
         const numOfDays = [...Array(3).keys()].map((i) =>
           daysInMonth(
