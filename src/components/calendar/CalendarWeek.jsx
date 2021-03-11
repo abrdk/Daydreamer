@@ -93,6 +93,15 @@ export default function CalendarWeek({
   };
 
   useEffect(() => {
+    const calculatedDefaultScrollLeft = (getWeekNumber(new Date()) - 4) * 120;
+    if (calculatedDefaultScrollLeft > 0) {
+      document
+        .querySelector(".Calendar-Scroller")
+        .scrollBy(calculatedDefaultScrollLeft, 0);
+    }
+  }, []);
+
+  useEffect(() => {
     if (tasksByProjectId.length) {
       const startDates = tasksByProjectId.map((t) => {
         if (typeof t.dateStart == "string") {
@@ -121,12 +130,10 @@ export default function CalendarWeek({
               calendarStartDate.getFullYear()
             ) * 120
         );
-        const calculatedDefaultScrollLeft =
-          (getWeekNumber(new Date()) - 4) * 120 +
-          widthOfMonths.reduce((sum, width) => sum + width, 0);
-        document
-          .querySelector(".Calendar-Scroller")
-          .scrollTo(calculatedDefaultScrollLeft, 0);
+        document.querySelector(".Calendar-Scroller").scrollBy(
+          widthOfMonths.reduce((sum, width) => sum + width, 0),
+          0
+        );
       }
 
       const endDates = tasksByProjectId.map((t) => {
@@ -350,10 +357,6 @@ export default function CalendarWeek({
                 }
                 return sum;
               }, 0);
-            console.log(
-              "weeksComponents.slice(i, i + numOfWeeksInMonth)",
-              weeksComponents.slice(i, i + numOfWeeksInMonth)
-            );
             return (
               <div key={`month-${i}`} className="month">
                 <div className={styles.monthName}>
@@ -427,7 +430,7 @@ export default function CalendarWeek({
             new Date(
               calendarStartDate.getFullYear(),
               calendarStartDate.getMonth(),
-              2 - calendarStartDate.getDay()
+              1 - ((calendarStartDate.getDay() + 6) % 7)
             )
           }
         />

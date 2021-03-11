@@ -32,6 +32,7 @@ export default function LineTasksRoot({
         }
       }
     }
+    return index;
   };
 
   const sortedTasksComponents = tasksByProjectId
