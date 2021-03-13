@@ -18,6 +18,8 @@ export default function LeftStick({
   dateEnd,
   maxOffsetLeft,
   minOffsetLeft,
+  view,
+  taskWidth,
 }) {
   const { updateTask } = useContext(TasksContext);
   const { projectByQueryId } = useContext(ProjectsContext);
@@ -104,7 +106,7 @@ export default function LeftStick({
   }, [document.querySelector(".Calendar-Scroller"), scrollLeft]);
 
   return (
-    <>
+    <When condition={view != "Month" || taskWidth > dayWidth * 4}>
       <When condition={projectByQueryId.owner == userCtx._id}>
         <div
           className={calendarStyles.resizeAreaLeft}
@@ -115,6 +117,6 @@ export default function LeftStick({
         ></div>
       </When>
       <div className={calendarStyles.stick}></div>
-    </>
+    </When>
   );
 }

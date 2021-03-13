@@ -18,6 +18,7 @@ export default function RightStick({
   setDateEnd,
   maxOffsetRight,
   minOffsetRight,
+  taskWidth,
 }) {
   const { updateTask } = useContext(TasksContext);
   const { projectByQueryId } = useContext(ProjectsContext);
@@ -114,6 +115,7 @@ export default function RightStick({
           onMouseDown={startResizeRight}
           style={{
             cursor: isResizeRight ? "grab" : "pointer",
+            width: taskWidth > 18 ? 18 : taskWidth == 0 ? 160 / 30 : taskWidth,
           }}
         ></div>
       </When>

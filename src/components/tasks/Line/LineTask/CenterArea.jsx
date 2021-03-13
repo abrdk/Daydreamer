@@ -80,10 +80,7 @@ export default function CenterArea({
         new Date(
           dateStart.getFullYear(),
           dateStart.getMonth(),
-          dateStart.getDate() + (Math.floor(offset / dayWidth) + 1),
-          23,
-          59,
-          59
+          dateStart.getDate() + (Math.floor(offset / dayWidth) + 1)
         )
       );
       setDateEnd(

@@ -34,6 +34,7 @@ export default function CalendarMonth({
   const [defaultScrollLeft, setDefaultScrollLeft] = useState(undefined);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [initialScrollLeft, setInitialScrollLeft] = useState(0);
+
   const startScrollHandler = () => {
     if (cursor == "pointer") {
       setInitialScrollLeft(scrollAt);
@@ -42,26 +43,12 @@ export default function CalendarMonth({
       setCursor("grab");
     }
   };
+
   const stopScrollHandler = (scrollValues) => {
     if (cursor != "grab") {
       setScrollLeft(scrollValues.scrollLeft);
     }
   };
-  useEffect(() => {
-    const today = new Date();
-    const calculatedDefaultScrollLeft = (today.getMonth() - 2) * 160;
-    if (calculatedDefaultScrollLeft > 0) {
-      setDefaultScrollLeft(calculatedDefaultScrollLeft);
-    } else {
-      setDefaultScrollLeft(0);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof defaultScrollLeft != "undefined") {
-      setDefaultScrollLeft(undefined);
-    }
-  }, [defaultScrollLeft]);
 
   const isSameMonth = (date1, date2) => {
     return (
@@ -69,9 +56,11 @@ export default function CalendarMonth({
       date1.getMonth() == date2.getMonth()
     );
   };
+
   const daysInMonth = (month, year) => {
     return new Date(year, month + 1, 0).getDate();
   };
+
   const monthsComponents = useMemo(
     () =>
       [...Array(24).keys()].map((month) => {
@@ -111,6 +100,22 @@ export default function CalendarMonth({
     []
   );
 
+  useEffect(() => {
+    const today = new Date();
+    const calculatedDefaultScrollLeft = (today.getMonth() - 2) * 160;
+    if (calculatedDefaultScrollLeft > 0) {
+      setDefaultScrollLeft(calculatedDefaultScrollLeft);
+    } else {
+      setDefaultScrollLeft(0);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof defaultScrollLeft != "undefined") {
+      setDefaultScrollLeft(undefined);
+    }
+  }, [defaultScrollLeft]);
+
   const monthsWithLabelsComponents = useMemo(
     () =>
       [...Array(2).keys()].map((year) => {
@@ -127,6 +132,7 @@ export default function CalendarMonth({
       }),
     []
   );
+
   return (
     <Scrollbar
       onScrollStop={stopScrollHandler}
@@ -174,6 +180,7 @@ export default function CalendarMonth({
       >
         {monthsWithLabelsComponents}
         <LineTasks
+          calendarStartDate={new Date(new Date().getFullYear(), 0, 1)}
           setMenu={setMenu}
           editedTask={editedTask}
           setEditedTask={setEditedTask}
