@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@react-hook/event": "^1.2.3",
+    "@react-hook/mouse-position": "^4.1.0",
     "@react-hook/previous": "^1.0.1",
     "animejs": "^3.2.1",
     "bcryptjs": "^2.4.3",
@@ -20,15 +21,13 @@
     "nanoid": "^3.1.20",
     "next": "10.0.5",
     "react": "^16.14.0",
-    "react-cursor-position": "^3.0.3",
     "react-datepicker": "^3.5.0",
     "react-dom": "^16.14.0",
     "react-if": "^4.0.1",
     "react-scripts": "3.4.3",
     "react-scrollbars-custom": "^4.0.25",
     "react-truncate": "^2.4.0",
-    "sass": "^1.32.6",
-    "swr": "^0.4.1"
+    "sass": "^1.32.6"
   },
   "devDependencies": {
     "@types/react": "^16.9.56",

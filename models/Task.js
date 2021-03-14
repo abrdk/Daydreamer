@@ -1,30 +1,15 @@
 const { Schema, model, Types } = require("mongoose");
 
 function isNameRequired() {
-  if (this.name == "") {
-    return false;
-  } else if (typeof this.name == "string") {
-    return false;
-  }
-  return true;
+  return typeof this.name === "string" ? false : true;
 }
 
 function isDescriptionRequired() {
-  if (this.description == "") {
-    return false;
-  } else if (typeof this.description == "string") {
-    return false;
-  }
-  return true;
+  return typeof this.description === "string" ? false : true;
 }
 
 function isRootRequired() {
-  if (this.root == "") {
-    return false;
-  } else if (typeof this.root == "string") {
-    return false;
-  }
-  return true;
+  return typeof this.root === "string" ? false : true;
 }
 
 const schema = new Schema({

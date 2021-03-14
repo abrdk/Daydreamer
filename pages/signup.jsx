@@ -32,7 +32,43 @@ export default function Signup() {
   }
   const { createInitialTasks } = useContext(TasksContext);
 
-  const query = async () => {
+  const unsetWarnings = () => {
+    setNameWarn(null);
+    setPasswordWarn(null);
+  };
+
+  const getNameInputClass = () => {
+    if (nameWarn) {
+      if (name) {
+        return styles.formInputFilledWarn;
+      }
+      return styles.formInputWarn;
+    }
+    if (name) {
+      return styles.formInputFilled;
+    }
+    return styles.formInput;
+  };
+
+  const getPasswordInputClass = () => {
+    if (passwordWarn) {
+      if (password) {
+        return styles.formInputFilledWarn;
+      }
+      return styles.formInputWarn;
+    }
+    if (password) {
+      return styles.formInputFilled;
+    }
+    return styles.formInput;
+  };
+
+  const nameUpdateHandler = (e) => setName(e.target.value);
+  const passwordUpdateHandler = (e) => setPassword(e.target.value);
+  const togglePasswordVisibility = () =>
+    setPasswordVisibility(!isPasswordVisible);
+
+  const signupHandler = async () => {
     const res = await signup({
       _id: nanoid(),
       name,
@@ -41,15 +77,12 @@ export default function Signup() {
     if (res.message === "ok") {
       setUser(res.user);
       const projectId = nanoid();
-      await Promise.all([
-        createProject({
-          _id: projectId,
-          name: `Project name #1`,
-        }),
-        createInitialTasks({ project: projectId }),
-      ]);
-
-      router.reload();
+      await createProject({
+        _id: projectId,
+        name: `Project name #1`,
+        owner: res.user._id,
+      });
+      await createInitialTasks({ project: projectId });
     } else {
       if (res.errorType === "name") {
         setNameWarn(res.message);
@@ -59,12 +92,16 @@ export default function Signup() {
     }
   };
 
-  useEffect(() => {
+  const redirectHandler = () => {
     if (isUserLoaded && _id && !Cookies.get("ganttToken")) {
       router.reload();
     } else if (isUserLoaded && _id && currentProject) {
       router.push(`/gantt/${currentProject._id}`);
     }
+  };
+
+  useEffect(() => {
+    redirectHandler();
   }, [isUserLoaded, _id, currentProject]);
 
   return (
@@ -73,15 +110,9 @@ export default function Signup() {
         {" "}
         <title> Daydreamer | Put your ideas on a timeline </title>{" "}
       </Head>
-      <When condition={isUserLoaded && !_id && !Cookies.get("ganttToken")}>
+      <When condition={isUserLoaded && !_id}>
         <DefaultGantt />
-        <div
-          className={styles.container}
-          onClick={() => {
-            setNameWarn(null);
-            setPasswordWarn(null);
-          }}
-        >
+        <div className={styles.container} onClick={unsetWarnings}>
           <div className={styles.form}>
             <div className={styles.title}>Registration</div>
             <div className={styles.description}>
@@ -92,46 +123,34 @@ export default function Signup() {
               id="name"
               name="name"
               placeholder="Your name"
-              className={
-                nameWarn
-                  ? name
-                    ? styles.formInputFilledWarn
-                    : styles.formInputWarn
-                  : name
-                  ? styles.formInputFilled
-                  : styles.formInput
-              }
+              className={getNameInputClass()}
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={nameUpdateHandler}
             />
-            {nameWarn && <div className={styles.warn}>{nameWarn}</div>}
+            {nameWarn && (
+              <div className={styles.warningContainer}>{nameWarn}</div>
+            )}
             <div className={styles.passwordContainer}>
               <FloatingLabel
                 id="password"
                 name="password"
                 placeholder="Your password"
-                className={
-                  passwordWarn
-                    ? password
-                      ? styles.formInputFilledWarn
-                      : styles.formInputWarn
-                    : password
-                    ? styles.formInputFilled
-                    : styles.formInput
-                }
+                className={getPasswordInputClass()}
                 type={isPasswordVisible ? "text" : "password"}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={passwordUpdateHandler}
               />
               <img
                 src="/img/eye.svg"
                 alt=" "
                 className={styles.passwordEye}
-                onClick={() => setPasswordVisibility(!isPasswordVisible)}
+                onClick={togglePasswordVisibility}
               />
             </div>
-            {passwordWarn && <div className={styles.warn}>{passwordWarn}</div>}
-            <div className={styles.primaryButton} onClick={query}>
+            {passwordWarn && (
+              <div className={styles.warningContainer}>{passwordWarn}</div>
+            )}
+            <div className={styles.primaryButton} onClick={signupHandler}>
               Registration
             </div>
             <div className={styles.line}></div>

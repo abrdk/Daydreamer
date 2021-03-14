@@ -1,9 +1,9 @@
 import styles from "@/styles/calendar.module.scss";
-import Scrollbar from "react-scrollbars-custom";
 import { When } from "react-if";
 import { useEffect, useState, useMemo } from "react";
 
-import LineTasks from "@/src/components/tasks/LineTasks";
+import LineTasks from "@/src/components/tasks/Line/LineTasks";
+import ScrollbarDay from "@/src/components/calendar/CalendarDay/ScrollbarDay";
 
 const daysOfWeek = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 const monthNames = [
@@ -22,7 +22,6 @@ const monthNames = [
 ];
 
 export default function CalendarDay({
-  scrollAt,
   cursor,
   setCursor,
   isDraggable,
@@ -30,39 +29,44 @@ export default function CalendarDay({
   setMenu,
   editedTask,
   setEditedTask,
-  isSubtasksOpened,
-  setIsSubtasksOpened,
   view,
 }) {
-  const [defaultScrollLeft, setDefaultScrollLeft] = useState(undefined);
-  const [scrollLeft, setScrollLeft] = useState(0);
-  const [initialScrollLeft, setInitialScrollLeft] = useState(0);
-  const startScrollHandler = () => {
-    if (cursor == "pointer") {
-      setInitialScrollLeft(scrollAt);
-      setDraggable(true);
-      document.body.style.cursor = "grab";
-      setCursor("grab");
-    }
+  const daysInMonth = (month, year) => {
+    return new Date(year, month + 1, 0).getDate();
   };
-  const stopScrollHandler = (scrollValues) => {
-    if (cursor != "grab") {
-      setScrollLeft(scrollValues.scrollLeft);
-    }
-  };
-  useEffect(() => {
-    if (typeof defaultScrollLeft != "undefined") {
-      setDefaultScrollLeft(undefined);
-    }
-  }, [defaultScrollLeft]);
 
   const today = new Date();
-  const isLeapYear = (year) => {
-    return year % 400 === 0 || (year % 100 !== 0 && year % 4 === 0);
+  const [calendarStartDate, setCalendarStartDate] = useState(
+    new Date(today.getFullYear(), 0, 1)
+  );
+  const [calendarEndDate, setCalendarEndDate] = useState(
+    new Date(
+      today.getFullYear(),
+      11,
+      daysInMonth(today.getFullYear(), 11),
+      23,
+      59,
+      59
+    )
+  );
+
+  const [defaultScrollLeft, setDefaultScrollLeft] = useState(undefined);
+
+  const numOfMonths = (startDate, endDate) => {
+    let months;
+    months = (endDate.getFullYear() - startDate.getFullYear()) * 12;
+    months -= startDate.getMonth();
+    months += endDate.getMonth() + 1;
+    return months <= 0 ? 0 : months;
   };
-  const numOfDays = (year) => {
-    return isLeapYear(year) ? 366 : 365;
+
+  const numOfDays = () => {
+    return (
+      Math.ceil((calendarEndDate - calendarStartDate) / (1000 * 60 * 60 * 24)) +
+      1
+    );
   };
+
   const isSameDate = (date1, date2) => {
     return (
       date1.getFullYear() == date2.getFullYear() &&
@@ -70,17 +74,20 @@ export default function CalendarDay({
       date1.getDate() == date2.getDate()
     );
   };
-  const daysInMonth = (month, year) => {
-    return new Date(year, month + 1, 0).getDate();
-  };
+
+  const isCalendarWidthNotChanged = () =>
+    calendarStartDate.getFullYear() == today.getFullYear() &&
+    calendarStartDate.getMonth() == 0 &&
+    calendarEndDate.getFullYear() == today.getFullYear();
 
   const daysComponents = useMemo(
     () =>
-      [...Array(numOfDays(today.getFullYear())).keys()].map((day) => {
+      [...Array(numOfDays()).keys()].map((day) => {
         let date = new Date();
-        date.setMonth(0);
+        date.setFullYear(calendarStartDate.getFullYear());
+        date.setMonth(calendarStartDate.getMonth());
         date.setDate(day + 1);
-        if (isSameDate(today, date)) {
+        if (isSameDate(today, date) && isCalendarWidthNotChanged()) {
           const calculatedDefaultScrollLeft = (day - 9) * 55;
           if (calculatedDefaultScrollLeft > 0) {
             setDefaultScrollLeft(calculatedDefaultScrollLeft);
@@ -102,9 +109,6 @@ export default function CalendarDay({
               <div>{date.getDate()}</div>
               <div>{daysOfWeek[date.getDay()]}</div>
             </div>
-            <When condition={isSameDate(today, date)}>
-              <div className={styles.line}></div>
-            </When>
             <div
               className={
                 date.getDay() == 0 || date.getDay() == 6
@@ -112,25 +116,36 @@ export default function CalendarDay({
                   : styles.dashedContainer
               }
             ></div>
+            <When condition={isSameDate(today, date)}>
+              <div className={styles.line}></div>
+            </When>
           </div>
         );
       }),
-    []
+    [calendarStartDate, calendarEndDate]
   );
 
   const numOfDaysInMonths = useMemo(
     () =>
-      [...Array(12).keys()].map((m) => {
-        return daysInMonth(m, today.getFullYear());
-      }),
-    []
+      [...Array(numOfMonths(calendarStartDate, calendarEndDate)).keys()].map(
+        (m) => {
+          return daysInMonth(
+            calendarStartDate.getMonth() + m,
+            calendarStartDate.getFullYear()
+          );
+        }
+      ),
+    [calendarStartDate, calendarEndDate]
   );
+
   const daysWithLabelsComponents = useMemo(
     () =>
       numOfDaysInMonths.map((numOfDaysInMonth, i) => {
         return (
           <div className="month" key={`month-${i}`}>
-            <div className={styles.monthName}>{monthNames[i]}</div>
+            <div className={styles.monthName}>
+              {monthNames[(calendarStartDate.getMonth() + i) % 12]}
+            </div>
             <div className={styles.month}>
               {daysComponents.slice(
                 numOfDaysInMonths.slice(0, i).reduce((a, sum) => a + sum, 0),
@@ -140,66 +155,35 @@ export default function CalendarDay({
           </div>
         );
       }),
-    []
+    [calendarStartDate, calendarEndDate]
   );
 
+  useEffect(() => {
+    if (typeof defaultScrollLeft != "undefined") {
+      setDefaultScrollLeft(undefined);
+    }
+  }, [defaultScrollLeft]);
+
   return (
-    <>
-      <Scrollbar
-        onScrollStop={stopScrollHandler}
-        scrollLeft={
-          isDraggable
-            ? scrollLeft - scrollAt + initialScrollLeft
-            : defaultScrollLeft
-        }
-        noScrollY={true}
-        style={{ height: "calc(100vh - 89px - 0px)", width: "100vw" }}
-        trackXProps={{
-          renderer: (props) => {
-            const { elementRef, ...restProps } = props;
-            return (
-              <span
-                {...restProps}
-                ref={elementRef}
-                className="ScrollbarsCustom-Track ScrollbarsCustom-TrackX ScrollbarsCustom-Calendar"
-              />
-            );
-          },
-        }}
-        scrollerProps={{
-          renderer: (props) => {
-            const { elementRef, ...restProps } = props;
-            return (
-              <div
-                {...restProps}
-                ref={elementRef}
-                className="ScrollbarsCustom-Scroller Calendar-Scroller"
-              />
-            );
-          },
-        }}
-      >
-        <div
-          onMouseDown={startScrollHandler}
-          className={
-            cursor == "pointer"
-              ? styles.wrapperPointer
-              : cursor == "grab"
-              ? styles.wrapperGrab
-              : styles.wrapper
-          }
-        >
-          {daysWithLabelsComponents}
-          <LineTasks
-            setMenu={setMenu}
-            editedTask={editedTask}
-            setEditedTask={setEditedTask}
-            isSubtasksOpened={isSubtasksOpened}
-            setIsSubtasksOpened={setIsSubtasksOpened}
-            view={view}
-          />
-        </div>
-      </Scrollbar>
-    </>
+    <ScrollbarDay
+      cursor={cursor}
+      setCursor={setCursor}
+      isDraggable={isDraggable}
+      setDraggable={setDraggable}
+      calendarStartDate={calendarStartDate}
+      setCalendarStartDate={setCalendarStartDate}
+      calendarEndDate={calendarEndDate}
+      setCalendarEndDate={setCalendarEndDate}
+      defaultScrollLeft={defaultScrollLeft}
+    >
+      {daysWithLabelsComponents}
+      <LineTasks
+        calendarStartDate={calendarStartDate}
+        setMenu={setMenu}
+        editedTask={editedTask}
+        setEditedTask={setEditedTask}
+        view={view}
+      />
+    </ScrollbarDay>
   );
 }

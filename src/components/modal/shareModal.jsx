@@ -15,6 +15,11 @@ export default function ShareModal({ setModal }) {
     }
   };
 
+  const copyAndClose = (e) => {
+    copyLink(e);
+    setModal(false);
+  };
+
   return (
     <>
       <div className={styles.modalBlock} />
@@ -35,13 +40,7 @@ export default function ShareModal({ setModal }) {
               onMouseDown={copyLink}
             />
           </form>
-          <div
-            className={styles.sharePrimaryButton}
-            onClick={(e) => {
-              copyLink(e);
-              setModal(false);
-            }}
-          >
+          <div className={styles.sharePrimaryButton} onClick={copyAndClose}>
             Copy link
           </div>
         </div>

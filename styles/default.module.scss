@@ -1,0 +1,24 @@
+.lineTask {
+  position: absolute;
+  border-radius: 3px;
+  height: 35px;
+  width: 330px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 21px;
+  color: #f3f3f3;
+  padding-left: 8px;
+  padding-right: 8px;
+  z-index: 99;
+}
+
+.stick {
+  width: 2px;
+  height: 25px;
+  background: #fff;
+  border-radius: 3px;
+}

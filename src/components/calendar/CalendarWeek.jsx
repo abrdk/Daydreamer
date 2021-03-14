@@ -1,9 +1,9 @@
 import styles from "@/styles/calendar.module.scss";
-import Scrollbar from "react-scrollbars-custom";
 import { When } from "react-if";
-import { useEffect, useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 
-import LineTasks from "@/src/components/tasks/LineTasks";
+import LineTasks from "@/src/components/tasks/Line/LineTasks";
+import ScrollbarWeek from "@/src/components/calendar/CalendarWeek/ScrollbarWeek";
 
 const monthNames = [
   "January",
@@ -21,7 +21,6 @@ const monthNames = [
 ];
 
 export default function CalendarWeek({
-  scrollAt,
   cursor,
   setCursor,
   isDraggable,
@@ -29,80 +28,61 @@ export default function CalendarWeek({
   setMenu,
   editedTask,
   setEditedTask,
-  isSubtasksOpened,
-  setIsSubtasksOpened,
   view,
 }) {
-  const [defaultScrollLeft, setDefaultScrollLeft] = useState(undefined);
-  const [scrollLeft, setScrollLeft] = useState(0);
-  const [initialScrollLeft, setInitialScrollLeft] = useState(0);
-  const startScrollHandler = () => {
-    if (cursor == "pointer") {
-      setInitialScrollLeft(scrollAt);
-      setDraggable(true);
-      document.body.style.cursor = "grab";
-      setCursor("grab");
-    }
+  const daysInMonth = (month, year) => {
+    return new Date(year, month + 1, 0).getDate();
   };
-  const stopScrollHandler = (scrollValues) => {
-    if (cursor != "grab") {
-      setScrollLeft(scrollValues.scrollLeft);
-    }
-  };
-  const getWeekNumber = (d) => {
-    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    const weekNumber = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
-    return weekNumber;
-  };
-  useEffect(() => {
-    const calculatedDefaultScrollLeft = (getWeekNumber(new Date()) - 4) * 120;
-    if (calculatedDefaultScrollLeft > 0) {
-      setDefaultScrollLeft(calculatedDefaultScrollLeft);
-    } else {
-      setDefaultScrollLeft(0);
-    }
-  }, []);
-  useEffect(() => {
-    if (typeof defaultScrollLeft != "undefined") {
-      setDefaultScrollLeft(undefined);
-    }
-  }, [defaultScrollLeft]);
 
   const today = new Date();
-  const isLeapYear = (year) => {
-    return year % 400 === 0 || (year % 100 !== 0 && year % 4 === 0);
+
+  const [calendarStartDate, setCalendarStartDate] = useState(
+    new Date(today.getFullYear(), 0, 1)
+  );
+  const [calendarEndDate, setCalendarEndDate] = useState(
+    new Date(
+      today.getFullYear(),
+      11,
+      daysInMonth(today.getFullYear(), 11),
+      23,
+      59,
+      59
+    )
+  );
+
+  const numOfDays = () => {
+    return (
+      Math.ceil((calendarEndDate - calendarStartDate) / (1000 * 60 * 60 * 24)) +
+      1
+    );
   };
-  const numOfDays = (year) => {
-    return isLeapYear(year) ? 366 : 365;
-  };
+
   const isDayBetweenTwoDays = (day, weekStart, weekEnd) => {
     return (
       day.getTime() - weekStart.getTime() > 0 &&
       weekEnd.getTime() - day.getTime() > 0
     );
   };
+
   const weeksComponents = useMemo(
     () =>
-      [...Array(numOfDays(today.getFullYear())).keys()]
+      [...Array(numOfDays()).keys()]
         .map((day) => {
           let date = new Date();
-          date.setMonth(0);
+          date.setFullYear(calendarStartDate.getFullYear());
+          date.setMonth(calendarStartDate.getMonth());
           date.setDate(day + 1);
-          date.setHours(0);
-          date.setMinutes(0);
-          date.setSeconds(0);
           let weekLater = new Date();
-          weekLater.setMonth(0);
+          weekLater.setFullYear(calendarStartDate.getFullYear());
+          weekLater.setMonth(calendarStartDate.getMonth());
           weekLater.setDate(day + 7);
           weekLater.setHours(23);
           weekLater.setMinutes(59);
           weekLater.setSeconds(59);
           if (day == 0) {
-            const dayOfWeek = date.getDay();
-            date.setDate(day + 1 - dayOfWeek + 1);
-            weekLater.setDate(day + 7 - dayOfWeek + 1);
+            const dayOfWeek = (date.getDay() + 6) % 7;
+            date.setDate(1 - dayOfWeek);
+            weekLater.setDate(7 - dayOfWeek);
           }
           if (date.getDay() == 1) {
             return (
@@ -121,7 +101,7 @@ export default function CalendarWeek({
                     className={styles.weekLine}
                     style={{
                       left:
-                        (Math.floor(
+                        (Math.ceil(
                           (today.getTime() - date.getTime()) /
                             1000 /
                             60 /
@@ -129,8 +109,7 @@ export default function CalendarWeek({
                             24
                         ) *
                           120) /
-                          7 -
-                        1,
+                        7,
                     }}
                   ></div>
                 </When>
@@ -140,12 +119,8 @@ export default function CalendarWeek({
           }
         })
         .filter((component) => typeof component !== "undefined"),
-    []
+    [calendarStartDate, calendarEndDate]
   );
-
-  const daysInMonth = (month, year) => {
-    return new Date(year, month + 1, 0).getDate();
-  };
 
   const isWeekStartOfMonth = (weekStart) => {
     return (
@@ -157,14 +132,15 @@ export default function CalendarWeek({
 
   const isWeekStartOfMonthArr = useMemo(
     () =>
-      [...Array(numOfDays(today.getFullYear())).keys()]
+      [...Array(numOfDays()).keys()]
         .map((day) => {
           let date = new Date();
-          date.setMonth(0);
+          date.setFullYear(calendarStartDate.getFullYear());
+          date.setMonth(calendarStartDate.getMonth());
           date.setDate(day + 1);
           if (day == 0) {
-            const dayOfWeek = date.getDay();
-            date.setDate(day + 1 - dayOfWeek + 1);
+            const dayOfWeek = (date.getDay() + 6) % 7;
+            date.setDate(1 - dayOfWeek);
           }
           if (date.getDay() == 1) {
             if (isWeekStartOfMonth(date)) {
@@ -174,7 +150,7 @@ export default function CalendarWeek({
           }
         })
         .filter((bool) => typeof bool !== "undefined"),
-    []
+    [calendarStartDate, calendarEndDate]
   );
 
   const weeksWithLabelsComponents = useMemo(
@@ -200,7 +176,11 @@ export default function CalendarWeek({
             return (
               <div key={`month-${i}`} className="month">
                 <div className={styles.monthName}>
-                  {monthNames[monthIndex - 1]}
+                  {
+                    monthNames[
+                      (calendarStartDate.getMonth() + monthIndex - 1) % 12
+                    ]
+                  }
                 </div>
                 <div className={styles.month}>
                   {weeksComponents.slice(i, i + numOfWeeksInMonth)}
@@ -210,64 +190,34 @@ export default function CalendarWeek({
           }
         })
         .filter((component) => typeof component !== "undefined"),
-    []
+    [calendarStartDate, calendarEndDate]
   );
 
   return (
-    <Scrollbar
-      onScrollStop={stopScrollHandler}
-      scrollLeft={
-        isDraggable
-          ? scrollLeft - scrollAt + initialScrollLeft
-          : defaultScrollLeft
-      }
-      noScrollY={true}
-      style={{ height: "calc(100vh - 89px)", width: "100vw" }}
-      trackXProps={{
-        renderer: (props) => {
-          const { elementRef, ...restProps } = props;
-          return (
-            <span
-              {...restProps}
-              ref={elementRef}
-              className="ScrollbarsCustom-Track ScrollbarsCustom-TrackX ScrollbarsCustom-Calendar"
-            />
-          );
-        },
-      }}
-      scrollerProps={{
-        renderer: (props) => {
-          const { elementRef, ...restProps } = props;
-          return (
-            <div
-              {...restProps}
-              ref={elementRef}
-              className="ScrollbarsCustom-Scroller Calendar-Scroller"
-            />
-          );
-        },
-      }}
+    <ScrollbarWeek
+      cursor={cursor}
+      setCursor={setCursor}
+      isDraggable={isDraggable}
+      setDraggable={setDraggable}
+      calendarStartDate={calendarStartDate}
+      setCalendarStartDate={setCalendarStartDate}
+      calendarEndDate={calendarEndDate}
+      setCalendarEndDate={setCalendarEndDate}
     >
-      <div
-        onMouseDown={startScrollHandler}
-        className={
-          cursor == "pointer"
-            ? styles.wrapperPointer
-            : cursor == "grab"
-            ? styles.wrapperGrab
-            : styles.wrapper
+      {weeksWithLabelsComponents}
+      <LineTasks
+        setMenu={setMenu}
+        editedTask={editedTask}
+        setEditedTask={setEditedTask}
+        view={view}
+        calendarStartDate={
+          new Date(
+            calendarStartDate.getFullYear(),
+            calendarStartDate.getMonth(),
+            1 - ((calendarStartDate.getDay() + 6) % 7)
+          )
         }
-      >
-        {weeksWithLabelsComponents}
-        <LineTasks
-          setMenu={setMenu}
-          editedTask={editedTask}
-          setEditedTask={setEditedTask}
-          isSubtasksOpened={isSubtasksOpened}
-          setIsSubtasksOpened={setIsSubtasksOpened}
-          view={view}
-        />
-      </div>
-    </Scrollbar>
+      />
+    </ScrollbarWeek>
   );
 }

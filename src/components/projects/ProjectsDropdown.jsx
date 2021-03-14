@@ -3,6 +3,7 @@ import { useContext } from "react";
 import styles from "@/styles/projectsDropdown.module.scss";
 import Truncate from "react-truncate";
 import { If, Then, Else, When } from "react-if";
+import Scrollbar from "react-scrollbars-custom";
 
 import ProjectOption from "@/src/components/projects/ProjectOption";
 
@@ -23,15 +24,24 @@ export default function ProjectsDropdown({ isDropdownOpen, setDropdown }) {
     createProject({ _id: nanoid(), name: "", owner: userCtx._id });
   };
 
+  const openDropdown = () => {
+    if (projectByQueryId.owner == userCtx._id) {
+      setDropdown(!isDropdownOpen);
+    }
+  };
+
+  const getDropdownHeight = () => {
+    if (projectsOptions.length > 10) {
+      return 10 * 50;
+    }
+    return projectsOptions.length * 50;
+  };
+
   return (
     <>
       <div
         className={isDropdownOpen ? styles.rootOpened : styles.root}
-        onClick={
-          projectByQueryId.owner == userCtx._id
-            ? () => setDropdown(!isDropdownOpen)
-            : () => {}
-        }
+        onClick={openDropdown}
       >
         <Truncate lines={1} width={185}>
           {projectByQueryId.name}
@@ -52,7 +62,9 @@ export default function ProjectsDropdown({ isDropdownOpen, setDropdown }) {
         ></div>
         <div className={styles.triangle}></div>
         <div className={styles.wrapOptions}>
-          {projectsOptions}
+          <Scrollbar style={{ height: getDropdownHeight() }}>
+            {projectsOptions}
+          </Scrollbar>
           <div className={styles.newProject} onClick={createHandler}>
             + New Project
           </div>

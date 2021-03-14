@@ -1,16 +1,18 @@
 export default function TasksReducer(state, action) {
-  const { _id, project } = action.payload;
+  const { _id, project, isOpened } = action.payload;
   switch (action.type) {
     case "SET_TASKS":
       return {
         ...state,
-        tasks: action.payload,
+        tasks: action.payload.map((t) => {
+          return { ...t, isOpened: false };
+        }),
         isTasksLoaded: true,
       };
     case "ADD_TASK":
       return {
         ...state,
-        tasks: [...state.tasks, action.payload],
+        tasks: [...state.tasks, { ...action.payload, isOpened: false }],
       };
     case "UPDATE_TASK":
       return {
@@ -37,15 +39,15 @@ export default function TasksReducer(state, action) {
         ...state,
         tasksByProjectId: action.payload,
       };
-    case "SET_SORTED_TASKS_IDS":
+    case "UPDATE_IS_OPENED":
       return {
         ...state,
-        sortedTasksIds: action.payload,
-      };
-    case "SET_IS_SORTING":
-      return {
-        ...state,
-        isSorting: action.payload,
+        tasks: state.tasks.map((t) => {
+          if (t._id == _id) {
+            return { ...t, isOpened };
+          }
+          return t;
+        }),
       };
     default:
       return state;

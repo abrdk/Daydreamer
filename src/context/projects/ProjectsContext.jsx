@@ -1,7 +1,7 @@
 import { xhr } from "@/helpers/xhr";
 import React, { createContext, useReducer, useEffect } from "react";
-import useSWR from "swr";
 import { useRouter } from "next/router";
+import usePrevious from "@react-hook/previous";
 
 import ProjectsReducer from "@/src/context/projects/ProjectsReducer";
 
@@ -9,14 +9,22 @@ export const ProjectsContext = createContext();
 
 export function ProjectsProvider(props) {
   const router = useRouter();
-  const fetcher = (...args) => fetch(...args).then((res) => res.json());
-  const { data, error } = useSWR(`/api/projects/`, fetcher);
-  useEffect(() => {
-    if (!error && data) {
-      if (data.message == "ok") {
+  const previousRouterId = usePrevious(router.query.id);
+  const [projectsState, dispatch] = useReducer(ProjectsReducer, {
+    projects: [],
+    projectByQueryId: {},
+    isProjectsLoaded: false,
+  });
+
+  const { projects, isProjectsLoaded, projectByQueryId } = projectsState;
+
+  const loadProjects = async () => {
+    try {
+      const res = await xhr("/projects", {}, "GET");
+      if (res.message == "ok") {
         dispatch({
           type: "SET_PROJECTS",
-          payload: data.projects,
+          payload: res.projects,
         });
       } else {
         dispatch({
@@ -24,24 +32,16 @@ export function ProjectsProvider(props) {
           payload: [],
         });
       }
-    }
-  }, [data, error]);
+    } catch (e) {}
+  };
 
-  const [projectsState, dispatch] = useReducer(ProjectsReducer, {
-    projects: [],
-    projectByQueryId: {},
-    isProjectsLoaded: false,
-  });
-  const { projects, isProjectsLoaded, projectByQueryId } = projectsState;
+  useEffect(() => {
+    loadProjects();
+  }, []);
 
   const createProject = async (project) => {
     try {
-      let isCurrent;
-      if (projects.length) {
-        isCurrent = false;
-      } else {
-        isCurrent = true;
-      }
+      const isCurrent = projects.length == 0;
 
       dispatch({
         type: "ADD_PROJECT",
@@ -62,32 +62,28 @@ export function ProjectsProvider(props) {
     } catch (e) {}
   };
 
-  const updateProject = async (project) => {
-    try {
-      dispatch({
-        type: "UPDATE_PROJECT",
-        payload: project,
-      });
+  const updateProject = (project) => {
+    dispatch({
+      type: "UPDATE_PROJECT",
+      payload: project,
+    });
 
-      await xhr("/projects/update", project, "PUT");
-    } catch (e) {}
+    xhr("/projects/update", project, "PUT");
   };
 
-  const deleteProject = async (_id) => {
-    try {
-      dispatch({
-        type: "DELETE_PROJECT",
-        payload: { _id },
-      });
+  const deleteProject = (_id) => {
+    dispatch({
+      type: "DELETE_PROJECT",
+      payload: { _id },
+    });
 
-      await xhr(
-        "/projects/delete",
-        {
-          _id,
-        },
-        "DELETE"
-      );
-    } catch (e) {}
+    xhr(
+      "/projects/delete",
+      {
+        _id,
+      },
+      "DELETE"
+    );
   };
 
   const deleteAllProjects = async () => {
@@ -104,7 +100,7 @@ export function ProjectsProvider(props) {
           type: "SET_PROJECT_BY_QUERY_ID",
           payload: project,
         });
-      } else {
+      } else if (router.query.id != previousRouterId) {
         const res = await xhr("/projects/show", { _id }, "POST");
         if (res.message == "ok" && res.project) {
           dispatch({

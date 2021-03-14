@@ -134,7 +134,7 @@
 }
 
 .lineTask {
-  position: absolute;
+  position: relative;
   background: #258efa;
   border-radius: 3px;
   height: 35px;
@@ -149,7 +149,7 @@
   color: #f3f3f3;
   padding-left: 8px;
   padding-right: 8px;
-  margin-bottom: 20px;
+  margin-top: 20px;
   &:hover {
     .openSubtasksIcon {
       display: flex;
