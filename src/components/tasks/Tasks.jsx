@@ -80,6 +80,18 @@ export default function Tasks({ editedTask, setEditedTask }) {
             );
           },
         }}
+        scrollerProps={{
+          renderer: (props) => {
+            const { elementRef, ...restProps } = props;
+            return (
+              <div
+                {...restProps}
+                ref={elementRef}
+                className="ScrollbarsCustom-Scroller Tasks-Scroller"
+              />
+            );
+          },
+        }}
       >
         <TasksRoot
           root={""}
