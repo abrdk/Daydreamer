@@ -1,7 +1,6 @@
 import headerStyles from "@/styles/header.module.scss";
 import menuStyles from "@/styles/menu.module.scss";
 import Truncate from "react-truncate";
-import ReactCursorPosition from "react-cursor-position";
 
 import { ViewSwitcher } from "@/src/components/viewSwitcher/viewSwitcher";
 import { ViewMode } from "@/src/types/public-types";
@@ -28,9 +27,7 @@ export default function DefaultGantt() {
           </div>
         </div>
       </div>
-      <ReactCursorPosition>
-        <Calendar view={ViewMode.Day} />
-      </ReactCursorPosition>
+      <Calendar view={ViewMode.Day} />
       <DefaultLines />
       <img src="/img/plus.svg" alt=" " className={menuStyles.bigPlus} />
     </>
