@@ -12,26 +12,19 @@ import CenterArea from "@/src/components/tasks/Line/LineTask/CenterArea";
 
 export default function LineTask({
   task,
-  index,
   setMenu,
-  editedTask,
   setEditedTask,
   calendarStartDate,
   view,
 }) {
   const views = ["Day", "Week", "Month"];
   const dayWidth = [55, 120 / 7, 160 / 30];
-  const extraWidth = [55, 120 / 7, 160 / 30];
-  const dayLeft = [55, 120 / 7, 160 / 30];
-  const extraLeft = [0, 0, 0];
   const minOffsetRight = [-70, -5, 0];
   const maxOffsetRight = [15, 5, 0];
   const minOffsetLeft = [70, 5, 0];
   const maxOffsetLeft = [-15, -5, 0];
   const minOffsetMove = [65, 5, 0];
   const maxOffsetMove = [-40, -5, 0];
-
-  const taskTop = 20 + index * 55;
 
   const lineRef = useRef(null);
 
@@ -63,17 +56,19 @@ export default function LineTask({
     return new Date(year, month + 1, 0).getDate();
   };
 
+  const numOfMonths = (startDate, endDate) => {
+    let months;
+    months = (endDate.getFullYear() - startDate.getFullYear()) * 12;
+    months -= startDate.getMonth();
+    months += endDate.getMonth() + 1;
+    return months <= 0 ? 0 : months;
+  };
+
   const getMonthLeft = (dateStart) => {
-    let monthLeft = 0;
-    [...Array(dateStart.getMonth() + 1).keys()].forEach((m) => {
-      if (m == dateStart.getMonth()) {
-        monthLeft +=
-          (160 / daysInMonth(m, dateStart.getFullYear())) *
-          (dateStart.getDate() - 1);
-      } else {
-        monthLeft += 160;
-      }
-    });
+    let monthLeft = 160 * (numOfMonths(calendarStartDate, dateStart) - 1);
+    monthLeft +=
+      (160 / daysInMonth(dateStart.getMonth(), dateStart.getFullYear())) *
+      (dateStart.getDate() - 1);
     return monthLeft;
   };
 
@@ -82,28 +77,26 @@ export default function LineTask({
   };
 
   const getMonthWidth = (dateStart, dateEnd) => {
-    const range = (start, stop, step = 1) =>
-      Array(Math.ceil((stop - start) / step))
-        .fill(start)
-        .map((x, y) => x + y * step);
+    if (
+      dateStart.getMonth() == dateEnd.getMonth() &&
+      dateStart.getFullYear() == dateEnd.getFullYear()
+    ) {
+      return (
+        (160 / daysInMonth(dateStart.getMonth(), dateStart.getFullYear())) *
+        (numOfDays(dateStart, dateEnd) - 1)
+      );
+    }
 
-    let monthWidth = 0;
-    range(dateStart.getMonth(), dateEnd.getMonth() + 1).forEach((m) => {
-      if (m == dateStart.getMonth() && m == dateEnd.getMonth()) {
-        monthWidth +=
-          (160 / daysInMonth(m, dateStart.getFullYear())) *
-          (numOfDays(dateStart, dateEnd) - 1);
-      } else if (m == dateStart.getMonth()) {
-        monthWidth +=
-          (160 / daysInMonth(m, dateStart.getFullYear())) *
-          (daysInMonth(m, dateStart.getFullYear()) - dateStart.getDate() + 1);
-      } else if (m == dateEnd.getMonth()) {
-        monthWidth +=
-          (160 / daysInMonth(m, dateEnd.getFullYear())) * dateEnd.getDate();
-      } else {
-        monthWidth += 160;
-      }
-    });
+    let monthWidth = 160 * (numOfMonths(dateStart, dateEnd) - 2);
+    monthWidth +=
+      (160 / daysInMonth(dateStart.getMonth(), dateStart.getFullYear())) *
+      (daysInMonth(dateStart.getMonth(), dateStart.getFullYear()) -
+        dateStart.getDate() +
+        1);
+    monthWidth +=
+      (160 / daysInMonth(dateEnd.getMonth(), dateEnd.getFullYear())) *
+      dateEnd.getDate();
+
     return monthWidth;
   };
 
@@ -114,10 +107,7 @@ export default function LineTask({
     const numOfDaysFromCalendarStart = Math.floor(
       (dateStart.getTime() - calendarStartDate.getTime()) / 1000 / 60 / 60 / 24
     );
-    return (
-      dayLeft[views.indexOf(view)] * numOfDaysFromCalendarStart +
-      extraLeft[views.indexOf(view)]
-    );
+    return dayWidth[views.indexOf(view)] * numOfDaysFromCalendarStart;
   };
 
   const getTaskWidth = () => {
@@ -131,10 +121,7 @@ export default function LineTask({
     const taskDuration = Math.floor(
       (dateEnd.getTime() - dateStart.getTime()) / 1000 / 60 / 60 / 24
     );
-    return (
-      dayWidth[views.indexOf(view)] * taskDuration +
-      extraWidth[views.indexOf(view)]
-    );
+    return dayWidth[views.indexOf(view)] * (taskDuration + 1);
   };
 
   const getPadding = () => {
@@ -162,6 +149,7 @@ export default function LineTask({
     setTaskLeft(newTaskLeft);
     setTaskWidth(newTaskWidth);
     setTextWidth(newTaskWidth - 36);
+    document.querySelector("#linesWrapper").style.paddingLeft = "0px";
   }, [dateStart, dateEnd, calendarStartDate]);
 
   return (
@@ -169,10 +157,9 @@ export default function LineTask({
       <div
         className={calendarStyles.lineTask}
         style={{
-          left: taskLeft,
+          marginLeft: taskLeft,
           width: taskWidth,
           background: `#${task.color}`,
-          top: taskTop,
           paddingLeft: getPadding(),
           paddingRight: getPadding(),
         }}
@@ -247,7 +234,6 @@ export default function LineTask({
       <When condition={task.isOpened}>
         <LineTasksRoot
           root={task._id}
-          editedTask={editedTask}
           setEditedTask={setEditedTask}
           setMenu={setMenu}
           view={view}

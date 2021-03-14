@@ -15,10 +15,9 @@ export function TasksProvider(props) {
   const [tasksState, dispatch] = useReducer(TasksReducer, {
     tasks: [],
     tasksByProjectId: [],
-    sortedTasksIds: [],
     isTasksLoaded: false,
   });
-  const { tasks, isTasksLoaded, tasksByProjectId, sortedTasksIds } = tasksState;
+  const { tasks, isTasksLoaded, tasksByProjectId } = tasksState;
 
   const findSubtasksIds = (_id) =>
     tasksByProjectId
@@ -103,18 +102,6 @@ export function TasksProvider(props) {
       loadTasksByProjectId(router.query.id);
     }
   }, [router.query.id, tasks]);
-
-  useEffect(() => {
-    dispatch({
-      type: "SET_SORTED_TASKS_IDS",
-      payload: flatten(
-        tasksByProjectId
-          .filter((t) => t.root == "")
-          .sort((task1, task2) => task1.order > task2.order)
-          .map((t) => flatten(findTaskWithSubtaskIds(t._id)))
-      ),
-    });
-  }, [tasksByProjectId]);
 
   const createTask = async (task) => {
     try {
@@ -245,7 +232,6 @@ export function TasksProvider(props) {
         tasks,
         isTasksLoaded,
         tasksByProjectId,
-        sortedTasksIds,
         createTask,
         updateTask,
         deleteTask,

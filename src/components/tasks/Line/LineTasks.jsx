@@ -1,5 +1,6 @@
 import styles from "@/styles/calendar.module.scss";
 import Scrollbar from "react-scrollbars-custom";
+import { useEffect, useState } from "react";
 
 import LineTasksRoot from "@/src/components/tasks/Line/LineTasksRoot";
 
@@ -10,10 +11,15 @@ export default function LineTasks({
   calendarStartDate,
   view,
 }) {
-  let calendarWidth = 0;
-  document.querySelectorAll(".month").forEach((el) => {
-    calendarWidth += el.offsetWidth;
-  });
+  const [calendarWidth, setCalendarWidth] = useState(0);
+
+  useEffect(() => {
+    let currentCalendarWidth = 0;
+    document.querySelectorAll(".month").forEach((el) => {
+      currentCalendarWidth += el.offsetWidth;
+    });
+    setCalendarWidth(currentCalendarWidth);
+  }, [view]);
 
   return (
     <div
@@ -44,11 +50,10 @@ export default function LineTasks({
           },
         }}
       >
-        <div>
+        <div id="linesWrapper">
           <LineTasksRoot
             calendarStartDate={calendarStartDate}
             setMenu={setMenu}
-            editedTask={editedTask}
             setEditedTask={setEditedTask}
             root={""}
             view={view}

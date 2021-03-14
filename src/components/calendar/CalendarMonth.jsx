@@ -1,9 +1,9 @@
 import styles from "@/styles/calendar.module.scss";
-import Scrollbar from "react-scrollbars-custom";
 import { When } from "react-if";
-import { useEffect, useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import LineTasks from "@/src/components/tasks/Line/LineTasks";
+import ScrollbarMonth from "@/src/components/calendar/CalendarMonth/ScrollbarMonth";
 
 const monthNames = [
   "January",
@@ -21,7 +21,6 @@ const monthNames = [
 ];
 
 export default function CalendarMonth({
-  scrollAt,
   cursor,
   setCursor,
   isDraggable,
@@ -31,23 +30,32 @@ export default function CalendarMonth({
   setEditedTask,
   view,
 }) {
-  const [defaultScrollLeft, setDefaultScrollLeft] = useState(undefined);
-  const [scrollLeft, setScrollLeft] = useState(0);
-  const [initialScrollLeft, setInitialScrollLeft] = useState(0);
-
-  const startScrollHandler = () => {
-    if (cursor == "pointer") {
-      setInitialScrollLeft(scrollAt);
-      setDraggable(true);
-      document.body.style.cursor = "grab";
-      setCursor("grab");
-    }
+  const daysInMonth = (month, year) => {
+    return new Date(year, month + 1, 0).getDate();
   };
 
-  const stopScrollHandler = (scrollValues) => {
-    if (cursor != "grab") {
-      setScrollLeft(scrollValues.scrollLeft);
-    }
+  const today = new Date();
+
+  const [calendarStartDate, setCalendarStartDate] = useState(
+    new Date(today.getFullYear() - 1, 0, 1)
+  );
+  const [calendarEndDate, setCalendarEndDate] = useState(
+    new Date(
+      today.getFullYear() + 1,
+      11,
+      daysInMonth(today.getFullYear(), 11),
+      23,
+      59,
+      59
+    )
+  );
+
+  const numOfMonths = (startDate, endDate) => {
+    let months;
+    months = (endDate.getFullYear() - startDate.getFullYear()) * 12;
+    months -= startDate.getMonth();
+    months += endDate.getMonth() + 1;
+    return months <= 0 ? 0 : months;
   };
 
   const isSameMonth = (date1, date2) => {
@@ -57,70 +65,56 @@ export default function CalendarMonth({
     );
   };
 
-  const daysInMonth = (month, year) => {
-    return new Date(year, month + 1, 0).getDate();
-  };
-
   const monthsComponents = useMemo(
     () =>
-      [...Array(24).keys()].map((month) => {
-        let date = new Date();
-        date.setMonth(0);
-        date.setDate(1);
-        date.setMonth(month);
-        return (
-          <div
-            key={`month-${month}`}
-            style={{ position: "relative" }}
-            className="month"
-          >
+      [...Array(numOfMonths(calendarStartDate, calendarEndDate)).keys()].map(
+        (month) => {
+          let date = new Date();
+          date.setFullYear(calendarStartDate.getFullYear());
+          date.setMonth(month);
+          date.setDate(1);
+          return (
             <div
-              className={
-                isSameMonth(new Date(), date)
-                  ? styles.monthCurrent
-                  : styles.monthWrapper
-              }
+              key={`month-${month}`}
+              style={{ position: "relative" }}
+              className="month"
             >
-              <div>{monthNames[month % 12]}</div>
-            </div>
-            <When condition={isSameMonth(new Date(), date)}>
               <div
-                className={styles.monthLine}
-                style={{
-                  left:
-                    (160 / daysInMonth(month, date.getFullYear())) *
-                    (new Date().getDate() - 1),
-                }}
-              ></div>
-            </When>
-            <div className={styles.dashedContainerMonth}></div>
-          </div>
-        );
-      }),
-    []
+                className={
+                  isSameMonth(new Date(), date)
+                    ? styles.monthCurrent
+                    : styles.monthWrapper
+                }
+              >
+                <div>{monthNames[month % 12]}</div>
+              </div>
+              <When condition={isSameMonth(new Date(), date)}>
+                <div
+                  className={styles.monthLine}
+                  style={{
+                    left:
+                      (160 / daysInMonth(month, date.getFullYear())) *
+                      (new Date().getDate() - 1),
+                  }}
+                ></div>
+              </When>
+              <div className={styles.dashedContainerMonth}></div>
+            </div>
+          );
+        }
+      ),
+    [calendarStartDate, calendarEndDate]
   );
-
-  useEffect(() => {
-    const today = new Date();
-    const calculatedDefaultScrollLeft = (today.getMonth() - 2) * 160;
-    if (calculatedDefaultScrollLeft > 0) {
-      setDefaultScrollLeft(calculatedDefaultScrollLeft);
-    } else {
-      setDefaultScrollLeft(0);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof defaultScrollLeft != "undefined") {
-      setDefaultScrollLeft(undefined);
-    }
-  }, [defaultScrollLeft]);
 
   const monthsWithLabelsComponents = useMemo(
     () =>
-      [...Array(2).keys()].map((year) => {
+      [
+        ...Array(
+          calendarEndDate.getFullYear() - calendarStartDate.getFullYear() + 1
+        ).keys(),
+      ].map((year) => {
         let date = new Date();
-        date.setFullYear(date.getFullYear() + year);
+        date.setFullYear(calendarStartDate.getFullYear() + year);
         return (
           <div key={`year-${year}`}>
             <div className={styles.monthName}>{date.getFullYear()}</div>
@@ -130,63 +124,28 @@ export default function CalendarMonth({
           </div>
         );
       }),
-    []
+    [calendarStartDate, calendarEndDate]
   );
 
   return (
-    <Scrollbar
-      onScrollStop={stopScrollHandler}
-      scrollLeft={
-        isDraggable
-          ? scrollLeft - scrollAt + initialScrollLeft
-          : defaultScrollLeft
-      }
-      noScrollY={true}
-      style={{ height: "calc(100vh - 89px)", width: "100vw" }}
-      trackXProps={{
-        renderer: (props) => {
-          const { elementRef, ...restProps } = props;
-          return (
-            <span
-              {...restProps}
-              ref={elementRef}
-              className="ScrollbarsCustom-Track ScrollbarsCustom-TrackX ScrollbarsCustom-Calendar"
-            />
-          );
-        },
-      }}
-      scrollerProps={{
-        renderer: (props) => {
-          const { elementRef, ...restProps } = props;
-          return (
-            <div
-              {...restProps}
-              ref={elementRef}
-              className="ScrollbarsCustom-Scroller Calendar-Scroller"
-            />
-          );
-        },
-      }}
+    <ScrollbarMonth
+      cursor={cursor}
+      setCursor={setCursor}
+      isDraggable={isDraggable}
+      setDraggable={setDraggable}
+      calendarStartDate={calendarStartDate}
+      setCalendarStartDate={setCalendarStartDate}
+      calendarEndDate={calendarEndDate}
+      setCalendarEndDate={setCalendarEndDate}
     >
-      <div
-        onMouseDown={startScrollHandler}
-        className={
-          cursor == "pointer"
-            ? styles.wrapperPointer
-            : cursor == "grab"
-            ? styles.wrapperGrab
-            : styles.wrapper
-        }
-      >
-        {monthsWithLabelsComponents}
-        <LineTasks
-          calendarStartDate={new Date(new Date().getFullYear(), 0, 1)}
-          setMenu={setMenu}
-          editedTask={editedTask}
-          setEditedTask={setEditedTask}
-          view={view}
-        />
-      </div>
-    </Scrollbar>
+      {monthsWithLabelsComponents}
+      <LineTasks
+        calendarStartDate={calendarStartDate}
+        setMenu={setMenu}
+        editedTask={editedTask}
+        setEditedTask={setEditedTask}
+        view={view}
+      />
+    </ScrollbarMonth>
   );
 }

@@ -34,7 +34,6 @@ export default function SubtaskTooltip({ task, setMenu, setEditedTask }) {
       description: "",
       root: task._id,
       order,
-      color: "258EFA",
     });
     setEditedTask(newSubtaskId);
   };
