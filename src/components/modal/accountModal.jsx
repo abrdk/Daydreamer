@@ -26,8 +26,45 @@ export default function AccountModal({ setModal }) {
     }
   };
 
+  const unsetWarnings = () => {
+    setNameWarn(null);
+    setPasswordWarn(null);
+  };
+
+  const getNameInputClass = () => {
+    if (nameWarn) {
+      if (name) {
+        return authStyles.formInputFilledWarn;
+      }
+      return authStyles.formInputWarn;
+    }
+    if (name) {
+      return authStyles.formInputFilled;
+    }
+    return authStyles.formInput;
+  };
+
+  const getPasswordInputClass = () => {
+    if (passwordWarn) {
+      if (password) {
+        return authStyles.formInputFilledWarn;
+      }
+      return authStyles.formInputWarn;
+    }
+    if (password) {
+      return authStyles.formInputFilled;
+    }
+    return authStyles.formInput;
+  };
+
+  const updateNameHandler = (e) => setName(e.target.value);
+  const updatePasswordHandler = (e) => setPassword(e.target.value);
+
   const isDataUpdating = () =>
     !(name === userCtx.name && password === userCtx.password);
+
+  const togglePasswordVisibility = () =>
+    setPasswordVisibility(!isPasswordVisible);
 
   const updateHandler = async () => {
     if (!isDataUpdating() && !isUpdatingComplete) {
@@ -60,58 +97,38 @@ export default function AccountModal({ setModal }) {
         onClick={outsideClick}
         id="account_wrapper"
       >
-        <div
-          className={styles.accountModal}
-          onClick={() => {
-            setNameWarn(null);
-            setPasswordWarn(null);
-          }}
-        >
+        <div className={styles.accountModal} onClick={unsetWarnings}>
           <div className={styles.accountTitle}>Personal account</div>
           <FloatingLabel
             id="name"
             name="name"
             placeholder="Your name"
-            className={
-              nameWarn
-                ? name
-                  ? authStyles.formInputFilledWarn
-                  : authStyles.formInputWarn
-                : name
-                ? authStyles.formInputFilled
-                : authStyles.formInput
-            }
+            className={getNameInputClass()}
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={updateNameHandler}
           />
-          {nameWarn && <div className={authStyles.warn}>{nameWarn}</div>}
+          {nameWarn && (
+            <div className={authStyles.warningContainer}>{nameWarn}</div>
+          )}
           <div className={authStyles.passwordContainer}>
             <FloatingLabel
               id="password"
               name="password"
               placeholder="Your password"
-              className={
-                passwordWarn
-                  ? password
-                    ? authStyles.formInputFilledWarn
-                    : authStyles.formInputWarn
-                  : password
-                  ? authStyles.formInputFilled
-                  : authStyles.formInput
-              }
+              className={getPasswordInputClass()}
               type={isPasswordVisible ? "text" : "password"}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={updatePasswordHandler}
             />
             <img
               src="/img/eye.svg"
               alt=" "
               className={authStyles.passwordEye}
-              onClick={() => setPasswordVisibility(!isPasswordVisible)}
+              onClick={togglePasswordVisibility}
             />
           </div>
           {passwordWarn && (
-            <div className={homteStyles.warn}>{passwordWarn}</div>
+            <div className={authStyles.warningContainer}>{passwordWarn}</div>
           )}
           <div
             className={

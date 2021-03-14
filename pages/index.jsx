@@ -11,7 +11,7 @@ export default function Home() {
   const { isUserLoaded, _id } = useContext(UsersContext);
   const { projects } = useContext(ProjectsContext);
   let currentProject = projects.find((project) => project.isCurrent);
-  if (!currentProject) {
+  if (!currentProject && projects.length) {
     currentProject = projects[0];
   }
 

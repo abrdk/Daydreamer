@@ -2,6 +2,7 @@ import { xhr } from "@/helpers/xhr";
 import { useRouter } from "next/router";
 import { nanoid } from "nanoid";
 import React, { createContext, useReducer, useEffect } from "react";
+import usePrevious from "@react-hook/previous";
 
 import TasksReducer from "@/src/context/tasks/TasksReducer";
 
@@ -9,38 +10,21 @@ export const TasksContext = createContext();
 
 export function TasksProvider(props) {
   const router = useRouter();
+  const previousRouterId = usePrevious(router.query.id);
+
   const [tasksState, dispatch] = useReducer(TasksReducer, {
     tasks: [],
     tasksByProjectId: [],
-    sortedTasksIds: [],
-    isSorting: false,
     isTasksLoaded: false,
   });
-  const colors = [
-    "FFBC42",
-    "258EFA",
-    "FFBC42",
-    "FFBC42",
-    "59CD90",
-    "59CD90",
-    "258EFA",
-  ];
-  const {
-    tasks,
-    isTasksLoaded,
-    tasksByProjectId,
-    sortedTasksIds,
-    isSorting,
-  } = tasksState;
+  const { tasks, isTasksLoaded, tasksByProjectId } = tasksState;
 
   const findSubtasksIds = (_id) =>
     tasksByProjectId
       .filter((t) => t.root == _id)
       .sort((task1, task2) => task1.order > task2.order)
       .map((t) => [t._id, ...findSubtasksIds(t._id)]);
-
   const findTaskWithSubtaskIds = (_id) => [_id, ...findSubtasksIds(_id)];
-
   function flatten(array, mutable) {
     let toString = Object.prototype.toString;
     let arrayTypeStr = "[object Array]";
@@ -91,7 +75,7 @@ export function TasksProvider(props) {
           type: "SET_TASKS_BY_PROJECT_ID",
           payload: tasksByProject,
         });
-      } else {
+      } else if (router.query.id != previousRouterId) {
         const res = await xhr("/tasks/show", { project }, "POST");
         if (res.message == "ok" && res.tasks) {
           dispatch({
@@ -104,6 +88,11 @@ export function TasksProvider(props) {
             payload: [],
           });
         }
+      } else {
+        dispatch({
+          type: "SET_TASKS_BY_PROJECT_ID",
+          payload: [],
+        });
       }
     } catch (e) {}
   };
@@ -114,25 +103,12 @@ export function TasksProvider(props) {
     }
   }, [router.query.id, tasks]);
 
-  useEffect(() => {
-    dispatch({
-      type: "SET_SORTED_TASKS_IDS",
-      payload: flatten(
-        tasksByProjectId
-          .filter((t) => t.root == "")
-          .sort((task1, task2) => task1.order > task2.order)
-          .map((t) => flatten(findTaskWithSubtaskIds(t._id)))
-      ),
-    });
-  }, [tasksByProjectId]);
-
   const createTask = async (task) => {
     try {
       dispatch({
         type: "ADD_TASK",
         payload: task,
       });
-
       await xhr("/tasks/create", task, "POST");
     } catch (e) {}
   };
@@ -143,38 +119,32 @@ export function TasksProvider(props) {
         type: "UPDATE_TASK",
         payload: task,
       });
-
       await xhr("/tasks/update", task, "PUT");
     } catch (e) {}
   };
 
   const deleteTask = (_id) => {
-    try {
-      flatten(findTaskWithSubtaskIds(_id)).forEach((id) => {
-        dispatch({
-          type: "DELETE_TASK",
-          payload: { _id: id },
-        });
-        xhr(
-          "/tasks/delete",
-          {
-            _id: id,
-          },
-          "DELETE"
-        );
+    flatten(findTaskWithSubtaskIds(_id)).forEach((id) => {
+      dispatch({
+        type: "DELETE_TASK",
+        payload: { _id: id },
       });
-    } catch (e) {}
+      xhr(
+        "/tasks/delete",
+        {
+          _id: id,
+        },
+        "DELETE"
+      );
+    });
   };
 
-  const deleteTasksByProject = async (project) => {
-    try {
-      dispatch({
-        type: "DELETE_TASKS_BY_PROJECT",
-        payload: { project },
-      });
-
-      await xhr("/tasks/delete_by_project", { project }, "DELETE");
-    } catch (e) {}
+  const deleteTasksByProject = (project) => {
+    dispatch({
+      type: "DELETE_TASKS_BY_PROJECT",
+      payload: { project },
+    });
+    xhr("/tasks/delete_by_project", { project }, "DELETE");
   };
 
   const deleteAllTasks = async () => {
@@ -184,6 +154,15 @@ export function TasksProvider(props) {
   };
 
   const createInitialTasks = async ({ project }) => {
+    const colors = [
+      "FFBC42",
+      "258EFA",
+      "FFBC42",
+      "FFBC42",
+      "59CD90",
+      "59CD90",
+      "258EFA",
+    ];
     const today = new Date();
     const datesStart = [
       new Date(today.getFullYear(), today.getMonth(), today.getDate() - 6),
@@ -205,7 +184,7 @@ export function TasksProvider(props) {
     ];
 
     const _ids = [...Array(7).keys()].map(() => nanoid());
-    const newTasks = _ids.map((_id, i) => {
+    const tasks = _ids.map((_id, i) => {
       if (i < 5) {
         return {
           _id,
@@ -231,22 +210,19 @@ export function TasksProvider(props) {
         order: i - 5,
       };
     });
-
-    await Promise.all([
-      createTask(newTasks[0]),
-      createTask(newTasks[1]),
-      createTask(newTasks[2]),
-      createTask(newTasks[3]),
-      createTask(newTasks[4]),
-      createTask(newTasks[5]),
-      createTask(newTasks[6]),
-    ]);
+    async function createTasks() {
+      const promises = tasks.map(async (task) => {
+        await createTask(task);
+      });
+      await Promise.all(promises);
+    }
+    await createTasks();
   };
 
-  const setIsSorting = (bool) => {
+  const updateIsOpened = ({ _id, isOpened }) => {
     dispatch({
-      type: "SET_IS_SORTING",
-      payload: bool,
+      type: "UPDATE_IS_OPENED",
+      payload: { _id, isOpened },
     });
   };
 
@@ -256,15 +232,13 @@ export function TasksProvider(props) {
         tasks,
         isTasksLoaded,
         tasksByProjectId,
-        sortedTasksIds,
-        isSorting,
-        setIsSorting,
         createTask,
         updateTask,
         deleteTask,
         deleteAllTasks,
         createInitialTasks,
         deleteTasksByProject,
+        updateIsOpened,
       }}
     >
       {props.children}

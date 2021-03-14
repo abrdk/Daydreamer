@@ -1,5 +1,4 @@
-import React, { createContext, useReducer, useEffect, useContext } from "react";
-import useSWR from "swr";
+import React, { createContext, useReducer, useEffect } from "react";
 import { xhr } from "@/helpers/xhr";
 
 import UsersReducer from "@/src/context/users/UsersReducer";
@@ -7,30 +6,13 @@ import UsersReducer from "@/src/context/users/UsersReducer";
 export const UsersContext = createContext();
 
 export function UsersProvider(props) {
-  const fetcher = (...args) => fetch(...args).then((res) => res.json());
-  const { data, error } = useSWR(`/api/auth/`, fetcher);
-  useEffect(() => {
-    if (!error && data) {
-      if (data.message == "ok") {
-        dispatch({
-          type: "SET_USER",
-          payload: data.user,
-        });
-      } else {
-        dispatch({
-          type: "SET_USER",
-          payload: { _id: "", name: "", password: "" },
-        });
-      }
-    }
-  }, [data, error]);
-
   const [usersState, dispatch] = useReducer(UsersReducer, {
     _id: "",
     name: "",
     password: "",
     isUserLoaded: false,
   });
+
   const { _id, name, password, isUserLoaded } = usersState;
 
   const setUser = (user) => {
@@ -39,6 +21,21 @@ export function UsersProvider(props) {
       payload: user,
     });
   };
+
+  const loadUser = async () => {
+    try {
+      const res = await xhr("/auth", {}, "GET");
+      if (res.message == "ok") {
+        setUser(res.user);
+      } else {
+        setUser({ _id: "", name: "", password: "" });
+      }
+    } catch (e) {}
+  };
+
+  useEffect(() => {
+    loadUser();
+  }, []);
 
   const signup = async (user) => {
     try {

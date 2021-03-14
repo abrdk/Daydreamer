@@ -5,7 +5,7 @@ import FloatingLabel from "floating-label-react";
 import usePrevious from "@react-hook/previous";
 import { When } from "react-if";
 
-import TaskCalendar from "@/src/components/tasks/TaskCalendar";
+import TaskCalendar from "@/src/components/tasks/Edit/TaskCalendar";
 
 import { TasksContext } from "@/src/context/tasks/TasksContext";
 import { UsersContext } from "@/src/context/users/UsersContext";

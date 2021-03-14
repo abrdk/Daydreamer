@@ -9,20 +9,20 @@ import { TasksContext } from "@/src/context/tasks/TasksContext";
 
 export default function Option({ project, projectIndex }) {
   const router = useRouter();
-  const { projects, updateProject, deleteProject } = useContext(
-    ProjectsContext
-  );
+  const {
+    projects,
+    updateProject,
+    deleteProject,
+    projectByQueryId,
+  } = useContext(ProjectsContext);
   const { deleteTasksByProject } = useContext(TasksContext);
-  const selectedProject = projects.find(
-    (project) => project._id == router.query.id
-  );
   const [isUpdating, setUpdatingState] = useState(!project.name);
   const input = useRef(null);
   const fakeText = useRef(null);
   const pencil = useRef(null);
   const trash = useRef(null);
 
-  const selectHandler = async (e) => {
+  const selectHandler = (e) => {
     if (
       e.target != trash.current &&
       e.target != pencil.current &&
@@ -30,16 +30,14 @@ export default function Option({ project, projectIndex }) {
       project._id != router.query.id
     ) {
       router.push(`/gantt/${project._id}`);
-      await Promise.all([
-        updateProject({
-          ...project,
-          isCurrent: true,
-        }),
-        updateProject({
-          ...selectedProject,
-          isCurrent: false,
-        }),
-      ]);
+      updateProject({
+        ...project,
+        isCurrent: true,
+      });
+      updateProject({
+        ...projectByQueryId,
+        isCurrent: false,
+      });
     }
   };
 
@@ -51,58 +49,52 @@ export default function Option({ project, projectIndex }) {
     }
   };
 
-  const updateHandler = async (e) => {
-    await updateProject({ ...project, name: e.target.value });
+  const updateHandler = (e) => {
+    updateProject({ ...project, name: e.target.value });
   };
 
-  const blurHandler = async (e) => {
+  const blurHandler = (e) => {
     setTimeout(() => setUpdatingState(false), 150);
     if (!e.target.value) {
-      await updateProject({
+      updateProject({
         ...project,
         name: `Project name #${projectIndex + 1}`,
       });
     }
   };
 
-  const deleteHandler = async () => {
+  const deleteHandler = () => {
     if (project._id == router.query.id) {
       if (projectIndex === projects.length - 1) {
-        await Promise.all([
-          updateProject({
-            ...projects[projectIndex - 1],
-            isCurrent: true,
-          }),
-          deleteProject(project._id),
-          deleteTasksByProject(project._id),
-        ]);
+        updateProject({
+          ...projects[projectIndex - 1],
+          isCurrent: true,
+        });
+        deleteProject(project._id);
+        deleteTasksByProject(project._id);
         router.push(`/gantt/${projects[projectIndex - 1]._id}`);
       } else {
-        await Promise.all([
-          updateProject({
-            ...projects[projectIndex + 1],
-            isCurrent: true,
-          }),
-          deleteProject(project._id),
-          deleteTasksByProject(project._id),
-        ]);
+        updateProject({
+          ...projects[projectIndex + 1],
+          isCurrent: true,
+        });
+        deleteProject(project._id);
+        deleteTasksByProject(project._id);
         router.push(`/gantt/${projects[projectIndex + 1]._id}`);
       }
     } else {
-      await Promise.all([
-        deleteProject(project._id),
-        deleteTasksByProject(project._id),
-      ]);
+      deleteProject(project._id);
+      deleteTasksByProject(project._id);
     }
   };
 
-  useEffect(() => {
+  const setTextWidth = () => {
     if (input.current && fakeText.current) {
       const textWidth = fakeText.current.offsetWidth;
       if (textWidth > 295) {
         input.current.style.width = "295px";
       } else {
-        input.current.style.width = textWidth + "px";
+        input.current.style.width = textWidth + 5 + "px";
       }
     }
     if (pencil.current && fakeText.current) {
@@ -113,6 +105,10 @@ export default function Option({ project, projectIndex }) {
         pencil.current.style.left = textWidth + "px";
       }
     }
+  };
+
+  useEffect(() => {
+    setTextWidth();
   }, [project, isUpdating]);
 
   useEffect(() => {

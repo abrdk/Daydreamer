@@ -10,31 +10,20 @@ import { TasksContext } from "@/src//context/tasks/TasksContext";
 import { ProjectsContext } from "@/src//context/projects/ProjectsContext";
 import { UsersContext } from "@/src/context/users/UsersContext";
 
-export default function Tasks({
-  editedTask,
-  setEditedTask,
-  isSubtasksOpened,
-  setIsSubtasksOpened,
-}) {
+export default function Tasks({ editedTask, setEditedTask }) {
   const userCtx = useContext(UsersContext);
 
   const [containerHeight, setContainerHeight] = useState(0);
-  const { tasks, createTask, tasksByProjectId } = useContext(TasksContext);
+  const { createTask, tasksByProjectId } = useContext(TasksContext);
   const { projectByQueryId } = useContext(ProjectsContext);
-  let filtredTasks;
-  if (projectByQueryId.owner == userCtx._id) {
-    filtredTasks = tasks.filter((task) => task.project == projectByQueryId._id);
-  } else {
-    filtredTasks = tasksByProjectId;
-  }
 
   useEffect(() => {
-    if (!filtredTasks.length) {
+    if (!tasksByProjectId.length) {
       setContainerHeight(0);
     }
-  }, [filtredTasks]);
+  }, [tasksByProjectId]);
 
-  const createHandle = async () => {
+  const createHandle = () => {
     const today = new Date();
     const currentDate = new Date(
       today.getFullYear(),
@@ -53,11 +42,9 @@ export default function Tasks({
       59
     );
 
-    const topLevelTasks = tasks.filter(
-      (task) => !task.root && task.project == projectByQueryId._id
-    );
+    const topLevelTasks = tasksByProjectId.filter((task) => !task.root);
 
-    await createTask({
+    createTask({
       _id: nanoid(),
       name: "",
       description: "",
@@ -93,14 +80,24 @@ export default function Tasks({
             );
           },
         }}
+        scrollerProps={{
+          renderer: (props) => {
+            const { elementRef, ...restProps } = props;
+            return (
+              <div
+                {...restProps}
+                ref={elementRef}
+                className="ScrollbarsCustom-Scroller Tasks-Scroller"
+              />
+            );
+          },
+        }}
       >
         <TasksRoot
           root={""}
           setContainerHeight={setContainerHeight}
           editedTask={editedTask}
           setEditedTask={setEditedTask}
-          isSubtasksOpened={isSubtasksOpened}
-          setIsSubtasksOpened={setIsSubtasksOpened}
         />
       </Scrollbar>
       <When condition={projectByQueryId.owner == userCtx._id}>
