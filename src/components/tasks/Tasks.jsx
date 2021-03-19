@@ -10,33 +10,30 @@ import { TasksContext } from "@/src//context/tasks/TasksContext";
 import { ProjectsContext } from "@/src//context/projects/ProjectsContext";
 import { UsersContext } from "@/src/context/users/UsersContext";
 
+const blueColor = "258EFA";
+const defaultTaskDuration = 7;
+
 export default function Tasks({ editedTask, setEditedTask }) {
   const userCtx = useContext(UsersContext);
 
-  const [containerHeight, setContainerHeight] = useState(0);
   const { createTask, tasksByProjectId } = useContext(TasksContext);
   const { projectByQueryId } = useContext(ProjectsContext);
 
-  useEffect(() => {
-    if (!tasksByProjectId.length) {
-      setContainerHeight(0);
-    }
-  }, [tasksByProjectId]);
+  const [containerHeight, setContainerHeight] = useState(0);
 
-  const createHandle = () => {
+  const isUserOwnProject = () => projectByQueryId.owner == userCtx._id;
+
+  const createNewTask = () => {
     const today = new Date();
     const currentDate = new Date(
       today.getFullYear(),
       today.getMonth(),
-      today.getDate(),
-      0,
-      0,
-      0
+      today.getDate()
     );
     let afterWeek = new Date(
       today.getFullYear(),
       today.getMonth(),
-      today.getDate() + 6,
+      today.getDate() + defaultTaskDuration - 1,
       23,
       59,
       59
@@ -50,24 +47,30 @@ export default function Tasks({ editedTask, setEditedTask }) {
       description: "",
       dateStart: currentDate,
       dateEnd: afterWeek,
-      color: "258EFA",
+      color: blueColor,
       project: projectByQueryId._id,
       root: "",
       order: topLevelTasks.length,
     });
   };
 
+  useEffect(() => {
+    if (!tasksByProjectId.length) {
+      setContainerHeight(0);
+    }
+  }, [tasksByProjectId]);
+
   return (
     <>
       <div className={styles.line}></div>
-      <div className={styles.tasksHeaderWrapper}>
-        <div className={styles.tasksHeader}>TASK NAME</div>
+      <div className={styles.headerWrapper}>
+        <div className={styles.header}>TASK NAME</div>
       </div>
       <div className={styles.line}></div>
       <Scrollbar
         style={{ height: containerHeight }}
         noScrollX={true}
-        className={styles.tasksRoot}
+        className={styles.root}
         trackYProps={{
           renderer: (props) => {
             const { elementRef, ...restProps } = props;
@@ -100,8 +103,8 @@ export default function Tasks({ editedTask, setEditedTask }) {
           setEditedTask={setEditedTask}
         />
       </Scrollbar>
-      <When condition={projectByQueryId.owner == userCtx._id}>
-        <div className={styles.newTaskBtn} onClick={createHandle}>
+      <When condition={isUserOwnProject()}>
+        <div className={styles.newTaskBtn} onClick={createNewTask}>
           + New Task
         </div>
       </When>

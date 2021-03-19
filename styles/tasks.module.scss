@@ -139,13 +139,13 @@
   background: #f3f3f3;
 }
 
-.tasksHeaderWrapper {
+.headerWrapper {
   display: flex;
   align-items: center;
   height: 73px;
 }
 
-.tasksHeader {
+.header {
   font-style: normal;
   font-weight: 500;
   font-size: 12px;
@@ -173,9 +173,9 @@
   justify-content: center;
 }
 
-.tasksRoot {
+.root {
   overflow-y: auto !important;
-  max-height: calc(100vh - 166px - 80px);
+  max-height: calc(100vh - 246px);
   overflow-x: hidden !important;
 }
 

@@ -11,6 +11,7 @@ export default function TasksRoot({
   setEditedTask,
 }) {
   const { tasksByProjectId } = useContext(TasksContext);
+
   const sortedTasks = tasksByProjectId
     .filter((task) => task.root == root)
     .sort((task1, task2) => task1.order > task2.order);

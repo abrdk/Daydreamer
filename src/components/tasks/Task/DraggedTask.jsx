@@ -1,12 +1,9 @@
 import { useState, useContext, useEffect, useRef } from "react";
 import styles from "@/styles/tasks.module.scss";
-import { When, If, Then, Else } from "react-if";
+import { When } from "react-if";
 import Truncate from "react-truncate";
-import { nanoid } from "nanoid";
 import useEvent from "@react-hook/event";
 import anime from "animejs";
-
-import TasksRoot from "@/src/components/tasks/TasksRoot";
 
 import { UsersContext } from "@/src/context/users/UsersContext";
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
