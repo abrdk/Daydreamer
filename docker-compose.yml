@@ -1,19 +1,47 @@
 version: "3"
 services:
-  daydreamer:
+  traefik:
+    image: "traefik:v2.3"
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entrypoints.ssl.address=:443"
+      - "--certificatesresolvers.ssl.acme.httpchallenge=true"
+      - "--certificatesresolvers.ssl.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.ssl.acme.email=shep@live.ru"
+      - "--certificatesresolvers.ssl.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+      # - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "${DAYDREAMER_DATA}/letencrypt:/letsencrypt"
+  app:
     image: daydreamer
     build: .
-    ports:
-      - "3000:3000"
-    network_mode: "host"
+    expose:
+      - 3000
+    labels:
+      traefik.enable: true
+      traefik.http.routers.app.rule: "HeadersRegexp(`User-Agent`, `.*`)"
+      traefik.http.routers.app-dns.rule: "Host(`${BASE_DNS_NAME}`)"
+      traefik.http.routers.app-dns-tls.rule: "Host(`${BASE_DNS_NAME}`)"
+      traefik.http.routers.app-dns-tls.tls.certresolver: ssl
+      traefik.http.services.app-dns.loadbalancer.server.port: 3000
     environment:
-      - MONGO_URI="mongodb://localhost:27017"
+      - MONGO_URI="mongodb://mongodb:27017"
     depends_on:
       - mongodb
   mongodb:
     image: mongo:latest
-    container_name: "mongodb"
     command: mongod --port 27017 --bind_ip_all
     network_mode: "host"
-    ports:
-      - "27017:27017"
+    expose:
+      - 27017
+    volumes:
+      - "${DAYDREAMER_DATA}/mongo:/data/db"
+
