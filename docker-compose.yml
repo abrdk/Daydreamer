@@ -39,9 +39,7 @@ services:
   mongodb:
     image: mongo:latest
     command: mongod --port 27017 --bind_ip_all
-    network_mode: "host"
     expose:
       - 27017
     volumes:
       - "${DAYDREAMER_DATA}/mongo:/data/db"
-
