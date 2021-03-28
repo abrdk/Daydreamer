@@ -11,7 +11,7 @@ services:
       - "--entrypoints.ssl.address=:443"
       - "--certificatesresolvers.ssl.acme.httpchallenge=true"
       - "--certificatesresolvers.ssl.acme.httpchallenge.entrypoint=web"
-      - "--certificatesresolvers.ssl.acme.email=shep@live.ru"
+      - "--certificatesresolvers.ssl.acme.email=${ACME_EMAIL}"
       - "--certificatesresolvers.ssl.acme.storage=/letsencrypt/acme.json"
     ports:
       - "80:80"
