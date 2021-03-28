@@ -1,19 +1,60 @@
-version: "3"
+version: '3.8'
+
+networks:
+  internal:
+    driver: bridge
+    internal: true
+  external:
+    driver: bridge
+    external: true
+
+volumes:
+  dayd_mongo:
+
 services:
-  daydreamer:
-    image: daydreamer
-    build: .
-    ports:
-      - "3000:3000"
-    network_mode: "host"
-    environment:
-      - MONGO_URI="mongodb://localhost:27017"
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    volumes:
+      - ./containers/nginx:/etc/nginx
+    entrypoint: [ "nginx", "-g", "daemon off;" ]
     depends_on:
-      - mongodb
-  mongodb:
-    image: mongo:latest
-    container_name: "mongodb"
-    command: mongod --port 27017 --bind_ip_all
-    network_mode: "host"
+      - daydreamer
     ports:
-      - "27017:27017"
+      - 80:80
+      - 443:443
+    networks:
+      - external
+      - internal
+
+  daydreamer:
+    hostname: daydreamer
+    container_name: daydreamer
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: ${NODE_ENV}
+    ports:
+      - 3000:3000
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      MONGO_URI: ${MONGO_URI}
+    volumes:
+      - ${DEPENDENCIES:-/dev/null}:/var/www/node_modules
+    networks:
+      - internal
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    hostname: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - dayd_mongo:/data/db
+    command: mongod
+    restart: always
+    networks:
+      - internal

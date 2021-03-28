@@ -3,9 +3,18 @@
   "version": "0.4.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "daydreamer::image::build": "docker build --pull -t insure/daydreamer:latest .",
+    "daydreamer::image::push": "docker push insure/daydreamer:latest",
+    "﴾ ̲◦̲ / ̅•̅ ﴿ ̮ ‿( ́ ̵ _-`)‿ ̮": "rimraf .next",
+    "༼ つ ◕_◕ ༽つ": "rimraf .next",
+    "create::network": "docker network create external && docker network create internal",
+    "compose::up": "docker-compose up -d --build --force-recreate",
+    "compose:down": "docker-compose down",
+    "ʕノ•ᴥ•ʔノ": "rimraf .next",
+    "daydreamer::recreate": "docker-compose up -d --build --force-recreate daydreamer",
+    "nginx::recreate": "docker-compose up -d --build --force-recreate nginx",
+    "mongo::recreate": "docker-compose up -d --build --force-recreate mongo",
+    "‷̗ↂ凸ↂ‴̖": "rimraf .next"
   },
   "dependencies": {
     "@react-hook/event": "^1.2.3",
@@ -27,6 +36,7 @@
     "react-scripts": "3.4.3",
     "react-scrollbars-custom": "^4.0.25",
     "react-truncate": "^2.4.0",
+    "rimraf": "^3.0.2",
     "sass": "^1.32.6"
   },
   "devDependencies": {
