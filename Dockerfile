@@ -1,23 +1,28 @@
-# https://boredhacking.com/next-js-docker-ecr/
-# https://medium.com/@khwsc1/a-simple-react-next-js-app-development-on-docker-6f0bd3f78c2c
-# https://medium.com/swlh/dockerize-your-next-js-application-91ade32baa6
+FROM node:alpine
 
-FROM node:10-alpine
+WORKDIR /var/www
 
-ENV PORT 3000
+COPY . .
 
-# Create app directory
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+ARG NODE_ENV
+RUN if [[ "$NODE_ENV" == "production" ]] ; then \
+        npm i ; \
+        npx next build ; \
+    fi
 
-# Install app dependencies
-COPY package*.json /usr/src/app/
-RUN npm install
+CMD [ "npx", "next", "start"]
 
-# Bundle app source
-COPY . /usr/src/app
 
-RUN npm run build
-EXPOSE 3000
 
-CMD [ "npm", "start" ]
+#
+#FROM node:alpine
+#
+#WORKDIR /var/www
+#
+#COPY . .
+#
+#RUN npm install
+#RUN npm run build
+#RUN rimraf node_modules
+#
+#CMD [ "npm", "run", "start"]

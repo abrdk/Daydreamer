@@ -7,11 +7,11 @@ Put ideas on a timeline. [Start now!](http://165.227.130.78:3000/signup)
     </a>
 </p>
 
-Commands below start the app at [http://localhost:3000](http://localhost:3000):
+Commands below start the app at [https://local.daydreamer.gq](https://local.daydreamer.gq):
 ``` bash
-git clone https://github.com/abrdk/Daydreamer
-cd Daydreamer
-docker-compose up
+git clone https://github.com/abrdk/Daydreamer && cd Daydreamer
+npm install && npm run create::network
+npm run compose::up
 ```
 
 To run the app without Docker, install dependencies (`yarn install`)
