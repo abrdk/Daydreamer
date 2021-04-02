@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 
 const taskPaddingLeft = 33;
 const distanceToText = 6;
-const taskPaddingRight = 105;
+const taskOffsetLeft = 14;
+const maxPencilLeft = 266;
 
 export default function Pencil({
   task,
@@ -12,6 +13,7 @@ export default function Pencil({
   isUpdating,
   editedTask,
   setEditedTask,
+  taskDepth,
 }) {
   const [pencilLeft, setPencilLeft] = useState(0);
 
@@ -23,21 +25,18 @@ export default function Pencil({
     }
   };
 
-  const getNameWidth = () => {
-    const taskElement = document.querySelector(`.task-${task._id}`);
-    if (taskElement) {
-      return taskElement.clientWidth - taskPaddingRight;
-    }
-    return 0;
-  };
-
   const getPencilLeft = () => {
     if (fakeTextRef.current) {
-      const left = fakeTextRef.current.offsetWidth;
-      if (left > getNameWidth()) {
-        return getNameWidth() + taskPaddingLeft + distanceToText;
+      const left =
+        fakeTextRef.current.offsetWidth +
+        taskPaddingLeft +
+        distanceToText +
+        taskDepth * taskOffsetLeft;
+
+      if (left > maxPencilLeft) {
+        return maxPencilLeft;
       }
-      return left + taskPaddingLeft + distanceToText;
+      return left;
     }
     return 0;
   };

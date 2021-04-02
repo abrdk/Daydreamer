@@ -5,6 +5,8 @@ import Truncate from "react-truncate";
 import useEvent from "@react-hook/event";
 import anime from "animejs";
 
+import TaskWrapper from "@/src/components/tasks/Task/TaskWrapper";
+
 import { UsersContext } from "@/src/context/users/UsersContext";
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 import { TasksContext } from "@/src/context/tasks/TasksContext";
@@ -13,9 +15,10 @@ export default function DraggedTask({
   children,
   task,
   editedTask,
-  subtasks,
-  startUpdateHandler,
-  sortedTasks,
+  setUpdatingState,
+  arrow,
+  plus,
+  pencil,
 }) {
   const { tasks, updateTask, tasksByProjectId, updateIsOpened } = useContext(
     TasksContext
@@ -36,184 +39,67 @@ export default function DraggedTask({
   const [beforeTask, setBeforeTask] = useState(null);
   const [afterTask, setAfterTask] = useState(null);
 
-  const reorderHandler = async () => {
-    if (
-      beforeTask &&
-      beforeTask._id == sourceTask.root &&
-      (!afterTask || afterTask.order == 1)
-    ) {
-      return;
-    }
-    const oldIndex = sourceTask.order;
-    let isMoveBetweenRoots = false;
-    let newRoot;
-    let newIndex;
+  const subtasks = tasksByProjectId
+    .filter((subtask) => subtask.root == task._id)
+    .sort((task1, task2) => task1.order > task2.order);
 
-    if (beforeTask) {
-      if (beforeTask.root != sourceTask.root) {
-        isMoveBetweenRoots = true;
-        if (afterTask) {
-          if (afterTask.order == 0) {
-            if (afterTask.root == sourceTask.root) {
-              isMoveBetweenRoots = false;
-              newRoot = sourceTask.root;
-              newIndex = 0;
-            } else {
-              newRoot = afterTask.root;
-              newIndex = 0;
-            }
-          } else {
-            newRoot = beforeTask.root;
-            newIndex = beforeTask.order + 1;
-          }
-        } else {
-          newRoot = beforeTask.root;
-          newIndex = beforeTask.order + 1;
-        }
-      } else if (
-        afterTask &&
-        afterTask.order == 0 &&
-        afterTask.root != sourceTask.root
-      ) {
-        isMoveBetweenRoots = true;
-        newRoot = afterTask.root;
-        newIndex = 0;
-      }
-    } else if (afterTask && !newIndex) {
-      if (afterTask.root != sourceTask.root) {
-        isMoveBetweenRoots = true;
-        newRoot = afterTask.root;
-        if (afterTask.order) {
-          newIndex = afterTask.order - 1;
-        } else {
-          newIndex = 0;
-        }
-      }
-    }
+  const reorderHandler = () => {};
 
-    if (!isMoveBetweenRoots) {
-      if (beforeTask) {
-        if (
-          beforeTask.root == sourceTask.root &&
-          beforeTask.order + 1 == sourceTask.order
-        ) {
-          return;
-        }
-      }
-      if (afterTask) {
-        if (
-          afterTask.root == sourceTask.root &&
-          afterTask.order - 1 == sourceTask.order
-        ) {
-          return;
-        }
-      }
-
-      if (beforeTask && afterTask) {
-        if (beforeTask.root == sourceTask.root) {
-          if (beforeTask.order > oldIndex) {
-            newIndex = beforeTask.order;
-          } else {
-            newIndex = afterTask.order;
-          }
-        } else {
-          newIndex = 0;
-        }
-      } else if (!beforeTask) {
-        newIndex = 0;
-      } else if (!afterTask) {
-        newIndex = sortedTasks.length - 1;
-      }
-
-      if (oldIndex != newIndex) {
-        updateTask({ ...sourceTask, order: newIndex });
-        if (newIndex > oldIndex) {
-          sortedTasks.slice(oldIndex + 1, newIndex + 1).forEach((t) => {
-            updateTask({ ...t, order: t.order - 1 });
-          });
-        } else {
-          sortedTasks.slice(newIndex, oldIndex).forEach((t) => {
-            updateTask({ ...t, order: t.order + 1 });
-          });
-        }
-      }
-    } else {
-      tasksByProjectId
-        .filter((t) => t.root == sourceTask.root)
-        .sort((task1, task2) => task1.order > task2.order)
-        .slice(oldIndex + 1)
-        .forEach((t) => {
-          updateTask({ ...t, order: t.order - 1 });
-        });
-
-      tasksByProjectId
-        .filter((t) => t.root == newRoot)
-        .sort((task1, task2) => task1.order > task2.order)
-        .slice(newIndex)
-        .forEach((t) => {
-          updateTask({ ...t, order: t.order + 1 });
-        });
-      updateTask({ ...sourceTask, order: newIndex, root: newRoot });
-    }
-  };
+  const isUserOwnProject = () => projectByQueryId.owner == userCtx._id;
 
   const addInitialClasses = (e) => {
-    if (document.querySelectorAll(".task").length > 1) {
-      let tasksElements = [];
-      document.querySelectorAll(".task").forEach((taskElement, i) => {
-        if (taskElement.getBoundingClientRect().top > e.clientY) {
-          taskElement.classList.add("plus55");
+    const taskElements = Array.from(document.querySelectorAll(".task"));
+    if (taskElements.length > 1) {
+      taskElements.forEach((el, i) => {
+        if (el.getBoundingClientRect().top > e.clientY) {
+          el.classList.add("plus55");
         }
         setTimeout(() => {
-          taskElement.classList.add("animTranslateY");
+          el.classList.add("animTranslateY");
         }, 100);
-        tasksElements.push(taskElement);
       });
 
       if (e.target.classList.contains(`task-${task._id}`)) {
         if (
-          tasksElements[tasksElements.length - 1].classList.contains(
+          taskElements[taskElements.length - 1].classList.contains(
             `task-${task._id}`
           )
         ) {
           setTimeout(() => {
-            tasksElements[tasksElements.length - 2].classList.add("mb55");
+            taskElements[taskElements.length - 2].classList.add("mb55");
           }, 100);
         } else {
-          tasksElements[tasksElements.length - 1].classList.add("mb55");
+          taskElements[taskElements.length - 1].classList.add("mb55");
         }
       }
     }
   };
 
   const getTaskFromDomElement = (el) => {
-    let res;
     el.classList.forEach((cl) => {
       if (cl.startsWith("task-")) {
-        res = tasks.find((t) => t._id == cl.slice(5));
+        return tasks.find((t) => t._id == cl.slice(5));
       }
     });
-    return res;
   };
 
   const addAnimationClassesAndSetTasks = () => {
-    let beforeTasks = [];
-    let afterTasks = [];
     draggedTask.current.style.transitionDuration = "0.2s";
-    const tasksElements = document.querySelectorAll(".task");
-    tasksElements.forEach((taskElement, i) => {
-      const currentTask = getTaskFromDomElement(taskElement);
+
+    let beforeTasks = [];
+    const taskElements = document.querySelectorAll(".task");
+    taskElements.forEach((el, i) => {
+      const currentTask = getTaskFromDomElement(el);
       if (
-        taskElement.getBoundingClientRect().top >
-        draggedTask.current.getBoundingClientRect().top - 10
+        el.getBoundingClientRect().top >
+        draggedTask.current.getBoundingClientRect().top
       ) {
-        afterTasks.push(currentTask);
-        taskElement.classList.add("plus55");
+        el.classList.add("plus55");
       } else {
-        if (!taskElement.classList.contains("hidden")) {
+        if (!el.classList.contains("hidden")) {
           beforeTasks.push(currentTask);
         }
-        taskElement.classList.remove("plus55");
+        el.classList.remove("plus55");
       }
     });
 
@@ -221,12 +107,6 @@ export default function DraggedTask({
       setBeforeTask(beforeTasks[beforeTasks.length - 1]);
     } else {
       setBeforeTask(null);
-    }
-
-    if (afterTasks.length) {
-      setAfterTask(afterTasks[0]);
-    } else {
-      setAfterTask(null);
     }
   };
 
@@ -313,12 +193,13 @@ export default function DraggedTask({
   };
 
   const dragStartHandler = (e) => {
-    if (projectByQueryId.owner == userCtx._id) {
+    if (isUserOwnProject()) {
       updateIsOpened({ _id: task._id, isOpened: false });
       setDraggingState(true);
+      const taskRect = e.target.getBoundingClientRect();
       setInitialMousePisition({
-        shiftX: e.clientX - e.target.getBoundingClientRect().left,
-        shiftY: e.clientY - e.target.getBoundingClientRect().top,
+        shiftX: e.clientX - taskRect.left,
+        shiftY: e.clientY - taskRect.top,
       });
       addInitialClasses(e);
       setSourceTask(task);
@@ -406,7 +287,7 @@ export default function DraggedTask({
 
   return (
     <>
-      <When condition={isDragging}>
+      {/* <When condition={isDragging}>
         <div
           ref={draggedTask}
           className={
@@ -429,20 +310,141 @@ export default function DraggedTask({
             {task.name}
           </Truncate>
         </div>
-      </When>
-      <div
-        className={
-          isDragging
-            ? styles.task + ` task task-${task._id} hidden ` + styles.hidden
-            : styles.task + ` task task-${task._id}`
-        }
-        onClick={startUpdateHandler}
-        draggable
-        onDragStart={dragStartHandler}
-        onDragEnd={dragEndHandler}
+      </When> */}
+
+      <TaskWrapper
+        task={task}
+        setUpdatingState={setUpdatingState}
+        dragStartHandler={dragStartHandler}
+        dragEndHandler={dragEndHandler}
+        arrow={arrow}
+        plus={plus}
+        pencil={pencil}
+        isDragging={isDragging}
       >
         {children}
-      </div>
+      </TaskWrapper>
     </>
   );
 }
+
+// const reorderHandler = async () => {
+//   if (
+//     beforeTask &&
+//     beforeTask._id == sourceTask.root &&
+//     (!afterTask || afterTask.order == 1)
+//   ) {
+//     return;
+//   }
+//   const oldIndex = sourceTask.order;
+//   let isMoveBetweenRoots = false;
+//   let newRoot;
+//   let newIndex;
+
+//   if (beforeTask) {
+//     if (beforeTask.root != sourceTask.root) {
+//       isMoveBetweenRoots = true;
+//       if (afterTask) {
+//         if (afterTask.order == 0) {
+//           if (afterTask.root == sourceTask.root) {
+//             isMoveBetweenRoots = false;
+//             newRoot = sourceTask.root;
+//             newIndex = 0;
+//           } else {
+//             newRoot = afterTask.root;
+//             newIndex = 0;
+//           }
+//         } else {
+//           newRoot = beforeTask.root;
+//           newIndex = beforeTask.order + 1;
+//         }
+//       } else {
+//         newRoot = beforeTask.root;
+//         newIndex = beforeTask.order + 1;
+//       }
+//     } else if (
+//       afterTask &&
+//       afterTask.order == 0 &&
+//       afterTask.root != sourceTask.root
+//     ) {
+//       isMoveBetweenRoots = true;
+//       newRoot = afterTask.root;
+//       newIndex = 0;
+//     }
+//   } else if (afterTask && !newIndex) {
+//     if (afterTask.root != sourceTask.root) {
+//       isMoveBetweenRoots = true;
+//       newRoot = afterTask.root;
+//       if (afterTask.order) {
+//         newIndex = afterTask.order - 1;
+//       } else {
+//         newIndex = 0;
+//       }
+//     }
+//   }
+
+//   if (!isMoveBetweenRoots) {
+//     if (beforeTask) {
+//       if (
+//         beforeTask.root == sourceTask.root &&
+//         beforeTask.order + 1 == sourceTask.order
+//       ) {
+//         return;
+//       }
+//     }
+//     if (afterTask) {
+//       if (
+//         afterTask.root == sourceTask.root &&
+//         afterTask.order - 1 == sourceTask.order
+//       ) {
+//         return;
+//       }
+//     }
+
+//     if (beforeTask && afterTask) {
+//       if (beforeTask.root == sourceTask.root) {
+//         if (beforeTask.order > oldIndex) {
+//           newIndex = beforeTask.order;
+//         } else {
+//           newIndex = afterTask.order;
+//         }
+//       } else {
+//         newIndex = 0;
+//       }
+//     } else if (!beforeTask) {
+//       newIndex = 0;
+//     } else if (!afterTask) {
+//       newIndex = sortedTasks.length - 1;
+//     }
+
+//     if (oldIndex != newIndex) {
+//       updateTask({ ...sourceTask, order: newIndex });
+//       if (newIndex > oldIndex) {
+//         sortedTasks.slice(oldIndex + 1, newIndex + 1).forEach((t) => {
+//           updateTask({ ...t, order: t.order - 1 });
+//         });
+//       } else {
+//         sortedTasks.slice(newIndex, oldIndex).forEach((t) => {
+//           updateTask({ ...t, order: t.order + 1 });
+//         });
+//       }
+//     }
+//   } else {
+//     tasksByProjectId
+//       .filter((t) => t.root == sourceTask.root)
+//       .sort((task1, task2) => task1.order > task2.order)
+//       .slice(oldIndex + 1)
+//       .forEach((t) => {
+//         updateTask({ ...t, order: t.order - 1 });
+//       });
+
+//     tasksByProjectId
+//       .filter((t) => t.root == newRoot)
+//       .sort((task1, task2) => task1.order > task2.order)
+//       .slice(newIndex)
+//       .forEach((t) => {
+//         updateTask({ ...t, order: t.order + 1 });
+//       });
+//     updateTask({ ...sourceTask, order: newIndex, root: newRoot });
+//   }
+// };

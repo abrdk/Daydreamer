@@ -1,17 +1,14 @@
 import { useState, useContext, useEffect, useRef } from "react";
-import styles from "@/styles/tasks.module.scss";
 import { When } from "react-if";
 
 import TasksRoot from "@/src/components/tasks/TasksRoot";
-import DraggedTask from "@/src/components/tasks/Task/DraggedTask";
+import TaskWrapper from "@/src/components/tasks/Task/TaskWrapper";
 import VerticalLine from "@/src/components/tasks/Task/VerticalLine";
 import SubtasksArrow from "@/src/components/tasks/Task/SubtasksArrow";
 import Name from "@/src/components/tasks/Task/Name";
 import Pencil from "@/src/components/tasks/Task/Pencil";
 import Plus from "@/src/components/tasks/Task/Plus";
 
-import { UsersContext } from "@/src/context/users/UsersContext";
-import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 import { TasksContext } from "@/src/context/tasks/TasksContext";
 
 const taskHeight = 55;
@@ -21,63 +18,56 @@ export default function Task({
   setContainerHeight,
   editedTask,
   setEditedTask,
+  index,
 }) {
-  const userCtx = useContext(UsersContext);
-  const { projectByQueryId } = useContext(ProjectsContext);
   const { tasksByProjectId } = useContext(TasksContext);
 
-  const sortedTasks = tasksByProjectId
-    .filter((t) => t.root == task.root)
-    .sort((task1, task2) => task1.order > task2.order);
-
-  const subtasks = tasksByProjectId
-    .filter((subtask) => subtask.root == task._id)
-    .sort((task1, task2) => task1.order > task2.order);
+  const subtasks = tasksByProjectId.filter(
+    (subtask) => subtask.root == task._id
+  );
 
   const fakeText = useRef(null);
   const arrow = useRef(null);
   const plus = useRef(null);
   const pencil = useRef(null);
+
   const [isUpdating, setUpdatingState] = useState(!task.name);
 
   const getContainerHeight = () =>
     document.querySelectorAll(".task").length * taskHeight;
 
-  const isUserOwnProject = () => projectByQueryId.owner == userCtx._id;
-
-  const startUpdateHandler = (e) => {
-    if (
-      isUserOwnProject() &&
-      e.target != arrow.current &&
-      e.target != plus.current &&
-      e.target != pencil.current
-    ) {
-      setUpdatingState(true);
-    }
-  };
-
   useEffect(() => {
     setContainerHeight(getContainerHeight());
   }, [tasksByProjectId, task.isOpened]);
 
+  let taskDepth = -1;
+  let currentTask = task;
+  while (currentTask) {
+    currentTask = tasksByProjectId.find((t) => t._id == currentTask.root);
+    taskDepth += 1;
+  }
+
   return (
     <>
-      <DraggedTask
+      <TaskWrapper
         task={task}
-        editedTask={editedTask}
-        subtasks={subtasks}
-        startUpdateHandler={startUpdateHandler}
-        sortedTasks={sortedTasks}
+        setUpdatingState={setUpdatingState}
+        arrow={arrow}
+        plus={plus}
+        pencil={pencil}
+        index={index}
+        taskDepth={taskDepth}
       >
         <VerticalLine task={task} editedTask={editedTask} />
 
-        <SubtasksArrow task={task} arrow={arrow} />
+        <SubtasksArrow task={task} arrow={arrow} taskDepth={taskDepth} />
 
         <Name
           task={task}
           isUpdating={isUpdating}
           setUpdatingState={setUpdatingState}
           fakeTextRef={fakeText}
+          taskDepth={taskDepth}
         />
 
         <Pencil
@@ -87,20 +77,19 @@ export default function Task({
           isUpdating={isUpdating}
           editedTask={editedTask}
           setEditedTask={setEditedTask}
+          taskDepth={taskDepth}
         />
 
         <Plus task={task} plusRef={plus} />
-      </DraggedTask>
+      </TaskWrapper>
 
       <When condition={subtasks.length && task.isOpened}>
-        <div className={styles.subtasksWrapper}>
-          <TasksRoot
-            root={task._id}
-            setContainerHeight={setContainerHeight}
-            editedTask={editedTask}
-            setEditedTask={setEditedTask}
-          />
-        </div>
+        <TasksRoot
+          root={task._id}
+          setContainerHeight={setContainerHeight}
+          editedTask={editedTask}
+          setEditedTask={setEditedTask}
+        />
       </When>
     </>
   );

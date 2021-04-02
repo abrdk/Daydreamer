@@ -10,6 +10,7 @@ export default function Input({
   inputRef,
   isUpdating,
   setUpdatingState,
+  taskDepth,
 }) {
   const { updateTask } = useContext(TasksContext);
 
@@ -70,6 +71,7 @@ export default function Input({
       onBlur={handleBlur}
       style={{
         width: getInputWidth(),
+        color: taskDepth > 0 ? "#949da7" : "#696f75",
       }}
     />
   );

@@ -5,6 +5,7 @@ import Scrollbar from "react-scrollbars-custom";
 import { When } from "react-if";
 
 import TasksRoot from "@/src/components/tasks/TasksRoot";
+import TasksDraggableWrapper from "@/src/components/tasks/TasksDraggableWrapper";
 
 import { TasksContext } from "@/src//context/tasks/TasksContext";
 import { ProjectsContext } from "@/src//context/projects/ProjectsContext";

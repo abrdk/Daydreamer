@@ -10,6 +10,7 @@ export default function Name({
   isUpdating,
   setUpdatingState,
   fakeTextRef,
+  taskDepth,
 }) {
   const input = useRef(null);
 
@@ -23,10 +24,11 @@ export default function Name({
             inputRef={input}
             isUpdating={isUpdating}
             setUpdatingState={setUpdatingState}
+            taskDepth={taskDepth}
           />
         </Then>
         <Else>
-          <Text task={task} />
+          <Text task={task} taskDepth={taskDepth} />
         </Else>
       </If>
     </>

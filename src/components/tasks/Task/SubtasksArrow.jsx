@@ -4,12 +4,16 @@ import { When } from "react-if";
 
 import { TasksContext } from "@/src/context/tasks/TasksContext";
 
-export default function SubtasksArrow({ task, arrow }) {
+const taskOffsetLeft = 14;
+
+export default function SubtasksArrow({ task, arrow, taskDepth }) {
   const { tasksByProjectId, updateIsOpened } = useContext(TasksContext);
 
   const subtasks = tasksByProjectId.filter(
     (subtask) => subtask.root == task._id
   );
+
+  const defaultLeft = task.isOpened ? 2 : 7;
 
   const openSubtasks = () => {
     updateIsOpened({ _id: task._id, isOpened: !task.isOpened });
@@ -23,6 +27,9 @@ export default function SubtasksArrow({ task, arrow }) {
         alt=" "
         ref={arrow}
         onClick={openSubtasks}
+        style={{
+          left: defaultLeft + taskDepth * taskOffsetLeft,
+        }}
       />
     </When>
   );
