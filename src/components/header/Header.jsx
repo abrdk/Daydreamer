@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { nanoid } from "nanoid";
 
 import { ViewSwitcher } from "@/src/components/viewSwitcher/viewSwitcher";
+import AccountIcon from "@/src/components/svg/AccountIcon";
 
 import { UsersContext } from "@/src/context/users/UsersContext";
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
@@ -84,7 +85,7 @@ export default function Header({ setMenu, setView, isMenuOpen, setModal }) {
               className={styles.account_button}
               onClick={setModal.bind(null, "account")}
             >
-              <img src="/img/avatar.svg" alt=" " />{" "}
+              <AccountIcon />{" "}
               <Truncate lines={1} width={100}>
                 {userCtx.name}
               </Truncate>

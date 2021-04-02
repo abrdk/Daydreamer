@@ -1,18 +1,21 @@
 import Head from "next/head";
 import Link from "next/link";
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import styles from "@/styles/auth.module.scss";
 import { When } from "react-if";
 import FloatingLabel from "floating-label-react";
 
 import DefaultGantt from "@/src/components/default/DefaultGantt";
+import Eye from "@/src/components/svg/Eye";
 
 import { UsersContext } from "@/src/context/users/UsersContext";
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 
 export default function Login() {
   const router = useRouter();
+
+  const loginBtn = useRef(null);
 
   const [nameWarn, setNameWarn] = useState("");
   const [passwordWarn, setPasswordWarn] = useState("");
@@ -28,9 +31,11 @@ export default function Login() {
     currentProject = projects[0];
   }
 
-  const unsetWarnings = () => {
-    setNameWarn(null);
-    setPasswordWarn(null);
+  const unsetWarnings = (e) => {
+    if (e.target != loginBtn.current) {
+      setNameWarn(null);
+      setPasswordWarn(null);
+    }
   };
 
   const getNameInputClass = () => {
@@ -65,6 +70,9 @@ export default function Login() {
     setPasswordVisibility(!isPasswordVisible);
 
   const loginHandler = async () => {
+    if (nameWarn || passwordWarn) {
+      return;
+    }
     const res = await login({
       name,
       password,
@@ -116,6 +124,12 @@ export default function Login() {
               <div className={styles.warningContainer}>{nameWarn}</div>
             )}
             <div className={styles.passwordContainer}>
+              <div
+                className={styles.passwordEye}
+                onClick={togglePasswordVisibility}
+              >
+                <Eye />
+              </div>
               <FloatingLabel
                 id="password"
                 name="password"
@@ -125,17 +139,15 @@ export default function Login() {
                 value={password}
                 onChange={passwordUpdateHandler}
               />
-              <img
-                src="/img/eye.svg"
-                alt=" "
-                className={styles.passwordEye}
-                onClick={togglePasswordVisibility}
-              />
             </div>
             {passwordWarn && (
               <div className={styles.warningContainer}>{passwordWarn}</div>
             )}
-            <div className={styles.primaryButton} onClick={loginHandler}>
+            <div
+              ref={loginBtn}
+              className={styles.primaryButton}
+              onClick={loginHandler}
+            >
               Sign in
             </div>
             <div className={styles.line}></div>

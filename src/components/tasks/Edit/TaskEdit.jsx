@@ -6,6 +6,7 @@ import usePrevious from "@react-hook/previous";
 import { When } from "react-if";
 
 import TaskCalendar from "@/src/components/tasks/Edit/TaskCalendar";
+import Cross from "@/src/components/svg/Cross";
 
 import { TasksContext } from "@/src/context/tasks/TasksContext";
 import { UsersContext } from "@/src/context/users/UsersContext";
@@ -95,19 +96,14 @@ export default function TasksEdit({ taskId, setEditedTask }) {
     ].map((color) => (
       <div
         key={color}
-        className={editedColor == color ? styles.colorPicked : styles.color}
+        className={styles.color}
         style={{
-          background: `#${color}`,
-          border: editedColor == color ? `1px solid #${color}` : 0,
+          background: editedColor == color && `#fff`,
+          border: editedColor == color && `1px solid #${color}`,
         }}
         onClick={() => colorUpdateHandler(color)}
       >
-        <When condition={editedColor == color}>
-          <div
-            className={styles.colorInner}
-            style={{ background: `#${color}` }}
-          ></div>
-        </When>
+        <div className={styles.colorInner}></div>
       </div>
     ));
     return (
@@ -189,12 +185,12 @@ export default function TasksEdit({ taskId, setEditedTask }) {
         </div>
         <div>
           <div className={styles.closeWrapper}>
-            <img
-              src={"/img/close.svg"}
-              alt=" "
-              className={styles.icon}
+            <div
+              className={styles.crossIcon}
               onClick={() => setEditedTask(null)}
-            />
+            >
+              <Cross />
+            </div>
           </div>
           <When condition={projectByQueryId.owner == userCtx._id}>
             <div className={styles.colorsWrapper}>{colorsElements}</div>

@@ -39,22 +39,25 @@ export default function ProjectsDropdown({ isDropdownOpen, setDropdown }) {
 
   return (
     <>
-      <div
-        className={isDropdownOpen ? styles.rootOpened : styles.root}
-        onClick={openDropdown}
-      >
-        <Truncate lines={1} width={185}>
-          {projectByQueryId.name}
-        </Truncate>
-        <If condition={isDropdownOpen}>
-          <Then>
+      <If condition={isDropdownOpen}>
+        <Then>
+          <div className={styles.rootOpened} onClick={openDropdown}>
+            <Truncate lines={1} width={185}>
+              {projectByQueryId.name}
+            </Truncate>
             <img src="/img/arrowUp.svg" alt=" " />
-          </Then>
-          <Else>
+          </div>
+        </Then>
+        <Else>
+          <div className={styles.root} onClick={openDropdown}>
+            <Truncate lines={1} width={185}>
+              {projectByQueryId.name}
+            </Truncate>
             <img src="/img/arrowDown.svg" alt=" " />
-          </Else>
-        </If>
-      </div>
+          </div>
+        </Else>
+      </If>
+
       <When condition={isDropdownOpen}>
         <div
           className={styles.wrap}

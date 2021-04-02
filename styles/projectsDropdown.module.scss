@@ -42,12 +42,20 @@
   padding: 0 14px 0 14px;
   composes: placeholder;
   cursor: pointer;
+  transition: background 0.4s, color 0.4s;
+  &:hover {
+    background: rgba(37, 142, 250, 0.05);
+    color: #258efa;
+  }
 }
 
 .rootOpened {
   composes: root;
   color: #258efa;
   z-index: 102;
+  &:hover {
+    background: #ffffff;
+  }
 }
 
 .option {
@@ -177,6 +185,11 @@
   justify-content: center;
   color: #258efa;
   cursor: pointer;
+  transition: background 0.4s, color 0.4s;
+  &:hover {
+    background: #258efa;
+    color: #fff;
+  }
 }
 
 .textOptionWrapper {

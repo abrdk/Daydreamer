@@ -6,6 +6,9 @@ import { When } from "react-if";
 import TaskEdit from "@/src/components/tasks/Edit/TaskEdit";
 import ProjectsDropdown from "@/src/components/projects/ProjectsDropdown";
 import Tasks from "@/src/components/tasks/Tasks";
+import ArrowRight from "@/src/components/svg/ArrowRight";
+import ArrowLeft from "@/src/components/svg/ArrowLeft";
+import PlusIcon from "@/src/components/svg/PlusIcon";
 
 import { TasksContext } from "@/src//context/tasks/TasksContext";
 import { UsersContext } from "@/src/context/users/UsersContext";
@@ -67,7 +70,7 @@ export default function Menu({
   return (
     <>
       <div className={styles.iconOpen} onClick={openMenuHandler}>
-        <img src="/img/arrowRight.svg" alt="close" />
+        <ArrowRight />
       </div>
 
       <div
@@ -78,7 +81,7 @@ export default function Menu({
         id={isMenuOpen ? "openedMenu" : "closedMenu"}
       >
         <div className={styles.iconClose} onClick={openMenuHandler}>
-          <img src="/img/arrowLeft.svg" alt="close" />
+          <ArrowLeft />
         </div>
         <ProjectsDropdown
           isDropdownOpen={isDropdownOpen}
@@ -88,12 +91,9 @@ export default function Menu({
         <TaskEdit taskId={editedTask} setEditedTask={setEditedTask} />
       </div>
       <When condition={projectByQueryId.owner == userCtx._id}>
-        <img
-          src="/img/plus.svg"
-          alt=" "
-          className={styles.bigPlus}
-          onClick={createTaskHandler}
-        />
+        <div className={styles.bigPlus} onClick={createTaskHandler}>
+          <PlusIcon />
+        </div>
       </When>
     </>
   );

@@ -27,6 +27,15 @@
   flex-shrink: 0;
   justify-content: center;
   align-items: center;
+  border-radius: 3px;
+  transition: background 0.4s, color 0.4s;
+  &:hover {
+    background: #ecf5ff;
+  }
+  &:active {
+    background: #ecf5ff;
+    color: #258efa;
+  }
 }
 
 .weekend {
@@ -81,8 +90,18 @@
   align-items: center;
   justify-content: center;
   color: #696f75;
-  width: 120px;
+  width: 118px;
+  margin-left: 1px;
   height: 42px;
+  border-radius: 3px;
+  transition: background 0.4s, color 0.4s;
+  &:hover {
+    background: #ecf5ff;
+  }
+  &:active {
+    background: #ecf5ff;
+    color: #258efa;
+  }
 }
 
 .weekCurrent {
@@ -101,7 +120,8 @@
 }
 
 .monthWrapper {
-  width: 160px;
+  width: 158px;
+  margin-left: 1px;
   height: 42px;
   font-style: normal;
   font-weight: lighter;
@@ -111,6 +131,15 @@
   align-items: center;
   justify-content: center;
   color: #696f75;
+  border-radius: 3px;
+  transition: background 0.4s, color 0.4s;
+  &:hover {
+    background: #ecf5ff;
+  }
+  &:active {
+    background: #ecf5ff;
+    color: #258efa;
+  }
 }
 
 .monthCurrent {
@@ -205,15 +234,28 @@
   background: #fff;
   width: 25px;
   height: 25px;
-  border: 1px solid #9ccdff;
   border-radius: 100px;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  border: 1px solid #9ccdff;
+  color: #258efa;
+  transition: color 0.4s, background 0.4s, border 0.4s;
+  &:hover {
+    color: #fff;
+    background: #258efa;
+    border: 1px solid transparent;
+  }
 }
 
 .addSubtaskIcon {
   composes: openSubtasksIcon;
+  border: none;
+  svg {
+    rect {
+      stroke: #9ccdff;
+    }
+  }
 }
 
 .openSubtasksWrapper {
@@ -232,6 +274,10 @@
   left: -35px;
   display: flex;
   align-items: center;
+  svg {
+    width: 25px;
+    height: 25px;
+  }
 }
 
 .tooltip {

@@ -3,6 +3,8 @@ import styles from "@/styles/tasks.module.scss";
 import { When } from "react-if";
 import { nanoid } from "nanoid";
 
+import PlusIcon from "@/src/components/svg/PlusIcon";
+
 import { UsersContext } from "@/src/context/users/UsersContext";
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 import { TasksContext } from "@/src/context/tasks/TasksContext";
@@ -43,13 +45,9 @@ export default function Plus({ task, plusRef }) {
 
   return (
     <When condition={isUserOwnProject()}>
-      <img
-        src="/img/plus.svg"
-        alt=" "
-        ref={plusRef}
-        className={styles.plus}
-        onClick={createSubtask}
-      />
+      <div ref={plusRef} className={styles.plus} onClick={createSubtask}>
+        <PlusIcon />
+      </div>
     </When>
   );
 }

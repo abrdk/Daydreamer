@@ -2,13 +2,14 @@ import Cookies from "js-cookie";
 import Head from "next/head";
 import { nanoid } from "nanoid";
 import Link from "next/link";
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import styles from "@/styles/auth.module.scss";
 import { useRouter } from "next/router";
 import { When } from "react-if";
 import FloatingLabel from "floating-label-react";
 
 import DefaultGantt from "@/src/components/default/DefaultGantt";
+import Eye from "@/src/components/svg/Eye";
 
 import { UsersContext } from "@/src/context/users/UsersContext";
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
@@ -16,6 +17,8 @@ import { TasksContext } from "@/src/context/tasks/TasksContext";
 
 export default function Signup() {
   const router = useRouter();
+
+  const registerBtn = useRef(null);
 
   const [nameWarn, setNameWarn] = useState("");
   const [passwordWarn, setPasswordWarn] = useState("");
@@ -32,9 +35,11 @@ export default function Signup() {
   }
   const { createInitialTasks } = useContext(TasksContext);
 
-  const unsetWarnings = () => {
-    setNameWarn(null);
-    setPasswordWarn(null);
+  const unsetWarnings = (e) => {
+    if (e.target != registerBtn.current) {
+      setNameWarn(null);
+      setPasswordWarn(null);
+    }
   };
 
   const getNameInputClass = () => {
@@ -69,6 +74,9 @@ export default function Signup() {
     setPasswordVisibility(!isPasswordVisible);
 
   const signupHandler = async () => {
+    if (nameWarn || passwordWarn) {
+      return;
+    }
     const res = await signup({
       _id: nanoid(),
       name,
@@ -131,6 +139,12 @@ export default function Signup() {
               <div className={styles.warningContainer}>{nameWarn}</div>
             )}
             <div className={styles.passwordContainer}>
+              <div
+                className={styles.passwordEye}
+                onClick={togglePasswordVisibility}
+              >
+                <Eye />
+              </div>
               <FloatingLabel
                 id="password"
                 name="password"
@@ -140,17 +154,15 @@ export default function Signup() {
                 value={password}
                 onChange={passwordUpdateHandler}
               />
-              <img
-                src="/img/eye.svg"
-                alt=" "
-                className={styles.passwordEye}
-                onClick={togglePasswordVisibility}
-              />
             </div>
             {passwordWarn && (
               <div className={styles.warningContainer}>{passwordWarn}</div>
             )}
-            <div className={styles.primaryButton} onClick={signupHandler}>
+            <div
+              ref={registerBtn}
+              className={styles.primaryButton}
+              onClick={signupHandler}
+            >
               Registration
             </div>
             <div className={styles.line}></div>

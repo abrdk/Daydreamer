@@ -55,6 +55,10 @@
   position: relative;
   box-sizing: border-box;
   display: block;
+  transition: border 0.4s;
+  &:hover {
+    border: 1px solid #d8d8d8;
+  }
   input,
   textarea {
     width: 100%;
@@ -110,14 +114,26 @@
 
 .formInputWarn {
   composes: formInput;
-  margin-bottom: 3px;
-  border: 1px solid #ff4b4b;
+  margin-bottom: 0;
+  transition: 0s;
+  input {
+    border: 1px solid #ff4b4b;
+  }
+  &:hover {
+    border: 1px solid #f3f3f3;
+  }
 }
 
 .formInputFilledWarn {
   composes: formInputFilled;
-  margin-bottom: 3px;
-  border: 1px solid #ff4b4b;
+  transition: 0s;
+  margin-bottom: 0;
+  input {
+    border: 1px solid #ff4b4b;
+  }
+  &:hover {
+    border: 1px solid #f3f3f3;
+  }
 }
 
 .passwordEye {
@@ -125,11 +141,34 @@
   top: 18px;
   right: 12px;
   cursor: pointer;
+  z-index: 1;
+  transition: 0.4s;
+  &:hover ~ .formInput {
+    border: 1px solid #d8d8d8;
+  }
+  &:hover ~ .formInputWarn,
+  .formInputFilledWarn {
+    border: 1px solid #f3f3f3;
+  }
 }
 
 .passwordContainer {
   width: 100%;
   position: relative;
+  height: 58px;
+  .passwordEye {
+    color: #d8d8d8;
+  }
+  &:hover {
+    .passwordEye {
+      color: rgba(37, 142, 250, 0.5);
+    }
+  }
+  &:focus-within {
+    .passwordEye {
+      color: #258efa;
+    }
+  }
 }
 
 .primaryButton {
@@ -147,6 +186,13 @@
   width: 100%;
   height: 60px;
   margin-bottom: 24px;
+  margin-top: 20px;
+  transition: background 0.4s, color 0.4s, border 0.4s;
+  &:hover {
+    background: rgba(37, 142, 250, 0.05);
+    color: #258efa;
+    border: 1px solid #258efa;
+  }
 }
 
 .line {
@@ -179,6 +225,10 @@
   text-align: center;
   position: absolute;
   top: 454px;
+  transition: 0.4s;
+  &:hover {
+    text-decoration: none;
+  }
 }
 
 .warningContainer {
@@ -189,4 +239,8 @@
   color: #ff4b4b;
   margin-bottom: 11px;
   align-self: flex-start;
+  margin-top: 3px;
+  & + .primaryButton {
+    margin-top: 0;
+  }
 }

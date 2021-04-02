@@ -1,15 +1,20 @@
 import Cookies from "js-cookie";
-import { useState, useContext } from "react";
+import { useState, useContext, useRef } from "react";
 import styles from "@/styles/account.module.scss";
 import authStyles from "@/styles/auth.module.scss";
 import baseStyles from "@/styles/base.module.scss";
 import Router from "next/router";
 import FloatingLabel from "floating-label-react";
+import { Else, If, Then } from "react-if";
+
+import Eye from "@/src/components/svg/Eye";
 
 import { UsersContext } from "@/src/context/users/UsersContext";
 
 export default function AccountModal({ setModal }) {
   const userCtx = useContext(UsersContext);
+
+  const saveBtn = useRef(null);
 
   const [nameWarn, setNameWarn] = useState("");
   const [passwordWarn, setPasswordWarn] = useState("");
@@ -26,9 +31,11 @@ export default function AccountModal({ setModal }) {
     }
   };
 
-  const unsetWarnings = () => {
-    setNameWarn(null);
-    setPasswordWarn(null);
+  const unsetWarnings = (e) => {
+    if (e.target != saveBtn.current) {
+      setNameWarn(null);
+      setPasswordWarn(null);
+    }
   };
 
   const getNameInputClass = () => {
@@ -67,6 +74,9 @@ export default function AccountModal({ setModal }) {
     setPasswordVisibility(!isPasswordVisible);
 
   const updateHandler = async () => {
+    if (nameWarn || passwordWarn) {
+      return;
+    }
     if (!isDataUpdating() && !isUpdatingComplete) {
       Cookies.remove("ganttToken", { path: "/" });
       Router.push("/signup");
@@ -108,9 +118,15 @@ export default function AccountModal({ setModal }) {
             onChange={updateNameHandler}
           />
           {nameWarn && (
-            <div className={authStyles.warningContainer}>{nameWarn}</div>
+            <div className={styles.warningContainer}>{nameWarn}</div>
           )}
           <div className={authStyles.passwordContainer}>
+            <div
+              className={authStyles.passwordEye}
+              onClick={togglePasswordVisibility}
+            >
+              <Eye />
+            </div>
             <FloatingLabel
               id="password"
               name="password"
@@ -120,46 +136,52 @@ export default function AccountModal({ setModal }) {
               value={password}
               onChange={updatePasswordHandler}
             />
-            <img
-              src="/img/eye.svg"
-              alt=" "
-              className={authStyles.passwordEye}
-              onClick={togglePasswordVisibility}
-            />
           </div>
           {passwordWarn && (
-            <div className={authStyles.warningContainer}>{passwordWarn}</div>
+            <div className={styles.warningContainer}>{passwordWarn}</div>
           )}
-          <div
-            className={
-              isUpdatingComplete
-                ? baseStyles.successButton
-                : isDataUpdating()
-                ? styles.accountSecondaryButton
-                : styles.accountPrimaryButton
-            }
-            onClick={updateHandler}
-          >
-            {isUpdatingComplete
-              ? "Your data was changed"
-              : isDataUpdating()
-              ? "Save data"
-              : "Log out"}
-          </div>
-          <div
-            className={
-              isDataUpdating() && !isUpdatingComplete
-                ? styles.accountLinkDisabled
-                : styles.accountLink
-            }
-            onClick={
-              isDataUpdating() && !isUpdatingComplete
-                ? null
-                : setModal.bind(null, "delete_account")
-            }
-          >
-            Delete account
-          </div>
+
+          <If condition={isUpdatingComplete}>
+            <Then>
+              <div className={baseStyles.successButton}>
+                Your data was changed
+              </div>
+            </Then>
+            <Else>
+              <If condition={isDataUpdating()}>
+                <Then>
+                  <div
+                    className={styles.accountSecondaryButton}
+                    onClick={updateHandler}
+                  >
+                    Save data
+                  </div>
+                </Then>
+                <Else>
+                  <div
+                    className={styles.accountPrimaryButton}
+                    onClick={updateHandler}
+                  >
+                    Log out
+                  </div>
+                </Else>
+              </If>
+            </Else>
+          </If>
+
+          <If condition={isDataUpdating() && !isUpdatingComplete}>
+            <Then>
+              <div className={styles.accountLinkDisabled}>Delete account</div>
+            </Then>
+            <Else>
+              <div
+                className={styles.accountLink}
+                onClick={setModal.bind(null, "delete_account")}
+              >
+                Delete account
+              </div>
+            </Else>
+          </If>
         </div>
       </div>
     </>

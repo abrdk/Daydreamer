@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 
 import { TasksContext } from "@/src/context/tasks/TasksContext";
 
+const taskOffsetLeft = 14;
 const paddingRight = 105;
 
 export default function Input({
@@ -14,6 +15,8 @@ export default function Input({
 }) {
   const { updateTask } = useContext(TasksContext);
 
+  const paddingLeft = taskDepth * taskOffsetLeft;
+
   const [selectionStart, setSelectionStart] = useState(task.name.length);
 
   const getDefaultName = () =>
@@ -24,7 +27,7 @@ export default function Input({
   const getInputWidth = () => {
     const taskElement = document.querySelector(`.task-${task._id}`);
     if (taskElement) {
-      return taskElement.clientWidth - paddingRight;
+      return taskElement.clientWidth - paddingRight - paddingLeft;
     }
     return 0;
   };

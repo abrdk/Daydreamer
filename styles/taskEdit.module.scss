@@ -107,6 +107,16 @@
   cursor: pointer;
 }
 
+.crossIcon {
+  cursor: pointer;
+  height: 25px;
+  color: #ff5b79;
+  transition: color 0.4s;
+  &:hover {
+    color: #ed95a5;
+  }
+}
+
 .closeWrapper {
   height: 50px;
   width: 50px;
@@ -124,6 +134,88 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: background 0.4s, border 0.4s;
+  &:hover {
+    background: #fff !important;
+  }
+  &:nth-child(1) {
+    border: 1px solid rgba(37, 142, 250);
+    background: rgb(37, 142, 250);
+    .colorInner {
+      background: rgb(37, 142, 250);
+    }
+    &:hover {
+      border: 1px solid rgba(37, 142, 250, 0.2);
+    }
+    &:active {
+      border: 1px solid rgba(37, 142, 250);
+    }
+  }
+  &:nth-child(2) {
+    border: 1px solid rgba(255, 188, 66);
+    background: rgb(255, 188, 66);
+    .colorInner {
+      background: rgb(255, 188, 66);
+    }
+    &:hover {
+      border: 1px solid rgba(255, 188, 66, 0.2);
+    }
+    &:active {
+      border: 1px solid rgba(255, 188, 66);
+    }
+  }
+  &:nth-child(3) {
+    border: 1px solid rgba(89, 205, 144);
+    background: rgb(89, 205, 144);
+    .colorInner {
+      background: rgb(89, 205, 144);
+    }
+    &:hover {
+      border: 1px solid rgba(89, 205, 144, 0.2);
+    }
+    &:active {
+      border: 1px solid rgba(89, 205, 144);
+    }
+  }
+  &:nth-child(4) {
+    border: 1px solid rgba(208, 107, 243);
+    background: rgb(208, 107, 243);
+    .colorInner {
+      background: rgb(208, 107, 243);
+    }
+    &:hover {
+      border: 1px solid rgba(208, 107, 243, 0.2);
+    }
+    &:active {
+      border: 1px solid rgba(208, 107, 243);
+    }
+  }
+  &:nth-child(5) {
+    border: 1px solid rgba(102, 206, 220);
+    background: rgb(102, 206, 220);
+    .colorInner {
+      background: rgb(102, 206, 220);
+    }
+    &:hover {
+      border: 1px solid rgba(102, 206, 220, 0.2);
+    }
+    &:active {
+      border: 1px solid rgba(102, 206, 220);
+    }
+  }
+  &:nth-child(6) {
+    border: 1px solid rgba(255, 91, 121);
+    background: rgb(255, 91, 121);
+    .colorInner {
+      background: rgb(255, 91, 121);
+    }
+    &:hover {
+      border: 1px solid rgba(255, 91, 121, 0.2);
+    }
+    &:active {
+      border: 1px solid rgba(255, 91, 121);
+    }
+  }
 }
 
 .colorPicked {
@@ -157,6 +249,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: border 0.4s;
+  &:hover {
+    border: 1px solid #258efa;
+  }
 }
 
 .topInputsWrapper {
@@ -178,6 +274,12 @@
   line-height: 21px;
   color: #696f75;
   margin-right: 30px;
+  transition: background 0.4s, color 0.4s, border 0.4s;
+  &:hover {
+    background: rgba(37, 142, 250, 0.05);
+    border: 1px solid #258efa;
+    color: #258efa;
+  }
 }
 
 .datesWrapper {

@@ -3,6 +3,9 @@ import { useContext } from "react";
 import { nanoid } from "nanoid";
 import { When } from "react-if";
 
+import PlusIcon from "@/src/components/svg/PlusIcon";
+import ArrowDown from "@/src/components/svg/ArrowDown";
+
 import { TasksContext } from "@/src//context/tasks/TasksContext";
 import { UsersContext } from "@/src/context/users/UsersContext";
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
@@ -48,7 +51,7 @@ export default function SubtaskTooltip({ task, setMenu, setEditedTask }) {
               updateIsOpened({ _id: task._id, isOpened: !task.isOpened })
             }
           >
-            <img src="/img/arrowDownLine.svg" alt=" " />
+            <ArrowDown />
           </div>
         </div>
       </When>
@@ -58,7 +61,7 @@ export default function SubtaskTooltip({ task, setMenu, setEditedTask }) {
             className={calendarStyles.addSubtaskIcon}
             onClick={createSubtask}
           >
-            <img src="/img/plusLine.svg" alt=" " />
+            <PlusIcon />
           </div>
         </div>
       </When>
