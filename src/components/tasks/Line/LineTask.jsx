@@ -163,6 +163,7 @@ export default function LineTask({
           background: `#${task.color}`,
           paddingLeft: getPadding(),
           paddingRight: getPadding(),
+          opacity: editedTask != null ? (editedTask == task._id ? 1 : 0.5) : 1,
         }}
         ref={lineRef}
       >
