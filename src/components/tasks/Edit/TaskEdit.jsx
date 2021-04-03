@@ -12,7 +12,7 @@ import { TasksContext } from "@/src/context/tasks/TasksContext";
 import { UsersContext } from "@/src/context/users/UsersContext";
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 
-export default function TasksEdit({ taskId, setEditedTask }) {
+export default function TasksEdit({ taskId, setEditedTask, isMenuOpen }) {
   const { projectByQueryId } = useContext(ProjectsContext);
   const userCtx = useContext(UsersContext);
 
@@ -107,7 +107,11 @@ export default function TasksEdit({ taskId, setEditedTask }) {
       </div>
     ));
     return (
-      <div className={styles.wrapper} id="editTask">
+      <div
+        className={styles.wrapper}
+        style={{ width: isMenuOpen ? "calc(100vw - 335px)" : "100vw" }}
+        id="editTask"
+      >
         <div className={styles.inputsWrapper}>
           <div className={styles.topInputsWrapper}>
             <FloatingLabel

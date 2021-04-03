@@ -16,6 +16,7 @@ export default function LineTask({
   setEditedTask,
   calendarStartDate,
   view,
+  editedTask,
 }) {
   const views = ["Day", "Week", "Month"];
   const dayWidth = [55, 120 / 7, 160 / 30];
@@ -178,6 +179,7 @@ export default function LineTask({
           task={task}
           setMenu={setMenu}
           setEditedTask={setEditedTask}
+          editedTask={editedTask}
         />
 
         <LeftStick
@@ -238,6 +240,7 @@ export default function LineTask({
           setMenu={setMenu}
           view={view}
           calendarStartDate={calendarStartDate}
+          editedTask={editedTask}
         />
       </When>
     </>

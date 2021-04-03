@@ -27,7 +27,6 @@ export default function Menu({
   const [isDropdownOpen, setDropdown] = useState(false);
 
   const openMenuHandler = () => {
-    setEditedTask(null);
     setMenu(!isMenuOpen);
   };
 
@@ -38,10 +37,7 @@ export default function Menu({
     const currentDate = new Date(
       today.getFullYear(),
       today.getMonth(),
-      today.getDate(),
-      0,
-      0,
-      0
+      today.getDate()
     );
     let afterWeek = new Date(
       today.getFullYear(),
@@ -88,7 +84,11 @@ export default function Menu({
           setDropdown={setDropdown}
         />
         <Tasks editedTask={editedTask} setEditedTask={setEditedTask} />
-        <TaskEdit taskId={editedTask} setEditedTask={setEditedTask} />
+        <TaskEdit
+          taskId={editedTask}
+          setEditedTask={setEditedTask}
+          isMenuOpen={isMenuOpen}
+        />
       </div>
       <When condition={projectByQueryId.owner == userCtx._id}>
         <div className={styles.bigPlus} onClick={createTaskHandler}>

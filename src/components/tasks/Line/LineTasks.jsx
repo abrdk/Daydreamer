@@ -97,6 +97,7 @@ export default function LineTasks({
             setEditedTask={setEditedTask}
             root={""}
             view={view}
+            editedTask={editedTask}
           />
         </div>
       </Scrollbar>

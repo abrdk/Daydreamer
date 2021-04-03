@@ -248,6 +248,21 @@
   }
 }
 
+.editTaskIcon {
+  composes: openSubtasksIcon;
+  left: 10px;
+}
+
+.editTaskIconWrapper {
+  position: absolute;
+  width: 35px;
+  height: 35px;
+  right: -35px;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+}
+
 .addSubtaskIcon {
   composes: openSubtasksIcon;
   border: none;

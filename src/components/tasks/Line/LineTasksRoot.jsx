@@ -10,6 +10,7 @@ export default function LineTasksRoot({
   setEditedTask,
   view,
   calendarStartDate,
+  editedTask,
 }) {
   const { tasksByProjectId } = useContext(TasksContext);
 
@@ -24,6 +25,7 @@ export default function LineTasksRoot({
         task={t}
         view={view}
         calendarStartDate={calendarStartDate}
+        editedTask={editedTask}
       />
     ));
 

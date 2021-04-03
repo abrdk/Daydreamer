@@ -4,13 +4,19 @@ import { nanoid } from "nanoid";
 import { When } from "react-if";
 
 import PlusIcon from "@/src/components/svg/PlusIcon";
+import PencilIcon from "@/src/components/svg/PencilIcon";
 import ArrowDown from "@/src/components/svg/ArrowDown";
 
 import { TasksContext } from "@/src//context/tasks/TasksContext";
 import { UsersContext } from "@/src/context/users/UsersContext";
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 
-export default function SubtaskTooltip({ task, setMenu, setEditedTask }) {
+export default function SubtaskTooltip({
+  task,
+  setMenu,
+  setEditedTask,
+  editedTask,
+}) {
   const { updateIsOpened, tasksByProjectId, createTask } = useContext(
     TasksContext
   );
@@ -29,7 +35,6 @@ export default function SubtaskTooltip({ task, setMenu, setEditedTask }) {
 
     const newSubtaskId = nanoid();
     updateIsOpened({ _id: task._id, isOpened: true });
-    setMenu(true);
     createTask({
       ...task,
       _id: newSubtaskId,
@@ -38,7 +43,6 @@ export default function SubtaskTooltip({ task, setMenu, setEditedTask }) {
       root: task._id,
       order,
     });
-    setEditedTask(newSubtaskId);
   };
 
   return (
@@ -65,6 +69,20 @@ export default function SubtaskTooltip({ task, setMenu, setEditedTask }) {
           </div>
         </div>
       </When>
+      <div className={calendarStyles.editTaskIconWrapper}>
+        <div
+          className={calendarStyles.editTaskIcon}
+          onClick={() => {
+            if (editedTask == task._id) {
+              setEditedTask(null);
+            } else {
+              setEditedTask(task._id);
+            }
+          }}
+        >
+          <PencilIcon />
+        </div>
+      </div>
     </>
   );
 }
