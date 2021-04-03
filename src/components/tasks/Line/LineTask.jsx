@@ -1,7 +1,6 @@
 import calendarStyles from "@/styles/calendar.module.scss";
 import { When } from "react-if";
 import { useEffect, useState, useRef } from "react";
-import Truncate from "react-truncate";
 
 import LineTasksRoot from "@/src/components/tasks/Line/LineTasksRoot";
 import DateTooltip from "@/src/components/tasks/Line/LineTask/DateTooltip";
@@ -9,6 +8,7 @@ import SubtaskTooltip from "@/src/components/tasks/Line/LineTask/SubtaskTooltip"
 import RightStick from "@/src/components/tasks/Line/LineTask/RightStick";
 import LeftStick from "@/src/components/tasks/Line/LineTask/LeftStick";
 import CenterArea from "@/src/components/tasks/Line/LineTask/CenterArea";
+import LineTaskName from "@/src/components/tasks/Line/LineTask/LineTaskName";
 
 export default function LineTask({
   task,
@@ -28,6 +28,7 @@ export default function LineTask({
   const maxOffsetMove = [-40, -5, 0];
 
   const lineRef = useRef(null);
+  const inputRef = useRef(null);
 
   const [dateStart, setDateStart] = useState(new Date());
   const [dateEnd, setDateEnd] = useState(new Date());
@@ -198,12 +199,6 @@ export default function LineTask({
           taskWidth={taskWidth}
         />
 
-        <When condition={textWidth > 0}>
-          <Truncate lines={1} width={textWidth}>
-            {task.name}
-          </Truncate>
-        </When>
-
         <CenterArea
           task={task}
           isMoving={isMoving}
@@ -217,7 +212,15 @@ export default function LineTask({
           maxOffsetMove={maxOffsetMove[views.indexOf(view)]}
           minOffsetMove={minOffsetMove[views.indexOf(view)]}
           taskWidth={taskWidth}
-        />
+          inputRef={inputRef}
+        >
+          <LineTaskName
+            task={task}
+            textWidth={textWidth}
+            taskWidth={taskWidth}
+            inputRef={inputRef}
+          />
+        </CenterArea>
 
         <RightStick
           task={task}

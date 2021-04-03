@@ -20,9 +20,9 @@ export default function CenterArea({
   maxOffsetMove,
   minOffsetMove,
   taskWidth,
+  inputRef,
+  children,
 }) {
-  const centerAreaWidth = taskWidth - 36 > 100 ? 100 : taskWidth - 36;
-
   const { updateTask } = useContext(TasksContext);
   const { projectByQueryId } = useContext(ProjectsContext);
   const userCtx = useContext(UsersContext);
@@ -31,10 +31,12 @@ export default function CenterArea({
   const [offsetFromCenter, setOffsetFromCenter] = useState(0);
 
   const startMoving = (e) => {
-    setIsMoving(true);
-    const lineRect = lineRef.current.getBoundingClientRect();
-    setOffsetFromCenter(lineRect.left + lineRect.width / 2 - e.clientX);
-    document.body.style.cursor = "grab";
+    if (e.target != inputRef.current) {
+      setIsMoving(true);
+      const lineRect = lineRef.current.getBoundingClientRect();
+      setOffsetFromCenter(lineRect.left + lineRect.width / 2 - e.clientX);
+      document.body.style.cursor = "grab";
+    }
   };
 
   const stopMoving = () => {
@@ -126,12 +128,14 @@ export default function CenterArea({
       <div
         className={calendarStyles.moveAreaCenter}
         style={{
-          width: centerAreaWidth,
-          left: (taskWidth - centerAreaWidth) / 2,
+          width: taskWidth - 36,
+          left: 18,
           cursor: isMoving ? "grab" : "pointer",
         }}
         onMouseDown={startMoving}
-      ></div>
+      >
+        {children}
+      </div>
     </When>
   );
 }

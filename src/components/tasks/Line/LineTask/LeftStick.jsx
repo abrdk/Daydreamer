@@ -29,7 +29,7 @@ export default function LeftStick({
 
   const startResizeLeft = () => {
     setIsResizeLeft(true);
-    document.body.style.cursor = "grab";
+    document.body.style.cursor = "text";
   };
 
   const stopResizeLeft = () => {
@@ -112,7 +112,7 @@ export default function LeftStick({
           className={calendarStyles.resizeAreaLeft}
           onMouseDown={startResizeLeft}
           style={{
-            cursor: isResizeLeft ? "grab" : "pointer",
+            cursor: "text",
           }}
         ></div>
       </When>

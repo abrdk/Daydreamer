@@ -17,7 +17,7 @@ export default function Input({
 
   const paddingLeft = taskDepth * taskOffsetLeft;
 
-  const [selectionStart, setSelectionStart] = useState(task.name.length);
+  const [nameState, setNameState] = useState(task.name);
 
   const getDefaultName = () =>
     !task.root
@@ -32,15 +32,8 @@ export default function Input({
     return 0;
   };
 
-  const preventCursorShift = () => {
-    if (inputRef.current) {
-      inputRef.current.selectionStart = selectionStart;
-      inputRef.current.selectionEnd = selectionStart;
-    }
-  };
-
   const handleNameUpdate = (e) => {
-    setSelectionStart(e.target.selectionStart);
+    setNameState(e.target.value);
     updateTask({ ...task, name: e.target.value });
   };
 
@@ -61,13 +54,9 @@ export default function Input({
     focusOnInput();
   }, [isUpdating, inputRef.current]);
 
-  useEffect(() => {
-    preventCursorShift();
-  }, [task.name]);
-
   return (
     <input
-      value={task.name}
+      value={nameState}
       className={styles.input}
       ref={inputRef}
       onChange={handleNameUpdate}

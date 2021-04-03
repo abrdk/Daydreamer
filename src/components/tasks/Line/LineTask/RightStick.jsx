@@ -28,7 +28,7 @@ export default function RightStick({
 
   const startResizeRight = () => {
     setIsResizeRight(true);
-    document.body.style.cursor = "grab";
+    document.body.style.cursor = "text";
   };
 
   const stopResizeRight = () => {
@@ -114,7 +114,7 @@ export default function RightStick({
           className={calendarStyles.resizeAreaRight}
           onMouseDown={startResizeRight}
           style={{
-            cursor: isResizeRight ? "grab" : "pointer",
+            cursor: "text",
             width: taskWidth > 18 ? 18 : taskWidth == 0 ? 160 / 30 : taskWidth,
           }}
         ></div>
