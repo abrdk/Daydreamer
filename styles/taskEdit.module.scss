@@ -342,16 +342,33 @@
   font-weight: normal;
   font-size: 15px;
   line-height: 21px;
+  border: 0px solid transparent !important;
 }
 
 .dayPast {
   composes: day;
   color: #949da7;
+  &:hover {
+    .dayCircle {
+      background: #ecf5ff;
+    }
+  }
 }
 
 .dayFuture {
   composes: day;
   color: #6f6e6e;
+  &:hover {
+    .dayCircle {
+      background: #ecf5ff;
+    }
+  }
+}
+
+.dayCircle {
+  composes: day;
+  border-radius: 100px;
+  transition: background 0.4s;
 }
 
 .dayBetween {

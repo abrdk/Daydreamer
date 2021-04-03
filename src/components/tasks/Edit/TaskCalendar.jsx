@@ -2,6 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import styles from "@/styles/taskEdit.module.scss";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { If, Then, Else } from "react-if";
 
 const monthNames = [
   "January",
@@ -21,8 +22,9 @@ const monthNames = [
 import { TasksContext } from "@/src/context/tasks/TasksContext";
 import { UsersContext } from "@/src/context/users/UsersContext";
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
+import useEvent from "@react-hook/event";
 
-export default function TasksEdit({ task }) {
+export default function TasksCalendar({ task }) {
   const { projectByQueryId } = useContext(ProjectsContext);
   const userCtx = useContext(UsersContext);
 
@@ -30,6 +32,24 @@ export default function TasksEdit({ task }) {
 
   const [dateStart, setDateStart] = useState(null);
   const [dateEnd, setDateEnd] = useState(null);
+
+  const [isMouseDown, setIsMouseDown] = useState(false);
+  useEvent(document, "mouseup", () => {
+    if (isMouseDown) {
+      updateTask({ ...task, dateStart, dateEnd });
+      setIsMouseDown(false);
+    }
+  });
+  useEvent(document, "mousemove", (e) => {
+    if (isMouseDown && (isStartCalendarOpened || isEndCalendarOpened)) {
+      try {
+        e.target.ownerDocument.defaultView.getSelection().removeAllRanges();
+      } catch (e) {}
+    }
+  });
+
+  const [isStartCalendarOpened, setIsStartCalendarOpened] = useState(false);
+  const [isEndCalendarOpened, setIsEndCalendarOpened] = useState(false);
 
   useEffect(() => {
     if (task) {
@@ -57,6 +77,7 @@ export default function TasksEdit({ task }) {
       (dateStart.getTime() - date.getTime()) / 1000 / 60 / 60 / 24;
     const numOfDaysFromDateEnd =
       (dateEnd.getTime() - date.getTime()) / 1000 / 60 / 60 / 24;
+
     const getClassName = () => {
       if (
         numOfDaysFromDateStart < 1 &&
@@ -84,7 +105,64 @@ export default function TasksEdit({ task }) {
         return styles.dayFuture;
       }
     };
-    return <div className={getClassName()}>{day}</div>;
+
+    const handleMouseDown = (e, date) => {
+      setIsMouseDown(true);
+      handleMouseEnter(true, date);
+    };
+
+    const handleMouseEnter = (isMouseDown, date) => {
+      if (isMouseDown && isStartCalendarOpened) {
+        if (dateEnd.getTime() - date.getTime() > 0) {
+          setDateStart(date);
+        } else {
+          setDateStart(
+            new Date(
+              dateEnd.getFullYear(),
+              dateEnd.getMonth(),
+              dateEnd.getDate()
+            )
+          );
+        }
+      } else if (isMouseDown && isEndCalendarOpened) {
+        if (date.getTime() - dateStart.getTime() > 0) {
+          date.setSeconds(60 * 60 * 24 - 1);
+          setDateEnd(date);
+        } else {
+          setDateEnd(
+            new Date(
+              dateStart.getFullYear(),
+              dateStart.getMonth(),
+              dateStart.getDate(),
+              23,
+              59,
+              59
+            )
+          );
+        }
+      }
+    };
+
+    const dayClassName = getClassName();
+
+    return (
+      <div
+        className={dayClassName}
+        onMouseDown={(e) => handleMouseDown(e, date)}
+        onMouseEnter={() => handleMouseEnter(isMouseDown, date)}
+      >
+        <If
+          condition={
+            dayClassName == styles.dayPast || dayClassName == styles.dayFuture
+          }
+        >
+          <Then>
+            <div className={styles.dayCircle}>{day}</div>
+          </Then>
+          <Else>{day}</Else>
+        </If>
+      </div>
+    );
   };
 
   const customHeader = ({ date, decreaseMonth, increaseMonth }) => (
@@ -129,11 +207,14 @@ export default function TasksEdit({ task }) {
         renderDayContents={customDay}
         renderCustomHeader={customHeader}
         disabled={projectByQueryId.owner != userCtx._id ? true : false}
+        onCalendarClose={() => setIsStartCalendarOpened(false)}
+        onCalendarOpen={() => setIsStartCalendarOpened(true)}
       />
       <div className={styles.dateDash}></div>
       <DatePicker
         selected={dateEnd}
         onChange={(date) => {
+          date.setSeconds(60 * 60 * 24 - 1);
           setDateEnd(date);
           updateTask({ ...task, dateEnd: date });
         }}
@@ -155,6 +236,8 @@ export default function TasksEdit({ task }) {
         renderDayContents={customDay}
         renderCustomHeader={customHeader}
         disabled={projectByQueryId.owner != userCtx._id ? true : false}
+        onCalendarClose={() => setIsEndCalendarOpened(false)}
+        onCalendarOpen={() => setIsEndCalendarOpened(true)}
       />
     </div>
   );
