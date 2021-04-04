@@ -46,16 +46,16 @@ export function ProjectsProvider(props) {
       dispatch({
         type: "ADD_PROJECT",
         payload: {
-          ...project,
           isCurrent,
+          ...project,
         },
       });
 
       await xhr(
         "/projects/create",
         {
-          ...project,
           isCurrent,
+          ...project,
         },
         "POST"
       );

@@ -203,3 +203,12 @@
   position: absolute;
   right: 14px;
 }
+
+.hiddenName {
+  composes: placeholder;
+  position: absolute;
+  white-space: pre;
+  color: #258efa;
+  opacity: 0.5;
+  padding-right: 1px;
+}

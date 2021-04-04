@@ -117,6 +117,18 @@ export default function Option({ project, projectIndex }) {
     }
   }, [isUpdating]);
 
+  useEffect(
+    () => () => {
+      if (project.name == "") {
+        updateProject({
+          ...project,
+          name: `Project name #${projectIndex + 1}`,
+        });
+      }
+    },
+    []
+  );
+
   return (
     <div
       className={
