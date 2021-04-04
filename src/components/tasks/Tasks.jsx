@@ -14,10 +14,16 @@ import { UsersContext } from "@/src/context/users/UsersContext";
 const blueColor = "258EFA";
 const defaultTaskDuration = 7;
 
-export default function Tasks({ editedTask, setEditedTask }) {
+export default function Tasks({}) {
   const userCtx = useContext(UsersContext);
 
-  const { createTask, tasksByProjectId } = useContext(TasksContext);
+  const {
+    createTask,
+    tasksByProjectId,
+    setWhereEditNewTask,
+    editedTaskId,
+    setEditedTaskId,
+  } = useContext(TasksContext);
   const { projectByQueryId } = useContext(ProjectsContext);
 
   const [containerHeight, setContainerHeight] = useState(0);
@@ -25,6 +31,15 @@ export default function Tasks({ editedTask, setEditedTask }) {
   const isUserOwnProject = () => projectByQueryId.owner == userCtx._id;
 
   const createNewTask = () => {
+    const newTaskId = nanoid();
+
+    if (editedTaskId) {
+      setTimeout(() => setEditedTaskId(newTaskId), 100);
+      setWhereEditNewTask("edit");
+    } else {
+      setWhereEditNewTask("menu");
+    }
+
     const today = new Date();
     const currentDate = new Date(
       today.getFullYear(),
@@ -43,7 +58,7 @@ export default function Tasks({ editedTask, setEditedTask }) {
     const topLevelTasks = tasksByProjectId.filter((task) => !task.root);
 
     createTask({
-      _id: nanoid(),
+      _id: newTaskId,
       name: "",
       description: "",
       dateStart: currentDate,
@@ -97,12 +112,7 @@ export default function Tasks({ editedTask, setEditedTask }) {
           },
         }}
       >
-        <TasksRoot
-          root={""}
-          setContainerHeight={setContainerHeight}
-          editedTask={editedTask}
-          setEditedTask={setEditedTask}
-        />
+        <TasksRoot root={""} setContainerHeight={setContainerHeight} />
       </Scrollbar>
       <When condition={isUserOwnProject()}>
         <div className={styles.newTaskBtn} onClick={createNewTask}>

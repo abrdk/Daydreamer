@@ -14,14 +14,11 @@ import { TasksContext } from "@/src//context/tasks/TasksContext";
 import { UsersContext } from "@/src/context/users/UsersContext";
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 
-export default function Menu({
-  isMenuOpen,
-  setMenu,
-  editedTask,
-  setEditedTask,
-}) {
+export default function Menu({ isMenuOpen, setMenu }) {
   const userCtx = useContext(UsersContext);
-  const { createTask, tasksByProjectId } = useContext(TasksContext);
+  const { createTask, tasksByProjectId, setWhereEditNewTask } = useContext(
+    TasksContext
+  );
   const { projectByQueryId } = useContext(ProjectsContext);
 
   const [isDropdownOpen, setDropdown] = useState(false);
@@ -31,7 +28,11 @@ export default function Menu({
   };
 
   const createTaskHandler = () => {
-    setMenu(true);
+    if (isMenuOpen) {
+      setWhereEditNewTask("menu");
+    } else {
+      setWhereEditNewTask("calendar");
+    }
 
     const today = new Date();
     const currentDate = new Date(
@@ -83,12 +84,8 @@ export default function Menu({
           isDropdownOpen={isDropdownOpen}
           setDropdown={setDropdown}
         />
-        <Tasks editedTask={editedTask} setEditedTask={setEditedTask} />
-        <TaskEdit
-          taskId={editedTask}
-          setEditedTask={setEditedTask}
-          isMenuOpen={isMenuOpen}
-        />
+        <Tasks />
+        <TaskEdit isMenuOpen={isMenuOpen} />
       </div>
       <When condition={projectByQueryId.owner == userCtx._id}>
         <div className={styles.bigPlus} onClick={createTaskHandler}>

@@ -1,5 +1,7 @@
 import styles from "@/styles/tasks.module.scss";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+
+import { TasksContext } from "@/src/context/tasks/TasksContext";
 
 const taskPaddingLeft = 33;
 const distanceToText = 6;
@@ -11,17 +13,17 @@ export default function Pencil({
   fakeTextRef,
   pencilRef,
   isUpdating,
-  editedTask,
-  setEditedTask,
   taskDepth,
 }) {
+  const { editedTaskId, setEditedTaskId } = useContext(TasksContext);
+
   const [pencilLeft, setPencilLeft] = useState(0);
 
   const startEditTask = () => {
-    if (editedTask == task._id) {
-      setEditedTask(null);
+    if (editedTaskId == task._id) {
+      setEditedTaskId("");
     } else {
-      setEditedTask(task._id);
+      setEditedTaskId(task._id);
     }
   };
 

@@ -12,12 +12,20 @@ import { TasksContext } from "@/src/context/tasks/TasksContext";
 import { UsersContext } from "@/src/context/users/UsersContext";
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 
-export default function TasksEdit({ taskId, setEditedTask, isMenuOpen }) {
+export default function TasksEdit({ isMenuOpen }) {
   const { projectByQueryId } = useContext(ProjectsContext);
   const userCtx = useContext(UsersContext);
 
-  const { tasksByProjectId, updateTask, deleteTask } = useContext(TasksContext);
-  const task = tasksByProjectId.find((t) => t._id == taskId);
+  const {
+    tasksByProjectId,
+    updateTask,
+    deleteTask,
+    editedTaskId,
+    setEditedTaskId,
+    whereEditNewTask,
+    setWhereEditNewTask,
+  } = useContext(TasksContext);
+  const task = tasksByProjectId.find((t) => t._id == editedTaskId);
 
   const fakeText = useRef(null);
   const textArea = useRef(null);
@@ -36,6 +44,7 @@ export default function TasksEdit({ taskId, setEditedTask, isMenuOpen }) {
       updateTask({ ...task, name: e.target.value });
     }
   };
+
   const getDefaultName = () =>
     !task.root
       ? `Task name #${task.order + 1}`
@@ -67,8 +76,8 @@ export default function TasksEdit({ taskId, setEditedTask, isMenuOpen }) {
       .forEach((t) => {
         updateTask({ ...t, order: t.order - 1 });
       });
-    deleteTask(taskId);
-    setEditedTask(null);
+    deleteTask(editedTaskId);
+    setEditedTaskId("");
   };
 
   useEffect(() => {
@@ -84,6 +93,13 @@ export default function TasksEdit({ taskId, setEditedTask, isMenuOpen }) {
       textArea.current.style.height = fakeText.current.clientHeight + "px";
     }
   }, [editedDescription]);
+
+  useEffect(() => {
+    if (task && task.name == "" && whereEditNewTask == "edit") {
+      document.querySelector("#taskName").focus();
+      setWhereEditNewTask("");
+    }
+  }, [task, whereEditNewTask]);
 
   if (task) {
     const colorsElements = [
@@ -128,6 +144,9 @@ export default function TasksEdit({ taskId, setEditedTask, isMenuOpen }) {
                 }
               }}
             />
+            <When condition={task.name == ""}>
+              <div className={styles.hiddenName}>{getDefaultName()}</div>
+            </When>
             <TaskCalendar task={task} />
           </div>
           <div ref={fakeText} className={styles.fakeText}>
@@ -191,7 +210,7 @@ export default function TasksEdit({ taskId, setEditedTask, isMenuOpen }) {
           <div className={styles.closeWrapper}>
             <div
               className={styles.crossIcon}
-              onClick={() => setEditedTask(null)}
+              onClick={() => setEditedTaskId("")}
             >
               <Cross />
             </div>

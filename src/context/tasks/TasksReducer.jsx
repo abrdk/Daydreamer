@@ -49,6 +49,16 @@ export default function TasksReducer(state, action) {
           return t;
         }),
       };
+    case "SET_WHERE_EDIT_NEW_TASK":
+      return {
+        ...state,
+        whereEditNewTask: action.payload,
+      };
+    case "SET_EDITED_TASK_ID":
+      return {
+        ...state,
+        editedTaskId: action.payload,
+      };
     default:
       return state;
   }

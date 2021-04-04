@@ -6,7 +6,9 @@ import Truncate from "react-truncate";
 import { TasksContext } from "@/src/context/tasks/TasksContext";
 
 export default function LineTaskName({ task, textWidth, taskWidth, inputRef }) {
-  const { updateTask } = useContext(TasksContext);
+  const { updateTask, whereEditNewTask, setWhereEditNewTask } = useContext(
+    TasksContext
+  );
 
   const [isUpdating, setIsUpdating] = useState(false);
   const [nameState, setNameState] = useState(task.name);
@@ -33,8 +35,9 @@ export default function LineTaskName({ task, textWidth, taskWidth, inputRef }) {
   };
 
   const focusOnInput = () => {
-    if (isUpdating && inputRef.current) {
+    if (isUpdating && inputRef.current && whereEditNewTask == "calendar") {
       inputRef.current.focus();
+      setWhereEditNewTask("");
     }
   };
 
@@ -50,6 +53,12 @@ export default function LineTaskName({ task, textWidth, taskWidth, inputRef }) {
       setNameState(task.name);
     }
   }, [task.name, isUpdating]);
+
+  useEffect(() => {
+    if (task.name == "" && whereEditNewTask == "calendar") {
+      setIsUpdating(true);
+    }
+  }, [task.name]);
 
   return (
     <>
@@ -79,7 +88,7 @@ export default function LineTaskName({ task, textWidth, taskWidth, inputRef }) {
           ref={textRef}
         >
           <Truncate lines={1} width={textWidth}>
-            {task.name ? task.name : getDefaultName()}
+            {task.name != "" ? task.name : getDefaultName()}
           </Truncate>
         </div>
       </When>

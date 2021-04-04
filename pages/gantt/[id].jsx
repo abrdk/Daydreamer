@@ -17,7 +17,6 @@ export default function Gantt() {
   const [modal, setModal] = useState(false);
   const [view, setView] = useState(ViewMode.Day);
   const [isMenuOpen, setMenu] = useState(false);
-  const [editedTask, setEditedTask] = useState(null);
 
   const userCtx = useContext(UsersContext);
   const { isProjectsLoaded, projectByQueryId } = useContext(ProjectsContext);
@@ -39,12 +38,7 @@ export default function Gantt() {
       >
         <Modal modal={modal} setModal={setModal} />
         <div className={styles.container} id="container">
-          <Menu
-            isMenuOpen={isMenuOpen}
-            setMenu={setMenu}
-            editedTask={editedTask}
-            setEditedTask={setEditedTask}
-          />
+          <Menu isMenuOpen={isMenuOpen} setMenu={setMenu} />
           <Header
             setMenu={setMenu}
             setView={setView}
@@ -52,12 +46,7 @@ export default function Gantt() {
             setModal={setModal}
           />
         </div>
-        <Calendar
-          setMenu={setMenu}
-          view={view}
-          editedTask={editedTask}
-          setEditedTask={setEditedTask}
-        />
+        <Calendar setMenu={setMenu} view={view} />
       </When>
     </>
   );

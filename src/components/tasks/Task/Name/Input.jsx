@@ -13,7 +13,9 @@ export default function Input({
   setUpdatingState,
   taskDepth,
 }) {
-  const { updateTask } = useContext(TasksContext);
+  const { updateTask, whereEditNewTask, setWhereEditNewTask } = useContext(
+    TasksContext
+  );
 
   const paddingLeft = taskDepth * taskOffsetLeft;
 
@@ -45,8 +47,9 @@ export default function Input({
   };
 
   const focusOnInput = () => {
-    if (isUpdating && inputRef.current) {
+    if (isUpdating && inputRef.current && whereEditNewTask == "menu") {
       inputRef.current.focus();
+      setWhereEditNewTask("");
     }
   };
 

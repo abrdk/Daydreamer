@@ -23,6 +23,17 @@ export default async (req, res) => {
     }
     return res.status(200).json({ message: "ok", user });
   } catch (e) {
+    if (e.name == "TokenExpiredError") {
+      res.setHeader(
+        "Set-Cookie",
+        cookie.serialize("ganttToken", "", {
+          maxAge: 0,
+          path: "/",
+          sameSite: true,
+        })
+      );
+      return res.status(500).json({ message: "TokenExpiredError" });
+    }
     return res.status(500).json({ message: "Server error" });
   }
 };

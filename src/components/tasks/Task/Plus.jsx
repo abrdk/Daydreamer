@@ -12,9 +12,14 @@ import { TasksContext } from "@/src/context/tasks/TasksContext";
 export default function Plus({ task, plusRef }) {
   const userCtx = useContext(UsersContext);
   const { projectByQueryId } = useContext(ProjectsContext);
-  const { createTask, tasksByProjectId, updateIsOpened } = useContext(
-    TasksContext
-  );
+  const {
+    createTask,
+    tasksByProjectId,
+    updateIsOpened,
+    setWhereEditNewTask,
+    editedTaskId,
+    setEditedTaskId,
+  } = useContext(TasksContext);
 
   const subtasks = tasksByProjectId
     .filter((subtask) => subtask.root == task._id)
@@ -26,16 +31,26 @@ export default function Plus({ task, plusRef }) {
     updateIsOpened({ _id: task._id, isOpened: !task.isOpened });
   };
 
-  const createSubtask = async () => {
+  const createSubtask = (e) => {
+    e.stopPropagation();
+
     const order = subtasks.length ? subtasks[subtasks.length - 1].order + 1 : 0;
+    const newTaskId = nanoid();
 
     if (!task.isOpened) {
       openSubtasksHandler();
     }
 
-    await createTask({
+    if (editedTaskId) {
+      setTimeout(() => setEditedTaskId(newTaskId), 100);
+      setWhereEditNewTask("edit");
+    } else {
+      setWhereEditNewTask("menu");
+    }
+
+    createTask({
       ...task,
-      _id: nanoid(),
+      _id: newTaskId,
       name: "",
       description: "",
       root: task._id,

@@ -27,8 +27,6 @@ export default function CalendarDay({
   isDraggable,
   setDraggable,
   setMenu,
-  editedTask,
-  setEditedTask,
   view,
 }) {
   const daysInMonth = (month, year) => {
@@ -180,8 +178,6 @@ export default function CalendarDay({
       <LineTasks
         calendarStartDate={calendarStartDate}
         setMenu={setMenu}
-        editedTask={editedTask}
-        setEditedTask={setEditedTask}
         view={view}
       />
     </ScrollbarDay>

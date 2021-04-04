@@ -14,7 +14,7 @@ import { TasksContext } from "@/src/context/tasks/TasksContext";
 export default function DraggedTask({
   children,
   task,
-  editedTask,
+  editedTaskId,
   setUpdatingState,
   arrow,
   plus,
@@ -294,7 +294,7 @@ export default function DraggedTask({
             styles.task + ` task-${task._id} draggedTask ` + styles.dragged
           }
         >
-          <When condition={editedTask == task._id}>
+          <When condition={editedTaskId == task._id}>
             <div className={styles.verticalLineAbsolute}></div>
           </When>
           <When condition={subtasks.length}>

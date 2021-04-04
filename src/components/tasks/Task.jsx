@@ -13,13 +13,7 @@ import { TasksContext } from "@/src/context/tasks/TasksContext";
 
 const taskHeight = 55;
 
-export default function Task({
-  task,
-  setContainerHeight,
-  editedTask,
-  setEditedTask,
-  index,
-}) {
+export default function Task({ task, setContainerHeight, index }) {
   const { tasksByProjectId } = useContext(TasksContext);
 
   const subtasks = tasksByProjectId.filter(
@@ -31,7 +25,7 @@ export default function Task({
   const plus = useRef(null);
   const pencil = useRef(null);
 
-  const [isUpdating, setUpdatingState] = useState(!task.name);
+  const [isUpdating, setUpdatingState] = useState(false);
 
   const getContainerHeight = () =>
     document.querySelectorAll(".task").length * taskHeight;
@@ -58,7 +52,7 @@ export default function Task({
         index={index}
         taskDepth={taskDepth}
       >
-        <VerticalLine task={task} editedTask={editedTask} />
+        <VerticalLine task={task} />
 
         <SubtasksArrow task={task} arrow={arrow} taskDepth={taskDepth} />
 
@@ -75,8 +69,6 @@ export default function Task({
           fakeTextRef={fakeText}
           pencilRef={pencil}
           isUpdating={isUpdating}
-          editedTask={editedTask}
-          setEditedTask={setEditedTask}
           taskDepth={taskDepth}
         />
 
@@ -84,12 +76,7 @@ export default function Task({
       </TaskWrapper>
 
       <When condition={subtasks.length && task.isOpened}>
-        <TasksRoot
-          root={task._id}
-          setContainerHeight={setContainerHeight}
-          editedTask={editedTask}
-          setEditedTask={setEditedTask}
-        />
+        <TasksRoot root={task._id} setContainerHeight={setContainerHeight} />
       </When>
     </>
   );

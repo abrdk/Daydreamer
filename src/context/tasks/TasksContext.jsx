@@ -16,8 +16,16 @@ export function TasksProvider(props) {
     tasks: [],
     tasksByProjectId: [],
     isTasksLoaded: false,
+    whereEditNewTask: "",
+    editedTaskId: "",
   });
-  const { tasks, isTasksLoaded, tasksByProjectId } = tasksState;
+  const {
+    tasks,
+    isTasksLoaded,
+    tasksByProjectId,
+    whereEditNewTask,
+    editedTaskId,
+  } = tasksState;
 
   const findSubtasksIds = (_id) =>
     tasksByProjectId
@@ -226,12 +234,28 @@ export function TasksProvider(props) {
     });
   };
 
+  const setWhereEditNewTask = (place) => {
+    dispatch({
+      type: "SET_WHERE_EDIT_NEW_TASK",
+      payload: place,
+    });
+  };
+
+  const setEditedTaskId = (_id) => {
+    dispatch({
+      type: "SET_EDITED_TASK_ID",
+      payload: _id,
+    });
+  };
+
   return (
     <TasksContext.Provider
       value={{
         tasks,
         isTasksLoaded,
         tasksByProjectId,
+        whereEditNewTask,
+        editedTaskId,
         createTask,
         updateTask,
         deleteTask,
@@ -239,6 +263,8 @@ export function TasksProvider(props) {
         createInitialTasks,
         deleteTasksByProject,
         updateIsOpened,
+        setWhereEditNewTask,
+        setEditedTaskId,
       }}
     >
       {props.children}

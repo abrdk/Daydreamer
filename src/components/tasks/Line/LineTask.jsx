@@ -1,6 +1,6 @@
 import calendarStyles from "@/styles/calendar.module.scss";
 import { When } from "react-if";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 
 import LineTasksRoot from "@/src/components/tasks/Line/LineTasksRoot";
 import DateTooltip from "@/src/components/tasks/Line/LineTask/DateTooltip";
@@ -10,14 +10,9 @@ import LeftStick from "@/src/components/tasks/Line/LineTask/LeftStick";
 import CenterArea from "@/src/components/tasks/Line/LineTask/CenterArea";
 import LineTaskName from "@/src/components/tasks/Line/LineTask/LineTaskName";
 
-export default function LineTask({
-  task,
-  setMenu,
-  setEditedTask,
-  calendarStartDate,
-  view,
-  editedTask,
-}) {
+import { TasksContext } from "@/src/context/tasks/TasksContext";
+
+export default function LineTask({ task, setMenu, calendarStartDate, view }) {
   const views = ["Day", "Week", "Month"];
   const dayWidth = [55, 120 / 7, 160 / 30];
   const minOffsetRight = [-70, -5, 0];
@@ -40,6 +35,8 @@ export default function LineTask({
   const [isResizeLeft, setIsResizeLeft] = useState(false);
   const [isResizeRight, setIsResizeRight] = useState(false);
   const [isMoving, setIsMoving] = useState(false);
+
+  const { editedTaskId } = useContext(TasksContext);
 
   const setDates = () => {
     if (typeof task.dateStart == "string") {
@@ -164,7 +161,8 @@ export default function LineTask({
           background: `#${task.color}`,
           paddingLeft: getPadding(),
           paddingRight: getPadding(),
-          opacity: editedTask != null ? (editedTask == task._id ? 1 : 0.5) : 1,
+          opacity:
+            editedTaskId != "" ? (editedTaskId == task._id ? 1 : 0.5) : 1,
         }}
         ref={lineRef}
       >
@@ -177,12 +175,7 @@ export default function LineTask({
           taskWidth={taskWidth}
         />
 
-        <SubtaskTooltip
-          task={task}
-          setMenu={setMenu}
-          setEditedTask={setEditedTask}
-          editedTask={editedTask}
-        />
+        <SubtaskTooltip task={task} />
 
         <LeftStick
           task={task}
@@ -240,11 +233,9 @@ export default function LineTask({
       <When condition={task.isOpened}>
         <LineTasksRoot
           root={task._id}
-          setEditedTask={setEditedTask}
           setMenu={setMenu}
           view={view}
           calendarStartDate={calendarStartDate}
-          editedTask={editedTask}
         />
       </When>
     </>

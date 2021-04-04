@@ -26,8 +26,6 @@ export default function CalendarWeek({
   isDraggable,
   setDraggable,
   setMenu,
-  editedTask,
-  setEditedTask,
   view,
 }) {
   const daysInMonth = (month, year) => {
@@ -207,8 +205,6 @@ export default function CalendarWeek({
       {weeksWithLabelsComponents}
       <LineTasks
         setMenu={setMenu}
-        editedTask={editedTask}
-        setEditedTask={setEditedTask}
         view={view}
         calendarStartDate={
           new Date(

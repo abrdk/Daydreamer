@@ -5,7 +5,7 @@ import CalendarDay from "@/src/components/calendar/CalendarDay";
 import CalendarWeek from "@/src/components/calendar/CalendarWeek";
 import CalendarMonth from "@/src/components/calendar/CalendarMonth";
 
-export default function Calendar({ view, setMenu, editedTask, setEditedTask }) {
+export default function Calendar({ view, setMenu }) {
   const [cursor, setCursor] = useState(null);
   const [isDraggable, setDraggable] = useState(false);
 
@@ -45,8 +45,6 @@ export default function Calendar({ view, setMenu, editedTask, setEditedTask }) {
         isDraggable={isDraggable}
         setDraggable={setDraggable}
         setMenu={setMenu}
-        editedTask={editedTask}
-        setEditedTask={setEditedTask}
         view={view}
       />
     );
@@ -59,8 +57,6 @@ export default function Calendar({ view, setMenu, editedTask, setEditedTask }) {
         isDraggable={isDraggable}
         setDraggable={setDraggable}
         setMenu={setMenu}
-        editedTask={editedTask}
-        setEditedTask={setEditedTask}
         view={view}
       />
     );
@@ -73,8 +69,6 @@ export default function Calendar({ view, setMenu, editedTask, setEditedTask }) {
         isDraggable={isDraggable}
         setDraggable={setDraggable}
         setMenu={setMenu}
-        editedTask={editedTask}
-        setEditedTask={setEditedTask}
         view={view}
       />
     );

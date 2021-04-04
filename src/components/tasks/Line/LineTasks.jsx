@@ -1,18 +1,16 @@
 import styles from "@/styles/calendar.module.scss";
 import Scrollbar from "react-scrollbars-custom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import useEvent from "@react-hook/event";
 import useMouse from "@react-hook/mouse-position";
 
 import LineTasksRoot from "@/src/components/tasks/Line/LineTasksRoot";
 
-export default function LineTasks({
-  setMenu,
-  editedTask,
-  setEditedTask,
-  calendarStartDate,
-  view,
-}) {
+import { TasksContext } from "@/src/context/tasks/TasksContext";
+
+export default function LineTasks({ setMenu, calendarStartDate, view }) {
+  const { editedTaskId } = useContext(TasksContext);
+
   const mouse = useMouse(document.querySelector("#__next"), {
     enterDelay: 100,
     leaveDelay: 100,
@@ -56,7 +54,7 @@ export default function LineTasks({
     >
       <Scrollbar
         style={{
-          height: editedTask ? "calc(100vh - 563px)" : "calc(100vh - 177px)",
+          height: editedTaskId ? "calc(100vh - 563px)" : "calc(100vh - 177px)",
           width: calendarWidth,
         }}
         noScrollX={true}
@@ -68,7 +66,7 @@ export default function LineTasks({
                 {...restProps}
                 ref={elementRef}
                 style={{
-                  height: editedTask
+                  height: editedTaskId
                     ? "calc(100% - 182px - 37px - 380px)"
                     : "calc(100% - 182px - 37px)",
                 }}
@@ -94,10 +92,8 @@ export default function LineTasks({
           <LineTasksRoot
             calendarStartDate={calendarStartDate}
             setMenu={setMenu}
-            setEditedTask={setEditedTask}
             root={""}
             view={view}
-            editedTask={editedTask}
           />
         </div>
       </Scrollbar>

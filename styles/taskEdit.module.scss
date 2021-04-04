@@ -395,3 +395,16 @@
   background: #258efa;
   color: #ffffff;
 }
+
+.hiddenName {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: 21px;
+  position: absolute;
+  padding-left: 21px;
+  padding-top: 14px;
+  width: max-content;
+  color: #d8d8d8 !important;
+  white-space: pre;
+}

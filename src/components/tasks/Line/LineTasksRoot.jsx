@@ -7,10 +7,8 @@ import { TasksContext } from "@/src//context/tasks/TasksContext";
 export default function LineTasksRoot({
   root,
   setMenu,
-  setEditedTask,
   view,
   calendarStartDate,
-  editedTask,
 }) {
   const { tasksByProjectId } = useContext(TasksContext);
 
@@ -20,12 +18,10 @@ export default function LineTasksRoot({
     .map((t) => (
       <LineTask
         key={t._id}
-        setEditedTask={setEditedTask}
         setMenu={setMenu}
         task={t}
         view={view}
         calendarStartDate={calendarStartDate}
-        editedTask={editedTask}
       />
     ));
 

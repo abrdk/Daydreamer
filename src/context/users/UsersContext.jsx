@@ -1,4 +1,5 @@
 import React, { createContext, useReducer, useEffect } from "react";
+import { useRouter } from "next/router";
 import { xhr } from "@/helpers/xhr";
 
 import UsersReducer from "@/src/context/users/UsersReducer";
@@ -6,6 +7,7 @@ import UsersReducer from "@/src/context/users/UsersReducer";
 export const UsersContext = createContext();
 
 export function UsersProvider(props) {
+  const router = useRouter();
   const [usersState, dispatch] = useReducer(UsersReducer, {
     _id: "",
     name: "",
@@ -29,6 +31,9 @@ export function UsersProvider(props) {
         setUser(res.user);
       } else {
         setUser({ _id: "", name: "", password: "" });
+        if (res.message == "TokenExpiredError") {
+          router.push("/signup");
+        }
       }
     } catch (e) {}
   };

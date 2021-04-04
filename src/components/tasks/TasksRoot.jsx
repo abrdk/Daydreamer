@@ -4,12 +4,7 @@ import Task from "@/src/components/tasks/Task";
 
 import { TasksContext } from "@/src/context/tasks/TasksContext";
 
-export default function TasksRoot({
-  root,
-  setContainerHeight,
-  editedTask,
-  setEditedTask,
-}) {
+export default function TasksRoot({ root, setContainerHeight }) {
   const { tasksByProjectId } = useContext(TasksContext);
 
   const sortedTasks = tasksByProjectId
@@ -79,8 +74,6 @@ export default function TasksRoot({
       index={getTaskIndex(task._id)}
       task={task}
       setContainerHeight={setContainerHeight}
-      editedTask={editedTask}
-      setEditedTask={setEditedTask}
     />
   ));
 

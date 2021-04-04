@@ -11,15 +11,15 @@ import { TasksContext } from "@/src//context/tasks/TasksContext";
 import { UsersContext } from "@/src/context/users/UsersContext";
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 
-export default function SubtaskTooltip({
-  task,
-  setMenu,
-  setEditedTask,
-  editedTask,
-}) {
-  const { updateIsOpened, tasksByProjectId, createTask } = useContext(
-    TasksContext
-  );
+export default function SubtaskTooltip({ task }) {
+  const {
+    updateIsOpened,
+    tasksByProjectId,
+    createTask,
+    setWhereEditNewTask,
+    editedTaskId,
+    setEditedTaskId,
+  } = useContext(TasksContext);
   const subtasks = tasksByProjectId
     .filter((t) => t.root == task._id)
     .sort((task1, task2) => task1.order > task2.order);
@@ -34,6 +34,12 @@ export default function SubtaskTooltip({
     }
 
     const newSubtaskId = nanoid();
+    if (editedTaskId) {
+      setTimeout(() => setEditedTaskId(newSubtaskId), 100);
+      setWhereEditNewTask("edit");
+    } else {
+      setWhereEditNewTask("calendar");
+    }
     updateIsOpened({ _id: task._id, isOpened: true });
     createTask({
       ...task,
@@ -59,6 +65,7 @@ export default function SubtaskTooltip({
           </div>
         </div>
       </When>
+
       <When condition={projectByQueryId.owner == userCtx._id}>
         <div className={calendarStyles.addSubtaskWrapper}>
           <div
@@ -69,14 +76,15 @@ export default function SubtaskTooltip({
           </div>
         </div>
       </When>
+
       <div className={calendarStyles.editTaskIconWrapper}>
         <div
           className={calendarStyles.editTaskIcon}
           onClick={() => {
-            if (editedTask == task._id) {
-              setEditedTask(null);
+            if (editedTaskId == task._id) {
+              setEditedTaskId("");
             } else {
-              setEditedTask(task._id);
+              setEditedTaskId(task._id);
             }
           }}
         >
