@@ -9,12 +9,12 @@ import useEvent from "@react-hook/event";
 
 import ProjectOption from "@/src/components/projects/ProjectOption";
 
-import { UsersContext } from "@/src/context/users/UsersContext";
-import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
+import { UsersContext } from "@/src/context/UsersContext";
+import { ProjectsContext } from "@/src/context/ProjectsContext";
 
 export default function ProjectsDropdown({ isDropdownOpen, setDropdown }) {
   const router = useRouter();
-  const userCtx = useContext(UsersContext);
+  const { user } = useContext(UsersContext);
   const { projects, createProject, projectByQueryId } = useContext(
     ProjectsContext
   );
@@ -29,7 +29,7 @@ export default function ProjectsDropdown({ isDropdownOpen, setDropdown }) {
     const newProject = {
       _id: newProjectId,
       name: "",
-      owner: userCtx._id,
+      owner: user._id,
       isCurrent: true,
     };
     createProject(newProject);
@@ -38,7 +38,7 @@ export default function ProjectsDropdown({ isDropdownOpen, setDropdown }) {
   };
 
   const openDropdown = () => {
-    if (projectByQueryId.owner == userCtx._id) {
+    if (projectByQueryId.owner == user._id) {
       setDropdown(!isDropdownOpen);
     }
   };
@@ -68,7 +68,7 @@ export default function ProjectsDropdown({ isDropdownOpen, setDropdown }) {
             <Truncate lines={1} width={185}>
               {projectByQueryId.name}
             </Truncate>
-            <img src="/img/arrowUp.svg" alt=" " />
+            <img src="/img/arrowUp.svg" alt="open" />
             <When condition={projectByQueryId.name == ""}>
               <div className={styles.hiddenName}>{`Project name #${
                 projectIndex + 1
@@ -81,7 +81,7 @@ export default function ProjectsDropdown({ isDropdownOpen, setDropdown }) {
             <Truncate lines={1} width={185}>
               {projectByQueryId.name}
             </Truncate>
-            <img src="/img/arrowDown.svg" alt=" " />
+            <img src="/img/arrowDown.svg" alt="close" />
           </div>
         </Else>
       </If>

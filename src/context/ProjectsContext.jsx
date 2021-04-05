@@ -1,11 +1,15 @@
 import { xhr } from "@/helpers/xhr";
-import React, { createContext } from "react";
+import React, { createContext, useContext } from "react";
 import { useRouter } from "next/router";
 import useSWR from "swr";
+
+import { UsersContext } from "@/src/context/UsersContext";
 
 export const ProjectsContext = createContext();
 
 export function ProjectsProvider(props) {
+  const { user } = useContext(UsersContext);
+
   const router = useRouter();
 
   const loadProjects = async (url) => {
@@ -70,12 +74,25 @@ export function ProjectsProvider(props) {
       return {};
     }
   };
-  const { data: projectByQueryId, mutate: mutateProjectByQueryId } = useSWR(
+  const { data: projectByQueryId } = useSWR(
     router.query.id && !currentProject
       ? ["/projects/show", router.query.id]
       : null,
     loadProject
   );
+
+  const isUserOwnsProject = () => {
+    if (!user) {
+      return false;
+    }
+    if (currentProject) {
+      return currentProject.owner == user._id;
+    }
+    if (projectByQueryId) {
+      return projectByQueryId.owner == user._id;
+    }
+    return false;
+  };
 
   return (
     <ProjectsContext.Provider
@@ -83,13 +100,12 @@ export function ProjectsProvider(props) {
         projects,
         isProjectsLoaded: !!projects,
         projectByQueryId: currentProject || projectByQueryId,
-        mutateProjectByQueryId,
+        isUserOwnsProject: isUserOwnsProject(),
         createProject,
         updateProject,
         deleteProject,
         deleteAllProjects,
         mutateProjects,
-        mutateProjectByQueryId,
       }}
     >
       {props.children}

@@ -9,24 +9,19 @@ import Menu from "@/src/components/menu/Menu";
 import Calendar from "@/src/components/calendar/Calendar";
 import Header from "@/src/components/header/Header";
 
-import { UsersContext } from "@/src/context/users/UsersContext";
-import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
-import { TasksContext } from "@/src/context/tasks/TasksContext";
+import { UsersContext } from "@/src/context/UsersContext";
+import { ProjectsContext } from "@/src/context/ProjectsContext";
+import { TasksContext } from "@/src/context/TasksContext";
 
 export default function Gantt() {
   const [modal, setModal] = useState(false);
   const [view, setView] = useState(ViewMode.Day);
   const [isMenuOpen, setMenu] = useState(false);
 
-  const userCtx = useContext(UsersContext);
-  const { isProjectsLoaded, projectByQueryId, projects } = useContext(
-    ProjectsContext
-  );
-  const { isTasksLoaded, tasksByProjectId, tasks } = useContext(TasksContext);
-  // console.log("tasks", tasks);
-  // console.log("tasksByProjectId", tasksByProjectId);
-  // console.log("projects", projects);
-  // console.log("projectByQueryId", projectByQueryId);
+  const { isUserLoaded } = useContext(UsersContext);
+  const { isProjectsLoaded, projectByQueryId } = useContext(ProjectsContext);
+  const { isTasksLoaded, tasksByProjectId } = useContext(TasksContext);
+
   return (
     <>
       <Head>
@@ -35,7 +30,7 @@ export default function Gantt() {
       </Head>
       <When
         condition={
-          userCtx.isUserLoaded &&
+          isUserLoaded &&
           isProjectsLoaded &&
           isTasksLoaded &&
           projectByQueryId &&

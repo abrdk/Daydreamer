@@ -9,13 +9,11 @@ export function UsersProvider(props) {
   const router = useRouter();
 
   const loadUser = async (url) => {
-    try {
-      const res = await xhr(url, {}, "GET");
-      if (res.message == "TokenExpiredError") {
-        throw new Error("TokenExpiredError");
-      }
-      return res;
-    } catch (e) {}
+    const res = await xhr(url, {}, "GET");
+    if (res.message == "TokenExpiredError") {
+      throw new Error("TokenExpiredError");
+    }
+    return res;
   };
 
   const { data: user, error, mutate: mutateUser } = useSWR("/auth", loadUser, {
@@ -53,9 +51,7 @@ export function UsersProvider(props) {
   return (
     <UsersContext.Provider
       value={{
-        _id: user ? user._id : "",
-        name: user ? user.name : "",
-        password: user ? user.password : "",
+        user,
         isUserLoaded: !error && user,
         signup,
         login,

@@ -5,7 +5,7 @@ import CalendarDay from "@/src/components/calendar/CalendarDay";
 import CalendarWeek from "@/src/components/calendar/CalendarWeek";
 import CalendarMonth from "@/src/components/calendar/CalendarMonth";
 
-export default function Calendar({ view, setMenu }) {
+export default function Calendar({ view, setMenu, isDefault }) {
   const [cursor, setCursor] = useState(null);
   const [isDraggable, setDraggable] = useState(false);
 
@@ -46,6 +46,7 @@ export default function Calendar({ view, setMenu }) {
         setDraggable={setDraggable}
         setMenu={setMenu}
         view={view}
+        isDefault={isDefault}
       />
     );
   }

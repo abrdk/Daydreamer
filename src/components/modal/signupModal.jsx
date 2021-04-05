@@ -6,9 +6,9 @@ import styles from "@/styles/auth.module.scss";
 import { useRouter } from "next/router";
 import FloatingLabel from "floating-label-react";
 
-import { UsersContext } from "@/src/context/users/UsersContext";
-import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
-import { TasksContext } from "@/src/context/tasks/TasksContext";
+import { UsersContext } from "@/src/context/UsersContext";
+import { ProjectsContext } from "@/src/context/ProjectsContext";
+import { TasksContext } from "@/src/context/TasksContext";
 
 export default function SignupModal({ setModal }) {
   const router = useRouter();
@@ -21,7 +21,7 @@ export default function SignupModal({ setModal }) {
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setPasswordVisibility] = useState(false);
 
-  const { setUser, signup } = useContext(UsersContext);
+  const { signup } = useContext(UsersContext);
   const { createProject, projectByQueryId } = useContext(ProjectsContext);
   const { createTask, tasksByProjectId } = useContext(TasksContext);
 
@@ -115,7 +115,6 @@ export default function SignupModal({ setModal }) {
       password,
     });
     if (res.message === "ok") {
-      setUser(res.user);
       await copyProject(res);
     } else {
       if (res.errorType === "name") {
@@ -162,7 +161,7 @@ export default function SignupModal({ setModal }) {
             />
             <img
               src="/img/eye.svg"
-              alt=" "
+              alt="eye"
               className={styles.passwordEye}
               onClick={togglePasswordVisibility}
             />

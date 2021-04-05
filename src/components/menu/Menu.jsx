@@ -6,16 +6,17 @@ import { When } from "react-if";
 import TaskEdit from "@/src/components/tasks/Edit/TaskEdit";
 import ProjectsDropdown from "@/src/components/projects/ProjectsDropdown";
 import Tasks from "@/src/components/tasks/Tasks";
-import ArrowRight from "@/src/components/svg/ArrowRight";
-import ArrowLeft from "@/src/components/svg/ArrowLeft";
-import PlusIcon from "@/src/components/svg/PlusIcon";
 
-import { TasksContext } from "@/src//context/tasks/TasksContext";
-import { UsersContext } from "@/src/context/users/UsersContext";
-import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
+import ArrowRightSvg from "@/src/components/svg/ArrowRightSvg";
+import ArrowLeft from "@/src/components/svg/ArrowLeft";
+import PlusSvg from "@/src/components/svg/PlusSvg";
+
+import { TasksContext } from "@/src/context/TasksContext";
+import { UsersContext } from "@/src/context/UsersContext";
+import { ProjectsContext } from "@/src/context/ProjectsContext";
 
 export default function Menu({ isMenuOpen, setMenu }) {
-  const userCtx = useContext(UsersContext);
+  const { user } = useContext(UsersContext);
   const { createTask, tasksByProjectId, setWhereEditNewTask } = useContext(
     TasksContext
   );
@@ -67,7 +68,7 @@ export default function Menu({ isMenuOpen, setMenu }) {
   return (
     <>
       <div className={styles.iconOpen} onClick={openMenuHandler}>
-        <ArrowRight />
+        <ArrowRightSvg />
       </div>
 
       <div
@@ -87,9 +88,9 @@ export default function Menu({ isMenuOpen, setMenu }) {
         <Tasks />
         <TaskEdit isMenuOpen={isMenuOpen} />
       </div>
-      <When condition={projectByQueryId.owner == userCtx._id}>
+      <When condition={projectByQueryId.owner == user._id}>
         <div className={styles.bigPlus} onClick={createTaskHandler}>
-          <PlusIcon />
+          <PlusSvg />
         </div>
       </When>
     </>

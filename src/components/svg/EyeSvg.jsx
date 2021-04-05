@@ -1,4 +1,4 @@
-export default function Eye() {
+export default function EyeSvg() {
   return (
     <svg
       width="24"

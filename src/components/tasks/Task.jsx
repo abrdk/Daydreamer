@@ -9,7 +9,7 @@ import Name from "@/src/components/tasks/Task/Name";
 import Pencil from "@/src/components/tasks/Task/Pencil";
 import Plus from "@/src/components/tasks/Task/Plus";
 
-import { TasksContext } from "@/src/context/tasks/TasksContext";
+import { TasksContext } from "@/src/context/TasksContext";
 
 const taskHeight = 55;
 

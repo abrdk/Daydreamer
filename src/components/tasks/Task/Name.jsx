@@ -6,7 +6,7 @@ import FakeText from "@/src/components/tasks/Task/Name/FakeText";
 import Text from "@/src/components/tasks/Task/Name/Text";
 import Input from "@/src/components/tasks/Task/Name/Input";
 
-import { TasksContext } from "@/src/context/tasks/TasksContext";
+import { TasksContext } from "@/src/context/TasksContext";
 
 export default function Name({
   task,

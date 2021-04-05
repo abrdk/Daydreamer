@@ -10,7 +10,7 @@ import LeftStick from "@/src/components/tasks/Line/LineTask/LeftStick";
 import CenterArea from "@/src/components/tasks/Line/LineTask/CenterArea";
 import LineTaskName from "@/src/components/tasks/Line/LineTask/LineTaskName";
 
-import { TasksContext } from "@/src/context/tasks/TasksContext";
+import { TasksContext } from "@/src/context/TasksContext";
 
 export default function LineTask({ task, setMenu, calendarStartDate, view }) {
   const views = ["Day", "Week", "Month"];

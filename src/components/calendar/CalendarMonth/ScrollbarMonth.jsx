@@ -3,7 +3,7 @@ import Scrollbar from "react-scrollbars-custom";
 import { useEffect, useState, useContext } from "react";
 import useEvent from "@react-hook/event";
 
-import { TasksContext } from "@/src//context/tasks/TasksContext";
+import { TasksContext } from "@/src/context/TasksContext";
 
 export default function CalendarMonth({
   cursor,

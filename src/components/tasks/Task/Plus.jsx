@@ -3,14 +3,14 @@ import styles from "@/styles/tasks.module.scss";
 import { When } from "react-if";
 import { nanoid } from "nanoid";
 
-import PlusIcon from "@/src/components/svg/PlusIcon";
+import PlusSvg from "@/src/components/svg/PlusSvg";
 
-import { UsersContext } from "@/src/context/users/UsersContext";
-import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
-import { TasksContext } from "@/src/context/tasks/TasksContext";
+import { UsersContext } from "@/src/context/UsersContext";
+import { ProjectsContext } from "@/src/context/ProjectsContext";
+import { TasksContext } from "@/src/context/TasksContext";
 
 export default function Plus({ task, plusRef }) {
-  const userCtx = useContext(UsersContext);
+  const { user } = useContext(UsersContext);
   const { projectByQueryId } = useContext(ProjectsContext);
   const {
     createTask,
@@ -26,7 +26,7 @@ export default function Plus({ task, plusRef }) {
     .filter((subtask) => subtask.root == task._id)
     .sort((task1, task2) => task1.order > task2.order);
 
-  const isUserOwnProject = () => projectByQueryId.owner == userCtx._id;
+  const isUserOwnProject = () => projectByQueryId.owner == user._id;
 
   const openSubtasksHandler = () => {
     updateIsOpened({ _id: task._id, isOpened: !isTaskOpened[task._id] });
@@ -62,7 +62,7 @@ export default function Plus({ task, plusRef }) {
   return (
     <When condition={isUserOwnProject()}>
       <div ref={plusRef} className={styles.plus} onClick={createSubtask}>
-        <PlusIcon />
+        <PlusSvg />
       </div>
     </When>
   );

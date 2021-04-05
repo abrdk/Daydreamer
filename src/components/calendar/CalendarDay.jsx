@@ -1,5 +1,5 @@
 import styles from "@/styles/calendar.module.scss";
-import { When } from "react-if";
+import { Else, If, Then, When } from "react-if";
 import { useEffect, useState, useMemo } from "react";
 
 import LineTasks from "@/src/components/tasks/Line/LineTasks";
@@ -28,6 +28,7 @@ export default function CalendarDay({
   setDraggable,
   setMenu,
   view,
+  isDefault,
 }) {
   const daysInMonth = (month, year) => {
     return new Date(year, month + 1, 0).getDate();
@@ -163,23 +164,30 @@ export default function CalendarDay({
   }, [defaultScrollLeft]);
 
   return (
-    <ScrollbarDay
-      cursor={cursor}
-      setCursor={setCursor}
-      isDraggable={isDraggable}
-      setDraggable={setDraggable}
-      calendarStartDate={calendarStartDate}
-      setCalendarStartDate={setCalendarStartDate}
-      calendarEndDate={calendarEndDate}
-      setCalendarEndDate={setCalendarEndDate}
-      defaultScrollLeft={defaultScrollLeft}
-    >
-      {daysWithLabelsComponents}
-      <LineTasks
-        calendarStartDate={calendarStartDate}
-        setMenu={setMenu}
-        view={view}
-      />
-    </ScrollbarDay>
+    <If condition={isDefault}>
+      <Then>
+        <div className={styles.wrapper}>{daysWithLabelsComponents}</div>
+      </Then>
+      <Else>
+        <ScrollbarDay
+          cursor={cursor}
+          setCursor={setCursor}
+          isDraggable={isDraggable}
+          setDraggable={setDraggable}
+          calendarStartDate={calendarStartDate}
+          setCalendarStartDate={setCalendarStartDate}
+          calendarEndDate={calendarEndDate}
+          setCalendarEndDate={setCalendarEndDate}
+          defaultScrollLeft={defaultScrollLeft}
+        >
+          {daysWithLabelsComponents}
+          <LineTasks
+            calendarStartDate={calendarStartDate}
+            setMenu={setMenu}
+            view={view}
+          />
+        </ScrollbarDay>
+      </Else>
+    </If>
   );
 }

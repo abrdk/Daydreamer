@@ -2,7 +2,7 @@ import styles from "@/styles/tasks.module.scss";
 import { When } from "react-if";
 import { useContext } from "react";
 
-import { TasksContext } from "@/src/context/tasks/TasksContext";
+import { TasksContext } from "@/src/context/TasksContext";
 
 export default function VerticalLine({ task }) {
   const { editedTaskId } = useContext(TasksContext);

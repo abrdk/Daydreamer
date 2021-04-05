@@ -5,7 +5,7 @@ import { useEffect, useState, useContext } from "react";
 import LineTasksRoot from "@/src/components/tasks/Line/LineTasksRoot";
 import ScrollBinder from "@/src/components/tasks/Line/ScrollBinder";
 
-import { TasksContext } from "@/src/context/tasks/TasksContext";
+import { TasksContext } from "@/src/context/TasksContext";
 
 export default function LineTasks({ setMenu, calendarStartDate, view }) {
   const { editedTaskId } = useContext(TasksContext);

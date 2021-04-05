@@ -4,14 +4,12 @@ import { nanoid } from "nanoid";
 import React, { createContext, useState, useContext } from "react";
 import useSWR from "swr";
 
-import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
-import { UsersContext } from "@/src/context/users/UsersContext";
+import { ProjectsContext } from "@/src/context/ProjectsContext";
 
 export const TasksContext = createContext();
 
 export function TasksProvider(props) {
-  const { projectByQueryId } = useContext(ProjectsContext);
-  const userCtx = useContext(UsersContext);
+  const { isUserOwnsProject } = useContext(ProjectsContext);
 
   const router = useRouter();
 
@@ -85,24 +83,23 @@ export function TasksProvider(props) {
       "59CD90",
       "258EFA",
     ];
-    const today = new Date();
     const datesStart = [
-      new Date(today.getFullYear(), today.getMonth(), today.getDate() - 6),
-      new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1),
-      new Date(today.getFullYear(), today.getMonth(), today.getDate() - 3),
-      new Date(today.getFullYear(), today.getMonth(), today.getDate() + 6),
-      new Date(today.getFullYear(), today.getMonth(), today.getDate() - 2),
-      new Date(today.getFullYear(), today.getMonth(), today.getDate()),
-      new Date(today.getFullYear(), today.getMonth(), today.getDate() + 3),
+      new Date().setDate(new Date().getDate() - 6),
+      new Date().setDate(new Date().getDate() - 1),
+      new Date().setDate(new Date().getDate() - 3),
+      new Date().setDate(new Date().getDate() + 6),
+      new Date().setDate(new Date().getDate() - 2),
+      new Date(),
+      new Date().setDate(new Date().getDate() + 3),
     ];
     const datesEnd = [
-      new Date(today.getFullYear(), today.getMonth(), today.getDate()),
-      new Date(today.getFullYear(), today.getMonth(), today.getDate() + 5),
-      new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1),
-      new Date(today.getFullYear(), today.getMonth(), today.getDate() + 12),
-      new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7),
-      new Date(today.getFullYear(), today.getMonth(), today.getDate() + 3),
-      new Date(today.getFullYear(), today.getMonth(), today.getDate() + 8),
+      new Date(),
+      new Date().setDate(new Date().getDate() + 5),
+      new Date().setDate(new Date().getDate() - 1),
+      new Date().setDate(new Date().getDate() + 13),
+      new Date().setDate(new Date().getDate() + 7),
+      new Date().setDate(new Date().getDate() + 3),
+      new Date().setDate(new Date().getDate() + 8),
     ];
 
     const _ids = [...Array(7).keys()].map(() => nanoid());
@@ -165,10 +162,7 @@ export function TasksProvider(props) {
       value={{
         tasks,
         isTasksLoaded: !!tasks,
-        tasksByProjectId:
-          projectByQueryId && projectByQueryId.owner != userCtx._id
-            ? tasksByProjectId
-            : currentTasks,
+        tasksByProjectId: isUserOwnsProject ? currentTasks : tasksByProjectId,
         whereEditNewTask,
         editedTaskId,
         isTaskOpened,

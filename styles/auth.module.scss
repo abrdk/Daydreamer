@@ -150,6 +150,9 @@
   .formInputFilledWarn {
     border: 1px solid #f3f3f3;
   }
+  &:active {
+    color: #258efa !important;
+  }
 }
 
 .passwordContainer {

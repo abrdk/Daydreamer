@@ -8,13 +8,13 @@ import { When } from "react-if";
 import TaskCalendar from "@/src/components/tasks/Edit/TaskCalendar";
 import Cross from "@/src/components/svg/Cross";
 
-import { TasksContext } from "@/src/context/tasks/TasksContext";
-import { UsersContext } from "@/src/context/users/UsersContext";
-import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
+import { TasksContext } from "@/src/context/TasksContext";
+import { UsersContext } from "@/src/context/UsersContext";
+import { ProjectsContext } from "@/src/context/ProjectsContext";
 
 export default function TasksEdit({ isMenuOpen }) {
   const { projectByQueryId } = useContext(ProjectsContext);
-  const userCtx = useContext(UsersContext);
+  const { user } = useContext(UsersContext);
 
   const {
     tasksByProjectId,
@@ -139,7 +139,7 @@ export default function TasksEdit({ isMenuOpen }) {
               onChange={nameUpdateHandler}
               onBlur={setName}
               onFocus={(e) => {
-                if (projectByQueryId.owner != userCtx._id) {
+                if (projectByQueryId.owner != user._id) {
                   e.target.blur();
                 }
               }}
@@ -184,7 +184,7 @@ export default function TasksEdit({ isMenuOpen }) {
                   value={editedDescription}
                   onChange={descriptionUpdateHandler}
                   onFocus={(e) => {
-                    if (projectByQueryId.owner != userCtx._id) {
+                    if (projectByQueryId.owner != user._id) {
                       e.target.blur();
                     } else {
                       setTextareaFocused(true);
@@ -215,12 +215,12 @@ export default function TasksEdit({ isMenuOpen }) {
               <Cross />
             </div>
           </div>
-          <When condition={projectByQueryId.owner == userCtx._id}>
+          <When condition={projectByQueryId.owner == user._id}>
             <div className={styles.colorsWrapper}>{colorsElements}</div>
             <div className={styles.trashWrapper}>
               <img
                 src="/img/trashBlue.svg"
-                alt=" "
+                alt="delete"
                 className={styles.icon}
                 onClick={deleteHandler}
               />

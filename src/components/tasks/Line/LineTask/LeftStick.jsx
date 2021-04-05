@@ -3,9 +3,9 @@ import { When } from "react-if";
 import { useContext, useState, useEffect } from "react";
 import useEvent from "@react-hook/event";
 
-import { UsersContext } from "@/src/context/users/UsersContext";
-import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
-import { TasksContext } from "@/src//context/tasks/TasksContext";
+import { UsersContext } from "@/src/context/UsersContext";
+import { ProjectsContext } from "@/src/context/ProjectsContext";
+import { TasksContext } from "@/src/context/TasksContext";
 
 export default function LeftStick({
   task,
@@ -23,7 +23,7 @@ export default function LeftStick({
 }) {
   const { updateTask } = useContext(TasksContext);
   const { projectByQueryId } = useContext(ProjectsContext);
-  const userCtx = useContext(UsersContext);
+  const { user } = useContext(UsersContext);
 
   const [scrollLeft, setScrollLeft] = useState(undefined);
 
@@ -107,7 +107,7 @@ export default function LeftStick({
 
   return (
     <When condition={view != "Month" || taskWidth > dayWidth * 4}>
-      <When condition={projectByQueryId.owner == userCtx._id}>
+      <When condition={projectByQueryId.owner == user._id}>
         <div
           className={calendarStyles.resizeAreaLeft}
           onMouseDown={startResizeLeft}

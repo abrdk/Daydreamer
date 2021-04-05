@@ -1,0 +1,38 @@
+import { useContext, useEffect } from "react";
+import { useRouter } from "next/router";
+
+import { UsersContext } from "@/src/context/UsersContext";
+import { ProjectsContext } from "@/src/context/ProjectsContext";
+
+export default function RedirectManager({ children }) {
+  const router = useRouter();
+
+  const { isUserLoaded, user } = useContext(UsersContext);
+  const { isProjectsLoaded, projects } = useContext(ProjectsContext);
+
+  useEffect(() => {
+    if (isUserLoaded && isProjectsLoaded) {
+      if (router.pathname == "/") {
+        if (!user._id) {
+          router.push("/signup");
+        } else {
+          let currentProject = projects.find((p) => p.isCurrent);
+          if (!currentProject) {
+            currentProject = project[0];
+          }
+          router.push(`/gantt/${currentProject._id}`);
+        }
+      } else if (router.pathname == "/signup" || router.pathname == "/login") {
+        if (user._id && projects.length) {
+          let currentProject = projects.find((p) => p.isCurrent);
+          if (!currentProject) {
+            currentProject = projects[0];
+          }
+          router.push(`/gantt/${currentProject._id}`);
+        }
+      }
+    }
+  }, [isUserLoaded, isProjectsLoaded, router.pathname, projects]);
+
+  return children;
+}

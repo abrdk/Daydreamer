@@ -7,15 +7,15 @@ import { When } from "react-if";
 import TasksRoot from "@/src/components/tasks/TasksRoot";
 import TasksDraggableWrapper from "@/src/components/tasks/TasksDraggableWrapper";
 
-import { TasksContext } from "@/src//context/tasks/TasksContext";
-import { ProjectsContext } from "@/src//context/projects/ProjectsContext";
-import { UsersContext } from "@/src/context/users/UsersContext";
+import { TasksContext } from "@/src/context/TasksContext";
+import { ProjectsContext } from "@/src/context/ProjectsContext";
+import { UsersContext } from "@/src/context/UsersContext";
 
 const blueColor = "258EFA";
 const defaultTaskDuration = 7;
 
 export default function Tasks({}) {
-  const userCtx = useContext(UsersContext);
+  const { user } = useContext(UsersContext);
 
   const {
     createTask,
@@ -28,7 +28,7 @@ export default function Tasks({}) {
 
   const [containerHeight, setContainerHeight] = useState(0);
 
-  const isUserOwnProject = () => projectByQueryId.owner == userCtx._id;
+  const isUserOwnProject = () => projectByQueryId.owner == user._id;
 
   const createNewTask = () => {
     const newTaskId = nanoid();

@@ -4,8 +4,8 @@ import Truncate from "react-truncate";
 import { If, Then, Else, When } from "react-if";
 import { useRouter } from "next/router";
 
-import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
-import { TasksContext } from "@/src/context/tasks/TasksContext";
+import { ProjectsContext } from "@/src/context/ProjectsContext";
+import { TasksContext } from "@/src/context/TasksContext";
 
 export default function Option({ project, projectIndex }) {
   const router = useRouter();
@@ -173,7 +173,7 @@ export default function Option({ project, projectIndex }) {
       <div className={styles.iconContainer} onClick={startUpdateHandler}>
         <img
           src="/img/pencil.svg"
-          alt=" "
+          alt="edit"
           className={styles.pencil}
           ref={pencil}
         />
@@ -182,7 +182,7 @@ export default function Option({ project, projectIndex }) {
         <div className={styles.iconContainer} onClick={deleteHandler}>
           <img
             src="/img/trash.svg"
-            alt=" "
+            alt="delete"
             ref={trash}
             className={styles.trash}
           />

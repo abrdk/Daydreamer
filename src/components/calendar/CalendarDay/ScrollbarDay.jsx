@@ -3,7 +3,7 @@ import { useEffect, useState, useContext } from "react";
 import useEvent from "@react-hook/event";
 import styles from "@/styles/calendar.module.scss";
 
-import { TasksContext } from "@/src//context/tasks/TasksContext";
+import { TasksContext } from "@/src/context/TasksContext";
 
 export default function ScrollbarDay({
   cursor,

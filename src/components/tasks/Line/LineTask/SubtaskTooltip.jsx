@@ -3,13 +3,13 @@ import { useContext } from "react";
 import { nanoid } from "nanoid";
 import { When } from "react-if";
 
-import PlusIcon from "@/src/components/svg/PlusIcon";
+import PlusSvg from "@/src/components/svg/PlusSvg";
 import PencilIcon from "@/src/components/svg/PencilIcon";
 import ArrowDown from "@/src/components/svg/ArrowDown";
 
-import { TasksContext } from "@/src//context/tasks/TasksContext";
-import { UsersContext } from "@/src/context/users/UsersContext";
-import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
+import { TasksContext } from "@/src/context/TasksContext";
+import { UsersContext } from "@/src/context/UsersContext";
+import { ProjectsContext } from "@/src/context/ProjectsContext";
 
 export default function SubtaskTooltip({ task }) {
   const {
@@ -26,7 +26,7 @@ export default function SubtaskTooltip({ task }) {
     .sort((task1, task2) => task1.order > task2.order);
 
   const { projectByQueryId } = useContext(ProjectsContext);
-  const userCtx = useContext(UsersContext);
+  const { user } = useContext(UsersContext);
 
   const createSubtask = () => {
     let order = 0;
@@ -70,13 +70,13 @@ export default function SubtaskTooltip({ task }) {
         </div>
       </When>
 
-      <When condition={projectByQueryId.owner == userCtx._id}>
+      <When condition={projectByQueryId.owner == user._id}>
         <div className={calendarStyles.addSubtaskWrapper}>
           <div
             className={calendarStyles.addSubtaskIcon}
             onClick={createSubtask}
           >
-            <PlusIcon />
+            <PlusSvg />
           </div>
         </div>
       </When>

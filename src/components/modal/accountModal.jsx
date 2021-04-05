@@ -7,20 +7,20 @@ import Router from "next/router";
 import FloatingLabel from "floating-label-react";
 import { Else, If, Then } from "react-if";
 
-import Eye from "@/src/components/svg/Eye";
+import Eye from "@/src/components/svg/EyeSvg";
 
-import { UsersContext } from "@/src/context/users/UsersContext";
+import { UsersContext } from "@/src/context/UsersContext";
 
 export default function AccountModal({ setModal }) {
-  const userCtx = useContext(UsersContext);
+  const { user, updateUser, mutateUser } = useContext(UsersContext);
 
   const saveBtn = useRef(null);
 
   const [nameWarn, setNameWarn] = useState("");
   const [passwordWarn, setPasswordWarn] = useState("");
 
-  const [name, setName] = useState(userCtx.name);
-  const [password, setPassword] = useState(userCtx.password);
+  const [name, setName] = useState(user.name);
+  const [password, setPassword] = useState(user.password);
   const [isPasswordVisible, setPasswordVisibility] = useState(false);
 
   const [isUpdatingComplete, setUpdateState] = useState(false);
@@ -68,11 +68,7 @@ export default function AccountModal({ setModal }) {
   const updatePasswordHandler = (e) => setPassword(e.target.value);
 
   const isDataUpdating = () =>
-    !(
-      name === userCtx.name &&
-      password === userCtx.password &&
-      userCtx._id != ""
-    );
+    !(name === user.name && password === user.password && user._id != "");
 
   const togglePasswordVisibility = () =>
     setPasswordVisibility(!isPasswordVisible);
@@ -85,12 +81,12 @@ export default function AccountModal({ setModal }) {
       Cookies.remove("ganttToken", { path: "/" });
       Router.push("/signup");
     } else if (isDataUpdating() && !isUpdatingComplete) {
-      const res = await userCtx.updateUser({
+      const res = await updateUser({
         name,
         password,
       });
       if (res.message === "ok") {
-        userCtx.mutateUser(res.user, false);
+        mutateUser(res.user, false);
         setUpdateState(true);
         setTimeout(() => setUpdateState(false), 1000);
       } else {

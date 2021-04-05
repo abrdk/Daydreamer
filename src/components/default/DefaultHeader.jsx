@@ -3,23 +3,24 @@ import menuStyles from "@/styles/menu.module.scss";
 import Truncate from "react-truncate";
 
 import { ViewSwitcher } from "@/src/components/viewSwitcher/viewSwitcher";
-import { ViewMode } from "@/src/types/public-types";
-import Calendar from "@/src/components/calendar/Calendar";
-import DefaultLines from "@/src/components/default/DefaultLines";
 
-export default function DefaultGantt() {
+import AvatarSvg from "@/src/components/svg/AvatarSvg";
+import PlusSvg from "@/src/components/svg/PlusSvg";
+import ArrowRightSvg from "@/src/components/svg/ArrowRightSvg";
+
+export default function DefaultHeader() {
   return (
     <>
       <div className={headerStyles.container} id="container">
         <div className={menuStyles.iconOpen}>
-          <img src="/img/arrowRight.svg" alt="close" />
+          <ArrowRightSvg />
         </div>
         <div className={headerStyles.header}>
           <ViewSwitcher onViewModeChange={() => {}} />
           <div className={headerStyles.buttonsContainer}>
             <button className={headerStyles.share_button}>Share Project</button>
             <button className={headerStyles.account_button}>
-              <img src="/img/avatar.svg" alt=" " />{" "}
+              <AvatarSvg />
               <Truncate lines={1} width={100}>
                 John Smith
               </Truncate>
@@ -27,9 +28,9 @@ export default function DefaultGantt() {
           </div>
         </div>
       </div>
-      <Calendar view={ViewMode.Day} />
-      <DefaultLines />
-      <img src="/img/plus.svg" alt=" " className={menuStyles.bigPlus} />
+      <div className={menuStyles.bigPlus}>
+        <PlusSvg />
+      </div>
     </>
   );
 }

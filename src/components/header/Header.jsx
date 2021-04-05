@@ -6,27 +6,27 @@ import { useRouter } from "next/router";
 import { nanoid } from "nanoid";
 
 import { ViewSwitcher } from "@/src/components/viewSwitcher/viewSwitcher";
-import AccountIcon from "@/src/components/svg/AccountIcon";
+import AvatarSvg from "@/src/components/svg/AvatarSvg";
 
-import { UsersContext } from "@/src/context/users/UsersContext";
-import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
-import { TasksContext } from "@/src/context/tasks/TasksContext";
+import { UsersContext } from "@/src/context/UsersContext";
+import { ProjectsContext } from "@/src/context/ProjectsContext";
+import { TasksContext } from "@/src/context/TasksContext";
 
 export default function Header({ setMenu, setView, isMenuOpen, setModal }) {
   const router = useRouter();
 
-  const userCtx = useContext(UsersContext);
+  const { user } = useContext(UsersContext);
   const { projectByQueryId, createProject } = useContext(ProjectsContext);
   const { createTask, tasksByProjectId } = useContext(TasksContext);
 
   const copyAndEdit = async () => {
-    if (userCtx._id) {
+    if (user._id) {
       setMenu(false);
       const newProjectId = nanoid();
       await createProject({
         _id: newProjectId,
         name: projectByQueryId.name,
-        owner: userCtx._id,
+        owner: user._id,
       });
       const new_ids = tasksByProjectId.map((t) => nanoid());
       const old_ids = tasksByProjectId.map((t) => t._id);
@@ -38,7 +38,7 @@ export default function Header({ setMenu, setView, isMenuOpen, setModal }) {
             ...t,
             _id: new_ids[i],
             project: newProjectId,
-            owner: userCtx._id,
+            owner: user._id,
             root: new_ids[old_ids.indexOf(t.root)],
           };
         } else {
@@ -46,7 +46,7 @@ export default function Header({ setMenu, setView, isMenuOpen, setModal }) {
             ...t,
             _id: new_ids[i],
             project: newProjectId,
-            owner: userCtx._id,
+            owner: user._id,
           };
         }
       });
@@ -73,7 +73,7 @@ export default function Header({ setMenu, setView, isMenuOpen, setModal }) {
         onViewModeChange={(viewMode) => setView(viewMode)}
       />
       <div className={styles.buttonsContainer}>
-        <If condition={projectByQueryId.owner == userCtx._id}>
+        <If condition={projectByQueryId.owner == user._id}>
           <Then>
             <button
               className={styles.share_button}
@@ -85,9 +85,9 @@ export default function Header({ setMenu, setView, isMenuOpen, setModal }) {
               className={styles.account_button}
               onClick={setModal.bind(null, "account")}
             >
-              <AccountIcon />{" "}
+              <AvatarSvg />{" "}
               <Truncate lines={1} width={100}>
-                {userCtx.name}
+                {user.name}
               </Truncate>
             </button>
           </Then>

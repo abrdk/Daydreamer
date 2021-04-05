@@ -1,7 +1,7 @@
 import styles from "@/styles/tasks.module.scss";
 import { useContext, useEffect, useState } from "react";
 
-import { TasksContext } from "@/src/context/tasks/TasksContext";
+import { TasksContext } from "@/src/context/TasksContext";
 
 const taskOffsetLeft = 14;
 const paddingRight = 105;

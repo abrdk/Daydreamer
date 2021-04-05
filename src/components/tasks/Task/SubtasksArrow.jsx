@@ -2,7 +2,7 @@ import styles from "@/styles/tasks.module.scss";
 import { useContext } from "react";
 import { When } from "react-if";
 
-import { TasksContext } from "@/src/context/tasks/TasksContext";
+import { TasksContext } from "@/src/context/TasksContext";
 
 const taskOffsetLeft = 14;
 
@@ -32,7 +32,7 @@ export default function SubtasksArrow({ task, arrow, taskDepth }) {
             ? "/img/arrowDown.svg"
             : "/img/arrowRightTask.svg"
         }
-        alt=" "
+        alt="open"
         ref={arrow}
         onClick={openSubtasks}
         style={{

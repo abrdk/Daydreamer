@@ -2,9 +2,9 @@ import styles from "@/styles/deleteAccount.module.scss";
 import Router from "next/router";
 import { useContext } from "react";
 
-import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
-import { TasksContext } from "@/src/context/tasks/TasksContext";
-import { UsersContext } from "@/src/context/users/UsersContext";
+import { ProjectsContext } from "@/src/context/ProjectsContext";
+import { TasksContext } from "@/src/context/TasksContext";
+import { UsersContext } from "@/src/context/UsersContext";
 import Cookies from "js-cookie";
 
 export default function DeleteAccountModal({ setModal }) {

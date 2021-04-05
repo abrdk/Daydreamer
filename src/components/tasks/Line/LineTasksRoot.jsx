@@ -2,7 +2,7 @@ import { useContext } from "react";
 
 import LineTask from "@/src/components/tasks/Line/LineTask";
 
-import { TasksContext } from "@/src//context/tasks/TasksContext";
+import { TasksContext } from "@/src/context/TasksContext";
 
 export default function LineTasksRoot({
   root,

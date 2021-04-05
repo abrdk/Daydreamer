@@ -2,7 +2,7 @@ import { useContext } from "react";
 
 import Task from "@/src/components/tasks/Task";
 
-import { TasksContext } from "@/src/context/tasks/TasksContext";
+import { TasksContext } from "@/src/context/TasksContext";
 
 export default function TasksRoot({ root, setContainerHeight }) {
   const { tasksByProjectId, isTaskOpened } = useContext(TasksContext);

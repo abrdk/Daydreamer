@@ -19,14 +19,14 @@ const monthNames = [
   "December",
 ];
 
-import { TasksContext } from "@/src/context/tasks/TasksContext";
-import { UsersContext } from "@/src/context/users/UsersContext";
-import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
+import { TasksContext } from "@/src/context/TasksContext";
+import { UsersContext } from "@/src/context/UsersContext";
+import { ProjectsContext } from "@/src/context/ProjectsContext";
 import useEvent from "@react-hook/event";
 
 export default function TasksCalendar({ task }) {
   const { projectByQueryId } = useContext(ProjectsContext);
-  const userCtx = useContext(UsersContext);
+  const { user } = useContext(UsersContext);
 
   const { updateTask } = useContext(TasksContext);
 
@@ -171,12 +171,14 @@ export default function TasksCalendar({ task }) {
         src="/img/calendarArrowLeft.svg"
         onClick={decreaseMonth}
         className={styles.arrowLeft}
+        alt="prev"
       />
       <div>{monthNames[date.getMonth()]}</div>
       <img
         src="/img/calendarArrowRight.svg"
         onClick={increaseMonth}
         className={styles.arrowRight}
+        alt="next"
       />
     </div>
   );
@@ -206,7 +208,7 @@ export default function TasksCalendar({ task }) {
         shouldCloseOnSelect={false}
         renderDayContents={customDay}
         renderCustomHeader={customHeader}
-        disabled={projectByQueryId.owner != userCtx._id ? true : false}
+        disabled={projectByQueryId.owner != user._id ? true : false}
         onCalendarClose={() => setIsStartCalendarOpened(false)}
         onCalendarOpen={() => setIsStartCalendarOpened(true)}
       />
@@ -235,7 +237,7 @@ export default function TasksCalendar({ task }) {
         shouldCloseOnSelect={false}
         renderDayContents={customDay}
         renderCustomHeader={customHeader}
-        disabled={projectByQueryId.owner != userCtx._id ? true : false}
+        disabled={projectByQueryId.owner != user._id ? true : false}
         onCalendarClose={() => setIsEndCalendarOpened(false)}
         onCalendarOpen={() => setIsEndCalendarOpened(true)}
       />

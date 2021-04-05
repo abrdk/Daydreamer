@@ -3,9 +3,9 @@ import { When } from "react-if";
 import { useContext, useState, useEffect } from "react";
 import useEvent from "@react-hook/event";
 
-import { UsersContext } from "@/src/context/users/UsersContext";
-import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
-import { TasksContext } from "@/src//context/tasks/TasksContext";
+import { UsersContext } from "@/src/context/UsersContext";
+import { ProjectsContext } from "@/src/context/ProjectsContext";
+import { TasksContext } from "@/src/context/TasksContext";
 
 export default function CenterArea({
   task,
@@ -25,13 +25,13 @@ export default function CenterArea({
 }) {
   const { updateTask } = useContext(TasksContext);
   const { projectByQueryId } = useContext(ProjectsContext);
-  const userCtx = useContext(UsersContext);
+  const { user } = useContext(UsersContext);
 
   const [scrollLeft, setScrollLeft] = useState(undefined);
   const [offsetFromCenter, setOffsetFromCenter] = useState(0);
 
   const startMoving = (e) => {
-    if (e.target != inputRef.current && projectByQueryId.owner == userCtx._id) {
+    if (e.target != inputRef.current && projectByQueryId.owner == user._id) {
       setIsMoving(true);
       const lineRect = lineRef.current.getBoundingClientRect();
       setOffsetFromCenter(lineRect.left + lineRect.width / 2 - e.clientX);
@@ -129,7 +129,7 @@ export default function CenterArea({
           width: taskWidth - 36,
           left: 18,
           cursor:
-            projectByQueryId.owner != userCtx._id
+            projectByQueryId.owner != user._id
               ? "default"
               : isMoving
               ? "grab"
