@@ -1,20 +1,14 @@
 import styles from "@/styles/calendar.module.scss";
 import Scrollbar from "react-scrollbars-custom";
 import { useEffect, useState, useContext } from "react";
-import useEvent from "@react-hook/event";
-import useMouse from "@react-hook/mouse-position";
 
 import LineTasksRoot from "@/src/components/tasks/Line/LineTasksRoot";
+import ScrollBinder from "@/src/components/tasks/Line/ScrollBinder";
 
 import { TasksContext } from "@/src/context/tasks/TasksContext";
 
 export default function LineTasks({ setMenu, calendarStartDate, view }) {
   const { editedTaskId } = useContext(TasksContext);
-
-  const mouse = useMouse(document.querySelector("#__next"), {
-    enterDelay: 100,
-    leaveDelay: 100,
-  });
 
   const [calendarWidth, setCalendarWidth] = useState(0);
 
@@ -25,27 +19,6 @@ export default function LineTasks({ setMenu, calendarStartDate, view }) {
     });
     setCalendarWidth(currentCalendarWidth);
   }, [view]);
-
-  useEvent(document.querySelector(".Tasks-Scroller"), "scroll", (e) => {
-    if (mouse.clientX <= 335) {
-      const lineScroller = document.querySelector(".LineTasks-Scroller");
-      lineScroller.scrollTo(
-        0,
-        (e.target.scrollTop / e.target.scrollTopMax) * lineScroller.scrollTopMax
-      );
-    }
-  });
-
-  useEvent(document.querySelector(".LineTasks-Scroller"), "scroll", (e) => {
-    if (mouse.clientX > 335) {
-      const tasksScroller = document.querySelector(".Tasks-Scroller");
-      tasksScroller.scrollTo(
-        0,
-        (e.target.scrollTop / e.target.scrollTopMax) *
-          tasksScroller.scrollTopMax
-      );
-    }
-  });
 
   return (
     <div
@@ -89,6 +62,7 @@ export default function LineTasks({ setMenu, calendarStartDate, view }) {
         }}
       >
         <div id="linesWrapper">
+          <ScrollBinder />
           <LineTasksRoot
             calendarStartDate={calendarStartDate}
             setMenu={setMenu}
