@@ -19,6 +19,7 @@ export default function Plus({ task, plusRef }) {
     setWhereEditNewTask,
     editedTaskId,
     setEditedTaskId,
+    isTaskOpened,
   } = useContext(TasksContext);
 
   const subtasks = tasksByProjectId
@@ -28,7 +29,7 @@ export default function Plus({ task, plusRef }) {
   const isUserOwnProject = () => projectByQueryId.owner == userCtx._id;
 
   const openSubtasksHandler = () => {
-    updateIsOpened({ _id: task._id, isOpened: !task.isOpened });
+    updateIsOpened({ _id: task._id, isOpened: !isTaskOpened[task._id] });
   };
 
   const createSubtask = (e) => {
@@ -37,7 +38,7 @@ export default function Plus({ task, plusRef }) {
     const order = subtasks.length ? subtasks[subtasks.length - 1].order + 1 : 0;
     const newTaskId = nanoid();
 
-    if (!task.isOpened) {
+    if (!isTaskOpened[task._id]) {
       openSubtasksHandler();
     }
 

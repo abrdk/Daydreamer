@@ -19,6 +19,7 @@ export default function SubtaskTooltip({ task }) {
     setWhereEditNewTask,
     editedTaskId,
     setEditedTaskId,
+    isTaskOpened,
   } = useContext(TasksContext);
   const subtasks = tasksByProjectId
     .filter((t) => t.root == task._id)
@@ -58,7 +59,10 @@ export default function SubtaskTooltip({ task }) {
           <div
             className={calendarStyles.openSubtasksIcon}
             onClick={() =>
-              updateIsOpened({ _id: task._id, isOpened: !task.isOpened })
+              updateIsOpened({
+                _id: task._id,
+                isOpened: !isTaskOpened[task._id],
+              })
             }
           >
             <ArrowDown />

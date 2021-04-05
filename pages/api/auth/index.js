@@ -7,8 +7,9 @@ export default async (req, res) => {
   try {
     const token = req.cookies.ganttToken;
     if (!token) {
-      return res.json({ message: "Unauthorized" });
+      return res.json({ _id: "", name: "", password: "" });
     }
+
     const user = jwt.verify(token, "jwtSecret");
     if (!user) {
       res.setHeader(
@@ -19,9 +20,12 @@ export default async (req, res) => {
           sameSite: true,
         })
       );
-      return res.status(401).json({ message: "Unauthorized" });
+      return res.status(401).json({ _id: "", name: "", password: "" });
     }
-    return res.status(200).json({ message: "ok", user });
+
+    return res
+      .status(200)
+      .json({ _id: user._id, name: user.name, password: user.password });
   } catch (e) {
     if (e.name == "TokenExpiredError") {
       res.setHeader(
@@ -32,8 +36,14 @@ export default async (req, res) => {
           sameSite: true,
         })
       );
-      return res.status(500).json({ message: "TokenExpiredError" });
+
+      return res.status(401).json({
+        message: "TokenExpiredError",
+      });
     }
-    return res.status(500).json({ message: "Server error" });
+
+    return res.status(500).json({
+      message: "Server error",
+    });
   }
 };

@@ -19,9 +19,14 @@ export default function Gantt() {
   const [isMenuOpen, setMenu] = useState(false);
 
   const userCtx = useContext(UsersContext);
-  const { isProjectsLoaded, projectByQueryId } = useContext(ProjectsContext);
-  const { isTasksLoaded } = useContext(TasksContext);
-
+  const { isProjectsLoaded, projectByQueryId, projects } = useContext(
+    ProjectsContext
+  );
+  const { isTasksLoaded, tasksByProjectId, tasks } = useContext(TasksContext);
+  // console.log("tasks", tasks);
+  // console.log("tasksByProjectId", tasksByProjectId);
+  // console.log("projects", projects);
+  // console.log("projectByQueryId", projectByQueryId);
   return (
     <>
       <Head>
@@ -33,7 +38,8 @@ export default function Gantt() {
           userCtx.isUserLoaded &&
           isProjectsLoaded &&
           isTasksLoaded &&
-          projectByQueryId._id
+          projectByQueryId &&
+          tasksByProjectId
         }
       >
         <Modal modal={modal} setModal={setModal} />

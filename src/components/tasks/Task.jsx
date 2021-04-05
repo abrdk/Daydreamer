@@ -14,7 +14,7 @@ import { TasksContext } from "@/src/context/tasks/TasksContext";
 const taskHeight = 55;
 
 export default function Task({ task, setContainerHeight, index }) {
-  const { tasksByProjectId } = useContext(TasksContext);
+  const { tasksByProjectId, isTaskOpened } = useContext(TasksContext);
 
   const subtasks = tasksByProjectId.filter(
     (subtask) => subtask.root == task._id
@@ -32,7 +32,7 @@ export default function Task({ task, setContainerHeight, index }) {
 
   useEffect(() => {
     setContainerHeight(getContainerHeight());
-  }, [tasksByProjectId, task.isOpened]);
+  }, [tasksByProjectId, isTaskOpened[task._id]]);
 
   let taskDepth = -1;
   let currentTask = task;
@@ -75,7 +75,7 @@ export default function Task({ task, setContainerHeight, index }) {
         <Plus task={task} plusRef={plus} />
       </TaskWrapper>
 
-      <When condition={subtasks.length && task.isOpened}>
+      <When condition={subtasks.length && isTaskOpened[task._id]}>
         <TasksRoot root={task._id} setContainerHeight={setContainerHeight} />
       </When>
     </>

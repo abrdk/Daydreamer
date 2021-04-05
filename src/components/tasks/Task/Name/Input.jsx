@@ -47,7 +47,11 @@ export default function Input({
   };
 
   const focusOnInput = () => {
-    if (isUpdating && inputRef.current && whereEditNewTask == "menu") {
+    if (
+      isUpdating &&
+      inputRef.current &&
+      (whereEditNewTask == "menu" || whereEditNewTask == "")
+    ) {
       inputRef.current.focus();
       setWhereEditNewTask("");
     }

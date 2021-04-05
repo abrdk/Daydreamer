@@ -26,12 +26,14 @@ export default function ProjectsDropdown({ isDropdownOpen, setDropdown }) {
 
   const createHandler = () => {
     const newProjectId = nanoid();
-    createProject({
+    const newProject = {
       _id: newProjectId,
       name: "",
       owner: userCtx._id,
       isCurrent: true,
-    });
+    };
+    createProject(newProject);
+
     router.push(`/gantt/${newProjectId}`);
   };
 

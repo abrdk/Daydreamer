@@ -1,157 +1,71 @@
 import { xhr } from "@/helpers/xhr";
 import { useRouter } from "next/router";
 import { nanoid } from "nanoid";
-import React, { createContext, useReducer, useEffect } from "react";
-import usePrevious from "@react-hook/previous";
+import React, { createContext, useState, useContext } from "react";
+import useSWR from "swr";
 
-import TasksReducer from "@/src/context/tasks/TasksReducer";
+import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
+import { UsersContext } from "@/src/context/users/UsersContext";
 
 export const TasksContext = createContext();
 
 export function TasksProvider(props) {
+  const { projectByQueryId } = useContext(ProjectsContext);
+  const userCtx = useContext(UsersContext);
+
   const router = useRouter();
-  const previousRouterId = usePrevious(router.query.id);
 
-  const [tasksState, dispatch] = useReducer(TasksReducer, {
-    tasks: [],
-    tasksByProjectId: [],
-    isTasksLoaded: false,
-    whereEditNewTask: "",
-    editedTaskId: "",
-  });
-  const {
-    tasks,
-    isTasksLoaded,
-    tasksByProjectId,
-    whereEditNewTask,
-    editedTaskId,
-  } = tasksState;
-
-  const findSubtasksIds = (_id) =>
-    tasksByProjectId
-      .filter((t) => t.root == _id)
-      .sort((task1, task2) => task1.order > task2.order)
-      .map((t) => [t._id, ...findSubtasksIds(t._id)]);
-  const findTaskWithSubtaskIds = (_id) => [_id, ...findSubtasksIds(_id)];
-  function flatten(array, mutable) {
-    let toString = Object.prototype.toString;
-    let arrayTypeStr = "[object Array]";
-    let result = [];
-    let nodes = (mutable && array) || array.slice();
-    let node;
-    if (!array.length) {
-      return result;
+  const loadTasks = async (url) => {
+    try {
+      return await xhr(url, {}, "GET");
+    } catch (e) {
+      return [];
     }
-    node = nodes.pop();
-    do {
-      if (toString.call(node) === arrayTypeStr) {
-        nodes.push.apply(nodes, node);
-      } else {
-        result.push(node);
-      }
-    } while (nodes.length && (node = nodes.pop()) !== undefined);
-    result.reverse();
-    return result;
+  };
+  const { data: tasks, mutate: mutateTasks } = useSWR("/tasks", loadTasks);
+
+  let currentTasks = null;
+  if (tasks) {
+    currentTasks = tasks.filter((t) => t.project == router.query.id);
   }
 
-  const loadTasks = async () => {
-    try {
-      const res = await xhr("/tasks/", {}, "GET");
-      if (res.message == "ok") {
-        dispatch({
-          type: "SET_TASKS",
-          payload: res.tasks,
-        });
-      } else {
-        dispatch({
-          type: "SET_TASKS",
-          payload: [],
-        });
-      }
-    } catch (e) {}
-  };
-
-  useEffect(() => {
-    loadTasks();
-  }, []);
-
-  const loadTasksByProjectId = async (project) => {
-    try {
-      const tasksByProject = tasks.filter((t) => t.project == project);
-      if (tasksByProject.length) {
-        dispatch({
-          type: "SET_TASKS_BY_PROJECT_ID",
-          payload: tasksByProject,
-        });
-      } else if (router.query.id != previousRouterId) {
-        const res = await xhr("/tasks/show", { project }, "POST");
-        if (res.message == "ok" && res.tasks) {
-          dispatch({
-            type: "SET_TASKS_BY_PROJECT_ID",
-            payload: res.tasks,
-          });
-        } else {
-          dispatch({
-            type: "SET_TASKS_BY_PROJECT_ID",
-            payload: [],
-          });
-        }
-      } else {
-        dispatch({
-          type: "SET_TASKS_BY_PROJECT_ID",
-          payload: [],
-        });
-      }
-    } catch (e) {}
-  };
-
-  useEffect(() => {
-    if (router.query.id) {
-      loadTasksByProjectId(router.query.id);
-    }
-  }, [router.query.id, tasks]);
-
   const createTask = async (task) => {
-    try {
-      dispatch({
-        type: "ADD_TASK",
-        payload: task,
-      });
-      await xhr("/tasks/create", task, "POST");
-    } catch (e) {}
+    mutateTasks((tasks) => [...tasks, task], false);
+    await xhr("/tasks/create", task, "POST");
   };
 
-  const updateTask = async (task) => {
-    try {
-      dispatch({
-        type: "UPDATE_TASK",
-        payload: task,
-      });
-      await xhr("/tasks/update", task, "PUT");
-    } catch (e) {}
+  const updateTask = (task) => {
+    mutateTasks(
+      (tasks) => tasks.map((t) => (t._id == task._id ? task : t)),
+      false
+    );
+    xhr("/tasks/update", task, "PUT");
   };
 
   const deleteTask = (_id) => {
-    flatten(findTaskWithSubtaskIds(_id)).forEach((id) => {
-      dispatch({
-        type: "DELETE_TASK",
-        payload: { _id: id },
+    const findSubtasksIds = (_id) =>
+      tasks
+        .filter((t) => t.root == _id)
+        .sort((task1, task2) => task1.order > task2.order)
+        .map((t) => [t._id, ...findSubtasksIds(t._id)]);
+    const findTaskWithSubtaskIds = (_id) => [_id, ...findSubtasksIds(_id)];
+
+    findTaskWithSubtaskIds(_id)
+      .flat()
+      .forEach((id) => {
+        mutateTasks((tasks) => tasks.filter((t) => t._id != id), false);
+        xhr(
+          "/tasks/delete",
+          {
+            _id: id,
+          },
+          "DELETE"
+        );
       });
-      xhr(
-        "/tasks/delete",
-        {
-          _id: id,
-        },
-        "DELETE"
-      );
-    });
   };
 
   const deleteTasksByProject = (project) => {
-    dispatch({
-      type: "DELETE_TASKS_BY_PROJECT",
-      payload: { project },
-    });
+    mutateTasks((tasks) => tasks.filter((t) => t.project != project), false);
     xhr("/tasks/delete_by_project", { project }, "DELETE");
   };
 
@@ -192,7 +106,7 @@ export function TasksProvider(props) {
     ];
 
     const _ids = [...Array(7).keys()].map(() => nanoid());
-    const tasks = _ids.map((_id, i) => {
+    const initialTasks = _ids.map((_id, i) => {
       if (i < 5) {
         return {
           _id,
@@ -219,7 +133,7 @@ export function TasksProvider(props) {
       };
     });
     async function createTasks() {
-      const promises = tasks.map(async (task) => {
+      const promises = initialTasks.map(async (task) => {
         await createTask(task);
       });
       await Promise.all(promises);
@@ -227,35 +141,37 @@ export function TasksProvider(props) {
     await createTasks();
   };
 
+  const loadTasksByProjectId = async (url, project) => {
+    try {
+      return await xhr(url, { project }, "POST");
+    } catch (e) {
+      return [];
+    }
+  };
+  const { data: tasksByProjectId } = useSWR(
+    router.query.id ? ["/tasks/show", router.query.id] : null,
+    loadTasksByProjectId
+  );
+
+  const [whereEditNewTask, setWhereEditNewTask] = useState("");
+  const [editedTaskId, setEditedTaskId] = useState("");
+  const [isTaskOpened, setIsTaskOpened] = useState({});
+
   const updateIsOpened = ({ _id, isOpened }) => {
-    dispatch({
-      type: "UPDATE_IS_OPENED",
-      payload: { _id, isOpened },
-    });
+    setIsTaskOpened((isTaskOpened) => ({ ...isTaskOpened, [_id]: isOpened }));
   };
-
-  const setWhereEditNewTask = (place) => {
-    dispatch({
-      type: "SET_WHERE_EDIT_NEW_TASK",
-      payload: place,
-    });
-  };
-
-  const setEditedTaskId = (_id) => {
-    dispatch({
-      type: "SET_EDITED_TASK_ID",
-      payload: _id,
-    });
-  };
-
   return (
     <TasksContext.Provider
       value={{
         tasks,
-        isTasksLoaded,
-        tasksByProjectId,
+        isTasksLoaded: !!tasks,
+        tasksByProjectId:
+          projectByQueryId && projectByQueryId.owner != userCtx._id
+            ? tasksByProjectId
+            : currentTasks,
         whereEditNewTask,
         editedTaskId,
+        isTaskOpened,
         createTask,
         updateTask,
         deleteTask,
@@ -265,6 +181,7 @@ export function TasksProvider(props) {
         updateIsOpened,
         setWhereEditNewTask,
         setEditedTaskId,
+        mutateTasks,
       }}
     >
       {props.children}

@@ -27,11 +27,14 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setPasswordVisibility] = useState(false);
 
-  const { isUserLoaded, setUser, _id, signup } = useContext(UsersContext);
+  const { isUserLoaded, mutateUser, _id, signup } = useContext(UsersContext);
   const { createProject, projects } = useContext(ProjectsContext);
-  let currentProject = projects.find((project) => project.isCurrent);
-  if (!currentProject) {
-    currentProject = projects[0];
+  let currentProject;
+  if (projects) {
+    currentProject = projects.find((project) => project.isCurrent);
+    if (!currentProject) {
+      currentProject = projects[0];
+    }
   }
   const { createInitialTasks } = useContext(TasksContext);
 
@@ -77,13 +80,15 @@ export default function Signup() {
     if (nameWarn || passwordWarn) {
       return;
     }
-    const res = await signup({
+    const newUser = {
       _id: nanoid(),
       name,
       password,
-    });
+    };
+    const res = await signup(newUser);
     if (res.message === "ok") {
-      setUser(res.user);
+      mutateUser(newUser, false);
+
       const projectId = nanoid();
       await createProject({
         _id: projectId,
@@ -91,6 +96,7 @@ export default function Signup() {
         owner: res.user._id,
       });
       await createInitialTasks({ project: projectId });
+      router.push(`/gantt/${projectId}`);
     } else {
       if (res.errorType === "name") {
         setNameWarn(res.message);

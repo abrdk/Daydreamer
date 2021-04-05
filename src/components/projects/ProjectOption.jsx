@@ -29,11 +29,13 @@ export default function Option({ project, projectIndex }) {
       e.target != input.current &&
       project._id != router.query.id
     ) {
-      router.push(`/gantt/${project._id}`);
-      updateProject({
+      const newCurrentProject = {
         ...project,
         isCurrent: true,
-      });
+      };
+
+      router.push(`/gantt/${project._id}`);
+      updateProject(newCurrentProject);
       updateProject({
         ...projectByQueryId,
         isCurrent: false,
@@ -66,18 +68,22 @@ export default function Option({ project, projectIndex }) {
   const deleteHandler = () => {
     if (project._id == router.query.id) {
       if (projectIndex === projects.length - 1) {
-        updateProject({
+        const newCurrentProject = {
           ...projects[projectIndex - 1],
           isCurrent: true,
-        });
+        };
+
+        updateProject(newCurrentProject);
         deleteProject(project._id);
         deleteTasksByProject(project._id);
         router.push(`/gantt/${projects[projectIndex - 1]._id}`);
       } else {
-        updateProject({
+        const newCurrentProject = {
           ...projects[projectIndex + 1],
           isCurrent: true,
-        });
+        };
+
+        updateProject(newCurrentProject);
         deleteProject(project._id);
         deleteTasksByProject(project._id);
         router.push(`/gantt/${projects[projectIndex + 1]._id}`);
@@ -113,7 +119,11 @@ export default function Option({ project, projectIndex }) {
 
   useEffect(() => {
     if (isUpdating) {
-      setTimeout(() => input.current.focus(), 100);
+      setTimeout(() => {
+        if (input.current) {
+          input.current.focus();
+        }
+      }, 100);
     }
   }, [isUpdating]);
 

@@ -4,11 +4,15 @@ import { useEffect, useState, useRef, useContext } from "react";
 import Truncate from "react-truncate";
 
 import { TasksContext } from "@/src/context/tasks/TasksContext";
+import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
+import { UsersContext } from "@/src/context/users/UsersContext";
 
 export default function LineTaskName({ task, textWidth, taskWidth, inputRef }) {
   const { updateTask, whereEditNewTask, setWhereEditNewTask } = useContext(
     TasksContext
   );
+  const { projectByQueryId } = useContext(ProjectsContext);
+  const userCtx = useContext(UsersContext);
 
   const [isUpdating, setIsUpdating] = useState(false);
   const [nameState, setNameState] = useState(task.name);
@@ -35,7 +39,11 @@ export default function LineTaskName({ task, textWidth, taskWidth, inputRef }) {
   };
 
   const focusOnInput = () => {
-    if (isUpdating && inputRef.current && whereEditNewTask == "calendar") {
+    if (
+      isUpdating &&
+      inputRef.current &&
+      (whereEditNewTask == "calendar" || whereEditNewTask == "")
+    ) {
       inputRef.current.focus();
       setWhereEditNewTask("");
     }
@@ -81,9 +89,14 @@ export default function LineTaskName({ task, textWidth, taskWidth, inputRef }) {
           className={
             isUpdating ? calendarStyles.hiddenName : calendarStyles.name
           }
-          onClick={() => setIsUpdating(true)}
+          onClick={() => {
+            if (projectByQueryId.owner == userCtx._id) {
+              setIsUpdating(true);
+            }
+          }}
           style={{
             opacity: task.name == "" && 0.5,
+            cursor: projectByQueryId.owner != userCtx._id ? "default" : null,
           }}
           ref={textRef}
         >

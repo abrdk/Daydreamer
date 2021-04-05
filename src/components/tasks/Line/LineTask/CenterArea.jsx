@@ -31,7 +31,7 @@ export default function CenterArea({
   const [offsetFromCenter, setOffsetFromCenter] = useState(0);
 
   const startMoving = (e) => {
-    if (e.target != inputRef.current) {
+    if (e.target != inputRef.current && projectByQueryId.owner == userCtx._id) {
       setIsMoving(true);
       const lineRect = lineRef.current.getBoundingClientRect();
       setOffsetFromCenter(lineRect.left + lineRect.width / 2 - e.clientX);
@@ -122,15 +122,18 @@ export default function CenterArea({
   }, [document.querySelector(".Calendar-Scroller"), scrollLeft]);
 
   return (
-    <When
-      condition={taskWidth - 36 > 0 && projectByQueryId.owner == userCtx._id}
-    >
+    <When condition={taskWidth - 36 > 0}>
       <div
         className={calendarStyles.moveAreaCenter}
         style={{
           width: taskWidth - 36,
           left: 18,
-          cursor: isMoving ? "grab" : "pointer",
+          cursor:
+            projectByQueryId.owner != userCtx._id
+              ? "default"
+              : isMoving
+              ? "grab"
+              : "pointer",
         }}
         onMouseDown={startMoving}
       >

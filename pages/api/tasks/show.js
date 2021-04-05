@@ -7,10 +7,7 @@ export default async (req, res) => {
   try {
     const Task = getDB("Task");
     const tasks = await Task.find({ project });
-    return res.status(200).json({
-      message: "ok",
-      tasks,
-    });
+    return res.status(200).json(tasks);
   } catch (e) {
     return res.status(500).json({ message: "Server error" });
   }

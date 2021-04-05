@@ -7,23 +7,31 @@ import { TasksContext } from "@/src/context/tasks/TasksContext";
 const taskOffsetLeft = 14;
 
 export default function SubtasksArrow({ task, arrow, taskDepth }) {
-  const { tasksByProjectId, updateIsOpened } = useContext(TasksContext);
+  const { tasksByProjectId, updateIsOpened, isTaskOpened } = useContext(
+    TasksContext
+  );
 
   const subtasks = tasksByProjectId.filter(
     (subtask) => subtask.root == task._id
   );
 
-  const defaultLeft = task.isOpened ? 2 : 7;
+  const defaultLeft = isTaskOpened[task._id] ? 2 : 7;
 
   const openSubtasks = () => {
-    updateIsOpened({ _id: task._id, isOpened: !task.isOpened });
+    updateIsOpened({ _id: task._id, isOpened: !isTaskOpened[task._id] });
   };
 
   return (
     <When condition={subtasks.length}>
       <img
-        className={task.isOpened ? styles.arrowDown : styles.arrowRight}
-        src={task.isOpened ? "/img/arrowDown.svg" : "/img/arrowRightTask.svg"}
+        className={
+          isTaskOpened[task._id] ? styles.arrowDown : styles.arrowRight
+        }
+        src={
+          isTaskOpened[task._id]
+            ? "/img/arrowDown.svg"
+            : "/img/arrowRightTask.svg"
+        }
         alt=" "
         ref={arrow}
         onClick={openSubtasks}

@@ -5,7 +5,7 @@ import Task from "@/src/components/tasks/Task";
 import { TasksContext } from "@/src/context/tasks/TasksContext";
 
 export default function TasksRoot({ root, setContainerHeight }) {
-  const { tasksByProjectId } = useContext(TasksContext);
+  const { tasksByProjectId, isTaskOpened } = useContext(TasksContext);
 
   const sortedTasks = tasksByProjectId
     .filter((task) => task.root == root)
@@ -16,36 +16,13 @@ export default function TasksRoot({ root, setContainerHeight }) {
       .filter((t) => t.root == _id)
       .sort((task1, task2) => task1.order > task2.order)
       .map((t) => [t._id, ...findSubtasksIds(t._id)]);
-
   const findTaskWithSubtaskIds = (_id) => [_id, ...findSubtasksIds(_id)];
 
-  function flatten(array, mutable) {
-    let toString = Object.prototype.toString;
-    let arrayTypeStr = "[object Array]";
-    let result = [];
-    let nodes = (mutable && array) || array.slice();
-    let node;
-    if (!array.length) {
-      return result;
-    }
-    node = nodes.pop();
-    do {
-      if (toString.call(node) === arrayTypeStr) {
-        nodes.push.apply(nodes, node);
-      } else {
-        result.push(node);
-      }
-    } while (nodes.length && (node = nodes.pop()) !== undefined);
-    result.reverse();
-    return result;
-  }
-
-  const sortedTasksIds = flatten(
-    tasksByProjectId
-      .filter((t) => t.root == "")
-      .sort((task1, task2) => task1.order > task2.order)
-      .map((t) => flatten(findTaskWithSubtaskIds(t._id)))
-  );
+  const sortedTasksIds = tasksByProjectId
+    .filter((t) => t.root == "")
+    .sort((task1, task2) => task1.order > task2.order)
+    .map((t) => findTaskWithSubtaskIds(t._id).flat())
+    .flat();
 
   const getTaskIndex = (_id) => {
     let index = 0;
@@ -60,7 +37,7 @@ export default function TasksRoot({ root, setContainerHeight }) {
         const rootOfCurrentTask = tasksByProjectId.find(
           (t) => t._id == currentTask.root
         );
-        if (rootOfCurrentTask.isOpened) {
+        if (isTaskOpened[rootOfCurrentTask._id]) {
           index += 1;
         }
       }

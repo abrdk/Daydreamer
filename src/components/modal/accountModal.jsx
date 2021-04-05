@@ -68,7 +68,11 @@ export default function AccountModal({ setModal }) {
   const updatePasswordHandler = (e) => setPassword(e.target.value);
 
   const isDataUpdating = () =>
-    !(name === userCtx.name && password === userCtx.password);
+    !(
+      name === userCtx.name &&
+      password === userCtx.password &&
+      userCtx._id != ""
+    );
 
   const togglePasswordVisibility = () =>
     setPasswordVisibility(!isPasswordVisible);
@@ -86,7 +90,7 @@ export default function AccountModal({ setModal }) {
         password,
       });
       if (res.message === "ok") {
-        userCtx.setUser(res.user);
+        userCtx.mutateUser(res.user, false);
         setUpdateState(true);
         setTimeout(() => setUpdateState(false), 1000);
       } else {

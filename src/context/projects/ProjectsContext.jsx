@@ -1,81 +1,52 @@
 import { xhr } from "@/helpers/xhr";
-import React, { createContext, useReducer, useEffect } from "react";
+import React, { createContext } from "react";
 import { useRouter } from "next/router";
-import usePrevious from "@react-hook/previous";
-
-import ProjectsReducer from "@/src/context/projects/ProjectsReducer";
+import useSWR from "swr";
 
 export const ProjectsContext = createContext();
 
 export function ProjectsProvider(props) {
   const router = useRouter();
-  const previousRouterId = usePrevious(router.query.id);
-  const [projectsState, dispatch] = useReducer(ProjectsReducer, {
-    projects: [],
-    projectByQueryId: {},
-    isProjectsLoaded: false,
-  });
 
-  const { projects, isProjectsLoaded, projectByQueryId } = projectsState;
-
-  const loadProjects = async () => {
+  const loadProjects = async (url) => {
     try {
-      const res = await xhr("/projects", {}, "GET");
-      if (res.message == "ok") {
-        dispatch({
-          type: "SET_PROJECTS",
-          payload: res.projects,
-        });
-      } else {
-        dispatch({
-          type: "SET_PROJECTS",
-          payload: [],
-        });
-      }
-    } catch (e) {}
+      return await xhr(url, {}, "GET");
+    } catch (e) {
+      return [];
+    }
   };
+  const { data: projects, mutate: mutateProjects } = useSWR(
+    "/projects",
+    loadProjects
+  );
 
-  useEffect(() => {
-    loadProjects();
-  }, []);
+  let currentProject = null;
+  if (projects) {
+    currentProject = projects.find((p) => p._id == router.query.id);
+  }
 
   const createProject = async (project) => {
-    try {
-      const isCurrent = projects.length == 0;
+    const isCurrent = projects.length == 0;
+    const newProject = {
+      isCurrent,
+      ...project,
+    };
 
-      dispatch({
-        type: "ADD_PROJECT",
-        payload: {
-          isCurrent,
-          ...project,
-        },
-      });
-
-      await xhr(
-        "/projects/create",
-        {
-          isCurrent,
-          ...project,
-        },
-        "POST"
-      );
-    } catch (e) {}
+    mutateProjects((projects) => [...projects, newProject], false);
+    await xhr("/projects/create", newProject, "POST");
   };
 
   const updateProject = (project) => {
-    dispatch({
-      type: "UPDATE_PROJECT",
-      payload: project,
-    });
+    mutateProjects(
+      (projects) => projects.map((p) => (p._id == project._id ? project : p)),
+      false
+    );
 
     xhr("/projects/update", project, "PUT");
   };
 
   const deleteProject = (_id) => {
-    dispatch({
-      type: "DELETE_PROJECT",
-      payload: { _id },
-    });
+    mutateProjects((projects) => projects.filter((p) => p._id != _id), false);
 
     xhr(
       "/projects/delete",
@@ -92,42 +63,33 @@ export function ProjectsProvider(props) {
     } catch (e) {}
   };
 
-  const loadProjectByQuery = async (_id) => {
+  const loadProject = async (url, _id) => {
     try {
-      const project = projects.find((p) => p._id == _id);
-      if (project) {
-        dispatch({
-          type: "SET_PROJECT_BY_QUERY_ID",
-          payload: project,
-        });
-      } else if (router.query.id != previousRouterId) {
-        const res = await xhr("/projects/show", { _id }, "POST");
-        if (res.message == "ok" && res.project) {
-          dispatch({
-            type: "SET_PROJECT_BY_QUERY_ID",
-            payload: res.project,
-          });
-        }
-      }
-    } catch (e) {}
-  };
-
-  useEffect(() => {
-    if (router.query.id) {
-      loadProjectByQuery(router.query.id);
+      return await xhr(url, { _id }, "POST");
+    } catch (e) {
+      return {};
     }
-  }, [router.query.id, projects]);
+  };
+  const { data: projectByQueryId, mutate: mutateProjectByQueryId } = useSWR(
+    router.query.id && !currentProject
+      ? ["/projects/show", router.query.id]
+      : null,
+    loadProject
+  );
 
   return (
     <ProjectsContext.Provider
       value={{
         projects,
-        isProjectsLoaded,
-        projectByQueryId,
+        isProjectsLoaded: !!projects,
+        projectByQueryId: currentProject || projectByQueryId,
+        mutateProjectByQueryId,
         createProject,
         updateProject,
         deleteProject,
         deleteAllProjects,
+        mutateProjects,
+        mutateProjectByQueryId,
       }}
     >
       {props.children}

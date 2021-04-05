@@ -5,6 +5,7 @@ import { useContext } from "react";
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
 import { TasksContext } from "@/src/context/tasks/TasksContext";
 import { UsersContext } from "@/src/context/users/UsersContext";
+import Cookies from "js-cookie";
 
 export default function DeleteAccountModal({ setModal }) {
   const { deleteAllProjects } = useContext(ProjectsContext);
@@ -18,9 +19,12 @@ export default function DeleteAccountModal({ setModal }) {
   };
 
   const deleteQuery = async () => {
-    await Promise.all([deleteAllTasks(), deleteAllProjects()]);
-    await deleteUser();
-    Router.push("/signup");
+    try {
+      await Promise.all([deleteAllTasks(), deleteAllProjects()]);
+      await deleteUser();
+      Cookies.remove("ganttToken", { path: "/" });
+      Router.push("/signup");
+    } catch (e) {}
   };
 
   return (

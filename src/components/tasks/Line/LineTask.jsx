@@ -36,7 +36,7 @@ export default function LineTask({ task, setMenu, calendarStartDate, view }) {
   const [isResizeRight, setIsResizeRight] = useState(false);
   const [isMoving, setIsMoving] = useState(false);
 
-  const { editedTaskId } = useContext(TasksContext);
+  const { editedTaskId, isTaskOpened } = useContext(TasksContext);
 
   const setDates = () => {
     if (typeof task.dateStart == "string") {
@@ -230,7 +230,7 @@ export default function LineTask({ task, setMenu, calendarStartDate, view }) {
         />
       </div>
 
-      <When condition={task.isOpened}>
+      <When condition={isTaskOpened[task._id]}>
         <LineTasksRoot
           root={task._id}
           setMenu={setMenu}

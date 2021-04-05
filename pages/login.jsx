@@ -11,6 +11,7 @@ import Eye from "@/src/components/svg/Eye";
 
 import { UsersContext } from "@/src/context/users/UsersContext";
 import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
+import { TasksContext } from "@/src/context/tasks/TasksContext";
 
 export default function Login() {
   const router = useRouter();
@@ -24,11 +25,15 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setPasswordVisibility] = useState(false);
 
-  const { isUserLoaded, _id, login } = useContext(UsersContext);
-  const { projects } = useContext(ProjectsContext);
-  let currentProject = projects.find((project) => project.isCurrent);
-  if (!currentProject && projects.length) {
-    currentProject = projects[0];
+  const { isUserLoaded, _id, login, mutateUser } = useContext(UsersContext);
+  const { projects, mutateProjects } = useContext(ProjectsContext);
+  const { mutateTasks } = useContext(TasksContext);
+  let currentProject;
+  if (projects) {
+    currentProject = projects.find((project) => project.isCurrent);
+    if (!currentProject) {
+      currentProject = projects[0];
+    }
   }
 
   const unsetWarnings = (e) => {
@@ -78,7 +83,9 @@ export default function Login() {
       password,
     });
     if (res.message === "ok") {
-      router.reload();
+      mutateUser(res.user, false);
+      mutateTasks();
+      mutateProjects();
     } else {
       if (res.errorType === "name") {
         setNameWarn(res.message);
