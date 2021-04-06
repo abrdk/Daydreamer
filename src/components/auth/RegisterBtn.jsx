@@ -16,11 +16,27 @@ export default function RegisterBtn({
   registerBtnRef,
 }) {
   const { mutateUser, signup } = useContext(UsersContext);
-  const { createProject } = useContext(ProjectsContext);
-  const { createInitialTasks } = useContext(TasksContext);
+  const { createProject, mutateProjects } = useContext(ProjectsContext);
+  const { createInitialTasks, mutateTasks } = useContext(TasksContext);
 
   const handleSignup = async () => {
     if (nameWarn || passwordWarn) {
+      return;
+    }
+    if (!name) {
+      setNameWarn("User name should not be empty");
+      return;
+    }
+    if (!password) {
+      setPasswordWarn("Password should not be empty");
+      return;
+    }
+    if (name.length > 35) {
+      setNameWarn("User name should be less than 35 characters");
+      return;
+    }
+    if (!password) {
+      setPasswordWarn("Password length should be less than 35 characters");
       return;
     }
 
@@ -31,11 +47,14 @@ export default function RegisterBtn({
     };
     const res = await signup(newUser);
     if (res.message === "ok") {
+      mutateProjects([], false);
+      mutateTasks([], false);
       const projectId = nanoid();
       await createProject({
         _id: projectId,
         name: `Project name #1`,
         owner: res.user._id,
+        isCurrent: true,
       });
       await createInitialTasks({ project: projectId });
       mutateUser(newUser, false);

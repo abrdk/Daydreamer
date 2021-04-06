@@ -8,9 +8,9 @@ import { UsersContext } from "@/src/context/UsersContext";
 import Cookies from "js-cookie";
 
 export default function DeleteAccountModal({ setModal }) {
-  const { deleteAllProjects } = useContext(ProjectsContext);
-  const { deleteAllTasks } = useContext(TasksContext);
-  const { deleteUser } = useContext(UsersContext);
+  const { deleteAllProjects, mutateProjects } = useContext(ProjectsContext);
+  const { deleteAllTasks, mutateTasks } = useContext(TasksContext);
+  const { deleteUser, mutateUser } = useContext(UsersContext);
 
   const outsideClick = (e) => {
     if (e.target.id === "delete_account_wrapper") {
@@ -22,6 +22,9 @@ export default function DeleteAccountModal({ setModal }) {
     try {
       await Promise.all([deleteAllTasks(), deleteAllProjects()]);
       await deleteUser();
+      mutateUser({ _id: "", name: "", password: "" }, false);
+      mutateProjects(false, false);
+      mutateTasks(false, false);
       Cookies.remove("ganttToken", { path: "/" });
       Router.push("/signup");
     } catch (e) {}

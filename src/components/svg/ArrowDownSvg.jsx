@@ -1,4 +1,4 @@
-export default function ArrowDown() {
+export default function ArrowDownSvg() {
   return (
     <svg
       width="13"

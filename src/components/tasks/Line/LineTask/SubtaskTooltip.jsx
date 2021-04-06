@@ -4,8 +4,8 @@ import { nanoid } from "nanoid";
 import { When } from "react-if";
 
 import PlusSvg from "@/src/components/svg/PlusSvg";
-import PencilIcon from "@/src/components/svg/PencilIcon";
-import ArrowDown from "@/src/components/svg/ArrowDown";
+import PencilIcon from "@/src/components/svg/PencilSvg";
+import ArrowDown from "@/src/components/svg/ArrowDownSvg";
 
 import { TasksContext } from "@/src/context/TasksContext";
 import { UsersContext } from "@/src/context/UsersContext";

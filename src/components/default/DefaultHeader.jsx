@@ -2,7 +2,7 @@ import headerStyles from "@/styles/header.module.scss";
 import menuStyles from "@/styles/menu.module.scss";
 import Truncate from "react-truncate";
 
-import { ViewSwitcher } from "@/src/components/viewSwitcher/viewSwitcher";
+import ViewSwitcher from "@/src/components/viewSwitcher/ViewSwitcher";
 
 import AvatarSvg from "@/src/components/svg/AvatarSvg";
 import PlusSvg from "@/src/components/svg/PlusSvg";

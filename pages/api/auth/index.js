@@ -2,9 +2,9 @@ import * as cookie from "cookie";
 const jwt = require("jsonwebtoken");
 
 export default async (req, res) => {
-  res.setHeader("Content-Type", "application/json");
-
   try {
+    res.setHeader("Content-Type", "application/json");
+
     const token = req.cookies.ganttToken;
     if (!token) {
       return res.json({ _id: "", name: "", password: "" });

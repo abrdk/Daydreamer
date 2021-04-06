@@ -1,7 +1,7 @@
-import AccountModal from "@/src/components/modal/accountModal";
-import DeleteAccountModal from "@/src/components/modal/deleteAccountModal";
-import ShareModal from "@/src/components/modal/shareModal";
-import SignupModal from "@/src/components/modal/signupModal";
+import AccountModal from "@/src/components/modal/AccountModal";
+import DeleteAccountModal from "@/src/components/modal/DeleteAccountModal";
+import ShareModal from "@/src/components/modal/ShareModal";
+import SignupModal from "@/src/components/modal/SignupModal";
 
 export const Modal = ({ modal, setModal }) => {
   if (!modal) return null;

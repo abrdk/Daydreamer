@@ -6,6 +6,7 @@ import useEvent from "@react-hook/event";
 import { UsersContext } from "@/src/context/UsersContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 import { TasksContext } from "@/src/context/TasksContext";
+import { OptionsContext } from "@/src/context/OptionsContext";
 
 export default function LeftStick({
   task,
@@ -18,12 +19,12 @@ export default function LeftStick({
   dateEnd,
   maxOffsetLeft,
   minOffsetLeft,
-  view,
   taskWidth,
 }) {
   const { updateTask } = useContext(TasksContext);
   const { projectByQueryId } = useContext(ProjectsContext);
   const { user } = useContext(UsersContext);
+  const { view } = useContext(OptionsContext);
 
   const [scrollLeft, setScrollLeft] = useState(undefined);
 

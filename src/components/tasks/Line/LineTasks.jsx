@@ -6,9 +6,11 @@ import LineTasksRoot from "@/src/components/tasks/Line/LineTasksRoot";
 import ScrollBinder from "@/src/components/tasks/Line/ScrollBinder";
 
 import { TasksContext } from "@/src/context/TasksContext";
+import { OptionsContext } from "@/src/context/OptionsContext";
 
-export default function LineTasks({ setMenu, calendarStartDate, view }) {
+export default function LineTasks({ calendarStartDate }) {
   const { editedTaskId } = useContext(TasksContext);
+  const { view } = useContext(OptionsContext);
 
   const [calendarWidth, setCalendarWidth] = useState(0);
 
@@ -63,12 +65,7 @@ export default function LineTasks({ setMenu, calendarStartDate, view }) {
       >
         <div id="linesWrapper">
           <ScrollBinder />
-          <LineTasksRoot
-            calendarStartDate={calendarStartDate}
-            setMenu={setMenu}
-            root={""}
-            view={view}
-          />
+          <LineTasksRoot calendarStartDate={calendarStartDate} root={""} />
         </div>
       </Scrollbar>
     </div>

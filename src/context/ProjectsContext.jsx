@@ -15,50 +15,49 @@ export function ProjectsProvider(props) {
   const loadProjects = async (url) => {
     try {
       return await xhr(url, {}, "GET");
-    } catch (e) {
-      return [];
-    }
+    } catch (e) {}
   };
-  const { data: projects, mutate: mutateProjects } = useSWR(
-    "/projects",
-    loadProjects
-  );
+  const {
+    data: projects,
+    error: projectsError,
+    mutate: mutateProjects,
+  } = useSWR("/projects", loadProjects);
 
   let currentProject = null;
   if (projects) {
     currentProject = projects.find((p) => p._id == router.query.id);
   }
 
-  const createProject = async (project) => {
-    const isCurrent = projects.length == 0;
-    const newProject = {
-      isCurrent,
-      ...project,
-    };
-
-    mutateProjects((projects) => [...projects, newProject], false);
-    await xhr("/projects/create", newProject, "POST");
+  const createProject = async (newProject) => {
+    try {
+      mutateProjects((projects) => [...projects, newProject], false);
+      await xhr("/projects/create", newProject, "POST");
+    } catch (e) {}
   };
 
   const updateProject = (project) => {
-    mutateProjects(
-      (projects) => projects.map((p) => (p._id == project._id ? project : p)),
-      false
-    );
+    try {
+      mutateProjects(
+        (projects) => projects.map((p) => (p._id == project._id ? project : p)),
+        false
+      );
 
-    xhr("/projects/update", project, "PUT");
+      xhr("/projects/update", project, "PUT");
+    } catch (e) {}
   };
 
   const deleteProject = (_id) => {
-    mutateProjects((projects) => projects.filter((p) => p._id != _id), false);
+    try {
+      mutateProjects((projects) => projects.filter((p) => p._id != _id), false);
 
-    xhr(
-      "/projects/delete",
-      {
-        _id,
-      },
-      "DELETE"
-    );
+      xhr(
+        "/projects/delete",
+        {
+          _id,
+        },
+        "DELETE"
+      );
+    } catch (e) {}
   };
 
   const deleteAllProjects = async () => {
@@ -70,11 +69,10 @@ export function ProjectsProvider(props) {
   const loadProject = async (url, _id) => {
     try {
       return await xhr(url, { _id }, "POST");
-    } catch (e) {
-      return {};
-    }
+    } catch (e) {}
   };
-  const { data: projectByQueryId } = useSWR(
+
+  const { data: projectByQueryId, error: projectByQueryIdError } = useSWR(
     router.query.id && !currentProject
       ? ["/projects/show", router.query.id]
       : null,
@@ -83,7 +81,7 @@ export function ProjectsProvider(props) {
 
   const isUserOwnsProject = () => {
     if (!user) {
-      return false;
+      return undefined;
     }
     if (currentProject) {
       return currentProject.owner == user._id;
@@ -91,14 +89,15 @@ export function ProjectsProvider(props) {
     if (projectByQueryId) {
       return projectByQueryId.owner == user._id;
     }
-    return false;
+    return undefined;
   };
 
   return (
     <ProjectsContext.Provider
       value={{
         projects,
-        isProjectsLoaded: !!projects,
+        isProjectsLoaded:
+          projects !== undefined && !projectsError && !projectByQueryIdError,
         projectByQueryId: currentProject || projectByQueryId,
         isUserOwnsProject: isUserOwnsProject(),
         createProject,

@@ -11,28 +11,33 @@ export default function RedirectManager({ children }) {
   const { isProjectsLoaded, projects } = useContext(ProjectsContext);
 
   useEffect(() => {
-    if (isUserLoaded && isProjectsLoaded) {
-      if (router.pathname == "/") {
-        if (!user._id) {
-          router.push("/signup");
-        } else {
-          let currentProject = projects.find((p) => p.isCurrent);
-          if (!currentProject) {
-            currentProject = project[0];
-          }
-          router.push(`/gantt/${currentProject._id}`);
+    if (!isUserLoaded || !isProjectsLoaded) {
+      return;
+    }
+    if (router.pathname == "/") {
+      if (!user._id) {
+        router.push("/signup");
+        return;
+      }
+      let currentProject = projects.find((p) => p.isCurrent);
+      if (!currentProject) {
+        currentProject = project[0];
+      }
+      if (currentProject) {
+        router.push(`/gantt/${currentProject._id}`);
+      }
+    } else if (router.pathname == "/signup" || router.pathname == "/login") {
+      if (user._id && projects.length) {
+        let currentProject = projects.find((p) => p.isCurrent);
+        if (!currentProject) {
+          currentProject = projects[0];
         }
-      } else if (router.pathname == "/signup" || router.pathname == "/login") {
-        if (user._id && projects.length) {
-          let currentProject = projects.find((p) => p.isCurrent);
-          if (!currentProject) {
-            currentProject = projects[0];
-          }
+        if (currentProject) {
           router.push(`/gantt/${currentProject._id}`);
         }
       }
     }
-  }, [isUserLoaded, isProjectsLoaded, router.pathname, projects]);
+  }, [isUserLoaded, isProjectsLoaded, router.pathname, projects, user]);
 
   return children;
 }

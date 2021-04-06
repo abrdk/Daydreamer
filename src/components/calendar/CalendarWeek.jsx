@@ -25,8 +25,6 @@ export default function CalendarWeek({
   setCursor,
   isDraggable,
   setDraggable,
-  setMenu,
-  view,
 }) {
   const daysInMonth = (month, year) => {
     return new Date(year, month + 1, 0).getDate();
@@ -204,8 +202,6 @@ export default function CalendarWeek({
     >
       {weeksWithLabelsComponents}
       <LineTasks
-        setMenu={setMenu}
-        view={view}
         calendarStartDate={
           new Date(
             calendarStartDate.getFullYear(),

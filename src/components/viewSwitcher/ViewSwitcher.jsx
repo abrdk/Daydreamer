@@ -1,10 +1,13 @@
-import { useState } from "react";
-import { ViewMode } from "@/src/types/public-types.js";
+import { useState, useContext } from "react";
 import styles from "@/styles/viewSwitcher.module.scss";
+
+import { OptionsContext } from "@/src/context/OptionsContext";
 
 const modes = ["Day", "Week", "Month"];
 
-export const ViewSwitcher = ({ onViewModeChange, isMenuOpen }) => {
+export default function ViewSwitcher() {
+  const { setView, isMenuOpened } = useContext(OptionsContext);
+
   const [scale, setScale] = useState(0);
 
   const buttons = [0, 1, 2].map((i) => (
@@ -13,7 +16,7 @@ export const ViewSwitcher = ({ onViewModeChange, isMenuOpen }) => {
       className={scale === i ? styles.activeButton : styles.inactiveButton}
       onClick={() => {
         setScale(i);
-        onViewModeChange(ViewMode[modes[i]]);
+        setView(modes[i]);
       }}
     >
       {modes[i]}
@@ -23,7 +26,7 @@ export const ViewSwitcher = ({ onViewModeChange, isMenuOpen }) => {
   return (
     <div
       className={
-        isMenuOpen
+        isMenuOpened
           ? styles.buttonsWrapper + " " + styles.offset
           : styles.buttonsWrapper
       }
@@ -31,4 +34,4 @@ export const ViewSwitcher = ({ onViewModeChange, isMenuOpen }) => {
       {buttons}
     </div>
   );
-};
+}

@@ -26,8 +26,6 @@ export default function CalendarDay({
   setCursor,
   isDraggable,
   setDraggable,
-  setMenu,
-  view,
   isDefault,
 }) {
   const daysInMonth = (month, year) => {
@@ -181,11 +179,7 @@ export default function CalendarDay({
           defaultScrollLeft={defaultScrollLeft}
         >
           {daysWithLabelsComponents}
-          <LineTasks
-            calendarStartDate={calendarStartDate}
-            setMenu={setMenu}
-            view={view}
-          />
+          <LineTasks calendarStartDate={calendarStartDate} />
         </ScrollbarDay>
       </Else>
     </If>

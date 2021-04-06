@@ -1,11 +1,15 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import useEvent from "@react-hook/event";
 
 import CalendarDay from "@/src/components/calendar/CalendarDay";
 import CalendarWeek from "@/src/components/calendar/CalendarWeek";
 import CalendarMonth from "@/src/components/calendar/CalendarMonth";
 
-export default function Calendar({ view, setMenu, isDefault }) {
+import { OptionsContext } from "@/src/context/OptionsContext";
+
+export default function Calendar({ setMenu, isDefault }) {
+  const { view } = useContext(OptionsContext);
+
   const [cursor, setCursor] = useState(null);
   const [isDraggable, setDraggable] = useState(false);
 
@@ -44,8 +48,6 @@ export default function Calendar({ view, setMenu, isDefault }) {
         setCursor={setCursor}
         isDraggable={isDraggable}
         setDraggable={setDraggable}
-        setMenu={setMenu}
-        view={view}
         isDefault={isDefault}
       />
     );
@@ -57,8 +59,6 @@ export default function Calendar({ view, setMenu, isDefault }) {
         setCursor={setCursor}
         isDraggable={isDraggable}
         setDraggable={setDraggable}
-        setMenu={setMenu}
-        view={view}
       />
     );
   }
@@ -69,8 +69,6 @@ export default function Calendar({ view, setMenu, isDefault }) {
         setCursor={setCursor}
         isDraggable={isDraggable}
         setDraggable={setDraggable}
-        setMenu={setMenu}
-        view={view}
       />
     );
   }

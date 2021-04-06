@@ -22,6 +22,15 @@ export default function LoginBtn({
     if (nameWarn || passwordWarn) {
       return;
     }
+    if (!name) {
+      setNameWarn("User name should not be empty");
+      return;
+    }
+    if (!password) {
+      setPasswordWarn("Password should not be empty");
+      return;
+    }
+
     const res = await login({
       name,
       password,

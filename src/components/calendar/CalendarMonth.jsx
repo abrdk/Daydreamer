@@ -26,7 +26,6 @@ export default function CalendarMonth({
   isDraggable,
   setDraggable,
   setMenu,
-  view,
 }) {
   const daysInMonth = (month, year) => {
     return new Date(year, month + 1, 0).getDate();
@@ -137,11 +136,7 @@ export default function CalendarMonth({
       setCalendarEndDate={setCalendarEndDate}
     >
       {monthsWithLabelsComponents}
-      <LineTasks
-        calendarStartDate={calendarStartDate}
-        setMenu={setMenu}
-        view={view}
-      />
+      <LineTasks calendarStartDate={calendarStartDate} />
     </ScrollbarMonth>
   );
 }

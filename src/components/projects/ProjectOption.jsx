@@ -1,193 +1,48 @@
-import { useState, useContext, useEffect, useRef } from "react";
-import styles from "@/styles/projectsDropdown.module.scss";
-import Truncate from "react-truncate";
-import { If, Then, Else, When } from "react-if";
-import { useRouter } from "next/router";
+import { useState, useRef } from "react";
 
-import { ProjectsContext } from "@/src/context/ProjectsContext";
-import { TasksContext } from "@/src/context/TasksContext";
+import DeleteProjectIcon from "@/src/components/projects/ProjectOption/DeleteProjectIcon";
+import OptionWrapper from "@/src/components/projects/ProjectOption/OptionWrapper";
+import OptionName from "@/src/components/projects/ProjectOption/OptionName";
+import OptionPencil from "@/src/components/projects/ProjectOption/OptionPencil";
 
-export default function Option({ project, projectIndex }) {
-  const router = useRouter();
-  const {
-    projects,
-    updateProject,
-    deleteProject,
-    projectByQueryId,
-  } = useContext(ProjectsContext);
-  const { deleteTasksByProject } = useContext(TasksContext);
-  const [isUpdating, setUpdatingState] = useState(!project.name);
-  const input = useRef(null);
-  const fakeText = useRef(null);
-  const pencil = useRef(null);
-  const trash = useRef(null);
+export default function ProjectOption({ project, projectIndex }) {
+  const [isNameUpdating, setIsNameUpdating] = useState(!project.name);
 
-  const selectHandler = (e) => {
-    if (
-      e.target != trash.current &&
-      e.target != pencil.current &&
-      e.target != input.current &&
-      project._id != router.query.id
-    ) {
-      const newCurrentProject = {
-        ...project,
-        isCurrent: true,
-      };
-
-      router.push(`/gantt/${project._id}`);
-      updateProject(newCurrentProject);
-      updateProject({
-        ...projectByQueryId,
-        isCurrent: false,
-      });
-    }
-  };
-
-  const startUpdateHandler = (e) => {
-    if (!isUpdating) {
-      setUpdatingState(true);
-    } else if (e.target != input.current) {
-      setUpdatingState(false);
-    }
-  };
-
-  const updateHandler = (e) => {
-    updateProject({ ...project, name: e.target.value });
-  };
-
-  const blurHandler = (e) => {
-    setTimeout(() => setUpdatingState(false), 150);
-    if (!e.target.value) {
-      updateProject({
-        ...project,
-        name: `Project name #${projectIndex + 1}`,
-      });
-    }
-  };
-
-  const deleteHandler = () => {
-    if (project._id == router.query.id) {
-      if (projectIndex === projects.length - 1) {
-        const newCurrentProject = {
-          ...projects[projectIndex - 1],
-          isCurrent: true,
-        };
-
-        updateProject(newCurrentProject);
-        deleteProject(project._id);
-        deleteTasksByProject(project._id);
-        router.push(`/gantt/${projects[projectIndex - 1]._id}`);
-      } else {
-        const newCurrentProject = {
-          ...projects[projectIndex + 1],
-          isCurrent: true,
-        };
-
-        updateProject(newCurrentProject);
-        deleteProject(project._id);
-        deleteTasksByProject(project._id);
-        router.push(`/gantt/${projects[projectIndex + 1]._id}`);
-      }
-    } else {
-      deleteProject(project._id);
-      deleteTasksByProject(project._id);
-    }
-  };
-
-  const setTextWidth = () => {
-    if (input.current && fakeText.current) {
-      const textWidth = fakeText.current.offsetWidth;
-      if (textWidth > 295) {
-        input.current.style.width = "295px";
-      } else {
-        input.current.style.width = textWidth + 5 + "px";
-      }
-    }
-    if (pencil.current && fakeText.current) {
-      const textWidth = fakeText.current.offsetWidth + 14 + 10;
-      if (textWidth > 320) {
-        pencil.current.style.left = "320px";
-      } else {
-        pencil.current.style.left = textWidth + "px";
-      }
-    }
-  };
-
-  useEffect(() => {
-    setTextWidth();
-  }, [project, isUpdating]);
-
-  useEffect(() => {
-    if (isUpdating) {
-      setTimeout(() => {
-        if (input.current) {
-          input.current.focus();
-        }
-      }, 100);
-    }
-  }, [isUpdating]);
-
-  useEffect(
-    () => () => {
-      if (project.name == "") {
-        updateProject({
-          ...project,
-          name: `Project name #${projectIndex + 1}`,
-        });
-      }
-    },
-    []
-  );
+  const inputRef = useRef(null);
+  const hiddenTextRef = useRef(null);
+  const pencilIconRef = useRef(null);
+  const trashIconRef = useRef(null);
 
   return (
-    <div
-      className={
-        project._id == router.query.id ? styles.optionSelected : styles.option
-      }
-      onClick={selectHandler}
+    <OptionWrapper
+      project={project}
+      pencilIconRef={pencilIconRef}
+      inputRef={inputRef}
+      trashIconRef={trashIconRef}
     >
-      <If condition={isUpdating}>
-        <Then>
-          <input
-            ref={input}
-            value={project.name}
-            className={styles.input}
-            onChange={updateHandler}
-            onBlur={blurHandler}
-          />
-        </Then>
-        <Else>
-          <Truncate lines={1} width={300}>
-            {project.name}
-          </Truncate>
-        </Else>
-      </If>
-      <div className={styles.fakeTextWrapper}>
-        <span
-          className={project.name ? styles.fakeText : styles.fakeTextVisible}
-          ref={fakeText}
-        >
-          {project.name ? project.name : `Project name #${projectIndex + 1}`}
-        </span>
-      </div>
-      <div className={styles.iconContainer} onClick={startUpdateHandler}>
-        <img
-          src="/img/pencil.svg"
-          alt="edit"
-          className={styles.pencil}
-          ref={pencil}
-        />
-      </div>
-      <When condition={projects.length > 1}>
-        <div className={styles.iconContainer} onClick={deleteHandler}>
-          <img
-            src="/img/trash.svg"
-            alt="delete"
-            ref={trash}
-            className={styles.trash}
-          />
-        </div>
-      </When>
-    </div>
+      <OptionName
+        project={project}
+        projectIndex={projectIndex}
+        hiddenTextRef={hiddenTextRef}
+        isNameUpdating={isNameUpdating}
+        inputRef={inputRef}
+        setIsNameUpdating={setIsNameUpdating}
+      />
+
+      <OptionPencil
+        projectName={project.name}
+        isNameUpdating={isNameUpdating}
+        setIsNameUpdating={setIsNameUpdating}
+        inputRef={inputRef}
+        pencilIconRef={pencilIconRef}
+        hiddenTextRef={hiddenTextRef}
+      />
+
+      <DeleteProjectIcon
+        trashIconRef={trashIconRef}
+        project={project}
+        projectIndex={projectIndex}
+      />
+    </OptionWrapper>
   );
 }

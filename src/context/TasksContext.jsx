@@ -16,11 +16,13 @@ export function TasksProvider(props) {
   const loadTasks = async (url) => {
     try {
       return await xhr(url, {}, "GET");
-    } catch (e) {
-      return [];
-    }
+    } catch (e) {}
   };
-  const { data: tasks, mutate: mutateTasks } = useSWR("/tasks", loadTasks);
+
+  const { data: tasks, error: tasksError, mutate: mutateTasks } = useSWR(
+    "/tasks",
+    loadTasks
+  );
 
   let currentTasks = null;
   if (tasks) {
@@ -28,43 +30,51 @@ export function TasksProvider(props) {
   }
 
   const createTask = async (task) => {
-    mutateTasks((tasks) => [...tasks, task], false);
-    await xhr("/tasks/create", task, "POST");
+    try {
+      mutateTasks((tasks) => [...tasks, task], false);
+      await xhr("/tasks/create", task, "POST");
+    } catch (e) {}
   };
 
   const updateTask = (task) => {
-    mutateTasks(
-      (tasks) => tasks.map((t) => (t._id == task._id ? task : t)),
-      false
-    );
-    xhr("/tasks/update", task, "PUT");
+    try {
+      mutateTasks(
+        (tasks) => tasks.map((t) => (t._id == task._id ? task : t)),
+        false
+      );
+      xhr("/tasks/update", task, "PUT");
+    } catch (e) {}
   };
 
   const deleteTask = (_id) => {
-    const findSubtasksIds = (_id) =>
-      tasks
-        .filter((t) => t.root == _id)
-        .sort((task1, task2) => task1.order > task2.order)
-        .map((t) => [t._id, ...findSubtasksIds(t._id)]);
-    const findTaskWithSubtaskIds = (_id) => [_id, ...findSubtasksIds(_id)];
+    try {
+      const findSubtasksIds = (_id) =>
+        tasks
+          .filter((t) => t.root == _id)
+          .sort((task1, task2) => task1.order > task2.order)
+          .map((t) => [t._id, ...findSubtasksIds(t._id)]);
+      const findTaskWithSubtaskIds = (_id) => [_id, ...findSubtasksIds(_id)];
 
-    findTaskWithSubtaskIds(_id)
-      .flat()
-      .forEach((id) => {
-        mutateTasks((tasks) => tasks.filter((t) => t._id != id), false);
-        xhr(
-          "/tasks/delete",
-          {
-            _id: id,
-          },
-          "DELETE"
-        );
-      });
+      findTaskWithSubtaskIds(_id)
+        .flat()
+        .forEach((id) => {
+          mutateTasks((tasks) => tasks.filter((t) => t._id != id), false);
+          xhr(
+            "/tasks/delete",
+            {
+              _id: id,
+            },
+            "DELETE"
+          );
+        });
+    } catch (e) {}
   };
 
   const deleteTasksByProject = (project) => {
-    mutateTasks((tasks) => tasks.filter((t) => t.project != project), false);
-    xhr("/tasks/delete_by_project", { project }, "DELETE");
+    try {
+      mutateTasks((tasks) => tasks.filter((t) => t.project != project), false);
+      xhr("/tasks/delete_by_project", { project }, "DELETE");
+    } catch (e) {}
   };
 
   const deleteAllTasks = async () => {
@@ -141,12 +151,13 @@ export function TasksProvider(props) {
   const loadTasksByProjectId = async (url, project) => {
     try {
       return await xhr(url, { project }, "POST");
-    } catch (e) {
-      return [];
-    }
+    } catch (e) {}
   };
-  const { data: tasksByProjectId } = useSWR(
-    router.query.id ? ["/tasks/show", router.query.id] : null,
+
+  const { data: tasksByProjectId, error: tasksByProjectIdError } = useSWR(
+    router.query.id && isUserOwnsProject === false
+      ? ["/tasks/show", router.query.id]
+      : null,
     loadTasksByProjectId
   );
 
@@ -157,12 +168,14 @@ export function TasksProvider(props) {
   const updateIsOpened = ({ _id, isOpened }) => {
     setIsTaskOpened((isTaskOpened) => ({ ...isTaskOpened, [_id]: isOpened }));
   };
+
   return (
     <TasksContext.Provider
       value={{
         tasks,
-        isTasksLoaded: !!tasks,
-        tasksByProjectId: isUserOwnsProject ? currentTasks : tasksByProjectId,
+        isTasksLoaded:
+          tasks !== undefined && !tasksError && !tasksByProjectIdError,
+        tasksByProjectId: currentTasks || tasksByProjectId,
         whereEditNewTask,
         editedTaskId,
         isTaskOpened,

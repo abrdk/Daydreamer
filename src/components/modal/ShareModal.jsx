@@ -3,6 +3,7 @@ import { useRef } from "react";
 
 export default function ShareModal({ setModal }) {
   const link = useRef(null);
+  const shareWrapperRef = useRef(null);
 
   const copyLink = () => {
     link.current.select();
@@ -10,7 +11,7 @@ export default function ShareModal({ setModal }) {
   };
 
   const outsideClick = (e) => {
-    if (e.target.id === "share_wrapper") {
+    if (e.target == shareWrapperRef.current) {
       setModal(false);
     }
   };
@@ -26,7 +27,7 @@ export default function ShareModal({ setModal }) {
       <div
         className={styles.modalWrap}
         onClick={outsideClick}
-        id="share_wrapper"
+        ref={shareWrapperRef}
       >
         <div className={styles.shareModal}>
           <h4 className={styles.shareTitle}>Share project</h4>

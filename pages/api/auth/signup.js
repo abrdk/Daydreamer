@@ -4,34 +4,35 @@ const jwt = require("jsonwebtoken");
 const getDB = require("@/helpers/getDb.js");
 
 export default async (req, res) => {
-  res.setHeader("Content-Type", "application/json");
-  const { _id, name, password } = req.body;
-
-  if (!name) {
-    return res
-      .status(400)
-      .json({ message: "User name should not be empty", errorType: "name" });
-  }
-  if (name.length > 35) {
-    return res.status(400).json({
-      message: "User name should be less than 35 charactes",
-      errorType: "name",
-    });
-  }
-
-  if (!password) {
-    return res
-      .status(400)
-      .json({ message: "Password should not be empty", errorType: "password" });
-  }
-  if (password.length > 35) {
-    return res.status(400).json({
-      message: "Password length should be less than 35 characters",
-      errorType: "password",
-    });
-  }
-
   try {
+    res.setHeader("Content-Type", "application/json");
+    const { _id, name, password } = req.body;
+
+    if (!name) {
+      return res
+        .status(400)
+        .json({ message: "User name should not be empty", errorType: "name" });
+    }
+    if (name.length > 35) {
+      return res.status(400).json({
+        message: "User name should be less than 35 characters",
+        errorType: "name",
+      });
+    }
+
+    if (!password) {
+      return res.status(400).json({
+        message: "Password should not be empty",
+        errorType: "password",
+      });
+    }
+    if (password.length > 35) {
+      return res.status(400).json({
+        message: "Password length should be less than 35 characters",
+        errorType: "password",
+      });
+    }
+
     const User = getDB("User");
     const candidate = await User.findOne({ name });
 

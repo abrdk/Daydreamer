@@ -11,10 +11,12 @@ import Cross from "@/src/components/svg/Cross";
 import { TasksContext } from "@/src/context/TasksContext";
 import { UsersContext } from "@/src/context/UsersContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
+import { OptionsContext } from "@/src/context/OptionsContext";
 
-export default function TasksEdit({ isMenuOpen }) {
+export default function TasksEdit() {
   const { projectByQueryId } = useContext(ProjectsContext);
   const { user } = useContext(UsersContext);
+  const { isMenuOpened } = useContext(OptionsContext);
 
   const {
     tasksByProjectId,
@@ -125,7 +127,7 @@ export default function TasksEdit({ isMenuOpen }) {
     return (
       <div
         className={styles.wrapper}
-        style={{ width: isMenuOpen ? "calc(100vw - 335px)" : "100vw" }}
+        style={{ width: isMenuOpened ? "calc(100vw - 335px)" : "100vw" }}
         id="editTask"
       >
         <div className={styles.inputsWrapper}>

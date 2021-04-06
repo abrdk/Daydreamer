@@ -11,8 +11,11 @@ import CenterArea from "@/src/components/tasks/Line/LineTask/CenterArea";
 import LineTaskName from "@/src/components/tasks/Line/LineTask/LineTaskName";
 
 import { TasksContext } from "@/src/context/TasksContext";
+import { OptionsContext } from "@/src/context/OptionsContext";
 
-export default function LineTask({ task, setMenu, calendarStartDate, view }) {
+export default function LineTask({ task, calendarStartDate }) {
+  const { view } = useContext(OptionsContext);
+
   const views = ["Day", "Week", "Month"];
   const dayWidth = [55, 120 / 7, 160 / 30];
   const minOffsetRight = [-70, -5, 0];
@@ -169,7 +172,6 @@ export default function LineTask({ task, setMenu, calendarStartDate, view }) {
         <DateTooltip
           isResizeLeft={isResizeLeft}
           isResizeRight={isResizeRight}
-          view={view}
           dateStart={dateStart}
           dateEnd={dateEnd}
           taskWidth={taskWidth}
@@ -231,12 +233,7 @@ export default function LineTask({ task, setMenu, calendarStartDate, view }) {
       </div>
 
       <When condition={isTaskOpened[task._id]}>
-        <LineTasksRoot
-          root={task._id}
-          setMenu={setMenu}
-          view={view}
-          calendarStartDate={calendarStartDate}
-        />
+        <LineTasksRoot root={task._id} calendarStartDate={calendarStartDate} />
       </When>
     </>
   );

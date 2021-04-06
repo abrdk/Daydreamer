@@ -1,15 +1,19 @@
+import { useContext } from "react";
 import calendarStyles from "@/styles/calendar.module.scss";
 import { When } from "react-if";
 const dateFormat = require("dateformat");
 
+import { OptionsContext } from "@/src/context/OptionsContext";
+
 export default function DateTooltip({
   isResizeLeft,
   isResizeRight,
-  view,
   dateStart,
   dateEnd,
   taskWidth,
 }) {
+  const { view } = useContext(OptionsContext);
+
   return (
     <>
       <When condition={isResizeLeft && view != "Day"}>
