@@ -1,4 +1,4 @@
-export default function Cross() {
+export default function CrossSvg() {
   return (
     <svg
       width="25"

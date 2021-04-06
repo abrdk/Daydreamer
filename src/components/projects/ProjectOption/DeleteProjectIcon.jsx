@@ -41,14 +41,16 @@ export default function DeleteProjectIcon({
       }
     }
 
-    if (newCurrentProject) {
-      updateProject(newCurrentProject);
-    }
-    deleteProject(project._id);
-    deleteTasksByProject(project._id);
     if (newRoutePath) {
       router.push(newRoutePath);
     }
+    if (newCurrentProject) {
+      updateProject(newCurrentProject);
+    }
+    setTimeout(() => {
+      deleteProject(project._id);
+      deleteTasksByProject(project._id);
+    }, 50);
   };
 
   return (

@@ -1,21 +1,21 @@
-import { useContext, useState, useEffect, useRef } from "react";
+import { useContext } from "react";
 import styles from "@/styles/taskEdit.module.scss";
-import Scrollbar from "react-scrollbars-custom";
-import FloatingLabel from "floating-label-react";
-import usePrevious from "@react-hook/previous";
 import { When } from "react-if";
 
 import TaskCalendar from "@/src/components/tasks/Edit/TaskCalendar";
-import Cross from "@/src/components/svg/Cross";
+import EditNameForm from "@/src/components/tasks/Edit/EditNameForm";
+import EditDescriptionForm from "@/src/components/tasks/Edit/EditDescriptionForm";
+import ColorPicker from "@/src/components/tasks/Edit/ColorPicker";
+import DeleteTaskIcon from "@/src/components/tasks/Edit/DeleteTaskIcon";
+
+import CrossSvg from "@/src/components/svg/CrossSvg";
 
 import { TasksContext } from "@/src/context/TasksContext";
-import { UsersContext } from "@/src/context/UsersContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 import { OptionsContext } from "@/src/context/OptionsContext";
 
 export default function TasksEdit() {
-  const { projectByQueryId } = useContext(ProjectsContext);
-  const { user } = useContext(UsersContext);
+  const { isUserOwnsProject } = useContext(ProjectsContext);
   const { isMenuOpened } = useContext(OptionsContext);
 
   const {
@@ -24,52 +24,9 @@ export default function TasksEdit() {
     deleteTask,
     editedTaskId,
     setEditedTaskId,
-    whereEditNewTask,
-    setWhereEditNewTask,
   } = useContext(TasksContext);
+
   const task = tasksByProjectId.find((t) => t._id == editedTaskId);
-
-  const fakeText = useRef(null);
-  const textArea = useRef(null);
-
-  const [editedName, setEditedName] = useState("");
-  const [editedColor, setEditedColor] = useState("");
-  const [editedDescription, setEditedDescription] = useState(() =>
-    task ? task.description : ""
-  );
-  const prevDescription = usePrevious(editedDescription);
-  const [isTextareaFocused, setTextareaFocused] = useState(false);
-
-  const nameUpdateHandler = (e) => {
-    if (e.target.value.length <= 100) {
-      setEditedName(e.target.value);
-      updateTask({ ...task, name: e.target.value });
-    }
-  };
-
-  const getDefaultName = () =>
-    !task.root
-      ? `Task name #${task.order + 1}`
-      : `Subtask name #${task.order + 1}`;
-
-  const setName = (e) => {
-    if (!e.target.value) {
-      updateTask({ ...task, name: getDefaultName() });
-    }
-  };
-
-  const descriptionUpdateHandler = (e) => {
-    setEditedDescription(e.target.value);
-  };
-  const setDescription = (e) => {
-    setTextareaFocused(false);
-    updateTask({ ...task, description: e.target.value });
-  };
-
-  const colorUpdateHandler = (color) => {
-    setEditedColor(color);
-    updateTask({ ...task, color });
-  };
 
   const deleteHandler = () => {
     tasksByProjectId
@@ -82,48 +39,7 @@ export default function TasksEdit() {
     setEditedTaskId("");
   };
 
-  useEffect(() => {
-    if (task) {
-      setEditedName(task.name);
-      setEditedDescription(task.description);
-      setEditedColor(task.color);
-    }
-  }, [task]);
-
-  useEffect(() => {
-    if (fakeText.current) {
-      textArea.current.style.height = fakeText.current.clientHeight + "px";
-    }
-  }, [editedDescription]);
-
-  useEffect(() => {
-    if (task && task.name == "" && whereEditNewTask == "edit") {
-      document.querySelector("#taskName").focus();
-      setWhereEditNewTask("");
-    }
-  }, [task, whereEditNewTask]);
-
   if (task) {
-    const colorsElements = [
-      "258EFA",
-      "FFBC42",
-      "59CD90",
-      "D06BF3",
-      "66CEDC",
-      "FF5B79",
-    ].map((color) => (
-      <div
-        key={color}
-        className={styles.color}
-        style={{
-          background: editedColor == color && `#fff`,
-          border: editedColor == color && `1px solid #${color}`,
-        }}
-        onClick={() => colorUpdateHandler(color)}
-      >
-        <div className={styles.colorInner}></div>
-      </div>
-    ));
     return (
       <div
         className={styles.wrapper}
@@ -132,81 +48,10 @@ export default function TasksEdit() {
       >
         <div className={styles.inputsWrapper}>
           <div className={styles.topInputsWrapper}>
-            <FloatingLabel
-              id="taskName"
-              name="name"
-              placeholder="Enter task name"
-              className={styles.inputNameFilled}
-              value={editedName}
-              onChange={nameUpdateHandler}
-              onBlur={setName}
-              onFocus={(e) => {
-                if (projectByQueryId.owner != user._id) {
-                  e.target.blur();
-                }
-              }}
-            />
-            <When condition={task.name == ""}>
-              <div className={styles.hiddenName}>{getDefaultName()}</div>
-            </When>
+            <EditNameForm task={task} />
             <TaskCalendar task={task} />
           </div>
-          <div ref={fakeText} className={styles.fakeText}>
-            {editedDescription}
-          </div>
-          <label
-            className={
-              editedDescription || isTextareaFocused
-                ? styles.descriptionFilled
-                : styles.description
-            }
-            htmlFor="taskDescription"
-          >
-            <div className={styles.teaxtareaWrapper}>
-              <Scrollbar
-                style={{ height: 238 }}
-                trackYProps={{
-                  renderer: (props) => {
-                    const { elementRef, ...restProps } = props;
-                    return (
-                      <div
-                        {...restProps}
-                        ref={elementRef}
-                        className="ScrollbarsCustom-Track ScrollbarsCustom-TrackY ScrollbarsCustom-EditTask"
-                      />
-                    );
-                  },
-                }}
-              >
-                <textarea
-                  ref={textArea}
-                  spellCheck="false"
-                  id="taskDescription"
-                  name="description"
-                  value={editedDescription}
-                  onChange={descriptionUpdateHandler}
-                  onFocus={(e) => {
-                    if (projectByQueryId.owner != user._id) {
-                      e.target.blur();
-                    } else {
-                      setTextareaFocused(true);
-                    }
-                  }}
-                  onBlur={setDescription}
-                ></textarea>
-              </Scrollbar>
-            </div>
-            <span
-              style={{
-                transition:
-                  !prevDescription && editedDescription
-                    ? "all 0ms"
-                    : "all 200ms",
-              }}
-            >
-              Enter task description
-            </span>
-          </label>
+          <EditDescriptionForm task={task} />
         </div>
         <div>
           <div className={styles.closeWrapper}>
@@ -214,19 +59,12 @@ export default function TasksEdit() {
               className={styles.crossIcon}
               onClick={() => setEditedTaskId("")}
             >
-              <Cross />
+              <CrossSvg />
             </div>
           </div>
-          <When condition={projectByQueryId.owner == user._id}>
-            <div className={styles.colorsWrapper}>{colorsElements}</div>
-            <div className={styles.trashWrapper}>
-              <img
-                src="/img/trashBlue.svg"
-                alt="delete"
-                className={styles.icon}
-                onClick={deleteHandler}
-              />
-            </div>
+          <When condition={isUserOwnsProject}>
+            <ColorPicker task={task} />
+            <DeleteTaskIcon task={task} />
           </When>
         </div>
       </div>

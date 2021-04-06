@@ -73,7 +73,7 @@ export function ProjectsProvider(props) {
   };
 
   const { data: projectByQueryId, error: projectByQueryIdError } = useSWR(
-    router.query.id && !currentProject
+    router.query.id && isUserOwnsProject === false
       ? ["/projects/show", router.query.id]
       : null,
     loadProject

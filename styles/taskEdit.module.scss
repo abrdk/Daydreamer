@@ -97,6 +97,7 @@
   opacity: 0;
   width: calc(100% - 170px);
   white-space: pre-wrap;
+  word-break: break-all;
 }
 
 .teaxtareaWrapper {
@@ -106,6 +107,12 @@
 
 .icon {
   cursor: pointer;
+}
+
+.trashIcon {
+  cursor: pointer;
+  width: 19px;
+  height: 25px;
 }
 
 .crossIcon {
