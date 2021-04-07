@@ -4,7 +4,7 @@ import Truncate from "react-truncate";
 const paddingRight = 70;
 const taskOffsetLeft = 14;
 
-export default function Text({ task, taskDepth }) {
+export default function TaskText({ task, taskDepth }) {
   const paddingLeft = 33 + taskDepth * taskOffsetLeft;
 
   return (

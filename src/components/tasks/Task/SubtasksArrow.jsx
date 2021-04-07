@@ -1,6 +1,9 @@
 import styles from "@/styles/tasks.module.scss";
 import { useContext } from "react";
-import { When } from "react-if";
+import { When, If, Then, Else } from "react-if";
+
+import ArrowDownSvg from "@/src/components/svg/ArrowDownSvg";
+import ArrowRightSvg from "@/src/components/svg/ArrowRightSvg";
 
 import { TasksContext } from "@/src/context/TasksContext";
 
@@ -17,28 +20,39 @@ export default function SubtasksArrow({ task, arrow, taskDepth }) {
 
   const defaultLeft = isTaskOpened[task._id] ? 2 : 7;
 
-  const openSubtasks = () => {
+  const openSubtasks = (e) => {
+    e.stopPropagation();
     updateIsOpened({ _id: task._id, isOpened: !isTaskOpened[task._id] });
   };
 
   return (
     <When condition={subtasks.length}>
-      <img
-        className={
-          isTaskOpened[task._id] ? styles.arrowDown : styles.arrowRight
-        }
-        src={
-          isTaskOpened[task._id]
-            ? "/img/arrowDown.svg"
-            : "/img/arrowRightTask.svg"
-        }
-        alt="open"
-        ref={arrow}
-        onClick={openSubtasks}
-        style={{
-          left: defaultLeft + taskDepth * taskOffsetLeft,
-        }}
-      />
+      <If condition={isTaskOpened[task._id]}>
+        <Then>
+          <div
+            className={styles.arrowDown}
+            ref={arrow}
+            onClick={openSubtasks}
+            style={{
+              left: defaultLeft + taskDepth * taskOffsetLeft,
+            }}
+          >
+            <ArrowDownSvg />
+          </div>
+        </Then>
+        <Else>
+          <div
+            className={styles.arrowRight}
+            ref={arrow}
+            onClick={openSubtasks}
+            style={{
+              left: defaultLeft + taskDepth * taskOffsetLeft,
+            }}
+          >
+            <ArrowRightSvg />
+          </div>
+        </Else>
+      </If>
     </When>
   );
 }

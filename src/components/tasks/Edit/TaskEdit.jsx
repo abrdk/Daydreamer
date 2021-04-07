@@ -2,7 +2,7 @@ import { useContext } from "react";
 import styles from "@/styles/taskEdit.module.scss";
 import { When } from "react-if";
 
-import TaskCalendar from "@/src/components/tasks/Edit/TaskCalendar";
+import CalendarTooltip from "@/src/components/tasks/Edit/CalendarTooltip";
 import EditNameForm from "@/src/components/tasks/Edit/EditNameForm";
 import EditDescriptionForm from "@/src/components/tasks/Edit/EditDescriptionForm";
 import ColorPicker from "@/src/components/tasks/Edit/ColorPicker";
@@ -18,26 +18,11 @@ export default function TasksEdit() {
   const { isUserOwnsProject } = useContext(ProjectsContext);
   const { isMenuOpened } = useContext(OptionsContext);
 
-  const {
-    tasksByProjectId,
-    updateTask,
-    deleteTask,
-    editedTaskId,
-    setEditedTaskId,
-  } = useContext(TasksContext);
+  const { tasksByProjectId, editedTaskId, setEditedTaskId } = useContext(
+    TasksContext
+  );
 
   const task = tasksByProjectId.find((t) => t._id == editedTaskId);
-
-  const deleteHandler = () => {
-    tasksByProjectId
-      .filter((t) => t.root == task.root)
-      .slice(task.order + 1)
-      .forEach((t) => {
-        updateTask({ ...t, order: t.order - 1 });
-      });
-    deleteTask(editedTaskId);
-    setEditedTaskId("");
-  };
 
   if (task) {
     return (
@@ -49,7 +34,7 @@ export default function TasksEdit() {
         <div className={styles.inputsWrapper}>
           <div className={styles.topInputsWrapper}>
             <EditNameForm task={task} />
-            <TaskCalendar task={task} />
+            <CalendarTooltip task={task} />
           </div>
           <EditDescriptionForm task={task} />
         </div>

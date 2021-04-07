@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import styles from "@/styles/menu.module.scss";
 
 import TaskEdit from "@/src/components/tasks/Edit/TaskEdit";
@@ -7,7 +7,7 @@ import Tasks from "@/src/components/tasks/Tasks";
 import PlusBtn from "@/src/components/menu/PlusBtn";
 
 import ArrowRightSvg from "@/src/components/svg/ArrowRightSvg";
-import ArrowLeft from "@/src/components/svg/ArrowLeft";
+import ArrowLeftSvg from "@/src/components/svg/ArrowLeftSvg";
 
 import { OptionsContext } from "@/src/context/OptionsContext";
 
@@ -32,7 +32,7 @@ export default function Menu() {
         id={isMenuOpened ? "openedMenu" : "closedMenu"}
       >
         <div className={styles.iconClose} onClick={openMenuHandler}>
-          <ArrowLeft />
+          <ArrowLeftSvg />
         </div>
         <ProjectsDropdown />
         <Tasks />

@@ -3,11 +3,11 @@ import { When } from "react-if";
 
 import TasksRoot from "@/src/components/tasks/TasksRoot";
 import TaskWrapper from "@/src/components/tasks/Task/TaskWrapper";
-import VerticalLine from "@/src/components/tasks/Task/VerticalLine";
+import TaskVerticalLine from "@/src/components/tasks/Task/TaskVerticalLine";
 import SubtasksArrow from "@/src/components/tasks/Task/SubtasksArrow";
-import Name from "@/src/components/tasks/Task/Name";
-import Pencil from "@/src/components/tasks/Task/Pencil";
-import Plus from "@/src/components/tasks/Task/Plus";
+import TaskName from "@/src/components/tasks/Task/TaskName";
+import EditTaskIcon from "@/src/components/tasks/Task/EditTaskIcon";
+import NewSubtaskIcon from "@/src/components/tasks/Task/NewSubtaskIcon";
 
 import { TasksContext } from "@/src/context/TasksContext";
 
@@ -44,7 +44,6 @@ export default function Task({ task, setContainerHeight, index }) {
   return (
     <>
       <TaskWrapper
-        task={task}
         setUpdatingState={setUpdatingState}
         arrow={arrow}
         plus={plus}
@@ -52,11 +51,11 @@ export default function Task({ task, setContainerHeight, index }) {
         index={index}
         taskDepth={taskDepth}
       >
-        <VerticalLine task={task} />
+        <TaskVerticalLine task={task} />
 
         <SubtasksArrow task={task} arrow={arrow} taskDepth={taskDepth} />
 
-        <Name
+        <TaskName
           task={task}
           isUpdating={isUpdating}
           setUpdatingState={setUpdatingState}
@@ -64,7 +63,7 @@ export default function Task({ task, setContainerHeight, index }) {
           taskDepth={taskDepth}
         />
 
-        <Pencil
+        <EditTaskIcon
           task={task}
           fakeTextRef={fakeText}
           pencilRef={pencil}
@@ -72,7 +71,7 @@ export default function Task({ task, setContainerHeight, index }) {
           taskDepth={taskDepth}
         />
 
-        <Plus task={task} plusRef={plus} />
+        <NewSubtaskIcon task={task} plusRef={plus} />
       </TaskWrapper>
 
       <When condition={subtasks.length && isTaskOpened[task._id]}>

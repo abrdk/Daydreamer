@@ -68,6 +68,10 @@
   position: absolute;
   top: 4px;
   left: 4px;
+  color: #258efa;
+  svg {
+    margin-bottom: 4px;
+  }
 }
 
 .arrowRight {
@@ -79,6 +83,12 @@
   margin-right: 9px;
   padding: 9px;
   cursor: pointer;
+  color: #9ccdff;
+  svg {
+    width: 7px;
+    height: 12px;
+    margin-bottom: 4px;
+  }
 }
 
 .arrowDown {
@@ -90,6 +100,15 @@
   margin-right: 9px;
   padding: 9px;
   cursor: pointer;
+  color: #9ccdff;
+  svg {
+    width: 12px;
+    height: 7px;
+    margin-bottom: 9px;
+    path {
+      stroke-width: 1.5;
+    }
+  }
 }
 
 .subtasksWrapper {

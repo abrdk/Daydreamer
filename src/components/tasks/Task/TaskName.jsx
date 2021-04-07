@@ -1,14 +1,13 @@
-import { useRef } from "react";
 import { If, Then, Else } from "react-if";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 
-import FakeText from "@/src/components/tasks/Task/Name/FakeText";
-import Text from "@/src/components/tasks/Task/Name/Text";
-import Input from "@/src/components/tasks/Task/Name/Input";
+import TaskFakeText from "@/src/components/tasks/Task/TaskName/TaskFakeText";
+import TaskText from "@/src/components/tasks/Task/TaskName/TaskText";
+import TaskInput from "@/src/components/tasks/Task/TaskName/TaskInput";
 
 import { TasksContext } from "@/src/context/TasksContext";
 
-export default function Name({
+export default function TaskName({
   task,
   isUpdating,
   setUpdatingState,
@@ -16,8 +15,6 @@ export default function Name({
   taskDepth,
 }) {
   const { whereEditNewTask } = useContext(TasksContext);
-
-  const input = useRef(null);
 
   useEffect(() => {
     if (task.name == "" && whereEditNewTask == "menu") {
@@ -27,19 +24,19 @@ export default function Name({
 
   return (
     <>
-      <FakeText task={task} fakeTextRef={fakeTextRef} />
+      <TaskFakeText task={task} fakeTextRef={fakeTextRef} />
       <If condition={isUpdating}>
         <Then>
-          <Input
+          <TaskInput
             task={task}
-            inputRef={input}
             isUpdating={isUpdating}
             setUpdatingState={setUpdatingState}
             taskDepth={taskDepth}
+            fakeTextRef={fakeTextRef}
           />
         </Then>
         <Else>
-          <Text task={task} taskDepth={taskDepth} />
+          <TaskText task={task} taskDepth={taskDepth} />
         </Else>
       </If>
     </>

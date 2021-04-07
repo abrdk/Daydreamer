@@ -332,6 +332,11 @@
   position: absolute;
   left: 10px;
   cursor: pointer;
+  color: #258efa;
+  svg {
+    width: 7px;
+    height: 14px;
+  }
 }
 
 .arrowRight {

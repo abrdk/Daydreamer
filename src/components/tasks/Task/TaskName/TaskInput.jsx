@@ -1,38 +1,34 @@
 import styles from "@/styles/tasks.module.scss";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 
 import { TasksContext } from "@/src/context/TasksContext";
 
 const taskOffsetLeft = 14;
 const paddingRight = 105;
+const taskWidth = 335;
 
-export default function Input({
+export default function TaskInput({
   task,
-  inputRef,
   isUpdating,
   setUpdatingState,
   taskDepth,
+  fakeTextRef,
 }) {
   const { updateTask, whereEditNewTask, setWhereEditNewTask } = useContext(
     TasksContext
   );
 
+  const inputRef = useRef(null);
+
   const paddingLeft = taskDepth * taskOffsetLeft;
 
   const [nameState, setNameState] = useState(task.name);
+  const [inputWidth, setInputWidth] = useState(taskWidth);
 
   const getDefaultName = () =>
     !task.root
       ? `Task name #${task.order + 1}`
       : `Subtask name #${task.order + 1}`;
-
-  const getInputWidth = () => {
-    const taskElement = document.querySelector(`.task-${task._id}`);
-    if (taskElement) {
-      return taskElement.clientWidth - paddingRight - paddingLeft;
-    }
-    return 0;
-  };
 
   const handleNameUpdate = (e) => {
     setNameState(e.target.value);
@@ -41,6 +37,7 @@ export default function Input({
 
   const handleBlur = (e) => {
     if (!e.target.value) {
+      setNameState(getDefaultName());
       updateTask({ ...task, name: getDefaultName() });
     }
     setUpdatingState(false);
@@ -57,9 +54,24 @@ export default function Input({
     }
   };
 
+  const getInputWidth = () => {
+    if (fakeTextRef.current) {
+      const currentWidth = fakeTextRef.current.offsetWidth + 5;
+      if (currentWidth > taskWidth - paddingRight - paddingLeft) {
+        return taskWidth - paddingRight - paddingLeft;
+      }
+      return currentWidth;
+    }
+    return 0;
+  };
+
   useEffect(() => {
     focusOnInput();
   }, [isUpdating, inputRef.current]);
+
+  useEffect(() => {
+    setInputWidth(getInputWidth());
+  }, [nameState]);
 
   return (
     <input
@@ -69,7 +81,7 @@ export default function Input({
       onChange={handleNameUpdate}
       onBlur={handleBlur}
       style={{
-        width: getInputWidth(),
+        width: inputWidth,
         color: taskDepth > 0 ? "#949da7" : "#696f75",
       }}
     />

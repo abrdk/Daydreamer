@@ -3,6 +3,10 @@ import styles from "@/styles/taskEdit.module.scss";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { If, Then, Else } from "react-if";
+import useEvent from "@react-hook/event";
+
+import CalendarArrowLeftSvg from "@/src/components/svg/CalendarArrowLeftSvg";
+import CalendarArrowRightSvg from "@/src/components/svg/CalendarArrowRightSvg";
 
 const monthNames = [
   "January",
@@ -20,13 +24,10 @@ const monthNames = [
 ];
 
 import { TasksContext } from "@/src/context/TasksContext";
-import { UsersContext } from "@/src/context/UsersContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
-import useEvent from "@react-hook/event";
 
-export default function TasksCalendar({ task }) {
-  const { projectByQueryId } = useContext(ProjectsContext);
-  const { user } = useContext(UsersContext);
+export default function CalendarTooltip({ task }) {
+  const { isUserOwnsProject } = useContext(ProjectsContext);
 
   const { updateTask } = useContext(TasksContext);
 
@@ -34,24 +35,26 @@ export default function TasksCalendar({ task }) {
   const [dateEnd, setDateEnd] = useState(null);
 
   const [isMouseDown, setIsMouseDown] = useState(false);
-  useEvent(document, "mouseup", () => {
+
+  const [isStartCalendarOpened, setIsStartCalendarOpened] = useState(false);
+  const [isEndCalendarOpened, setIsEndCalendarOpened] = useState(false);
+
+  const stopSelectRange = () => {
     if (isMouseDown) {
       updateTask({ ...task, dateStart, dateEnd });
       setIsMouseDown(false);
     }
-  });
-  useEvent(document, "mousemove", (e) => {
+  };
+
+  const removeRanges = (e) => {
     if (isMouseDown && (isStartCalendarOpened || isEndCalendarOpened)) {
       try {
         e.target.ownerDocument.defaultView.getSelection().removeAllRanges();
       } catch (e) {}
     }
-  });
+  };
 
-  const [isStartCalendarOpened, setIsStartCalendarOpened] = useState(false);
-  const [isEndCalendarOpened, setIsEndCalendarOpened] = useState(false);
-
-  useEffect(() => {
+  const synchronizeDates = () => {
     if (task) {
       if (typeof task.dateStart == "string") {
         setDateStart(new Date(task.dateStart));
@@ -59,18 +62,44 @@ export default function TasksCalendar({ task }) {
         setDateStart(task.dateStart);
       }
       if (typeof task.dateEnd == "string") {
-        setDateEnd(new Date(task.dateEnd));
+        const fixedDateEnd = new Date(task.dateEnd);
+        fixedDateEnd.setHours(23);
+        fixedDateEnd.setMinutes(59);
+        fixedDateEnd.setSeconds(59);
+        setDateEnd(fixedDateEnd);
       } else {
-        setDateEnd(task.dateEnd);
+        const fixedDateEnd = new Date(
+          task.dateEnd.getFullYear(),
+          task.dateEnd.getMonth(),
+          task.dateEnd.getDate()
+        );
+        fixedDateEnd.setSeconds(60 * 60 * 24 - 1);
+        setDateEnd(fixedDateEnd);
       }
     }
+  };
+
+  const handleDateStartUpdate = (date) => {
+    setDateStart(date);
+    updateTask({ ...task, dateStart: date });
+  };
+
+  const handleDateEndUpdate = (date) => {
+    date.setSeconds(60 * 60 * 24 - 1);
+    setDateEnd(date);
+    updateTask({ ...task, dateEnd: date });
+  };
+
+  useEvent(document, "mouseup", stopSelectRange);
+  useEvent(document, "mousemove", removeRanges);
+
+  useEffect(() => {
+    synchronizeDates();
   }, [task]);
 
   const customDay = (day, date) => {
     const today = new Date();
-    today.setHours(0);
-    today.setMinutes(0);
-    today.setSeconds(0);
+
     const numOfDaysFromToday =
       (today.getTime() - date.getTime()) / 1000 / 60 / 60 / 24;
     const numOfDaysFromDateStart =
@@ -78,7 +107,7 @@ export default function TasksCalendar({ task }) {
     const numOfDaysFromDateEnd =
       (dateEnd.getTime() - date.getTime()) / 1000 / 60 / 60 / 24;
 
-    const getClassName = () => {
+    const getDayClassName = () => {
       if (
         numOfDaysFromDateStart < 1 &&
         numOfDaysFromDateStart >= 0 &&
@@ -143,7 +172,7 @@ export default function TasksCalendar({ task }) {
       }
     };
 
-    const dayClassName = getClassName();
+    const dayClassName = getDayClassName();
 
     return (
       <div
@@ -167,19 +196,13 @@ export default function TasksCalendar({ task }) {
 
   const customHeader = ({ date, decreaseMonth, increaseMonth }) => (
     <div className={styles.calendarHeader}>
-      <img
-        src="/img/calendarArrowLeft.svg"
-        onClick={decreaseMonth}
-        className={styles.arrowLeft}
-        alt="prev"
-      />
+      <div onClick={decreaseMonth} className={styles.arrowLeft}>
+        <CalendarArrowLeftSvg />
+      </div>
       <div>{monthNames[date.getMonth()]}</div>
-      <img
-        src="/img/calendarArrowRight.svg"
-        onClick={increaseMonth}
-        className={styles.arrowRight}
-        alt="next"
-      />
+      <div onClick={increaseMonth} className={styles.arrowRight}>
+        <CalendarArrowRightSvg />
+      </div>
     </div>
   );
 
@@ -187,10 +210,7 @@ export default function TasksCalendar({ task }) {
     <div className={styles.datesWrapper}>
       <DatePicker
         selected={dateStart}
-        onChange={(date) => {
-          setDateStart(date);
-          updateTask({ ...task, dateStart: date });
-        }}
+        onChange={handleDateStartUpdate}
         selectsStart
         startDate={dateStart}
         endDate={dateEnd}
@@ -208,18 +228,14 @@ export default function TasksCalendar({ task }) {
         shouldCloseOnSelect={false}
         renderDayContents={customDay}
         renderCustomHeader={customHeader}
-        disabled={projectByQueryId.owner != user._id ? true : false}
+        disabled={isUserOwnsProject ? false : true}
         onCalendarClose={() => setIsStartCalendarOpened(false)}
         onCalendarOpen={() => setIsStartCalendarOpened(true)}
       />
       <div className={styles.dateDash}></div>
       <DatePicker
         selected={dateEnd}
-        onChange={(date) => {
-          date.setSeconds(60 * 60 * 24 - 1);
-          setDateEnd(date);
-          updateTask({ ...task, dateEnd: date });
-        }}
+        onChange={handleDateEndUpdate}
         selectsEnd
         startDate={dateStart}
         endDate={dateEnd}
@@ -237,7 +253,7 @@ export default function TasksCalendar({ task }) {
         shouldCloseOnSelect={false}
         renderDayContents={customDay}
         renderCustomHeader={customHeader}
-        disabled={projectByQueryId.owner != user._id ? true : false}
+        disabled={isUserOwnsProject ? false : true}
         onCalendarClose={() => setIsEndCalendarOpened(false)}
         onCalendarOpen={() => setIsEndCalendarOpened(true)}
       />

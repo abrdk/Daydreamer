@@ -1,6 +1,6 @@
 import styles from "@/styles/tasks.module.scss";
 
-export default function FakeText({ task, fakeTextRef }) {
+export default function TaskFakeText({ task, fakeTextRef }) {
   const getDefaultName = () =>
     !task.root
       ? `Task name #${task.order + 1}`

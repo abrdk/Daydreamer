@@ -5,13 +5,11 @@ import { nanoid } from "nanoid";
 
 import PlusSvg from "@/src/components/svg/PlusSvg";
 
-import { UsersContext } from "@/src/context/UsersContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 import { TasksContext } from "@/src/context/TasksContext";
 
-export default function Plus({ task, plusRef }) {
-  const { user } = useContext(UsersContext);
-  const { projectByQueryId } = useContext(ProjectsContext);
+export default function NewSubtaskIcon({ task, plusRef }) {
+  const { isUserOwnsProject } = useContext(ProjectsContext);
   const {
     createTask,
     tasksByProjectId,
@@ -25,8 +23,6 @@ export default function Plus({ task, plusRef }) {
   const subtasks = tasksByProjectId
     .filter((subtask) => subtask.root == task._id)
     .sort((task1, task2) => task1.order > task2.order);
-
-  const isUserOwnProject = () => projectByQueryId.owner == user._id;
 
   const openSubtasksHandler = () => {
     updateIsOpened({ _id: task._id, isOpened: !isTaskOpened[task._id] });
@@ -60,7 +56,7 @@ export default function Plus({ task, plusRef }) {
   };
 
   return (
-    <When condition={isUserOwnProject()}>
+    <When condition={isUserOwnsProject}>
       <div ref={plusRef} className={styles.plus} onClick={createSubtask}>
         <PlusSvg />
       </div>
