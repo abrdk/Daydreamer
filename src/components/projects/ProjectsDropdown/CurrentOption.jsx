@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, memo } from "react";
 import styles from "@/styles/projectsDropdown.module.scss";
 import Truncate from "react-truncate";
 import { If, Then, Else, When } from "react-if";
@@ -8,24 +8,18 @@ import ArrowUpSvg from "@/src/components/svg/ArrowUpSvg";
 
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 
-export default function CurrentOption({
+function InnerCurrentOption({
   isDropdownOpened,
   setIsDropdownOpened,
+  currentProjectIndex,
+  isUserOwnsProject,
+  projectByQueryIdName,
 }) {
-  const { projects, projectByQueryId, isUserOwnsProject } = useContext(
-    ProjectsContext
-  );
-  const [projectIndex, setProjectIndex] = useState(0);
-
   const openDropdown = () => {
     if (isUserOwnsProject) {
       setIsDropdownOpened(!isDropdownOpened);
     }
   };
-
-  useEffect(() => {
-    setProjectIndex(projects.findIndex((p) => p._id == projectByQueryId._id));
-  }, [projectByQueryId._id]);
 
   return (
     <div
@@ -33,7 +27,7 @@ export default function CurrentOption({
       onClick={openDropdown}
     >
       <Truncate lines={1} width={185}>
-        {projectByQueryId.name}
+        {projectByQueryIdName}
       </Truncate>
 
       <If condition={isDropdownOpened}>
@@ -47,11 +41,45 @@ export default function CurrentOption({
         </Else>
       </If>
 
-      <When condition={projectByQueryId.name == ""}>
+      <When condition={projectByQueryIdName == ""}>
         <div className={styles.hiddenName}>{`Project name #${
-          projectIndex + 1
+          currentProjectIndex + 1
         }`}</div>
       </When>
     </div>
+  );
+}
+
+InnerCurrentOption = memo(
+  InnerCurrentOption,
+  (prevProps, nextProps) =>
+    prevProps.isDropdownOpened == nextProps.isDropdownOpened &&
+    prevProps.currentProjectIndex == nextProps.currentProjectIndex &&
+    prevProps.isUserOwnsProject == nextProps.isUserOwnsProject &&
+    prevProps.projectByQueryIdName == nextProps.projectByQueryIdName
+);
+
+export default function CurrentOption({
+  isDropdownOpened,
+  setIsDropdownOpened,
+}) {
+  const { projectByQueryId, isUserOwnsProject, projects } = useContext(
+    ProjectsContext
+  );
+
+  const projectByQueryIdName = projectByQueryId.name;
+  const currentProjectIndex = projects.findIndex(
+    (p) => p._id == projectByQueryId._id
+  );
+  return (
+    <InnerCurrentOption
+      {...{
+        isDropdownOpened,
+        setIsDropdownOpened,
+        currentProjectIndex,
+        isUserOwnsProject,
+        projectByQueryIdName,
+      }}
+    />
   );
 }

@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import styles from "@/styles/projectsDropdown.module.scss";
 
 import PencilSvg from "@/src/components/svg/PencilSvg";
 
 const pencilOffsetLeft = 18;
 
-export default function OptionPencil({
+function OptionPencil({
   projectName,
   isNameUpdating,
   setIsNameUpdating,
@@ -18,6 +18,7 @@ export default function OptionPencil({
   const startOrStopNameUpdate = (e) => {
     e.stopPropagation();
     if (!isNameUpdating) {
+      console.log("aaaaaa");
       setIsNameUpdating(true);
     } else if (e.target != inputRef.current) {
       setIsNameUpdating(false);
@@ -52,3 +53,12 @@ export default function OptionPencil({
     </div>
   );
 }
+
+OptionPencil = memo(
+  OptionPencil,
+  (prevProps, nextProps) =>
+    prevProps.projectName == nextProps.projectName &&
+    prevProps.isNameUpdating == nextProps.isNameUpdating
+);
+
+export default OptionPencil;

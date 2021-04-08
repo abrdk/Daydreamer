@@ -1,11 +1,11 @@
-import { useState, useRef } from "react";
+import { useState, useRef, memo } from "react";
 
 import DeleteProjectIcon from "@/src/components/projects/ProjectOption/DeleteProjectIcon";
 import OptionWrapper from "@/src/components/projects/ProjectOption/OptionWrapper";
 import OptionName from "@/src/components/projects/ProjectOption/OptionName";
 import OptionPencil from "@/src/components/projects/ProjectOption/OptionPencil";
 
-export default function ProjectOption({ project, projectIndex }) {
+function ProjectOption({ project, projectIndex }) {
   const [isNameUpdating, setIsNameUpdating] = useState(!project.name);
 
   const inputRef = useRef(null);
@@ -46,3 +46,13 @@ export default function ProjectOption({ project, projectIndex }) {
     </OptionWrapper>
   );
 }
+
+ProjectOption = memo(
+  ProjectOption,
+  (prevProps, nextProps) =>
+    prevProps.projectIndex == nextProps.projectIndex &&
+    prevProps.project.name == nextProps.project.name &&
+    prevProps.project.isCurrent == nextProps.project.isCurrent
+);
+
+export default ProjectOption;

@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, memo } from "react";
 import useEvent from "@react-hook/event";
 
 import ProjectOption from "@/src/components/projects/ProjectOption";
@@ -7,9 +7,7 @@ import CurrentOption from "@/src/components/projects/ProjectsDropdown/CurrentOpt
 
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 
-export default function ProjectsDropdown() {
-  const { projects } = useContext(ProjectsContext);
-
+function InnerProjectsDropdown({ projects }) {
   const [isDropdownOpened, setIsDropdownOpened] = useState(false);
 
   const projectsOptions = projects.map((project, i) => (
@@ -38,4 +36,12 @@ export default function ProjectsDropdown() {
       </OptionsWrapper>
     </>
   );
+}
+
+InnerProjectsDropdown = memo(InnerProjectsDropdown);
+
+export default function ProjectsDropdown() {
+  const { projects } = useContext(ProjectsContext);
+
+  return <InnerProjectsDropdown {...{ projects }} />;
 }

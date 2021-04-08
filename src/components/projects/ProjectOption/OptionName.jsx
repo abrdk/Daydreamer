@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, useRef } from "react";
+import { useState, useContext, useEffect, memo } from "react";
 import styles from "@/styles/projectsDropdown.module.scss";
 import Truncate from "react-truncate";
 import { If, Then, Else } from "react-if";
@@ -7,16 +7,15 @@ import { ProjectsContext } from "@/src/context/ProjectsContext";
 
 const maxInputWidth = 295;
 
-export default function OptionName({
+function InnerOptionName({
   project,
   projectIndex,
   hiddenTextRef,
   isNameUpdating,
   setIsNameUpdating,
   inputRef,
+  updateProject,
 }) {
-  const { updateProject } = useContext(ProjectsContext);
-
   const [inputWidth, setInputWidth] = useState(maxInputWidth);
   const [projectName, setProjectName] = useState(project.name);
 
@@ -89,5 +88,27 @@ export default function OptionName({
         </span>
       </div>
     </>
+  );
+}
+
+InnerOptionName = memo(
+  InnerOptionName,
+  (prevProps, nextProps) =>
+    prevProps.projectIndex == nextProps.projectIndex &&
+    prevProps.project.name == nextProps.project.name &&
+    prevProps.project.isCurrent == nextProps.project.isCurrent &&
+    prevProps.isNameUpdating == nextProps.isNameUpdating
+);
+
+export default function OptionName(props) {
+  const { updateProject } = useContext(ProjectsContext);
+
+  return (
+    <InnerOptionName
+      {...{
+        ...props,
+        updateProject,
+      }}
+    />
   );
 }

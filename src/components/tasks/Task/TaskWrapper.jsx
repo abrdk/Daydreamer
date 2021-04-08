@@ -51,17 +51,7 @@ function InnerTaskWrapper({
   );
 }
 
-InnerTaskWrapper = memo(
-  InnerTaskWrapper,
-  (prevProps, nextProps) =>
-    prevProps.index == nextProps.index &&
-    prevProps.task.name == nextProps.task.name &&
-    prevProps.task.dateStart == nextProps.task.dateStart &&
-    prevProps.task.dateEnd == nextProps.task.dateEnd &&
-    prevProps.task.color == nextProps.task.color &&
-    prevProps.isUserOwnsProject == nextProps.isUserOwnsProject &&
-    prevProps.children == nextProps.children
-);
+InnerTaskWrapper = memo(InnerTaskWrapper);
 
 export default function TaskWrapper({
   children,
