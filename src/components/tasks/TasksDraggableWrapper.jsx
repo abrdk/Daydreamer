@@ -1,9 +1,14 @@
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { memo } from "react";
 
-export default function TasksDraggableWrapper({ children }) {
+function TasksDraggableWrapper({ children }) {
   return (
-    <DragDropContext onDragEnd={() => {}}>
-      <Droppable droppableId="list">
+    <DragDropContext
+      onDragEnd={() => {
+        console.log("yeeeeeeeeee");
+      }}
+    >
+      <Droppable droppableId="tasks">
         {(provided) => (
           <div ref={provided.innerRef} {...provided.droppableProps}>
             {children}
@@ -14,3 +19,4 @@ export default function TasksDraggableWrapper({ children }) {
     </DragDropContext>
   );
 }
+export default memo(TasksDraggableWrapper);

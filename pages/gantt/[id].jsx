@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useState, useContext } from "react";
+import { useState, useContext, memo } from "react";
 import styles from "@/styles/header.module.scss";
 import { When } from "react-if";
 
@@ -12,12 +12,14 @@ import { UsersContext } from "@/src/context/UsersContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 import { TasksContext } from "@/src/context/TasksContext";
 
-export default function Gantt() {
+function InnerGantt({
+  isUserLoaded,
+  isProjectsLoaded,
+  isTasksLoaded,
+  hasProjectByQueryId,
+  hasTasksByProjectId,
+}) {
   const [modal, setModal] = useState(false);
-
-  const { isUserLoaded } = useContext(UsersContext);
-  const { isProjectsLoaded, projectByQueryId } = useContext(ProjectsContext);
-  const { isTasksLoaded, tasksByProjectId } = useContext(TasksContext);
 
   return (
     <>
@@ -30,8 +32,8 @@ export default function Gantt() {
           isUserLoaded &&
           isProjectsLoaded &&
           isTasksLoaded &&
-          projectByQueryId &&
-          tasksByProjectId
+          hasProjectByQueryId &&
+          hasTasksByProjectId
         }
       >
         <Modal modal={modal} setModal={setModal} />
@@ -42,5 +44,28 @@ export default function Gantt() {
         <Calendar />
       </When>
     </>
+  );
+}
+
+InnerGantt = memo(InnerGantt);
+
+export default function Gantt() {
+  const { isUserLoaded } = useContext(UsersContext);
+  const { isProjectsLoaded, projectByQueryId } = useContext(ProjectsContext);
+  const { isTasksLoaded, tasksByProjectId } = useContext(TasksContext);
+
+  const hasProjectByQueryId = !!projectByQueryId;
+  const hasTasksByProjectId = !!tasksByProjectId;
+
+  return (
+    <InnerGantt
+      {...{
+        isUserLoaded,
+        isProjectsLoaded,
+        isTasksLoaded,
+        hasProjectByQueryId,
+        hasTasksByProjectId,
+      }}
+    />
   );
 }

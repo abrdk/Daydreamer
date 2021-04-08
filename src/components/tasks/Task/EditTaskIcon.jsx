@@ -1,5 +1,5 @@
 import styles from "@/styles/tasks.module.scss";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, memo } from "react";
 
 import PencilSvg from "@/src/components/svg/PencilSvg";
 
@@ -10,15 +10,14 @@ const distanceToText = 6;
 const taskOffsetLeft = 14;
 const maxPencilLeft = 266;
 
-export default function EditTaskIcon({
+function EditTaskIconInner({
   task,
   fakeTextRef,
   pencilRef,
-  isUpdating,
   taskDepth,
+  editedTaskId,
+  setEditedTaskId,
 }) {
-  const { editedTaskId, setEditedTaskId } = useContext(TasksContext);
-
   const [pencilLeft, setPencilLeft] = useState(0);
 
   const startEditTask = (e) => {
@@ -48,7 +47,7 @@ export default function EditTaskIcon({
 
   useEffect(() => {
     setPencilLeft(getPencilLeft());
-  }, [task, isUpdating, fakeTextRef.current]);
+  }, [task.name]);
 
   return (
     <div
@@ -62,5 +61,33 @@ export default function EditTaskIcon({
         <PencilSvg />
       </div>
     </div>
+  );
+}
+
+EditTaskIconInner = memo(
+  EditTaskIconInner,
+  (prevProps, nextProps) =>
+    prevProps.task.name == nextProps.task.name &&
+    prevProps.taskDepth == nextProps.taskDepth &&
+    prevProps.editedTaskId == nextProps.editedTaskId
+);
+
+export default function EditTaskIcon({
+  task,
+  fakeTextRef,
+  pencilRef,
+  taskDepth,
+}) {
+  const { editedTaskId, setEditedTaskId } = useContext(TasksContext);
+
+  return (
+    <EditTaskIconInner
+      task={task}
+      fakeTextRef={fakeTextRef}
+      pencilRef={pencilRef}
+      taskDepth={taskDepth}
+      editedTaskId={editedTaskId}
+      setEditedTaskId={setEditedTaskId}
+    />
   );
 }

@@ -57,9 +57,18 @@ export default function CalendarTooltip({ task }) {
   const synchronizeDates = () => {
     if (task) {
       if (typeof task.dateStart == "string") {
-        setDateStart(new Date(task.dateStart));
+        const fixedDateStart = new Date(task.dateStart);
+        fixedDateStart.setHours(0);
+        fixedDateStart.setMinutes(0);
+        fixedDateStart.setSeconds(0);
+        setDateStart(fixedDateStart);
       } else {
-        setDateStart(task.dateStart);
+        const fixedDateStart = new Date(
+          task.dateStart.getFullYear(),
+          task.dateStart.getMonth(),
+          task.dateStart.getDate()
+        );
+        setDateStart(fixedDateStart);
       }
       if (typeof task.dateEnd == "string") {
         const fixedDateEnd = new Date(task.dateEnd);
@@ -80,14 +89,24 @@ export default function CalendarTooltip({ task }) {
   };
 
   const handleDateStartUpdate = (date) => {
-    setDateStart(date);
-    updateTask({ ...task, dateStart: date });
+    const newDateStart = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate()
+    );
+    setDateStart(newDateStart);
+    updateTask({ ...task, dateStart: newDateStart });
   };
 
   const handleDateEndUpdate = (date) => {
-    date.setSeconds(60 * 60 * 24 - 1);
-    setDateEnd(date);
-    updateTask({ ...task, dateEnd: date });
+    const newDateEnd = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate()
+    );
+    newDateEnd.setSeconds(60 * 60 * 24 - 1);
+    setDateEnd(newDateEnd);
+    updateTask({ ...task, dateEnd: newDateEnd });
   };
 
   useEvent(document, "mouseup", stopSelectRange);
@@ -143,31 +162,43 @@ export default function CalendarTooltip({ task }) {
     const handleMouseEnter = (isMouseDown, date) => {
       if (isMouseDown && isStartCalendarOpened) {
         if (dateEnd.getTime() - date.getTime() > 0) {
-          setDateStart(date);
-        } else {
-          setDateStart(
-            new Date(
-              dateEnd.getFullYear(),
-              dateEnd.getMonth(),
-              dateEnd.getDate()
-            )
+          const newDateStart = new Date(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate()
           );
+          setDateStart(newDateStart);
+          updateTask({ ...task, dateStart: newDateStart });
+        } else {
+          const newDateStart = new Date(
+            dateEnd.getFullYear(),
+            dateEnd.getMonth(),
+            dateEnd.getDate()
+          );
+          setDateStart(newDateStart);
+          updateTask({ ...task, dateStart: newDateStart });
         }
       } else if (isMouseDown && isEndCalendarOpened) {
         if (date.getTime() - dateStart.getTime() > 0) {
-          date.setSeconds(60 * 60 * 24 - 1);
-          setDateEnd(date);
-        } else {
-          setDateEnd(
-            new Date(
-              dateStart.getFullYear(),
-              dateStart.getMonth(),
-              dateStart.getDate(),
-              23,
-              59,
-              59
-            )
+          const newDateEnd = new Date(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate()
           );
+          newDateEnd.setSeconds(60 * 60 * 24 - 1);
+          setDateEnd(newDateEnd);
+          updateTask({ ...task, dateEnd: newDateEnd });
+        } else {
+          const newDateEnd = new Date(
+            dateStart.getFullYear(),
+            dateStart.getMonth(),
+            dateStart.getDate(),
+            23,
+            59,
+            59
+          );
+          setDateEnd(newDateEnd);
+          updateTask({ ...task, dateEnd: newDateEnd });
         }
       }
     };

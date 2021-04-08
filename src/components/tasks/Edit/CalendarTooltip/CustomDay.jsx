@@ -84,12 +84,9 @@ export default function CustomDay({
   };
 
   const handleMouseEnter = (isMouseDown, date) => {
-    console.log("isMouseDown", isMouseDown);
     if (isMouseDown && isStartCalendarOpened) {
       if (dateEnd.getTime() - date.getTime() > 0) {
-        console.log("date", date);
         setDateStart(date);
-        console.log();
       } else {
         setDateStart(
           new Date(dateEnd.getFullYear(), dateEnd.getMonth(), dateEnd.getDate())

@@ -1,6 +1,8 @@
 import styles from "@/styles/tasks.module.scss";
+import React from "react";
+import { memo } from "react";
 
-export default function TaskFakeText({ task, fakeTextRef }) {
+function TaskFakeText({ task, fakeTextRef }) {
   const getDefaultName = () =>
     !task.root
       ? `Task name #${task.order + 1}`
@@ -15,3 +17,8 @@ export default function TaskFakeText({ task, fakeTextRef }) {
     </span>
   );
 }
+
+export default memo(
+  TaskFakeText,
+  (prevProps, nextProps) => prevProps.task.name == nextProps.task.name
+);

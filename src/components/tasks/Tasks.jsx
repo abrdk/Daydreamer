@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, memo } from "react";
 import styles from "@/styles/tasks.module.scss";
 import Scrollbar from "react-scrollbars-custom";
 
@@ -8,16 +8,14 @@ import TasksDraggableWrapper from "@/src/components/tasks/TasksDraggableWrapper"
 
 import { TasksContext } from "@/src/context/TasksContext";
 
-export default function Tasks({}) {
-  const { tasksByProjectId } = useContext(TasksContext);
-
+function InnerTasks({ hasTasksByProjectId }) {
   const [containerHeight, setContainerHeight] = useState(0);
 
   useEffect(() => {
-    if (!tasksByProjectId.length) {
+    if (!hasTasksByProjectId) {
       setContainerHeight(0);
     }
-  }, [tasksByProjectId]);
+  }, [hasTasksByProjectId]);
 
   return (
     <>
@@ -55,9 +53,21 @@ export default function Tasks({}) {
           },
         }}
       >
-        <TasksRoot root={""} setContainerHeight={setContainerHeight} />
+        <TasksDraggableWrapper>
+          <TasksRoot root={""} setContainerHeight={setContainerHeight} />
+        </TasksDraggableWrapper>
       </Scrollbar>
       <NewTaskBtn />
     </>
   );
+}
+
+InnerTasks = memo(InnerTasks);
+
+export default function Tasks() {
+  const { tasksByProjectId } = useContext(TasksContext);
+
+  const hasTasksByProjectId = tasksByProjectId.length > 0;
+
+  return <InnerTasks {...{ hasTasksByProjectId }} />;
 }

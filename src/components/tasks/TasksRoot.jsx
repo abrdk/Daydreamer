@@ -1,15 +1,48 @@
-import { useContext } from "react";
+import { useContext, memo } from "react";
 
 import Task from "@/src/components/tasks/Task";
 
 import { TasksContext } from "@/src/context/TasksContext";
 
+function InnerTasksRoot({ setContainerHeight, indexesWithIds }) {
+  let tasksComponents = [];
+
+  for (let _id in indexesWithIds) {
+    tasksComponents.push(
+      <Task
+        key={_id}
+        index={indexesWithIds[_id]}
+        taskId={_id}
+        setContainerHeight={setContainerHeight}
+      />
+    );
+  }
+
+  return tasksComponents;
+}
+
+InnerTasksRoot = memo(InnerTasksRoot, (prevProps, nextProps) => {
+  if (
+    Object.keys(prevProps.indexesWithIds).length !=
+    Object.keys(nextProps.indexesWithIds).length
+  ) {
+    return false;
+  }
+
+  for (const _id in prevProps.indexesWithIds) {
+    try {
+      if (prevProps.indexesWithIds[_id] != nextProps.indexesWithIds[_id]) {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+  return true;
+});
+
 export default function TasksRoot({ root, setContainerHeight }) {
   const { tasksByProjectId, isTaskOpened } = useContext(TasksContext);
-
-  const sortedTasks = tasksByProjectId
-    .filter((task) => task.root == root)
-    .sort((task1, task2) => task1.order > task2.order);
 
   const findSubtasksIds = (_id) =>
     tasksByProjectId
@@ -45,14 +78,14 @@ export default function TasksRoot({ root, setContainerHeight }) {
     return index;
   };
 
-  const tasksComponents = sortedTasks.map((task) => (
-    <Task
-      key={task._id}
-      index={getTaskIndex(task._id)}
-      task={task}
-      setContainerHeight={setContainerHeight}
-    />
-  ));
+  const sortedTasks = tasksByProjectId
+    .filter((task) => task.root == root)
+    .sort((task1, task2) => task1.order > task2.order);
 
-  return tasksComponents;
+  let indexesWithIds = {};
+  sortedTasks.forEach((t) => {
+    indexesWithIds[t._id] = getTaskIndex(t._id);
+  });
+
+  return <InnerTasksRoot {...{ setContainerHeight, indexesWithIds }} />;
 }

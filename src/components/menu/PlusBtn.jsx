@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, memo } from "react";
 import styles from "@/styles/menu.module.scss";
 import { nanoid } from "nanoid";
 import { When } from "react-if";
@@ -9,13 +9,14 @@ import { TasksContext } from "@/src/context/TasksContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 import { OptionsContext } from "@/src/context/OptionsContext";
 
-export default function PlusBtn() {
-  const { createTask, tasksByProjectId, setWhereEditNewTask } = useContext(
-    TasksContext
-  );
-  const { projectByQueryId, isUserOwnsProject } = useContext(ProjectsContext);
-  const { isMenuOpened } = useContext(OptionsContext);
-
+function InnerPlusBtn({
+  createTask,
+  setWhereEditNewTask,
+  numOfTopLevelTasks,
+  idOfProjectByQueryId,
+  isUserOwnsProject,
+  isMenuOpened,
+}) {
   const handleCreateTask = () => {
     if (isMenuOpened) {
       setWhereEditNewTask("menu");
@@ -38,8 +39,6 @@ export default function PlusBtn() {
       59
     );
 
-    const topLevelTasks = tasksByProjectId.filter((task) => !task.root);
-
     createTask({
       _id: nanoid(),
       name: "",
@@ -47,9 +46,9 @@ export default function PlusBtn() {
       dateStart: currentDate,
       dateEnd: afterWeek,
       color: "258EFA",
-      project: projectByQueryId._id,
+      project: idOfProjectByQueryId,
       root: "",
-      order: topLevelTasks.length,
+      order: numOfTopLevelTasks,
     });
   };
 
@@ -59,5 +58,38 @@ export default function PlusBtn() {
         <PlusSvg />
       </div>
     </When>
+  );
+}
+
+InnerPlusBtn = memo(
+  InnerPlusBtn,
+  (prevProps, nextProps) =>
+    prevProps.numOfTopLevelTasks == nextProps.numOfTopLevelTasks &&
+    prevProps.idOfProjectByQueryId == nextProps.idOfProjectByQueryId &&
+    prevProps.isUserOwnsProject == nextProps.isUserOwnsProject &&
+    prevProps.isMenuOpened == nextProps.isMenuOpened
+);
+
+export default function PlusBtn() {
+  const { createTask, tasksByProjectId, setWhereEditNewTask } = useContext(
+    TasksContext
+  );
+  const { projectByQueryId, isUserOwnsProject } = useContext(ProjectsContext);
+  const { isMenuOpened } = useContext(OptionsContext);
+
+  const numOfTopLevelTasks = tasksByProjectId.filter((task) => !task.root)
+    .length;
+
+  return (
+    <InnerPlusBtn
+      {...{
+        createTask,
+        setWhereEditNewTask,
+        numOfTopLevelTasks,
+        idOfProjectByQueryId: projectByQueryId._id,
+        isUserOwnsProject,
+        isMenuOpened,
+      }}
+    />
   );
 }

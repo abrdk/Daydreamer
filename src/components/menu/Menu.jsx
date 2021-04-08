@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import React, { useContext, memo } from "react";
 import styles from "@/styles/menu.module.scss";
 
 import TaskEdit from "@/src/components/tasks/Edit/TaskEdit";
@@ -11,9 +11,7 @@ import ArrowLeftSvg from "@/src/components/svg/ArrowLeftSvg";
 
 import { OptionsContext } from "@/src/context/OptionsContext";
 
-export default function Menu() {
-  const { isMenuOpened, setIsMenuOpened } = useContext(OptionsContext);
-
+function InnerMenu({ isMenuOpened, setIsMenuOpened }) {
   const openMenuHandler = () => {
     setIsMenuOpened(!isMenuOpened);
   };
@@ -42,4 +40,14 @@ export default function Menu() {
       <PlusBtn />
     </>
   );
+}
+
+InnerMenu = memo(
+  InnerMenu,
+  (prevProps, nextProps) => prevProps.isMenuOpened == nextProps.isMenuOpened
+);
+
+export default function Menu() {
+  const { isMenuOpened, setIsMenuOpened } = useContext(OptionsContext);
+  return <InnerMenu {...{ isMenuOpened, setIsMenuOpened }} />;
 }

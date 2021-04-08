@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import styles from "@/styles/taskEdit.module.scss";
 import { When } from "react-if";
 
@@ -14,7 +14,7 @@ import { TasksContext } from "@/src/context/TasksContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 import { OptionsContext } from "@/src/context/OptionsContext";
 
-export default function TasksEdit() {
+function TaskEdit() {
   const { isUserOwnsProject } = useContext(ProjectsContext);
   const { isMenuOpened } = useContext(OptionsContext);
 
@@ -22,7 +22,10 @@ export default function TasksEdit() {
     TasksContext
   );
 
-  const task = tasksByProjectId.find((t) => t._id == editedTaskId);
+  const task = useMemo(
+    () => tasksByProjectId.find((t) => t._id == editedTaskId),
+    [editedTaskId]
+  );
 
   if (task) {
     return (
@@ -58,3 +61,5 @@ export default function TasksEdit() {
     return <></>;
   }
 }
+
+export default React.memo(TaskEdit);

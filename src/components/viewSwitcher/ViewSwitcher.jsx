@@ -1,13 +1,11 @@
-import { useState, useContext } from "react";
+import { useState, useContext, memo } from "react";
 import styles from "@/styles/viewSwitcher.module.scss";
 
 import { OptionsContext } from "@/src/context/OptionsContext";
 
 const modes = ["Day", "Week", "Month"];
 
-export default function ViewSwitcher() {
-  const { setView, isMenuOpened } = useContext(OptionsContext);
-
+function InnerViewSwitcher({ isMenuOpened, setView }) {
   const [scale, setScale] = useState(0);
 
   const buttons = [0, 1, 2].map((i) => (
@@ -34,4 +32,14 @@ export default function ViewSwitcher() {
       {buttons}
     </div>
   );
+}
+
+InnerViewSwitcher = memo(
+  InnerViewSwitcher,
+  (prevProps, nextProps) => prevProps.isMenuOpened == nextProps.isMenuOpened
+);
+
+export default function ViewSwitcher() {
+  const { setView, isMenuOpened } = useContext(OptionsContext);
+  return <InnerViewSwitcher {...{ setView, isMenuOpened }} />;
 }

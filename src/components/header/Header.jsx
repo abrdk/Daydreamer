@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, memo } from "react";
 import styles from "@/styles/header.module.scss";
 import { If, Then, Else } from "react-if";
 import Truncate from "react-truncate";
@@ -10,10 +10,7 @@ import AvatarSvg from "@/src/components/svg/AvatarSvg";
 import { UsersContext } from "@/src/context/UsersContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 
-export default function Header({ setModal }) {
-  const { user } = useContext(UsersContext);
-  const { isUserOwnsProject } = useContext(ProjectsContext);
-
+function InnerHeader({ setModal, userName, isUserOwnsProject }) {
   return (
     <div className={styles.header}>
       <ViewSwitcher />
@@ -32,7 +29,7 @@ export default function Header({ setModal }) {
             >
               <AvatarSvg />{" "}
               <Truncate lines={1} width={100}>
-                {user.name}
+                {userName}
               </Truncate>
             </button>
           </Then>
@@ -42,5 +39,21 @@ export default function Header({ setModal }) {
         </If>
       </div>
     </div>
+  );
+}
+
+InnerHeader = memo(
+  InnerHeader,
+  (prevProps, nextProps) =>
+    prevProps.userName == nextProps.userName &&
+    prevProps.isUserOwnsProject == nextProps.isUserOwnsProject
+);
+
+export default function Header({ setModal }) {
+  const { user } = useContext(UsersContext);
+  const { isUserOwnsProject } = useContext(ProjectsContext);
+
+  return (
+    <InnerHeader {...{ setModal, isUserOwnsProject, userName: user.name }} />
   );
 }

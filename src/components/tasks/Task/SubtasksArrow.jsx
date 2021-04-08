@@ -1,5 +1,5 @@
 import styles from "@/styles/tasks.module.scss";
-import { useContext } from "react";
+import React, { useContext, memo } from "react";
 import { When, If, Then, Else } from "react-if";
 
 import ArrowDownSvg from "@/src/components/svg/ArrowDownSvg";
@@ -9,25 +9,24 @@ import { TasksContext } from "@/src/context/TasksContext";
 
 const taskOffsetLeft = 14;
 
-export default function SubtasksArrow({ task, arrow, taskDepth }) {
-  const { tasksByProjectId, updateIsOpened, isTaskOpened } = useContext(
-    TasksContext
-  );
-
-  const subtasks = tasksByProjectId.filter(
-    (subtask) => subtask.root == task._id
-  );
-
-  const defaultLeft = isTaskOpened[task._id] ? 2 : 7;
+function InnerSubtasksArrow({
+  taskId,
+  hasSubtasks,
+  arrow,
+  taskDepth,
+  updateIsOpened,
+  isCurrentTaskOpened,
+}) {
+  const defaultLeft = isCurrentTaskOpened ? 2 : 7;
 
   const openSubtasks = (e) => {
     e.stopPropagation();
-    updateIsOpened({ _id: task._id, isOpened: !isTaskOpened[task._id] });
+    updateIsOpened({ _id: taskId, isOpened: !isCurrentTaskOpened });
   };
 
   return (
-    <When condition={subtasks.length}>
-      <If condition={isTaskOpened[task._id]}>
+    <When condition={hasSubtasks}>
+      <If condition={isCurrentTaskOpened}>
         <Then>
           <div
             className={styles.arrowDown}
@@ -54,5 +53,34 @@ export default function SubtasksArrow({ task, arrow, taskDepth }) {
         </Else>
       </If>
     </When>
+  );
+}
+
+InnerSubtasksArrow = memo(
+  InnerSubtasksArrow,
+  (prevProps, nextProps) =>
+    prevProps.hasSubtasks == nextProps.hasSubtasks &&
+    prevProps.isCurrentTaskOpened == nextProps.isCurrentTaskOpened
+);
+
+export default function SubtasksArrow({
+  taskId,
+  hasSubtasks,
+  arrow,
+  taskDepth,
+}) {
+  const { updateIsOpened, isTaskOpened } = useContext(TasksContext);
+  const isCurrentTaskOpened = isTaskOpened[taskId];
+  return (
+    <InnerSubtasksArrow
+      {...{
+        taskId,
+        hasSubtasks,
+        arrow,
+        taskDepth,
+        updateIsOpened,
+        isCurrentTaskOpened,
+      }}
+    />
   );
 }

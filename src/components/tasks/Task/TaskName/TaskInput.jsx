@@ -1,5 +1,5 @@
 import styles from "@/styles/tasks.module.scss";
-import { useContext, useEffect, useState, useRef } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 
 import { TasksContext } from "@/src/context/TasksContext";
 
@@ -7,7 +7,7 @@ const taskOffsetLeft = 14;
 const paddingRight = 105;
 const taskWidth = 335;
 
-export default function TaskInput({
+function TaskInput({
   task,
   isUpdating,
   setUpdatingState,
@@ -87,3 +87,5 @@ export default function TaskInput({
     />
   );
 }
+
+export default TaskInput;

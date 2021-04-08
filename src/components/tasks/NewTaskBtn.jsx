@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, memo } from "react";
 import styles from "@/styles/tasks.module.scss";
 import { nanoid } from "nanoid";
 import { When } from "react-if";
@@ -9,17 +9,15 @@ import { ProjectsContext } from "@/src/context/ProjectsContext";
 const blueColor = "258EFA";
 const defaultTaskDuration = 7;
 
-export default function NewTaskBtn() {
-  const {
-    createTask,
-    tasksByProjectId,
-    setWhereEditNewTask,
-    editedTaskId,
-    setEditedTaskId,
-  } = useContext(TasksContext);
-
-  const { projectByQueryId, isUserOwnsProject } = useContext(ProjectsContext);
-
+function InnerNewTaskBtn({
+  createTask,
+  setWhereEditNewTask,
+  setEditedTaskId,
+  numOfTopLevelTasks,
+  editedTaskId,
+  idOfProjectByQueryId,
+  isUserOwnsProject,
+}) {
   const createNewTask = () => {
     const newTaskId = nanoid();
 
@@ -45,8 +43,6 @@ export default function NewTaskBtn() {
       59
     );
 
-    const topLevelTasks = tasksByProjectId.filter((task) => !task.root);
-
     createTask({
       _id: newTaskId,
       name: "",
@@ -54,9 +50,9 @@ export default function NewTaskBtn() {
       dateStart: currentDate,
       dateEnd: afterWeek,
       color: blueColor,
-      project: projectByQueryId._id,
+      project: idOfProjectByQueryId,
       root: "",
-      order: topLevelTasks.length,
+      order: numOfTopLevelTasks,
     });
   };
 
@@ -66,5 +62,43 @@ export default function NewTaskBtn() {
         + New Task
       </div>
     </When>
+  );
+}
+
+InnerNewTaskBtn = memo(
+  InnerNewTaskBtn,
+  (prevProps, nextProps) =>
+    prevProps.numOfTopLevelTasks == nextProps.numOfTopLevelTasks &&
+    prevProps.idOfProjectByQueryId == nextProps.idOfProjectByQueryId &&
+    prevProps.isUserOwnsProject == nextProps.isUserOwnsProject &&
+    prevProps.editedTaskId == nextProps.editedTaskId
+);
+
+export default function NewTaskBtn() {
+  const {
+    createTask,
+    tasksByProjectId,
+    setWhereEditNewTask,
+    editedTaskId,
+    setEditedTaskId,
+  } = useContext(TasksContext);
+
+  const { projectByQueryId, isUserOwnsProject } = useContext(ProjectsContext);
+
+  const numOfTopLevelTasks = tasksByProjectId.filter((task) => !task.root)
+    .length;
+
+  return (
+    <InnerNewTaskBtn
+      {...{
+        createTask,
+        setWhereEditNewTask,
+        setEditedTaskId,
+        numOfTopLevelTasks,
+        editedTaskId,
+        idOfProjectByQueryId: projectByQueryId._id,
+        isUserOwnsProject,
+      }}
+    />
   );
 }
