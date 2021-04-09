@@ -16,8 +16,6 @@ export default function RightStick({
   dateStart,
   dateEnd,
   setDateEnd,
-  maxOffsetRight,
-  minOffsetRight,
   taskWidth,
 }) {
   const { updateTask } = useContext(TasksContext);
@@ -69,12 +67,18 @@ export default function RightStick({
     const offset = clientX - lineRect.right;
     if (Number(lineStyles.width.slice(0, -2)) + offset <= dayWidth) {
       setDateEnd(dateStart);
-    } else if (offset >= maxOffsetRight || offset <= minOffsetRight) {
+    } else if (offset >= dayWidth || offset <= -dayWidth) {
+      let dateDiff;
+      if (offset >= dayWidth) {
+        dateDiff = Math.floor(offset / dayWidth);
+      } else {
+        dateDiff = Math.ceil(offset / dayWidth);
+      }
       setDateEnd(
         new Date(
           dateEnd.getFullYear(),
           dateEnd.getMonth(),
-          dateEnd.getDate() + (Math.floor(offset / dayWidth) + 1),
+          dateEnd.getDate() + dateDiff,
           23,
           59,
           59

@@ -17,8 +17,6 @@ export default function LeftStick({
   dateStart,
   setDateStart,
   dateEnd,
-  maxOffsetLeft,
-  minOffsetLeft,
   taskWidth,
 }) {
   const { updateTask } = useContext(TasksContext);
@@ -69,13 +67,20 @@ export default function LeftStick({
     const lineStyles = lineRef.current.style;
 
     const offset = clientX - lineRect.left;
+
     if (Number(lineStyles.width.slice(0, -2)) - offset <= dayWidth) {
       setDateStart(dateEnd);
-    } else if (offset >= maxOffsetLeft || offset <= minOffsetLeft) {
+    } else if (offset >= dayWidth || offset <= -dayWidth) {
+      let dateDiff;
+      if (offset >= dayWidth) {
+        dateDiff = Math.floor(offset / dayWidth);
+      } else {
+        dateDiff = Math.ceil(offset / dayWidth);
+      }
       const newDateStart = new Date(
         dateStart.getFullYear(),
         dateStart.getMonth(),
-        dateStart.getDate() + Math.floor(offset / dayWidth)
+        dateStart.getDate() + dateDiff
       );
       if (newDateStart < dateEnd) {
         setDateStart(newDateStart);

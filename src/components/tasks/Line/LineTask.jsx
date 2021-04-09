@@ -18,12 +18,6 @@ export default function LineTask({ task, calendarStartDate }) {
 
   const views = ["Day", "Week", "Month"];
   const dayWidth = [55, 120 / 7, 160 / 30];
-  const minOffsetRight = [-70, -5, 0];
-  const maxOffsetRight = [15, 5, 0];
-  const minOffsetLeft = [70, 5, 0];
-  const maxOffsetLeft = [-15, -5, 0];
-  const minOffsetMove = [65, 5, 0];
-  const maxOffsetMove = [-40, -5, 0];
 
   const lineRef = useRef(null);
   const inputRef = useRef(null);
@@ -188,8 +182,6 @@ export default function LineTask({ task, calendarStartDate }) {
           dateStart={dateStart}
           setDateStart={setDateStart}
           dateEnd={dateEnd}
-          maxOffsetLeft={maxOffsetLeft[views.indexOf(view)]}
-          minOffsetLeft={minOffsetLeft[views.indexOf(view)]}
           view={view}
           taskWidth={taskWidth}
         />
@@ -204,8 +196,6 @@ export default function LineTask({ task, calendarStartDate }) {
           setDateStart={setDateStart}
           dateEnd={dateEnd}
           setDateEnd={setDateEnd}
-          maxOffsetMove={maxOffsetMove[views.indexOf(view)]}
-          minOffsetMove={minOffsetMove[views.indexOf(view)]}
           taskWidth={taskWidth}
           inputRef={inputRef}
         >
@@ -226,8 +216,6 @@ export default function LineTask({ task, calendarStartDate }) {
           dateStart={dateStart}
           dateEnd={dateEnd}
           setDateEnd={setDateEnd}
-          maxOffsetRight={maxOffsetRight[views.indexOf(view)]}
-          minOffsetRight={minOffsetRight[views.indexOf(view)]}
           taskWidth={taskWidth}
         />
       </div>

@@ -17,8 +17,6 @@ export default function CenterArea({
   setDateStart,
   dateEnd,
   setDateEnd,
-  maxOffsetMove,
-  minOffsetMove,
   taskWidth,
   inputRef,
   children,
@@ -77,19 +75,25 @@ export default function CenterArea({
     const offset =
       clientX - (lineRect.right - lineRect.width / 2) + offsetFromCenter;
 
-    if (offset >= maxOffsetMove || offset <= minOffsetMove) {
+    if (offset >= dayWidth || offset <= -dayWidth) {
+      let dateDiff;
+      if (offset >= dayWidth) {
+        dateDiff = Math.floor(offset / dayWidth);
+      } else {
+        dateDiff = Math.ceil(offset / dayWidth);
+      }
       setDateStart(
         new Date(
           dateStart.getFullYear(),
           dateStart.getMonth(),
-          dateStart.getDate() + (Math.floor(offset / dayWidth) + 1)
+          dateStart.getDate() + dateDiff
         )
       );
       setDateEnd(
         new Date(
           dateEnd.getFullYear(),
           dateEnd.getMonth(),
-          dateEnd.getDate() + (Math.floor(offset / dayWidth) + 1),
+          dateEnd.getDate() + dateDiff,
           23,
           59,
           59

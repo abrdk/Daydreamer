@@ -1,6 +1,8 @@
 import useEvent from "@react-hook/event";
 import useMouse from "@react-hook/mouse-position";
 
+const sidebarWidth = 335;
+
 export default function ScrollBinder() {
   const mouse = useMouse(document.querySelector("#__next"), {
     enterDelay: 100,
@@ -8,7 +10,7 @@ export default function ScrollBinder() {
   });
 
   useEvent(document.querySelector(".Tasks-Scroller"), "scroll", (e) => {
-    if (mouse.clientX <= 335) {
+    if (mouse.clientX <= sidebarWidth) {
       const lineScroller = document.querySelector(".LineTasks-Scroller");
       lineScroller.scrollTo(
         0,
@@ -18,7 +20,7 @@ export default function ScrollBinder() {
   });
 
   useEvent(document.querySelector(".LineTasks-Scroller"), "scroll", (e) => {
-    if (mouse.clientX > 335) {
+    if (mouse.clientX > sidebarWidth) {
       const tasksScroller = document.querySelector(".Tasks-Scroller");
       tasksScroller.scrollTo(
         0,

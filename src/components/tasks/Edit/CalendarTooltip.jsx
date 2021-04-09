@@ -164,7 +164,6 @@ function InnerCalendarTooltip({ task, isUserOwnsProject, updateTask }) {
             date.getDate()
           );
           setDateStart(newDateStart);
-          updateTask({ ...task, dateStart: newDateStart });
         } else {
           const newDateStart = new Date(
             dateEnd.getFullYear(),
@@ -172,7 +171,6 @@ function InnerCalendarTooltip({ task, isUserOwnsProject, updateTask }) {
             dateEnd.getDate()
           );
           setDateStart(newDateStart);
-          updateTask({ ...task, dateStart: newDateStart });
         }
       } else if (isMouseDown && isEndCalendarOpened) {
         if (date.getTime() - dateStart.getTime() > 0) {
@@ -183,7 +181,6 @@ function InnerCalendarTooltip({ task, isUserOwnsProject, updateTask }) {
           );
           newDateEnd.setSeconds(60 * 60 * 24 - 1);
           setDateEnd(newDateEnd);
-          updateTask({ ...task, dateEnd: newDateEnd });
         } else {
           const newDateEnd = new Date(
             dateStart.getFullYear(),
@@ -194,7 +191,6 @@ function InnerCalendarTooltip({ task, isUserOwnsProject, updateTask }) {
             59
           );
           setDateEnd(newDateEnd);
-          updateTask({ ...task, dateEnd: newDateEnd });
         }
       }
     };
