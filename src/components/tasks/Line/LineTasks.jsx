@@ -8,7 +8,7 @@ import ScrollBinder from "@/src/components/tasks/Line/ScrollBinder";
 import { TasksContext } from "@/src/context/TasksContext";
 import { OptionsContext } from "@/src/context/OptionsContext";
 
-export default function LineTasks({ calendarStartDate }) {
+export default function LineTasks({ calendarStartDate, calendarEndDate }) {
   const { editedTaskId } = useContext(TasksContext);
   const { view } = useContext(OptionsContext);
 
@@ -20,7 +20,7 @@ export default function LineTasks({ calendarStartDate }) {
       currentCalendarWidth += el.offsetWidth;
     });
     setCalendarWidth(currentCalendarWidth);
-  }, [view]);
+  }, [view, calendarStartDate, calendarEndDate]);
 
   return (
     <div
@@ -58,20 +58,6 @@ export default function LineTasks({ calendarStartDate }) {
                 {...restProps}
                 ref={elementRef}
                 className="ScrollbarsCustom-Scroller LineTasks-Scroller"
-                style={{ overflow: "visible" }}
-              />
-            );
-          },
-        }}
-        wrapperProps={{
-          renderer: (props) => {
-            const { elementRef, ...restProps } = props;
-            return (
-              <div
-                {...restProps}
-                ref={elementRef}
-                className="ScrollbarsCustom-Wrapper"
-                style={{ overflow: "visible" }}
               />
             );
           },

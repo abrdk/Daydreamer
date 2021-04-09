@@ -50,6 +50,7 @@ function TaskInput({
       (whereEditNewTask == "menu" || whereEditNewTask == "")
     ) {
       inputRef.current.focus();
+      setNameState(task.name);
       setWhereEditNewTask("");
     }
   };
@@ -67,7 +68,7 @@ function TaskInput({
 
   useEffect(() => {
     focusOnInput();
-  }, [isUpdating, inputRef.current]);
+  }, [isUpdating, inputRef.current, task.name]);
 
   useEffect(() => {
     setInputWidth(getInputWidth());

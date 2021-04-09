@@ -135,7 +135,10 @@ export default function CalendarMonth({
       setCalendarEndDate={setCalendarEndDate}
     >
       {monthsWithLabelsComponents}
-      <LineTasks calendarStartDate={calendarStartDate} />
+      <LineTasks
+        calendarStartDate={calendarStartDate}
+        calendarEndDate={calendarEndDate}
+      />
     </ScrollbarMonth>
   );
 }

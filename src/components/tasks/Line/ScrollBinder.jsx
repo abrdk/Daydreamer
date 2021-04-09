@@ -1,9 +1,10 @@
 import useEvent from "@react-hook/event";
 import useMouse from "@react-hook/mouse-position";
+import { memo } from "react";
 
 const sidebarWidth = 335;
 
-export default function ScrollBinder() {
+function ScrollBinder() {
   const mouse = useMouse(document.querySelector("#__next"), {
     enterDelay: 100,
     leaveDelay: 100,
@@ -32,3 +33,5 @@ export default function ScrollBinder() {
 
   return null;
 }
+
+export default memo(ScrollBinder);

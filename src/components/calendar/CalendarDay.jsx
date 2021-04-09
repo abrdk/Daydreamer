@@ -179,7 +179,10 @@ export default function CalendarDay({
           defaultScrollLeft={defaultScrollLeft}
         >
           {daysWithLabelsComponents}
-          <LineTasks calendarStartDate={calendarStartDate} />
+          <LineTasks
+            calendarStartDate={calendarStartDate}
+            calendarEndDate={calendarEndDate}
+          />
         </ScrollbarDay>
       </Else>
     </If>

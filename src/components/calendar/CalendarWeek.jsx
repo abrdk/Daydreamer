@@ -209,6 +209,7 @@ export default function CalendarWeek({
             1 - ((calendarStartDate.getDay() + 6) % 7)
           )
         }
+        calendarEndDate={calendarEndDate}
       />
     </ScrollbarWeek>
   );
