@@ -72,16 +72,9 @@ export function ProjectsProvider(props) {
     } catch (e) {}
   };
 
-  const { data: projectByQueryId, error: projectByQueryIdError } = useSWR(
-    router.query.id && isUserOwnsProject === false
-      ? ["/projects/show", router.query.id]
-      : null,
-    loadProject
-  );
-
   const isUserOwnsProject = () => {
     if (!user) {
-      return undefined;
+      return false;
     }
     if (currentProject) {
       return currentProject.owner == user._id;
@@ -89,8 +82,15 @@ export function ProjectsProvider(props) {
     if (projectByQueryId) {
       return projectByQueryId.owner == user._id;
     }
-    return undefined;
+    return false;
   };
+
+  const { data: projectByQueryId, error: projectByQueryIdError } = useSWR(
+    router.query.id && isUserOwnsProject() === false
+      ? ["/projects/show", router.query.id]
+      : null,
+    loadProject
+  );
 
   return (
     <ProjectsContext.Provider

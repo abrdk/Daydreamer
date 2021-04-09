@@ -20,6 +20,7 @@ function InnerSubtaskTooltip({
   createTask,
   setWhereEditNewTask,
   setEditedTaskId,
+  isCurrentTaskOpened,
 }) {
   const createSubtask = () => {
     const order = numOfSubtasks;
@@ -48,12 +49,12 @@ function InnerSubtaskTooltip({
         <div className={calendarStyles.openSubtasksWrapper}>
           <div
             className={calendarStyles.openSubtasksIcon}
-            onClick={() =>
+            onClick={() => {
               updateIsOpened({
                 _id: task._id,
-                isOpened: true,
-              })
-            }
+                isOpened: !isCurrentTaskOpened,
+              });
+            }}
           >
             <ArrowDown />
           </div>
@@ -99,7 +100,8 @@ InnerSubtaskTooltip = memo(InnerSubtaskTooltip, (prevProps, nextProps) => {
     prevProps.globalCursor == nextProps.globalCursor &&
     prevProps.isUserOwnsProject == nextProps.isUserOwnsProject &&
     prevProps.editedTaskId == nextProps.editedTaskId &&
-    prevProps.numOfSubtasks == nextProps.numOfSubtasks
+    prevProps.numOfSubtasks == nextProps.numOfSubtasks &&
+    prevProps.isCurrentTaskOpened == nextProps.isCurrentTaskOpened
   );
 });
 
@@ -111,6 +113,7 @@ export default function SubtaskTooltip({ task, globalCursor }) {
     setWhereEditNewTask,
     editedTaskId,
     setEditedTaskId,
+    isTaskOpened,
   } = useContext(TasksContext);
   const { isUserOwnsProject } = useContext(ProjectsContext);
 
@@ -118,6 +121,7 @@ export default function SubtaskTooltip({ task, globalCursor }) {
     .filter((t) => t.root == task._id)
     .sort((task1, task2) => task1.order > task2.order);
 
+  const isCurrentTaskOpened = isTaskOpened[task._id];
   return (
     <InnerSubtaskTooltip
       {...{
@@ -130,6 +134,7 @@ export default function SubtaskTooltip({ task, globalCursor }) {
         createTask,
         setWhereEditNewTask,
         setEditedTaskId,
+        isCurrentTaskOpened,
       }}
     />
   );

@@ -25,7 +25,7 @@ export function TasksProvider(props) {
   );
 
   let currentTasks = null;
-  if (tasks) {
+  if (tasks && isUserOwnsProject !== false) {
     currentTasks = tasks.filter((t) => t.project == router.query.id);
   }
 

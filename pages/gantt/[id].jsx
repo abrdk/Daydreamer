@@ -20,7 +20,14 @@ function InnerGantt({
   hasTasksByProjectId,
 }) {
   const [modal, setModal] = useState(false);
-
+  // console.log({
+  //   isUserLoaded,
+  //   isProjectsLoaded,
+  //   isTasksLoaded,
+  //   hasProjectByQueryId,
+  //   hasTasksByProjectId,
+  // });
+  // console.log();
   return (
     <>
       <Head>
@@ -56,7 +63,17 @@ export default function Gantt() {
 
   const hasProjectByQueryId = !!projectByQueryId;
   const hasTasksByProjectId = !!tasksByProjectId;
+  // console.log({
+  //   projectByQueryId,
+  //   tasksByProjectId,
+  // });
+  // console.log();
 
+  // console.log({
+  //   hasProjectByQueryId,
+  //   hasTasksByProjectId,
+  // });
+  // console.log();
   return (
     <InnerGantt
       {...{
