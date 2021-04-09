@@ -58,6 +58,20 @@ export default function LineTasks({ calendarStartDate }) {
                 {...restProps}
                 ref={elementRef}
                 className="ScrollbarsCustom-Scroller LineTasks-Scroller"
+                style={{ overflow: "visible" }}
+              />
+            );
+          },
+        }}
+        wrapperProps={{
+          renderer: (props) => {
+            const { elementRef, ...restProps } = props;
+            return (
+              <div
+                {...restProps}
+                ref={elementRef}
+                className="ScrollbarsCustom-Wrapper"
+                style={{ overflow: "visible" }}
               />
             );
           },

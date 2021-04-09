@@ -7,11 +7,11 @@ import CalendarMonth from "@/src/components/calendar/CalendarMonth";
 
 import { OptionsContext } from "@/src/context/OptionsContext";
 
-export default function Calendar({ setMenu, isDefault }) {
+export default function Calendar({ isDefault }) {
   const { view } = useContext(OptionsContext);
 
   const [cursor, setCursor] = useState(null);
-  const [isDraggable, setDraggable] = useState(false);
+  const [isDraggable, setIsDraggable] = useState(false);
 
   const startDragHandler = () => {
     setCursor("pointer");
@@ -20,7 +20,7 @@ export default function Calendar({ setMenu, isDefault }) {
   const removeDragHandler = () => {
     setCursor(null);
     document.body.style.cursor = "default";
-    setDraggable(false);
+    setIsDraggable(false);
   };
 
   useEvent(document, "keydown", (e) => {
@@ -47,7 +47,7 @@ export default function Calendar({ setMenu, isDefault }) {
         cursor={cursor}
         setCursor={setCursor}
         isDraggable={isDraggable}
-        setDraggable={setDraggable}
+        setDraggable={setIsDraggable}
         isDefault={isDefault}
       />
     );
@@ -58,7 +58,7 @@ export default function Calendar({ setMenu, isDefault }) {
         cursor={cursor}
         setCursor={setCursor}
         isDraggable={isDraggable}
-        setDraggable={setDraggable}
+        setDraggable={setIsDraggable}
       />
     );
   }
@@ -68,7 +68,7 @@ export default function Calendar({ setMenu, isDefault }) {
         cursor={cursor}
         setCursor={setCursor}
         isDraggable={isDraggable}
-        setDraggable={setDraggable}
+        setDraggable={setIsDraggable}
       />
     );
   }

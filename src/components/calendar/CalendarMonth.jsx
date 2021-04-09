@@ -25,7 +25,6 @@ export default function CalendarMonth({
   setCursor,
   isDraggable,
   setDraggable,
-  setMenu,
 }) {
   const daysInMonth = (month, year) => {
     return new Date(year, month + 1, 0).getDate();
