@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, memo } from "react";
 import useEvent from "@react-hook/event";
 
 import CalendarDay from "@/src/components/calendar/CalendarDay";
@@ -7,9 +7,7 @@ import CalendarMonth from "@/src/components/calendar/CalendarMonth";
 
 import { OptionsContext } from "@/src/context/OptionsContext";
 
-export default function Calendar({ isDefault }) {
-  const { view } = useContext(OptionsContext);
-
+function InnerCalendar({ isDefault, view }) {
   const [cursor, setCursor] = useState(null);
   const [isDraggable, setIsDraggable] = useState(false);
 
@@ -73,4 +71,11 @@ export default function Calendar({ isDefault }) {
     );
   }
   return <></>;
+}
+
+InnerCalendar = memo(InnerCalendar);
+
+export default function Calendar(props) {
+  const { view } = useContext(OptionsContext);
+  return <InnerCalendar {...{ ...props, view }} />;
 }

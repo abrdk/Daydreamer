@@ -1,6 +1,6 @@
 import styles from "@/styles/calendar.module.scss";
 import { Else, If, Then, When } from "react-if";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, memo } from "react";
 
 import LineTasks from "@/src/components/tasks/Line/LineTasks";
 import ScrollbarDay from "@/src/components/calendar/CalendarDay/ScrollbarDay";
@@ -21,7 +21,7 @@ const monthNames = [
   "December",
 ];
 
-export default function CalendarDay({
+function CalendarDay({
   cursor,
   setCursor,
   isDraggable,
@@ -188,3 +188,12 @@ export default function CalendarDay({
     </If>
   );
 }
+
+CalendarDay = memo(
+  CalendarDay,
+  (prevProps, nextProps) =>
+    prevProps.cursor == nextProps.cursor &&
+    prevProps.isDraggable == nextProps.isDraggable
+);
+
+export default CalendarDay;

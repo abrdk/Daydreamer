@@ -1,13 +1,13 @@
 import calendarStyles from "@/styles/calendar.module.scss";
 import { When } from "react-if";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, memo } from "react";
 import useEvent from "@react-hook/event";
 
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 import { TasksContext } from "@/src/context/TasksContext";
 import { OptionsContext } from "@/src/context/OptionsContext";
 
-export default function LeftStick({
+function InnerLeftStick({
   task,
   isResizeLeft,
   setIsResizeLeft,
@@ -18,11 +18,10 @@ export default function LeftStick({
   dateEnd,
   taskWidth,
   globalCursor,
+  updateTask,
+  isUserOwnsProject,
+  view,
 }) {
-  const { updateTask } = useContext(TasksContext);
-  const { isUserOwnsProject } = useContext(ProjectsContext);
-  const { view } = useContext(OptionsContext);
-
   const [scrollLeft, setScrollLeft] = useState(undefined);
 
   const startResizeLeft = () => {
@@ -123,5 +122,32 @@ export default function LeftStick({
       </When>
       <div className={calendarStyles.stick}></div>
     </When>
+  );
+}
+
+InnerLeftStick = memo(InnerLeftStick, (prevProps, nextProps) => {
+  for (let key in prevProps.task) {
+    if (prevProps.task[key] != nextProps.task[key]) {
+      return false;
+    }
+  }
+  return (
+    prevProps.globalCursor == nextProps.globalCursor &&
+    prevProps.isUserOwnsProject == nextProps.isUserOwnsProject &&
+    prevProps.view == nextProps.view &&
+    prevProps.isResizeLeft == nextProps.isResizeLeft &&
+    prevProps.dayWidth == nextProps.dayWidth &&
+    prevProps.dateStart == nextProps.dateStart &&
+    prevProps.dateEnd == nextProps.dateEnd &&
+    prevProps.taskWidth == nextProps.taskWidth
+  );
+});
+
+export default function LeftStick(props) {
+  const { updateTask } = useContext(TasksContext);
+  const { isUserOwnsProject } = useContext(ProjectsContext);
+  const { view } = useContext(OptionsContext);
+  return (
+    <InnerLeftStick {...{ ...props, updateTask, isUserOwnsProject, view }} />
   );
 }

@@ -1,6 +1,6 @@
 import calendarStyles from "@/styles/calendar.module.scss";
 import { When } from "react-if";
-import { useEffect, useState, useRef, useContext } from "react";
+import { useEffect, useState, useRef, useContext, memo } from "react";
 import useEvent from "@react-hook/event";
 
 import LineTasksRoot from "@/src/components/tasks/Line/LineTasksRoot";
@@ -17,9 +17,7 @@ import { OptionsContext } from "@/src/context/OptionsContext";
 const views = ["Day", "Week", "Month"];
 const dayWidth = [55, 120 / 7, 160 / 30];
 
-export default function LineTask({ task, calendarStartDate }) {
-  const { view } = useContext(OptionsContext);
-
+function InnerLineTask({ task, calendarStartDate, view }) {
   const lineRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -182,6 +180,7 @@ export default function LineTask({ task, calendarStartDate }) {
           dateStart={dateStart}
           dateEnd={dateEnd}
           taskWidth={taskWidth}
+          view={view}
         />
 
         <SubtaskTooltip task={task} globalCursor={globalCursor} />
@@ -241,4 +240,21 @@ export default function LineTask({ task, calendarStartDate }) {
       </When>
     </>
   );
+}
+
+InnerLineTask = memo(InnerLineTask, (prevProps, nextProps) => {
+  for (let key in prevProps.task) {
+    if (prevProps.task[key] != nextProps.task[key]) {
+      return false;
+    }
+  }
+  return (
+    prevProps.view == nextProps.view &&
+    prevProps.calendarStartDate == nextProps.calendarStartDate
+  );
+});
+
+export default function LineTask(props) {
+  const { view } = useContext(OptionsContext);
+  return <InnerLineTask {...{ ...props, view }} />;
 }

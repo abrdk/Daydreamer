@@ -1,6 +1,6 @@
 import styles from "@/styles/calendar.module.scss";
 import Scrollbar from "react-scrollbars-custom";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, memo } from "react";
 
 import LineTasksRoot from "@/src/components/tasks/Line/LineTasksRoot";
 import ScrollBinder from "@/src/components/tasks/Line/ScrollBinder";
@@ -8,10 +8,12 @@ import ScrollBinder from "@/src/components/tasks/Line/ScrollBinder";
 import { TasksContext } from "@/src/context/TasksContext";
 import { OptionsContext } from "@/src/context/OptionsContext";
 
-export default function LineTasks({ calendarStartDate, calendarEndDate }) {
-  const { editedTaskId } = useContext(TasksContext);
-  const { view } = useContext(OptionsContext);
-
+function InnerLineTasks({
+  calendarStartDate,
+  calendarEndDate,
+  editedTaskId,
+  view,
+}) {
   const [calendarWidth, setCalendarWidth] = useState(0);
 
   useEffect(() => {
@@ -70,4 +72,13 @@ export default function LineTasks({ calendarStartDate, calendarEndDate }) {
       </Scrollbar>
     </div>
   );
+}
+
+InnerLineTasks = memo(InnerLineTasks);
+
+export default function LineTasks(props) {
+  const { editedTaskId } = useContext(TasksContext);
+  const { view } = useContext(OptionsContext);
+
+  return <InnerLineTasks {...{ ...props, editedTaskId, view }} />;
 }

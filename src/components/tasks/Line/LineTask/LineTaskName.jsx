@@ -1,17 +1,21 @@
 import calendarStyles from "@/styles/calendar.module.scss";
 import { When } from "react-if";
-import { useEffect, useState, useRef, useContext } from "react";
+import { useEffect, useState, useRef, useContext, memo } from "react";
 import Truncate from "react-truncate";
 
 import { TasksContext } from "@/src/context/TasksContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 
-export default function LineTaskName({ task, textWidth, taskWidth, inputRef }) {
-  const { updateTask, whereEditNewTask, setWhereEditNewTask } = useContext(
-    TasksContext
-  );
-  const { isUserOwnsProject } = useContext(ProjectsContext);
-
+function InnerLineTaskName({
+  task,
+  textWidth,
+  taskWidth,
+  inputRef,
+  updateTask,
+  whereEditNewTask,
+  setWhereEditNewTask,
+  isUserOwnsProject,
+}) {
   const [isUpdating, setIsUpdating] = useState(false);
   const [nameState, setNameState] = useState(task.name);
   const [inputWidth, setInputWidth] = useState("100vw");
@@ -107,5 +111,37 @@ export default function LineTaskName({ task, textWidth, taskWidth, inputRef }) {
         </div>
       </When>
     </>
+  );
+}
+
+InnerLineTaskName = memo(InnerLineTaskName, (prevProps, nextProps) => {
+  for (let key in prevProps.task) {
+    if (prevProps.task[key] != nextProps.task[key]) {
+      return false;
+    }
+  }
+  return (
+    prevProps.textWidth == nextProps.textWidth &&
+    prevProps.isUserOwnsProject == nextProps.isUserOwnsProject &&
+    prevProps.whereEditNewTask == nextProps.whereEditNewTask &&
+    prevProps.taskWidth == nextProps.taskWidth
+  );
+});
+
+export default function LineTaskName(props) {
+  const { updateTask, whereEditNewTask, setWhereEditNewTask } = useContext(
+    TasksContext
+  );
+  const { isUserOwnsProject } = useContext(ProjectsContext);
+  return (
+    <InnerLineTaskName
+      {...{
+        ...props,
+        updateTask,
+        whereEditNewTask,
+        setWhereEditNewTask,
+        isUserOwnsProject,
+      }}
+    />
   );
 }

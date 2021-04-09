@@ -1,12 +1,12 @@
 import calendarStyles from "@/styles/calendar.module.scss";
 import { When } from "react-if";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, memo } from "react";
 import useEvent from "@react-hook/event";
 
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 import { TasksContext } from "@/src/context/TasksContext";
 
-export default function RightStick({
+function InnerRightStick({
   task,
   isResizeRight,
   setIsResizeRight,
@@ -17,10 +17,9 @@ export default function RightStick({
   setDateEnd,
   taskWidth,
   globalCursor,
+  updateTask,
+  isUserOwnsProject,
 }) {
-  const { updateTask } = useContext(TasksContext);
-  const { isUserOwnsProject } = useContext(ProjectsContext);
-
   const [scrollLeft, setScrollLeft] = useState(undefined);
 
   const startResizeRight = () => {
@@ -124,4 +123,27 @@ export default function RightStick({
       </When>
     </>
   );
+}
+
+InnerRightStick = memo(InnerRightStick, (prevProps, nextProps) => {
+  for (let key in prevProps.task) {
+    if (prevProps.task[key] != nextProps.task[key]) {
+      return false;
+    }
+  }
+  return (
+    prevProps.globalCursor == nextProps.globalCursor &&
+    prevProps.isUserOwnsProject == nextProps.isUserOwnsProject &&
+    prevProps.isResizeRight == nextProps.isResizeRight &&
+    prevProps.dayWidth == nextProps.dayWidth &&
+    prevProps.dateStart == nextProps.dateStart &&
+    prevProps.dateEnd == nextProps.dateEnd &&
+    prevProps.taskWidth == nextProps.taskWidth
+  );
+});
+
+export default function RightStick(props) {
+  const { updateTask } = useContext(TasksContext);
+  const { isUserOwnsProject } = useContext(ProjectsContext);
+  return <InnerRightStick {...{ ...props, updateTask, isUserOwnsProject }} />;
 }
