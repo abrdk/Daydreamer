@@ -94,22 +94,22 @@ export function TasksProvider(props) {
       "258EFA",
     ];
     const datesStart = [
-      new Date().setDate(new Date().getDate() - 6),
-      new Date().setDate(new Date().getDate() - 1),
-      new Date().setDate(new Date().getDate() - 3),
-      new Date().setDate(new Date().getDate() + 6),
-      new Date().setDate(new Date().getDate() - 2),
+      new Date(new Date().setDate(new Date().getDate() - 6)),
+      new Date(new Date().setDate(new Date().getDate() - 1)),
+      new Date(new Date().setDate(new Date().getDate() - 3)),
+      new Date(new Date().setDate(new Date().getDate() + 6)),
+      new Date(new Date().setDate(new Date().getDate() - 2)),
       new Date(),
-      new Date().setDate(new Date().getDate() + 3),
+      new Date(new Date().setDate(new Date().getDate() + 3)),
     ];
     const datesEnd = [
       new Date(),
-      new Date().setDate(new Date().getDate() + 5),
-      new Date().setDate(new Date().getDate() - 1),
-      new Date().setDate(new Date().getDate() + 13),
-      new Date().setDate(new Date().getDate() + 7),
-      new Date().setDate(new Date().getDate() + 3),
-      new Date().setDate(new Date().getDate() + 8),
+      new Date(new Date().setDate(new Date().getDate() + 5)),
+      new Date(new Date().setDate(new Date().getDate() - 1)),
+      new Date(new Date().setDate(new Date().getDate() + 13)),
+      new Date(new Date().setDate(new Date().getDate() + 7)),
+      new Date(new Date().setDate(new Date().getDate() + 3)),
+      new Date(new Date().setDate(new Date().getDate() + 8)),
     ];
 
     const _ids = [...Array(7).keys()].map(() => nanoid());
@@ -168,6 +168,9 @@ export function TasksProvider(props) {
   const updateIsOpened = ({ _id, isOpened }) => {
     setIsTaskOpened((isTaskOpened) => ({ ...isTaskOpened, [_id]: isOpened }));
   };
+
+  console.log("tasks", tasks);
+  console.log();
 
   return (
     <TasksContext.Provider

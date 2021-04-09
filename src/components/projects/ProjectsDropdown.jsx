@@ -7,12 +7,15 @@ import CurrentOption from "@/src/components/projects/ProjectsDropdown/CurrentOpt
 
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 
-function InnerProjectsDropdown({ projects }) {
+function InnerProjectsDropdown({ projects, isUserOwnsProject }) {
   const [isDropdownOpened, setIsDropdownOpened] = useState(false);
 
-  const projectsOptions = projects.map((project, i) => (
-    <ProjectOption project={project} projectIndex={i} key={project._id} />
-  ));
+  let projectsOptions = [];
+  if (isUserOwnsProject) {
+    projectsOptions = projects.map((project, i) => (
+      <ProjectOption project={project} projectIndex={i} key={project._id} />
+    ));
+  }
 
   useEvent(document, "keydown", (e) => {
     if (e.code == "Enter") {
@@ -41,7 +44,7 @@ function InnerProjectsDropdown({ projects }) {
 InnerProjectsDropdown = memo(InnerProjectsDropdown);
 
 export default function ProjectsDropdown() {
-  const { projects } = useContext(ProjectsContext);
+  const { projects, isUserOwnsProject } = useContext(ProjectsContext);
 
-  return <InnerProjectsDropdown {...{ projects }} />;
+  return <InnerProjectsDropdown {...{ projects, isUserOwnsProject }} />;
 }

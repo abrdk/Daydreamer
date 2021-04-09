@@ -65,9 +65,12 @@ export default function CurrentOption(props) {
   );
 
   const projectByQueryIdName = projectByQueryId.name;
-  const currentProjectIndex = projects.findIndex(
-    (p) => p._id == projectByQueryId._id
-  );
+  let currentProjectIndex = 0;
+  if (isUserOwnsProject) {
+    currentProjectIndex = projects.findIndex(
+      (p) => p._id == projectByQueryId._id
+    );
+  }
   return (
     <InnerCurrentOption
       {...{
