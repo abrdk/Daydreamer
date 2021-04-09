@@ -63,21 +63,13 @@ InnerSubtasksArrow = memo(
     prevProps.isCurrentTaskOpened == nextProps.isCurrentTaskOpened
 );
 
-export default function SubtasksArrow({
-  taskId,
-  hasSubtasks,
-  arrow,
-  taskDepth,
-}) {
+export default function SubtasksArrow(props) {
   const { updateIsOpened, isTaskOpened } = useContext(TasksContext);
-  const isCurrentTaskOpened = isTaskOpened[taskId];
+  const isCurrentTaskOpened = isTaskOpened[props.taskId];
   return (
     <InnerSubtasksArrow
       {...{
-        taskId,
-        hasSubtasks,
-        arrow,
-        taskDepth,
+        ...props,
         updateIsOpened,
         isCurrentTaskOpened,
       }}

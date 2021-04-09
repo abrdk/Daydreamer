@@ -1,24 +1,53 @@
-import { useState, useRef, memo } from "react";
+import { useState, useRef, memo, useContext } from "react";
+import styles from "@/styles/projectsDropdown.module.scss";
+import { useRouter } from "next/router";
 
 import DeleteProjectIcon from "@/src/components/projects/ProjectOption/DeleteProjectIcon";
-import OptionWrapper from "@/src/components/projects/ProjectOption/OptionWrapper";
 import OptionName from "@/src/components/projects/ProjectOption/OptionName";
 import OptionPencil from "@/src/components/projects/ProjectOption/OptionPencil";
 
-function ProjectOption({ project, projectIndex }) {
-  const [isNameUpdating, setIsNameUpdating] = useState(!project.name);
+import { ProjectsContext } from "@/src/context/ProjectsContext";
 
+function InnerProjectOption({
+  project,
+  projectIndex,
+  updateProject,
+  projectByQueryId,
+}) {
+  const router = useRouter();
+
+  const [isNameUpdating, setIsNameUpdating] = useState(!project.name);
   const inputRef = useRef(null);
   const hiddenTextRef = useRef(null);
   const pencilIconRef = useRef(null);
   const trashIconRef = useRef(null);
 
+  const handleProjectSelect = (e) => {
+    if (
+      ![trashIconRef.current, pencilIconRef.current, inputRef.current].includes(
+        e.target
+      ) &&
+      project._id != router.query.id
+    ) {
+      const newCurrentProject = {
+        ...project,
+        isCurrent: true,
+      };
+      router.push(`/gantt/${project._id}`);
+      updateProject(newCurrentProject);
+      updateProject({
+        ...projectByQueryId,
+        isCurrent: false,
+      });
+    }
+  };
+
   return (
-    <OptionWrapper
-      project={project}
-      pencilIconRef={pencilIconRef}
-      inputRef={inputRef}
-      trashIconRef={trashIconRef}
+    <div
+      className={
+        project._id == router.query.id ? styles.optionSelected : styles.option
+      }
+      onClick={handleProjectSelect}
     >
       <OptionName
         project={project}
@@ -43,16 +72,26 @@ function ProjectOption({ project, projectIndex }) {
         project={project}
         projectIndex={projectIndex}
       />
-    </OptionWrapper>
+    </div>
   );
 }
 
-ProjectOption = memo(
-  ProjectOption,
-  (prevProps, nextProps) =>
-    prevProps.projectIndex == nextProps.projectIndex &&
-    prevProps.project.name == nextProps.project.name &&
-    prevProps.project.isCurrent == nextProps.project.isCurrent
-);
+InnerProjectOption = memo(InnerProjectOption, (prevProps, nextProps) => {
+  for (let key in prevProps.project) {
+    if (
+      prevProps.project[key] != nextProps.project[key] ||
+      prevProps.projectByQueryId[key] != nextProps.projectByQueryId[key]
+    ) {
+      return false;
+    }
+  }
+  return prevProps.projectIndex == nextProps.projectIndex;
+});
 
-export default ProjectOption;
+export default function ProjectOption(props) {
+  const { updateProject, projectByQueryId } = useContext(ProjectsContext);
+
+  return (
+    <InnerProjectOption {...{ ...props, updateProject, projectByQueryId }} />
+  );
+}

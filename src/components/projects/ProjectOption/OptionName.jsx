@@ -91,14 +91,17 @@ function InnerOptionName({
   );
 }
 
-InnerOptionName = memo(
-  InnerOptionName,
-  (prevProps, nextProps) =>
+InnerOptionName = memo(InnerOptionName, (prevProps, nextProps) => {
+  for (let key in prevProps.project) {
+    if (prevProps.project[key] != nextProps.project[key]) {
+      return false;
+    }
+  }
+  return (
     prevProps.projectIndex == nextProps.projectIndex &&
-    prevProps.project.name == nextProps.project.name &&
-    prevProps.project.isCurrent == nextProps.project.isCurrent &&
     prevProps.isNameUpdating == nextProps.isNameUpdating
-);
+  );
+});
 
 export default function OptionName(props) {
   const { updateProject } = useContext(ProjectsContext);

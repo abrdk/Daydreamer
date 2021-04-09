@@ -1,11 +1,9 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, memo } from "react";
 import styles from "@/styles/taskEdit.module.scss";
 
 import { TasksContext } from "@/src/context/TasksContext";
 
-export default function ColorPicker({ task }) {
-  const { updateTask } = useContext(TasksContext);
-
+function InnerColorPicker({ task, updateTask }) {
   const [editedColor, setEditedColor] = useState("");
 
   const updateColor = (color) => {
@@ -41,4 +39,18 @@ export default function ColorPicker({ task }) {
   ));
 
   return <div className={styles.colorsWrapper}>{colorsElements}</div>;
+}
+
+InnerColorPicker = memo(InnerColorPicker, (prevProps, nextProps) => {
+  for (let key in prevProps.task) {
+    if (prevProps.task[key] != nextProps.task[key]) {
+      return false;
+    }
+  }
+  return true;
+});
+
+export default function ColorPicker({ task }) {
+  const { updateTask } = useContext(TasksContext);
+  return <InnerColorPicker {...{ task, updateTask }} />;
 }

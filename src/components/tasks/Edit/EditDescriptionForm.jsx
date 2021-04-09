@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useRef } from "react";
+import { useContext, useState, useEffect, useRef, memo } from "react";
 import styles from "@/styles/taskEdit.module.scss";
 import Scrollbar from "react-scrollbars-custom";
 import usePrevious from "@react-hook/previous";
@@ -6,11 +6,7 @@ import usePrevious from "@react-hook/previous";
 import { TasksContext } from "@/src/context/TasksContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 
-export default function EditDescription({ task }) {
-  const { isUserOwnsProject } = useContext(ProjectsContext);
-
-  const { updateTask } = useContext(TasksContext);
-
+function InnerEditDescription({ task, isUserOwnsProject, updateTask }) {
   const fakeText = useRef(null);
   const textArea = useRef(null);
 
@@ -109,4 +105,20 @@ export default function EditDescription({ task }) {
       </label>
     </>
   );
+}
+
+InnerEditDescription = memo(InnerEditDescription, (prevProps, nextProps) => {
+  for (let key in prevProps.task) {
+    if (prevProps.task[key] != nextProps.task[key]) {
+      return false;
+    }
+  }
+  return prevProps.isUserOwnsProject == nextProps.isUserOwnsProject;
+});
+
+export default function EditDescription({ task }) {
+  const { isUserOwnsProject } = useContext(ProjectsContext);
+  const { updateTask } = useContext(TasksContext);
+
+  return <InnerEditDescription {...{ task, isUserOwnsProject, updateTask }} />;
 }

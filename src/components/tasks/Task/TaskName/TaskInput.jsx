@@ -73,6 +73,15 @@ function TaskInput({
     setInputWidth(getInputWidth());
   }, [nameState]);
 
+  useEffect(
+    () => () => {
+      if (!task.name) {
+        updateTask({ ...task, name: getDefaultName() });
+      }
+    },
+    [task.name]
+  );
+
   return (
     <input
       value={nameState}

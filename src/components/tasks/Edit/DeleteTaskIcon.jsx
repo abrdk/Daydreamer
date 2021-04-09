@@ -10,7 +10,6 @@ export default function TasksEdit({ task }) {
     tasksByProjectId,
     updateTask,
     deleteTask,
-    editedTaskId,
     setEditedTaskId,
   } = useContext(TasksContext);
 
@@ -21,7 +20,7 @@ export default function TasksEdit({ task }) {
       .forEach((t) => {
         updateTask({ ...t, order: t.order - 1 });
       });
-    deleteTask(editedTaskId);
+    deleteTask(task._id);
     setEditedTaskId("");
   };
 

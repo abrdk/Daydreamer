@@ -59,10 +59,7 @@ InnerCurrentOption = memo(
     prevProps.projectByQueryIdName == nextProps.projectByQueryIdName
 );
 
-export default function CurrentOption({
-  isDropdownOpened,
-  setIsDropdownOpened,
-}) {
+export default function CurrentOption(props) {
   const { projectByQueryId, isUserOwnsProject, projects } = useContext(
     ProjectsContext
   );
@@ -74,8 +71,7 @@ export default function CurrentOption({
   return (
     <InnerCurrentOption
       {...{
-        isDropdownOpened,
-        setIsDropdownOpened,
+        ...props,
         currentProjectIndex,
         isUserOwnsProject,
         projectByQueryIdName,

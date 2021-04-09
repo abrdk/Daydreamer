@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, memo } from "react";
 import styles from "@/styles/taskEdit.module.scss";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -26,11 +26,7 @@ const monthNames = [
 import { TasksContext } from "@/src/context/TasksContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 
-export default function CalendarTooltip({ task }) {
-  const { isUserOwnsProject } = useContext(ProjectsContext);
-
-  const { updateTask } = useContext(TasksContext);
-
+function InnerCalendarTooltip({ task, isUserOwnsProject, updateTask }) {
   const [dateStart, setDateStart] = useState(null);
   const [dateEnd, setDateEnd] = useState(null);
 
@@ -290,4 +286,19 @@ export default function CalendarTooltip({ task }) {
       />
     </div>
   );
+}
+
+InnerCalendarTooltip = memo(InnerCalendarTooltip, (prevProps, nextProps) => {
+  for (let key in prevProps.task) {
+    if (prevProps.task[key] != nextProps.task[key]) {
+      return false;
+    }
+  }
+  return prevProps.isUserOwnsProject == nextProps.isUserOwnsProject;
+});
+
+export default function CalendarTooltip({ task }) {
+  const { isUserOwnsProject } = useContext(ProjectsContext);
+  const { updateTask } = useContext(TasksContext);
+  return <InnerCalendarTooltip {...{ task, isUserOwnsProject, updateTask }} />;
 }

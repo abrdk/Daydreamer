@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext, memo } from "react";
 import styles from "@/styles/taskEdit.module.scss";
 import { When } from "react-if";
 
@@ -14,20 +14,13 @@ import { TasksContext } from "@/src/context/TasksContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 import { OptionsContext } from "@/src/context/OptionsContext";
 
-function TaskEdit() {
-  const { isUserOwnsProject } = useContext(ProjectsContext);
-  const { isMenuOpened } = useContext(OptionsContext);
-
-  const { tasksByProjectId, editedTaskId, setEditedTaskId } = useContext(
-    TasksContext
-  );
-
-  const task = useMemo(
-    () => tasksByProjectId.find((t) => t._id == editedTaskId),
-    [editedTaskId]
-  );
-
-  if (task) {
+function InnerTaskEdit({
+  task,
+  isUserOwnsProject,
+  isMenuOpened,
+  setEditedTaskId,
+}) {
+  if (task && Object.keys(task).length) {
     return (
       <div
         className={styles.wrapper}
@@ -62,4 +55,41 @@ function TaskEdit() {
   }
 }
 
-export default React.memo(TaskEdit);
+InnerTaskEdit = memo(InnerTaskEdit, (prevProps, nextProps) => {
+  if (
+    Object.keys(prevProps.task).length != Object.keys(nextProps.task).length
+  ) {
+    return false;
+  }
+  for (let key in prevProps.task) {
+    if (prevProps.task[key] != nextProps.task[key]) {
+      return false;
+    }
+  }
+  return (
+    prevProps.isUserOwnsProject == nextProps.isUserOwnsProject &&
+    prevProps.isMenuOpened == nextProps.isMenuOpened
+  );
+});
+
+export default function TaskEdit() {
+  const { isUserOwnsProject } = useContext(ProjectsContext);
+  const { isMenuOpened } = useContext(OptionsContext);
+
+  const { tasksByProjectId, editedTaskId, setEditedTaskId } = useContext(
+    TasksContext
+  );
+
+  const task = tasksByProjectId.find((t) => t._id == editedTaskId);
+
+  return (
+    <InnerTaskEdit
+      {...{
+        task: task ? task : {},
+        isUserOwnsProject,
+        isMenuOpened,
+        setEditedTaskId,
+      }}
+    />
+  );
+}

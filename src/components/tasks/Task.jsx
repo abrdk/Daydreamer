@@ -1,8 +1,9 @@
-import { useState, useContext, useEffect, useRef, useMemo, memo } from "react";
+import { useState, useContext, useEffect, useRef, memo } from "react";
 import { When } from "react-if";
+import styles from "@/styles/tasks.module.scss";
+import { Draggable } from "react-beautiful-dnd";
 
 import TasksRoot from "@/src/components/tasks/TasksRoot";
-import TaskWrapper from "@/src/components/tasks/Task/TaskWrapper";
 import TaskVerticalLine from "@/src/components/tasks/Task/TaskVerticalLine";
 import SubtasksArrow from "@/src/components/tasks/Task/SubtasksArrow";
 import TaskName from "@/src/components/tasks/Task/TaskName";
@@ -10,8 +11,10 @@ import EditTaskIcon from "@/src/components/tasks/Task/EditTaskIcon";
 import NewSubtaskIcon from "@/src/components/tasks/Task/NewSubtaskIcon";
 
 import { TasksContext } from "@/src/context/TasksContext";
+import { ProjectsContext } from "@/src/context/ProjectsContext";
 
 const taskHeight = 55;
+const taskOffsetLeft = 14;
 
 function InnerTask({
   setContainerHeight,
@@ -22,13 +25,29 @@ function InnerTask({
   task,
   taskDepth,
   numOfTasks,
+  isUserOwnsProject,
 }) {
   const fakeText = useRef(null);
   const arrow = useRef(null);
   const plus = useRef(null);
   const pencil = useRef(null);
+  const taskWrapperRef = useRef(null);
 
   const [isUpdating, setUpdatingState] = useState(false);
+
+  const startUpdate = (e) => {
+    if (e.target == taskWrapperRef.current && isUpdating) {
+      setUpdatingState(false);
+    } else if (
+      isUserOwnsProject &&
+      ![arrow.current, plus.current, pencil.current].includes(e.target)
+    ) {
+      setUpdatingState(true);
+    }
+  };
+
+  const getContainerHeight = () =>
+    document.querySelectorAll(".task").length * taskHeight;
 
   useEffect(() => {
     if (task.name == "" && whereEditNewTask == "menu") {
@@ -36,50 +55,58 @@ function InnerTask({
     }
   }, [task.name]);
 
-  const getContainerHeight = () =>
-    document.querySelectorAll(".task").length * taskHeight;
-
   useEffect(() => {
     setContainerHeight(getContainerHeight());
   }, [isCurrentTaskOpened, numOfTasks]);
 
   return (
     <>
-      <TaskWrapper
-        setUpdatingState={setUpdatingState}
-        arrow={arrow}
-        plus={plus}
-        pencil={pencil}
-        index={index}
-        taskDepth={taskDepth}
-        task={task}
-      >
-        <TaskVerticalLine task={task} />
+      <Draggable draggableId={task._id} index={index}>
+        {(provided, snapshot) => (
+          <div
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            className={snapshot.isDragging ? styles.draggedTask : ""}
+          >
+            <div
+              className={`${styles.task} task`}
+              style={{
+                paddingLeft: 33 + taskDepth * taskOffsetLeft,
+                color: taskDepth > 0 ? "#949da7" : "#696f75",
+              }}
+              onClick={startUpdate}
+              ref={taskWrapperRef}
+            >
+              <TaskVerticalLine task={task} />
 
-        <SubtasksArrow
-          taskId={task._id}
-          hasSubtasks={hasSubtasks}
-          arrow={arrow}
-          taskDepth={taskDepth}
-        />
+              <SubtasksArrow
+                taskId={task._id}
+                hasSubtasks={hasSubtasks}
+                arrow={arrow}
+                taskDepth={taskDepth}
+              />
 
-        <TaskName
-          task={task}
-          isUpdating={isUpdating}
-          setUpdatingState={setUpdatingState}
-          fakeTextRef={fakeText}
-          taskDepth={taskDepth}
-        />
+              <TaskName
+                task={task}
+                isUpdating={isUpdating}
+                setUpdatingState={setUpdatingState}
+                fakeTextRef={fakeText}
+                taskDepth={taskDepth}
+              />
 
-        <EditTaskIcon
-          task={task}
-          fakeTextRef={fakeText}
-          pencilRef={pencil}
-          taskDepth={taskDepth}
-        />
+              <EditTaskIcon
+                task={task}
+                fakeTextRef={fakeText}
+                pencilRef={pencil}
+                taskDepth={taskDepth}
+              />
 
-        <NewSubtaskIcon task={task} plusRef={plus} />
-      </TaskWrapper>
+              <NewSubtaskIcon task={task} plusRef={plus} />
+            </div>
+          </div>
+        )}
+      </Draggable>
 
       <When condition={hasSubtasks && isCurrentTaskOpened}>
         <TasksRoot root={task._id} setContainerHeight={setContainerHeight} />
@@ -88,24 +115,27 @@ function InnerTask({
   );
 }
 
-InnerTask = memo(
-  InnerTask,
-  (prevProps, nextProps) =>
+InnerTask = memo(InnerTask, (prevProps, nextProps) => {
+  for (let key in prevProps.task) {
+    if (prevProps.task[key] != nextProps.task[key]) {
+      return false;
+    }
+  }
+  return (
     prevProps.index == nextProps.index &&
     prevProps.isCurrentTaskOpened == nextProps.isCurrentTaskOpened &&
     prevProps.whereEditNewTask == nextProps.whereEditNewTask &&
     prevProps.hasSubtasks == nextProps.hasSubtasks &&
-    prevProps.task.name == nextProps.task.name &&
-    prevProps.task.dateStart == nextProps.task.dateStart &&
-    prevProps.task.dateEnd == nextProps.task.dateEnd &&
-    prevProps.task.color == nextProps.task.color &&
-    prevProps.numOfTasks == nextProps.numOfTasks
-);
+    prevProps.numOfTasks == nextProps.numOfTasks &&
+    prevProps.isUserOwnsProject == nextProps.isUserOwnsProject
+  );
+});
 
 export default function Task({ taskId, setContainerHeight, index }) {
   const { tasksByProjectId, isTaskOpened, whereEditNewTask } = useContext(
     TasksContext
   );
+  const { isUserOwnsProject } = useContext(ProjectsContext);
 
   const task = tasksByProjectId.find((t) => t._id == taskId);
 
@@ -135,6 +165,7 @@ export default function Task({ taskId, setContainerHeight, index }) {
         task,
         taskDepth,
         numOfTasks,
+        isUserOwnsProject,
       }}
     />
   );

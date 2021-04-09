@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, memo } from "react";
 import styles from "@/styles/taskEdit.module.scss";
 import FloatingLabel from "floating-label-react";
 import { When } from "react-if";
@@ -6,14 +6,14 @@ import { When } from "react-if";
 import { TasksContext } from "@/src/context/TasksContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 
-export default function EditNameForm({ task }) {
-  const { isUserOwnsProject } = useContext(ProjectsContext);
-
+function InnerEditNameForm({
+  task,
+  isUserOwnsProject,
+  whereEditNewTask,
+  setWhereEditNewTask,
+  updateTask,
+}) {
   const [editedName, setEditedName] = useState("");
-
-  const { updateTask, whereEditNewTask, setWhereEditNewTask } = useContext(
-    TasksContext
-  );
 
   const handleNameUpdate = (e) => {
     if (e.target.value.length <= 100) {
@@ -69,5 +69,37 @@ export default function EditNameForm({ task }) {
         <div className={styles.hiddenName}>{getDefaultName()}</div>
       </When>
     </>
+  );
+}
+
+InnerEditNameForm = memo(InnerEditNameForm, (prevProps, nextProps) => {
+  for (let key in prevProps.task) {
+    if (prevProps.task[key] != nextProps.task[key]) {
+      return false;
+    }
+  }
+  return (
+    prevProps.isUserOwnsProject == nextProps.isUserOwnsProject &&
+    prevProps.whereEditNewTask == nextProps.whereEditNewTask
+  );
+});
+
+export default function EditNameForm({ task }) {
+  const { isUserOwnsProject } = useContext(ProjectsContext);
+
+  const { updateTask, whereEditNewTask, setWhereEditNewTask } = useContext(
+    TasksContext
+  );
+
+  return (
+    <InnerEditNameForm
+      {...{
+        task,
+        isUserOwnsProject,
+        whereEditNewTask,
+        setWhereEditNewTask,
+        updateTask,
+      }}
+    />
   );
 }

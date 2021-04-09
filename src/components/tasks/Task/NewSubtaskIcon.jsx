@@ -12,7 +12,7 @@ function InnerNewSubtaskIcon({
   editedTaskId,
   isUserOwnsProject,
   task,
-  subtasks,
+  numOfSubtasks,
   plusRef,
   createTask,
   updateIsOpened,
@@ -22,9 +22,7 @@ function InnerNewSubtaskIcon({
   const createSubtask = (e) => {
     e.stopPropagation();
 
-    const order = subtasks.length ? subtasks[subtasks.length - 1].order + 1 : 0;
     const newTaskId = nanoid();
-
     updateIsOpened({ _id: task._id, isOpened: true });
 
     if (editedTaskId) {
@@ -40,7 +38,7 @@ function InnerNewSubtaskIcon({
       name: "",
       description: "",
       root: task._id,
-      order,
+      order: numOfSubtasks,
     });
   };
 
@@ -53,16 +51,18 @@ function InnerNewSubtaskIcon({
   );
 }
 
-InnerNewSubtaskIcon = memo(
-  InnerNewSubtaskIcon,
-  (prevProps, nextProps) =>
+InnerNewSubtaskIcon = memo(InnerNewSubtaskIcon, (prevProps, nextProps) => {
+  for (let key in prevProps.task) {
+    if (prevProps.task[key] != nextProps.task[key]) {
+      return false;
+    }
+  }
+  return (
     prevProps.editedTaskId == nextProps.editedTaskId &&
     prevProps.isUserOwnsProject == nextProps.isUserOwnsProject &&
-    prevProps.subtasks.length == nextProps.subtasks.length &&
-    prevProps.task.color == nextProps.task.color &&
-    prevProps.task.dateStart == nextProps.task.dateStart &&
-    prevProps.task.dateEnd == nextProps.task.dateEnd
-);
+    prevProps.numOfSubtasks == nextProps.numOfSubtasks
+  );
+});
 
 export default function NewSubtaskIcon({ task, plusRef }) {
   const { isUserOwnsProject } = useContext(ProjectsContext);
@@ -85,7 +85,7 @@ export default function NewSubtaskIcon({ task, plusRef }) {
         editedTaskId,
         isUserOwnsProject,
         task,
-        subtasks,
+        numOfSubtasks: subtasks.length,
         plusRef,
         createTask,
         updateIsOpened,
