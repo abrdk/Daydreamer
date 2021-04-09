@@ -1,6 +1,7 @@
 import calendarStyles from "@/styles/calendar.module.scss";
 import { When } from "react-if";
 import { useEffect, useState, useRef, useContext } from "react";
+import useEvent from "@react-hook/event";
 
 import LineTasksRoot from "@/src/components/tasks/Line/LineTasksRoot";
 import DateTooltip from "@/src/components/tasks/Line/LineTask/DateTooltip";
@@ -13,11 +14,11 @@ import LineTaskName from "@/src/components/tasks/Line/LineTask/LineTaskName";
 import { TasksContext } from "@/src/context/TasksContext";
 import { OptionsContext } from "@/src/context/OptionsContext";
 
+const views = ["Day", "Week", "Month"];
+const dayWidth = [55, 120 / 7, 160 / 30];
+
 export default function LineTask({ task, calendarStartDate }) {
   const { view } = useContext(OptionsContext);
-
-  const views = ["Day", "Week", "Month"];
-  const dayWidth = [55, 120 / 7, 160 / 30];
 
   const lineRef = useRef(null);
   const inputRef = useRef(null);
@@ -32,6 +33,8 @@ export default function LineTask({ task, calendarStartDate }) {
   const [isResizeLeft, setIsResizeLeft] = useState(false);
   const [isResizeRight, setIsResizeRight] = useState(false);
   const [isMoving, setIsMoving] = useState(false);
+
+  const [globalCursor, setGlobalCursor] = useState("");
 
   const { editedTaskId, isTaskOpened } = useContext(TasksContext);
 
@@ -148,6 +151,16 @@ export default function LineTask({ task, calendarStartDate }) {
     document.querySelector("#linesWrapper").style.paddingLeft = "0px";
   }, [dateStart, dateEnd, calendarStartDate]);
 
+  useEvent(document, "mousedown", (e) => {
+    if (e.target.classList.contains("stick")) {
+      setGlobalCursor("text");
+    }
+    if (e.target.classList.contains("grab")) {
+      setGlobalCursor("grab");
+    }
+  });
+  useEvent(document, "mouseup", () => setGlobalCursor(""));
+
   return (
     <>
       <div
@@ -171,7 +184,7 @@ export default function LineTask({ task, calendarStartDate }) {
           taskWidth={taskWidth}
         />
 
-        <SubtaskTooltip task={task} />
+        <SubtaskTooltip task={task} globalCursor={globalCursor} />
 
         <LeftStick
           task={task}
@@ -184,6 +197,7 @@ export default function LineTask({ task, calendarStartDate }) {
           dateEnd={dateEnd}
           view={view}
           taskWidth={taskWidth}
+          globalCursor={globalCursor}
         />
 
         <CenterArea
@@ -198,6 +212,7 @@ export default function LineTask({ task, calendarStartDate }) {
           setDateEnd={setDateEnd}
           taskWidth={taskWidth}
           inputRef={inputRef}
+          globalCursor={globalCursor}
         >
           <LineTaskName
             task={task}
@@ -217,6 +232,7 @@ export default function LineTask({ task, calendarStartDate }) {
           dateEnd={dateEnd}
           setDateEnd={setDateEnd}
           taskWidth={taskWidth}
+          globalCursor={globalCursor}
         />
       </div>
 

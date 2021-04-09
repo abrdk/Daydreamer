@@ -3,7 +3,6 @@ import { When } from "react-if";
 import { useContext, useState, useEffect } from "react";
 import useEvent from "@react-hook/event";
 
-import { UsersContext } from "@/src/context/UsersContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 import { TasksContext } from "@/src/context/TasksContext";
 
@@ -19,17 +18,17 @@ export default function CenterArea({
   setDateEnd,
   taskWidth,
   inputRef,
+  globalCursor,
   children,
 }) {
   const { updateTask } = useContext(TasksContext);
-  const { projectByQueryId } = useContext(ProjectsContext);
-  const { user } = useContext(UsersContext);
+  const { isUserOwnsProject } = useContext(ProjectsContext);
 
   const [scrollLeft, setScrollLeft] = useState(undefined);
   const [offsetFromCenter, setOffsetFromCenter] = useState(0);
 
   const startMoving = (e) => {
-    if (e.target != inputRef.current && projectByQueryId.owner == user._id) {
+    if (e.target != inputRef.current && isUserOwnsProject) {
       setIsMoving(true);
       const lineRect = lineRef.current.getBoundingClientRect();
       setOffsetFromCenter(lineRect.left + lineRect.width / 2 - e.clientX);
@@ -102,6 +101,19 @@ export default function CenterArea({
     }
   };
 
+  const getCursor = () => {
+    if (!isUserOwnsProject) {
+      return "default";
+    }
+    if (globalCursor) {
+      return globalCursor;
+    }
+    if (isMoving) {
+      return "grab";
+    }
+    return "pointer";
+  };
+
   useEvent(document, "mousemove", (e) => {
     if (isMoving) {
       removeSelection(e);
@@ -128,16 +140,11 @@ export default function CenterArea({
   return (
     <When condition={taskWidth - 36 > 0}>
       <div
-        className={calendarStyles.moveAreaCenter}
+        className={calendarStyles.moveAreaCenter + " grab"}
         style={{
           width: taskWidth - 36,
           left: 18,
-          cursor:
-            projectByQueryId.owner != user._id
-              ? "default"
-              : isMoving
-              ? "grab"
-              : "pointer",
+          cursor: getCursor(),
         }}
         onMouseDown={startMoving}
       >

@@ -5,14 +5,12 @@ import Truncate from "react-truncate";
 
 import { TasksContext } from "@/src/context/TasksContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
-import { UsersContext } from "@/src/context/UsersContext";
 
 export default function LineTaskName({ task, textWidth, taskWidth, inputRef }) {
   const { updateTask, whereEditNewTask, setWhereEditNewTask } = useContext(
     TasksContext
   );
-  const { projectByQueryId } = useContext(ProjectsContext);
-  const { user } = useContext(UsersContext);
+  const { isUserOwnsProject } = useContext(ProjectsContext);
 
   const [isUpdating, setIsUpdating] = useState(false);
   const [nameState, setNameState] = useState(task.name);
@@ -84,25 +82,28 @@ export default function LineTaskName({ task, textWidth, taskWidth, inputRef }) {
             }}
           />
         </When>
-
         <div
           className={
-            isUpdating ? calendarStyles.hiddenName : calendarStyles.name
+            isUpdating
+              ? calendarStyles.hiddenName + " grab"
+              : calendarStyles.name + " grab"
           }
           onClick={() => {
-            if (projectByQueryId.owner == user._id) {
+            if (isUserOwnsProject) {
               setIsUpdating(true);
             }
           }}
           style={{
             opacity: task.name == "" && 0.5,
-            cursor: projectByQueryId.owner != user._id ? "default" : null,
+            cursor: !isUserOwnsProject ? "default" : "",
           }}
           ref={textRef}
         >
-          <Truncate lines={1} width={textWidth}>
-            {task.name != "" ? task.name : getDefaultName()}
-          </Truncate>
+          <div style={{ pointerEvents: "none" }}>
+            <Truncate lines={1} width={textWidth}>
+              {task.name != "" ? task.name : getDefaultName()}
+            </Truncate>
+          </div>
         </div>
       </When>
     </>

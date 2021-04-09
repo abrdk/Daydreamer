@@ -361,6 +361,12 @@
   z-index: 1;
 }
 
+.nameGrab {
+  cursor: grab !important;
+  position: relative;
+  z-index: 1;
+}
+
 .hiddenName {
   position: absolute;
   opacity: 0;

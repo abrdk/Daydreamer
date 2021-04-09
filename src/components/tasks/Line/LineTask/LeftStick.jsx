@@ -3,7 +3,6 @@ import { When } from "react-if";
 import { useContext, useState, useEffect } from "react";
 import useEvent from "@react-hook/event";
 
-import { UsersContext } from "@/src/context/UsersContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 import { TasksContext } from "@/src/context/TasksContext";
 import { OptionsContext } from "@/src/context/OptionsContext";
@@ -18,10 +17,10 @@ export default function LeftStick({
   setDateStart,
   dateEnd,
   taskWidth,
+  globalCursor,
 }) {
   const { updateTask } = useContext(TasksContext);
-  const { projectByQueryId } = useContext(ProjectsContext);
-  const { user } = useContext(UsersContext);
+  const { isUserOwnsProject } = useContext(ProjectsContext);
   const { view } = useContext(OptionsContext);
 
   const [scrollLeft, setScrollLeft] = useState(undefined);
@@ -113,12 +112,12 @@ export default function LeftStick({
 
   return (
     <When condition={view != "Month" || taskWidth > dayWidth * 4}>
-      <When condition={projectByQueryId.owner == user._id}>
+      <When condition={isUserOwnsProject}>
         <div
-          className={calendarStyles.resizeAreaLeft}
+          className={calendarStyles.resizeAreaLeft + " stick"}
           onMouseDown={startResizeLeft}
           style={{
-            cursor: "text",
+            cursor: globalCursor ? globalCursor : "text",
           }}
         ></div>
       </When>

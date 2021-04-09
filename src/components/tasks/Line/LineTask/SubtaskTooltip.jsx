@@ -8,10 +8,9 @@ import PencilIcon from "@/src/components/svg/PencilSvg";
 import ArrowDown from "@/src/components/svg/ArrowDownSvg";
 
 import { TasksContext } from "@/src/context/TasksContext";
-import { UsersContext } from "@/src/context/UsersContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 
-export default function SubtaskTooltip({ task }) {
+export default function SubtaskTooltip({ task, globalCursor }) {
   const {
     updateIsOpened,
     tasksByProjectId,
@@ -21,18 +20,15 @@ export default function SubtaskTooltip({ task }) {
     setEditedTaskId,
     isTaskOpened,
   } = useContext(TasksContext);
+
   const subtasks = tasksByProjectId
     .filter((t) => t.root == task._id)
     .sort((task1, task2) => task1.order > task2.order);
 
-  const { projectByQueryId } = useContext(ProjectsContext);
-  const { user } = useContext(UsersContext);
+  const { isUserOwnsProject } = useContext(ProjectsContext);
 
   const createSubtask = () => {
-    let order = 0;
-    if (subtasks.length) {
-      order = subtasks[subtasks.length - 1].order + 1;
-    }
+    const order = subtasks.length;
 
     const newSubtaskId = nanoid();
     if (editedTaskId) {
@@ -53,7 +49,7 @@ export default function SubtaskTooltip({ task }) {
   };
 
   return (
-    <>
+    <When condition={globalCursor == ""}>
       <When condition={subtasks.length}>
         <div className={calendarStyles.openSubtasksWrapper}>
           <div
@@ -70,7 +66,7 @@ export default function SubtaskTooltip({ task }) {
         </div>
       </When>
 
-      <When condition={projectByQueryId.owner == user._id}>
+      <When condition={isUserOwnsProject}>
         <div className={calendarStyles.addSubtaskWrapper}>
           <div
             className={calendarStyles.addSubtaskIcon}
@@ -95,6 +91,6 @@ export default function SubtaskTooltip({ task }) {
           <PencilIcon />
         </div>
       </div>
-    </>
+    </When>
   );
 }

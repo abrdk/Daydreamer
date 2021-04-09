@@ -3,7 +3,6 @@ import { When } from "react-if";
 import { useContext, useState, useEffect } from "react";
 import useEvent from "@react-hook/event";
 
-import { UsersContext } from "@/src/context/UsersContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 import { TasksContext } from "@/src/context/TasksContext";
 
@@ -17,10 +16,10 @@ export default function RightStick({
   dateEnd,
   setDateEnd,
   taskWidth,
+  globalCursor,
 }) {
   const { updateTask } = useContext(TasksContext);
-  const { projectByQueryId } = useContext(ProjectsContext);
-  const { user } = useContext(UsersContext);
+  const { isUserOwnsProject } = useContext(ProjectsContext);
 
   const [scrollLeft, setScrollLeft] = useState(undefined);
 
@@ -113,12 +112,12 @@ export default function RightStick({
   return (
     <>
       <div className={calendarStyles.stick}></div>
-      <When condition={projectByQueryId.owner == user._id}>
+      <When condition={isUserOwnsProject}>
         <div
-          className={calendarStyles.resizeAreaRight}
+          className={calendarStyles.resizeAreaRight + " stick"}
           onMouseDown={startResizeRight}
           style={{
-            cursor: "text",
+            cursor: globalCursor ? globalCursor : "text",
             width: taskWidth > 18 ? 18 : taskWidth == 0 ? 160 / 30 : taskWidth,
           }}
         ></div>
