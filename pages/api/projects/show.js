@@ -10,7 +10,7 @@ export default async (req, res) => {
     if (project) {
       return res.status(200).json(project);
     }
-    return res.status(200).json({});
+    return res.status(200).json(false);
   } catch (e) {
     return res.status(500).json({ message: "Server error" });
   }

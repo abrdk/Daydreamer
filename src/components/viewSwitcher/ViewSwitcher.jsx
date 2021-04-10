@@ -5,7 +5,7 @@ import { OptionsContext } from "@/src/context/OptionsContext";
 
 const modes = ["Day", "Week", "Month"];
 
-function InnerViewSwitcher({ isMenuOpened, setView }) {
+function InnerViewSwitcher({ isMenuOpened, setView, isDefault }) {
   const [scale, setScale] = useState(0);
 
   const buttons = [0, 1, 2].map((i) => (
@@ -24,7 +24,7 @@ function InnerViewSwitcher({ isMenuOpened, setView }) {
   return (
     <div
       className={
-        isMenuOpened
+        isMenuOpened && !isDefault
           ? styles.buttonsWrapper + " " + styles.offset
           : styles.buttonsWrapper
       }
@@ -36,10 +36,12 @@ function InnerViewSwitcher({ isMenuOpened, setView }) {
 
 InnerViewSwitcher = memo(
   InnerViewSwitcher,
-  (prevProps, nextProps) => prevProps.isMenuOpened == nextProps.isMenuOpened
+  (prevProps, nextProps) =>
+    prevProps.isMenuOpened == nextProps.isMenuOpened &&
+    prevProps.isDefault == nextProps.isDefault
 );
 
-export default function ViewSwitcher() {
+export default function ViewSwitcher({ isDefault }) {
   const { setView, isMenuOpened } = useContext(OptionsContext);
-  return <InnerViewSwitcher {...{ setView, isMenuOpened }} />;
+  return <InnerViewSwitcher {...{ setView, isMenuOpened, isDefault }} />;
 }

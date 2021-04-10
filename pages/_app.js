@@ -1,4 +1,3 @@
-import "@/helpers/wdyr.js";
 import "@/styles/globals.scss";
 
 import { UsersProvider } from "@/src/context/UsersContext";

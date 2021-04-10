@@ -35,7 +35,7 @@ export default function RegisterBtn({
       setNameWarn("User name should be less than 35 characters");
       return;
     }
-    if (!password) {
+    if (password.length > 35) {
       setPasswordWarn("Password length should be less than 35 characters");
       return;
     }

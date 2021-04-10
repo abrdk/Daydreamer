@@ -18,7 +18,6 @@ function OptionPencil({
   const startOrStopNameUpdate = (e) => {
     e.stopPropagation();
     if (!isNameUpdating) {
-      console.log("aaaaaa");
       setIsNameUpdating(true);
     } else if (e.target != inputRef.current) {
       setIsNameUpdating(false);

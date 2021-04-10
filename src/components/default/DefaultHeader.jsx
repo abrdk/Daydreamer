@@ -16,7 +16,9 @@ export default function DefaultHeader() {
           <ArrowRightSvg />
         </div>
         <div className={headerStyles.header}>
-          <ViewSwitcher onViewModeChange={() => {}} />
+          <div>
+            <ViewSwitcher isDefault />
+          </div>
           <div className={headerStyles.buttonsContainer}>
             <button className={headerStyles.share_button}>Share Project</button>
             <button className={headerStyles.account_button}>
