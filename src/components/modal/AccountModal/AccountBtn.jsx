@@ -20,7 +20,9 @@ export default function AccountBtn({
   setIsUpdatingComplete,
   saveBtnRef,
 }) {
-  const { user, updateUser, mutateUser } = useContext(UsersContext);
+  const { user, updateUser, mutateUser, setIsUserLogout } = useContext(
+    UsersContext
+  );
   const { mutateProjects } = useContext(ProjectsContext);
   const { mutateTasks } = useContext(TasksContext);
 
@@ -68,6 +70,7 @@ export default function AccountBtn({
   };
 
   const handleLogout = () => {
+    setIsUserLogout(true);
     mutateUser({ _id: "", name: "", password: "" }, false);
     mutateProjects(false, false);
     mutateTasks(false, false);

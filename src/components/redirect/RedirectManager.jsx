@@ -7,7 +7,7 @@ import { ProjectsContext } from "@/src/context/ProjectsContext";
 export default function RedirectManager({ children }) {
   const router = useRouter();
 
-  const { isUserLoaded, user } = useContext(UsersContext);
+  const { isUserLoaded, user, setIsUserLogout } = useContext(UsersContext);
   const { isProjectsLoaded, projects } = useContext(ProjectsContext);
 
   useEffect(() => {
@@ -27,6 +27,7 @@ export default function RedirectManager({ children }) {
         router.push(`/gantt/${currentProject._id}`);
       }
     } else if (router.pathname == "/signup" || router.pathname == "/login") {
+      setIsUserLogout(false);
       if (user._id && projects.length) {
         let currentProject = projects.find((p) => p.isCurrent);
         if (!currentProject) {

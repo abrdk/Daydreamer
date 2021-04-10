@@ -10,7 +10,7 @@ import Cookies from "js-cookie";
 export default function DeleteAccountModal({ setModal }) {
   const { deleteAllProjects, mutateProjects } = useContext(ProjectsContext);
   const { deleteAllTasks, mutateTasks } = useContext(TasksContext);
-  const { deleteUser, mutateUser } = useContext(UsersContext);
+  const { deleteUser, mutateUser, setIsUserLogout } = useContext(UsersContext);
 
   const outsideClick = (e) => {
     if (e.target.id === "delete_account_wrapper") {
@@ -20,6 +20,7 @@ export default function DeleteAccountModal({ setModal }) {
 
   const deleteQuery = async () => {
     try {
+      setIsUserLogout(true);
       await Promise.all([deleteAllTasks(), deleteAllProjects()]);
       await deleteUser();
       mutateUser({ _id: "", name: "", password: "" }, false);

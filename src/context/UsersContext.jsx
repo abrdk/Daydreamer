@@ -1,4 +1,4 @@
-import React, { createContext } from "react";
+import React, { createContext, useState } from "react";
 import { useRouter } from "next/router";
 import { xhr } from "@/helpers/xhr";
 import useSWR from "swr";
@@ -50,16 +50,20 @@ export function UsersProvider(props) {
     } catch (e) {}
   };
 
+  const [isUserLogout, setIsUserLogout] = useState(false);
+
   return (
     <UsersContext.Provider
       value={{
         user,
         isUserLoaded: !error && !!user,
+        isUserLogout,
         signup,
         login,
         updateUser,
         deleteUser,
         mutateUser,
+        setIsUserLogout,
       }}
     >
       {props.children}
