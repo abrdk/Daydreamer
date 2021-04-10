@@ -1,13 +1,13 @@
 import calendarStyles from "@/styles/calendar.module.scss";
 import { When } from "react-if";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, memo } from "react";
 import useEvent from "@react-hook/event";
 
-import { UsersContext } from "@/src/context/users/UsersContext";
-import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
-import { TasksContext } from "@/src//context/tasks/TasksContext";
+import { ProjectsContext } from "@/src/context/ProjectsContext";
+import { TasksContext } from "@/src/context/TasksContext";
+import { OptionsContext } from "@/src/context/OptionsContext";
 
-export default function LeftStick({
+function InnerLeftStick({
   task,
   isResizeLeft,
   setIsResizeLeft,
@@ -16,20 +16,17 @@ export default function LeftStick({
   dateStart,
   setDateStart,
   dateEnd,
-  maxOffsetLeft,
-  minOffsetLeft,
-  view,
   taskWidth,
+  globalCursor,
+  updateTask,
+  isUserOwnsProject,
+  view,
 }) {
-  const { updateTask } = useContext(TasksContext);
-  const { projectByQueryId } = useContext(ProjectsContext);
-  const userCtx = useContext(UsersContext);
-
   const [scrollLeft, setScrollLeft] = useState(undefined);
 
   const startResizeLeft = () => {
     setIsResizeLeft(true);
-    document.body.style.cursor = "grab";
+    document.body.style.cursor = "text";
   };
 
   const stopResizeLeft = () => {
@@ -68,13 +65,20 @@ export default function LeftStick({
     const lineStyles = lineRef.current.style;
 
     const offset = clientX - lineRect.left;
+
     if (Number(lineStyles.width.slice(0, -2)) - offset <= dayWidth) {
       setDateStart(dateEnd);
-    } else if (offset >= maxOffsetLeft || offset <= minOffsetLeft) {
+    } else if (offset >= dayWidth || offset <= -dayWidth) {
+      let dateDiff;
+      if (offset >= dayWidth) {
+        dateDiff = Math.floor(offset / dayWidth);
+      } else {
+        dateDiff = Math.ceil(offset / dayWidth);
+      }
       const newDateStart = new Date(
         dateStart.getFullYear(),
         dateStart.getMonth(),
-        dateStart.getDate() + Math.floor(offset / dayWidth)
+        dateStart.getDate() + dateDiff
       );
       if (newDateStart < dateEnd) {
         setDateStart(newDateStart);
@@ -107,16 +111,43 @@ export default function LeftStick({
 
   return (
     <When condition={view != "Month" || taskWidth > dayWidth * 4}>
-      <When condition={projectByQueryId.owner == userCtx._id}>
+      <When condition={isUserOwnsProject}>
         <div
-          className={calendarStyles.resizeAreaLeft}
+          className={calendarStyles.resizeAreaLeft + " stick"}
           onMouseDown={startResizeLeft}
           style={{
-            cursor: isResizeLeft ? "grab" : "pointer",
+            cursor: globalCursor ? globalCursor : "text",
           }}
         ></div>
       </When>
       <div className={calendarStyles.stick}></div>
     </When>
+  );
+}
+
+InnerLeftStick = memo(InnerLeftStick, (prevProps, nextProps) => {
+  for (let key in prevProps.task) {
+    if (prevProps.task[key] != nextProps.task[key]) {
+      return false;
+    }
+  }
+  return (
+    prevProps.globalCursor == nextProps.globalCursor &&
+    prevProps.isUserOwnsProject == nextProps.isUserOwnsProject &&
+    prevProps.view == nextProps.view &&
+    prevProps.isResizeLeft == nextProps.isResizeLeft &&
+    prevProps.dayWidth == nextProps.dayWidth &&
+    prevProps.dateStart == nextProps.dateStart &&
+    prevProps.dateEnd == nextProps.dateEnd &&
+    prevProps.taskWidth == nextProps.taskWidth
+  );
+});
+
+export default function LeftStick(props) {
+  const { updateTask } = useContext(TasksContext);
+  const { isUserOwnsProject } = useContext(ProjectsContext);
+  const { view } = useContext(OptionsContext);
+  return (
+    <InnerLeftStick {...{ ...props, updateTask, isUserOwnsProject, view }} />
   );
 }

@@ -1,32 +1,38 @@
 import calendarStyles from "@/styles/calendar.module.scss";
-import { useContext } from "react";
+import { useContext, memo } from "react";
 import { nanoid } from "nanoid";
 import { When } from "react-if";
 
-import { TasksContext } from "@/src//context/tasks/TasksContext";
-import { UsersContext } from "@/src/context/users/UsersContext";
-import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
+import PlusSvg from "@/src/components/svg/PlusSvg";
+import PencilIcon from "@/src/components/svg/PencilSvg";
+import ArrowDown from "@/src/components/svg/ArrowDownSvg";
 
-export default function SubtaskTooltip({ task, setMenu, setEditedTask }) {
-  const { updateIsOpened, tasksByProjectId, createTask } = useContext(
-    TasksContext
-  );
-  const subtasks = tasksByProjectId
-    .filter((t) => t.root == task._id)
-    .sort((task1, task2) => task1.order > task2.order);
+import { TasksContext } from "@/src/context/TasksContext";
+import { ProjectsContext } from "@/src/context/ProjectsContext";
 
-  const { projectByQueryId } = useContext(ProjectsContext);
-  const userCtx = useContext(UsersContext);
-
+function InnerSubtaskTooltip({
+  task,
+  globalCursor,
+  isUserOwnsProject,
+  editedTaskId,
+  numOfSubtasks,
+  updateIsOpened,
+  createTask,
+  setWhereEditNewTask,
+  setEditedTaskId,
+  isCurrentTaskOpened,
+}) {
   const createSubtask = () => {
-    let order = 0;
-    if (subtasks.length) {
-      order = subtasks[subtasks.length - 1].order + 1;
-    }
+    const order = numOfSubtasks;
 
     const newSubtaskId = nanoid();
+    if (editedTaskId) {
+      setTimeout(() => setEditedTaskId(newSubtaskId), 100);
+      setWhereEditNewTask("edit");
+    } else {
+      setWhereEditNewTask("calendar");
+    }
     updateIsOpened({ _id: task._id, isOpened: true });
-    setMenu(true);
     createTask({
       ...task,
       _id: newSubtaskId,
@@ -35,33 +41,108 @@ export default function SubtaskTooltip({ task, setMenu, setEditedTask }) {
       root: task._id,
       order,
     });
-    setEditedTask(newSubtaskId);
   };
 
   return (
-    <>
-      <When condition={subtasks.length}>
-        <div className={calendarStyles.openSubtasksWrapper}>
+    <When condition={globalCursor == ""}>
+      <When condition={numOfSubtasks}>
+        <div
+          className={calendarStyles.openSubtasksWrapper}
+          style={{
+            width: !isUserOwnsProject ? 35 : null,
+            paddingRight: !isUserOwnsProject ? 4 : null,
+            left: !isUserOwnsProject ? -35 : null,
+          }}
+        >
           <div
             className={calendarStyles.openSubtasksIcon}
-            onClick={() =>
-              updateIsOpened({ _id: task._id, isOpened: !task.isOpened })
-            }
+            onClick={() => {
+              updateIsOpened({
+                _id: task._id,
+                isOpened: !isCurrentTaskOpened,
+              });
+            }}
           >
-            <img src="/img/arrowDownLine.svg" alt=" " />
+            <ArrowDown />
           </div>
         </div>
       </When>
-      <When condition={projectByQueryId.owner == userCtx._id}>
+
+      <When condition={isUserOwnsProject}>
         <div className={calendarStyles.addSubtaskWrapper}>
           <div
             className={calendarStyles.addSubtaskIcon}
             onClick={createSubtask}
           >
-            <img src="/img/plusLine.svg" alt=" " />
+            <PlusSvg />
           </div>
         </div>
       </When>
-    </>
+
+      <div className={calendarStyles.editTaskIconWrapper}>
+        <div
+          className={calendarStyles.editTaskIcon}
+          onClick={() => {
+            if (editedTaskId == task._id) {
+              setEditedTaskId("");
+            } else {
+              setEditedTaskId(task._id);
+            }
+          }}
+        >
+          <PencilIcon />
+        </div>
+      </div>
+    </When>
+  );
+}
+
+InnerSubtaskTooltip = memo(InnerSubtaskTooltip, (prevProps, nextProps) => {
+  for (let key in prevProps.task) {
+    if (prevProps.task[key] != nextProps.task[key]) {
+      return false;
+    }
+  }
+  return (
+    prevProps.globalCursor == nextProps.globalCursor &&
+    prevProps.isUserOwnsProject == nextProps.isUserOwnsProject &&
+    prevProps.editedTaskId == nextProps.editedTaskId &&
+    prevProps.numOfSubtasks == nextProps.numOfSubtasks &&
+    prevProps.isCurrentTaskOpened == nextProps.isCurrentTaskOpened
+  );
+});
+
+export default function SubtaskTooltip({ task, globalCursor }) {
+  const {
+    updateIsOpened,
+    tasksByProjectId,
+    createTask,
+    setWhereEditNewTask,
+    editedTaskId,
+    setEditedTaskId,
+    isTaskOpened,
+  } = useContext(TasksContext);
+  const { isUserOwnsProject } = useContext(ProjectsContext);
+
+  const subtasks = tasksByProjectId
+    .filter((t) => t.root == task._id)
+    .sort((task1, task2) => task1.order > task2.order);
+
+  const isCurrentTaskOpened = isTaskOpened[task._id];
+  return (
+    <InnerSubtaskTooltip
+      {...{
+        task,
+        globalCursor,
+        isUserOwnsProject,
+        editedTaskId,
+        updateIsOpened,
+        numOfSubtasks: subtasks.length,
+        createTask,
+        setWhereEditNewTask,
+        setEditedTaskId,
+        isCurrentTaskOpened,
+      }}
+    />
   );
 }

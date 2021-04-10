@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useState, useContext, memo } from "react";
 import useEvent from "@react-hook/event";
 
 import CalendarDay from "@/src/components/calendar/CalendarDay";
 import CalendarWeek from "@/src/components/calendar/CalendarWeek";
 import CalendarMonth from "@/src/components/calendar/CalendarMonth";
 
-export default function Calendar({ view, setMenu, editedTask, setEditedTask }) {
+import { OptionsContext } from "@/src/context/OptionsContext";
+
+function InnerCalendar({ isDefault, view }) {
   const [cursor, setCursor] = useState(null);
-  const [isDraggable, setDraggable] = useState(false);
+  const [isDraggable, setIsDraggable] = useState(false);
 
   const startDragHandler = () => {
     setCursor("pointer");
@@ -16,7 +18,7 @@ export default function Calendar({ view, setMenu, editedTask, setEditedTask }) {
   const removeDragHandler = () => {
     setCursor(null);
     document.body.style.cursor = "default";
-    setDraggable(false);
+    setIsDraggable(false);
   };
 
   useEvent(document, "keydown", (e) => {
@@ -43,11 +45,8 @@ export default function Calendar({ view, setMenu, editedTask, setEditedTask }) {
         cursor={cursor}
         setCursor={setCursor}
         isDraggable={isDraggable}
-        setDraggable={setDraggable}
-        setMenu={setMenu}
-        editedTask={editedTask}
-        setEditedTask={setEditedTask}
-        view={view}
+        setDraggable={setIsDraggable}
+        isDefault={isDefault}
       />
     );
   }
@@ -57,11 +56,7 @@ export default function Calendar({ view, setMenu, editedTask, setEditedTask }) {
         cursor={cursor}
         setCursor={setCursor}
         isDraggable={isDraggable}
-        setDraggable={setDraggable}
-        setMenu={setMenu}
-        editedTask={editedTask}
-        setEditedTask={setEditedTask}
-        view={view}
+        setDraggable={setIsDraggable}
       />
     );
   }
@@ -71,13 +66,16 @@ export default function Calendar({ view, setMenu, editedTask, setEditedTask }) {
         cursor={cursor}
         setCursor={setCursor}
         isDraggable={isDraggable}
-        setDraggable={setDraggable}
-        setMenu={setMenu}
-        editedTask={editedTask}
-        setEditedTask={setEditedTask}
-        view={view}
+        setDraggable={setIsDraggable}
       />
     );
   }
   return <></>;
+}
+
+InnerCalendar = memo(InnerCalendar);
+
+export default function Calendar(props) {
+  const { view } = useContext(OptionsContext);
+  return <InnerCalendar {...{ ...props, view }} />;
 }

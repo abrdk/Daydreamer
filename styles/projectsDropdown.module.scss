@@ -41,12 +41,22 @@
   position: relative;
   padding: 0 14px 0 14px;
   composes: placeholder;
+  cursor: pointer;
+  transition: background 0.4s, color 0.4s;
+  &:hover {
+    background: rgba(37, 142, 250, 0.05);
+    color: #258efa;
+  }
 }
 
 .rootOpened {
   composes: root;
   color: #258efa;
   z-index: 102;
+  transition: background 0s;
+  &:hover {
+    background: #ffffff;
+  }
 }
 
 .option {
@@ -75,6 +85,7 @@
 .icon {
   display: none;
   width: 16px;
+  margin-bottom: 8px;
   height: 16px;
 }
 
@@ -84,6 +95,7 @@
   height: 12px;
   z-index: 2000;
   position: absolute;
+  color: #258efa;
 }
 
 .iconContainer {
@@ -92,6 +104,11 @@
   width: 21px;
   align-items: center;
   justify-content: center;
+}
+
+.pencilContainer {
+  composes: iconContainer;
+  position: absolute;
 }
 
 .optionSelected {
@@ -117,11 +134,12 @@
   color: #949da7;
   border: none;
   background: transparent;
-  cursor: pointer;
+  cursor: text;
   padding: 0;
   height: 21px;
   margin-right: 1px;
   z-index: 5000;
+  max-width: 295px;
 }
 
 .control {
@@ -176,6 +194,11 @@
   justify-content: center;
   color: #258efa;
   cursor: pointer;
+  transition: background 0.4s, color 0.4s;
+  &:hover {
+    background: #258efa;
+    color: #fff;
+  }
 }
 
 .textOptionWrapper {
@@ -188,4 +211,24 @@
   composes: icon;
   position: absolute;
   right: 14px;
+  margin-top: 8px;
+}
+
+.hiddenName {
+  composes: placeholder;
+  position: absolute;
+  white-space: pre;
+  color: #258efa;
+  opacity: 0.5;
+  padding-right: 1px;
+}
+
+.arrowDown {
+  svg {
+    width: 12px;
+    height: 7px;
+    path {
+      stroke: #9ccdff;
+    }
+  }
 }

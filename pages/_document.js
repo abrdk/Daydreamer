@@ -8,7 +8,7 @@ class MyDocument extends Document {
 
   render() {
     return (
-      <Html>
+      <Html lang="en">
         <Head>
           <link rel="icon" href="/favicon.ico" />
           <link rel="preconnect" href="https://fonts.gstatic.com"></link>
@@ -16,6 +16,10 @@ class MyDocument extends Document {
             href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap"
             rel="stylesheet"
           ></link>
+          <meta
+            name="Description"
+            content="Put your ideas on a timeline!"
+          ></meta>
         </Head>
         <body>
           <Main />

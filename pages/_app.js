@@ -1,15 +1,22 @@
 import "@/styles/globals.scss";
 
-import { UsersProvider } from "@/src/context/users/UsersContext";
-import { ProjectsProvider } from "@/src/context/projects/ProjectsContext";
-import { TasksProvider } from "@/src/context/tasks/TasksContext";
+import { UsersProvider } from "@/src/context/UsersContext";
+import { ProjectsProvider } from "@/src/context/ProjectsContext";
+import { TasksProvider } from "@/src/context/TasksContext";
+import { OptionsProvider } from "@/src/context/OptionsContext";
+
+import RedirectManager from "@/src/components/redirect/RedirectManager";
 
 export default function MyApp({ Component, pageProps }) {
   return (
     <UsersProvider>
       <ProjectsProvider>
         <TasksProvider>
-          <Component {...pageProps} />
+          <OptionsProvider>
+            <RedirectManager>
+              <Component {...pageProps} />
+            </RedirectManager>
+          </OptionsProvider>
         </TasksProvider>
       </ProjectsProvider>
     </UsersProvider>

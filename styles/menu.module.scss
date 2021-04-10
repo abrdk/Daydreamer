@@ -26,6 +26,12 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  color: #258efa;
+  transition: background 0.4s, color 0.4s;
+  &:hover {
+    background: #258efa;
+    color: #fff;
+  }
 }
 
 .iconClose {
@@ -43,4 +49,25 @@
   height: 50px;
   cursor: pointer;
   z-index: 89;
+}
+
+.plusSvg {
+  rect {
+    transition: fill 0.4s, stroke 0.4s;
+    fill: #fff;
+    stroke: #258efa;
+  }
+  path {
+    transition: stroke 0.4s;
+    stroke: #258efa;
+  }
+  &:hover {
+    rect {
+      fill: #258efa;
+      stroke: #258efa;
+    }
+    path {
+      stroke: #fff;
+    }
+  }
 }

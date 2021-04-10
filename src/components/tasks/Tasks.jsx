@@ -1,73 +1,33 @@
-import { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, memo } from "react";
 import styles from "@/styles/tasks.module.scss";
-import { nanoid } from "nanoid";
 import Scrollbar from "react-scrollbars-custom";
-import { When } from "react-if";
 
 import TasksRoot from "@/src/components/tasks/TasksRoot";
+import NewTaskBtn from "@/src/components/tasks/NewTaskBtn";
+import TasksDraggableWrapper from "@/src/components/tasks/TasksDraggableWrapper";
 
-import { TasksContext } from "@/src//context/tasks/TasksContext";
-import { ProjectsContext } from "@/src//context/projects/ProjectsContext";
-import { UsersContext } from "@/src/context/users/UsersContext";
+import { TasksContext } from "@/src/context/TasksContext";
 
-export default function Tasks({ editedTask, setEditedTask }) {
-  const userCtx = useContext(UsersContext);
-
+function InnerTasks({ hasTasksByProjectId }) {
   const [containerHeight, setContainerHeight] = useState(0);
-  const { createTask, tasksByProjectId } = useContext(TasksContext);
-  const { projectByQueryId } = useContext(ProjectsContext);
 
   useEffect(() => {
-    if (!tasksByProjectId.length) {
+    if (!hasTasksByProjectId) {
       setContainerHeight(0);
     }
-  }, [tasksByProjectId]);
-
-  const createHandle = () => {
-    const today = new Date();
-    const currentDate = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate(),
-      0,
-      0,
-      0
-    );
-    let afterWeek = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate() + 6,
-      23,
-      59,
-      59
-    );
-
-    const topLevelTasks = tasksByProjectId.filter((task) => !task.root);
-
-    createTask({
-      _id: nanoid(),
-      name: "",
-      description: "",
-      dateStart: currentDate,
-      dateEnd: afterWeek,
-      color: "258EFA",
-      project: projectByQueryId._id,
-      root: "",
-      order: topLevelTasks.length,
-    });
-  };
+  }, [hasTasksByProjectId]);
 
   return (
     <>
       <div className={styles.line}></div>
-      <div className={styles.tasksHeaderWrapper}>
-        <div className={styles.tasksHeader}>TASK NAME</div>
+      <div className={styles.headerWrapper}>
+        <div className={styles.header}>TASK NAME</div>
       </div>
       <div className={styles.line}></div>
       <Scrollbar
         style={{ height: containerHeight }}
         noScrollX={true}
-        className={styles.tasksRoot}
+        className={styles.root}
         trackYProps={{
           renderer: (props) => {
             const { elementRef, ...restProps } = props;
@@ -93,18 +53,21 @@ export default function Tasks({ editedTask, setEditedTask }) {
           },
         }}
       >
-        <TasksRoot
-          root={""}
-          setContainerHeight={setContainerHeight}
-          editedTask={editedTask}
-          setEditedTask={setEditedTask}
-        />
+        <TasksDraggableWrapper>
+          <TasksRoot root={""} setContainerHeight={setContainerHeight} />
+        </TasksDraggableWrapper>
       </Scrollbar>
-      <When condition={projectByQueryId.owner == userCtx._id}>
-        <div className={styles.newTaskBtn} onClick={createHandle}>
-          + New Task
-        </div>
-      </When>
+      <NewTaskBtn />
     </>
   );
+}
+
+InnerTasks = memo(InnerTasks);
+
+export default function Tasks() {
+  const { tasksByProjectId } = useContext(TasksContext);
+
+  const hasTasksByProjectId = tasksByProjectId.length > 0;
+
+  return <InnerTasks {...{ hasTasksByProjectId }} />;
 }

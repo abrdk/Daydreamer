@@ -37,6 +37,14 @@
   background: #ffffff;
   color: #9ccdff;
   cursor: pointer;
+  transition: background 0.4s, color 0.4s;
+  &:hover {
+    background: #ecf5ff;
+  }
+  &:active {
+    background: #ecf5ff;
+    color: #258efa;
+  }
 }
 .activeButton {
   composes: baseButton;
