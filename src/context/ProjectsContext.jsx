@@ -92,9 +92,6 @@ export function ProjectsProvider(props) {
     loadProject
   );
 
-  console.log("projects", projects);
-  console.log();
-
   return (
     <ProjectsContext.Provider
       value={{

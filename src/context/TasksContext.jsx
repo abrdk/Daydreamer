@@ -169,9 +169,6 @@ export function TasksProvider(props) {
     setIsTaskOpened((isTaskOpened) => ({ ...isTaskOpened, [_id]: isOpened }));
   };
 
-  console.log("tasks", tasks);
-  console.log();
-
   return (
     <TasksContext.Provider
       value={{

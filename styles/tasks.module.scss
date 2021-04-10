@@ -110,16 +110,6 @@
   }
 }
 
-.subtasksWrapper {
-  padding-left: 14px;
-  .input {
-    color: #949da7;
-  }
-
-  .task {
-    color: #949da7;
-  }
-}
 .textWrapper {
   width: 100%;
   margin-right: 55px;
@@ -207,17 +197,6 @@
   overflow-y: auto !important;
   max-height: calc(100vh - 246px);
   overflow-x: hidden !important;
-}
-
-.task.dragged {
-  position: fixed;
-  width: 330px;
-  background: #ffffff;
-  box-shadow: 15px 15px 50px rgba(9, 40, 72, 0.1);
-  border-radius: 3px;
-  z-index: 1000;
-  transition-property: padding-left, color;
-  transition-duration: 0.2s;
 }
 
 .hidden {

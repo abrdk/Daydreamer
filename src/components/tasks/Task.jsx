@@ -70,7 +70,11 @@ function InnerTask({
             className={snapshot.isDragging ? styles.draggedTask : ""}
           >
             <div
-              className={`${styles.task} task`}
+              className={
+                snapshot.isDragging
+                  ? `${styles.task} task task-${task._id}`
+                  : `${styles.task} task`
+              }
               style={{
                 paddingLeft: 33 + taskDepth * taskOffsetLeft,
                 color: taskDepth > 0 ? "#949da7" : "#696f75",
@@ -132,9 +136,12 @@ InnerTask = memo(InnerTask, (prevProps, nextProps) => {
 });
 
 export default function Task({ taskId, setContainerHeight, index }) {
-  const { tasksByProjectId, isTaskOpened, whereEditNewTask } = useContext(
-    TasksContext
-  );
+  const {
+    tasksByProjectId,
+    isTaskOpened,
+    updateIsOpened,
+    whereEditNewTask,
+  } = useContext(TasksContext);
   const { isUserOwnsProject } = useContext(ProjectsContext);
 
   const task = tasksByProjectId.find((t) => t._id == taskId);
@@ -152,6 +159,10 @@ export default function Task({ taskId, setContainerHeight, index }) {
   while (currentTask) {
     currentTask = tasksByProjectId.find((t) => t._id == currentTask.root);
     taskDepth += 1;
+  }
+
+  if (!subtasks.length && isTaskOpened[task._id]) {
+    updateIsOpened({ _id: task._id, isOpened: false });
   }
 
   return (
