@@ -10,6 +10,13 @@
   align-items: center;
   color: #fff;
   cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.4s, color 0.4s, border 0.4s;
+  &:hover {
+    background: rgba(37, 142, 250, 0.05);
+    color: #258efa;
+    border: 1px solid #258efa;
+  }
 }
 
 .secondaryButton {
@@ -17,15 +24,30 @@
   background: #fff;
   border: 1px solid #258efa;
   color: #258efa;
+  transition: background 0.4s, color 0.4s, border 0.4s;
+  &:hover {
+    background: #258efa;
+    color: #fff;
+    border: 1px solid transparent;
+  }
 }
 
 .successButton {
-  composes: primaryButton;
+  border-radius: 3px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 21px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
   background: #59cd90;
   width: 100%;
   height: 60px;
   margin-bottom: 24px;
   cursor: default;
+  margin-top: 20px;
 }
 
 .title {
@@ -52,6 +74,10 @@
   text-decoration-line: underline;
   color: #258efa;
   cursor: pointer;
+  transition: 0.4s;
+  &:hover {
+    text-decoration: none;
+  }
 }
 
 .linkDisabled {

@@ -27,6 +27,15 @@
   flex-shrink: 0;
   justify-content: center;
   align-items: center;
+  border-radius: 3px;
+  transition: background 0.4s, color 0.4s;
+  &:hover {
+    background: #ecf5ff;
+  }
+  &:active {
+    background: #ecf5ff;
+    color: #258efa;
+  }
 }
 
 .weekend {
@@ -81,8 +90,18 @@
   align-items: center;
   justify-content: center;
   color: #696f75;
-  width: 120px;
+  width: 119px;
+  margin-left: 1px;
   height: 42px;
+  border-radius: 3px;
+  transition: background 0.4s, color 0.4s;
+  &:hover {
+    background: #ecf5ff;
+  }
+  &:active {
+    background: #ecf5ff;
+    color: #258efa;
+  }
 }
 
 .weekCurrent {
@@ -101,7 +120,8 @@
 }
 
 .monthWrapper {
-  width: 160px;
+  width: 159px;
+  margin-left: 1px;
   height: 42px;
   font-style: normal;
   font-weight: lighter;
@@ -111,6 +131,15 @@
   align-items: center;
   justify-content: center;
   color: #696f75;
+  border-radius: 3px;
+  transition: background 0.4s, color 0.4s;
+  &:hover {
+    background: #ecf5ff;
+  }
+  &:active {
+    background: #ecf5ff;
+    color: #258efa;
+  }
 }
 
 .monthCurrent {
@@ -170,7 +199,7 @@
   height: 35px;
   border-radius: 3px;
   left: 0;
-  cursor: pointer;
+  cursor: text;
 }
 
 .resizeAreaRight {
@@ -179,7 +208,7 @@
   height: 35px;
   border-radius: 3px;
   right: 0;
-  cursor: pointer;
+  cursor: text;
 }
 
 .moveAreaCenter {
@@ -187,6 +216,9 @@
   height: 35px;
   border-radius: 3px;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .scrollContainer {
@@ -205,15 +237,43 @@
   background: #fff;
   width: 25px;
   height: 25px;
-  border: 1px solid #9ccdff;
   border-radius: 100px;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  border: 1px solid #9ccdff;
+  color: #258efa;
+  transition: color 0.4s, background 0.4s, border 0.4s;
+  &:hover {
+    color: #fff;
+    background: #258efa;
+    border: 1px solid transparent;
+  }
+}
+
+.editTaskIcon {
+  composes: openSubtasksIcon;
+  left: 10px;
+}
+
+.editTaskIconWrapper {
+  position: absolute;
+  width: 35px;
+  height: 35px;
+  right: -35px;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
 }
 
 .addSubtaskIcon {
   composes: openSubtasksIcon;
+  border: none;
+  svg {
+    rect {
+      stroke: #9ccdff;
+    }
+  }
 }
 
 .openSubtasksWrapper {
@@ -232,6 +292,10 @@
   left: -35px;
   display: flex;
   align-items: center;
+  svg {
+    width: 25px;
+    height: 25px;
+  }
 }
 
 .tooltip {
@@ -289,4 +353,40 @@
   width: 161px;
   top: 53px;
   height: calc(100vh - 168px);
+}
+
+.name {
+  cursor: text !important;
+  position: relative;
+  z-index: 1;
+}
+
+.nameGrab {
+  cursor: grab !important;
+  position: relative;
+  z-index: 1;
+}
+
+.hiddenName {
+  position: absolute;
+  opacity: 0;
+  white-space: pre;
+}
+
+.input {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 21px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-family: "Noto Sans", sans-serif !important;
+  color: #f3f3f3;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  cursor: text !important;
+  position: relative;
+  z-index: 1;
 }

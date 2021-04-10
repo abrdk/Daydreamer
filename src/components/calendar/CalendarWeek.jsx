@@ -1,6 +1,6 @@
 import styles from "@/styles/calendar.module.scss";
 import { When } from "react-if";
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 
 import LineTasks from "@/src/components/tasks/Line/LineTasks";
 import ScrollbarWeek from "@/src/components/calendar/CalendarWeek/ScrollbarWeek";
@@ -20,16 +20,7 @@ const monthNames = [
   "December",
 ];
 
-export default function CalendarWeek({
-  cursor,
-  setCursor,
-  isDraggable,
-  setDraggable,
-  setMenu,
-  editedTask,
-  setEditedTask,
-  view,
-}) {
+function CalendarWeek({ cursor, setCursor, isDraggable, setDraggable }) {
   const daysInMonth = (month, year) => {
     return new Date(year, month + 1, 0).getDate();
   };
@@ -206,10 +197,6 @@ export default function CalendarWeek({
     >
       {weeksWithLabelsComponents}
       <LineTasks
-        setMenu={setMenu}
-        editedTask={editedTask}
-        setEditedTask={setEditedTask}
-        view={view}
         calendarStartDate={
           new Date(
             calendarStartDate.getFullYear(),
@@ -217,7 +204,17 @@ export default function CalendarWeek({
             1 - ((calendarStartDate.getDay() + 6) % 7)
           )
         }
+        calendarEndDate={calendarEndDate}
       />
     </ScrollbarWeek>
   );
 }
+
+CalendarWeek = memo(
+  CalendarWeek,
+  (prevProps, nextProps) =>
+    prevProps.cursor == nextProps.cursor &&
+    prevProps.isDraggable == nextProps.isDraggable
+);
+
+export default CalendarWeek;

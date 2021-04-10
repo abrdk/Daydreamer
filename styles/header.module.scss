@@ -28,6 +28,12 @@
 .share_button {
   border: 1px solid #258efa;
   background-color: #ffffff;
+  transition: background 0.4s, color 0.4s, border 0.4s;
+  &:hover {
+    background: #258efa;
+    color: #fff;
+    border: 1px solid transparent;
+  }
 }
 
 .account_button {
@@ -38,8 +44,12 @@
   padding-left: 18px;
   margin-left: 20px;
   margin-right: 0;
-}
-
-.account_button img {
-  margin-right: 18px;
+  transition: background 0.4s, color 0.4s, border 0.4s;
+  &:hover {
+    background: #258efa;
+    color: #fff;
+  }
+  svg {
+    margin-right: 18px;
+  }
 }

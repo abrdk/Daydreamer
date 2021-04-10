@@ -51,12 +51,22 @@
   composes: primaryButton from "./base.module.scss";
   width: 160px;
   height: 60px;
+  &:hover {
+    background: #258efa;
+    color: #fff;
+    border: 1px solid transparent;
+  }
 }
 
 .deleteAccountSecondaryButton {
   composes: secondaryButton from "./base.module.scss";
   width: 160px;
   height: 60px;
+  &:hover + .deleteAccountPrimaryButton {
+    background: rgba(37, 142, 250, 0.05);
+    color: #258efa;
+    border: 1px solid #258efa;
+  }
 }
 
 .twoButtons {

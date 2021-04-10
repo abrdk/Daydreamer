@@ -1,7 +1,7 @@
 import calendarStyles from "@/styles/calendar.module.scss";
 import { When } from "react-if";
-import { useEffect, useState, useRef } from "react";
-import Truncate from "react-truncate";
+import { useEffect, useState, useRef, useContext, memo } from "react";
+import useEvent from "@react-hook/event";
 
 import LineTasksRoot from "@/src/components/tasks/Line/LineTasksRoot";
 import DateTooltip from "@/src/components/tasks/Line/LineTask/DateTooltip";
@@ -9,24 +9,17 @@ import SubtaskTooltip from "@/src/components/tasks/Line/LineTask/SubtaskTooltip"
 import RightStick from "@/src/components/tasks/Line/LineTask/RightStick";
 import LeftStick from "@/src/components/tasks/Line/LineTask/LeftStick";
 import CenterArea from "@/src/components/tasks/Line/LineTask/CenterArea";
+import LineTaskName from "@/src/components/tasks/Line/LineTask/LineTaskName";
 
-export default function LineTask({
-  task,
-  setMenu,
-  setEditedTask,
-  calendarStartDate,
-  view,
-}) {
-  const views = ["Day", "Week", "Month"];
-  const dayWidth = [55, 120 / 7, 160 / 30];
-  const minOffsetRight = [-70, -5, 0];
-  const maxOffsetRight = [15, 5, 0];
-  const minOffsetLeft = [70, 5, 0];
-  const maxOffsetLeft = [-15, -5, 0];
-  const minOffsetMove = [65, 5, 0];
-  const maxOffsetMove = [-40, -5, 0];
+import { TasksContext } from "@/src/context/TasksContext";
+import { OptionsContext } from "@/src/context/OptionsContext";
 
+const views = ["Day", "Week", "Month"];
+const dayWidth = [55, 120 / 7, 160 / 30];
+
+function InnerLineTask({ task, calendarStartDate, view }) {
   const lineRef = useRef(null);
+  const inputRef = useRef(null);
 
   const [dateStart, setDateStart] = useState(new Date());
   const [dateEnd, setDateEnd] = useState(new Date());
@@ -38,6 +31,10 @@ export default function LineTask({
   const [isResizeLeft, setIsResizeLeft] = useState(false);
   const [isResizeRight, setIsResizeRight] = useState(false);
   const [isMoving, setIsMoving] = useState(false);
+
+  const [globalCursor, setGlobalCursor] = useState("");
+
+  const { editedTaskId, isTaskOpened } = useContext(TasksContext);
 
   const setDates = () => {
     if (typeof task.dateStart == "string") {
@@ -152,6 +149,16 @@ export default function LineTask({
     document.querySelector("#linesWrapper").style.paddingLeft = "0px";
   }, [dateStart, dateEnd, calendarStartDate]);
 
+  useEvent(document, "mousedown", (e) => {
+    if (e.target.classList.contains("stick")) {
+      setGlobalCursor("text");
+    }
+    if (e.target.classList.contains("grab")) {
+      setGlobalCursor("grab");
+    }
+  });
+  useEvent(document, "mouseup", () => setGlobalCursor(""));
+
   return (
     <>
       <div
@@ -162,23 +169,21 @@ export default function LineTask({
           background: `#${task.color}`,
           paddingLeft: getPadding(),
           paddingRight: getPadding(),
+          opacity:
+            editedTaskId != "" ? (editedTaskId == task._id ? 1 : 0.5) : 1,
         }}
         ref={lineRef}
       >
         <DateTooltip
           isResizeLeft={isResizeLeft}
           isResizeRight={isResizeRight}
-          view={view}
           dateStart={dateStart}
           dateEnd={dateEnd}
           taskWidth={taskWidth}
+          view={view}
         />
 
-        <SubtaskTooltip
-          task={task}
-          setMenu={setMenu}
-          setEditedTask={setEditedTask}
-        />
+        <SubtaskTooltip task={task} globalCursor={globalCursor} />
 
         <LeftStick
           task={task}
@@ -189,17 +194,10 @@ export default function LineTask({
           dateStart={dateStart}
           setDateStart={setDateStart}
           dateEnd={dateEnd}
-          maxOffsetLeft={maxOffsetLeft[views.indexOf(view)]}
-          minOffsetLeft={minOffsetLeft[views.indexOf(view)]}
           view={view}
           taskWidth={taskWidth}
+          globalCursor={globalCursor}
         />
-
-        <When condition={textWidth > 0}>
-          <Truncate lines={1} width={textWidth}>
-            {task.name}
-          </Truncate>
-        </When>
 
         <CenterArea
           task={task}
@@ -211,10 +209,17 @@ export default function LineTask({
           setDateStart={setDateStart}
           dateEnd={dateEnd}
           setDateEnd={setDateEnd}
-          maxOffsetMove={maxOffsetMove[views.indexOf(view)]}
-          minOffsetMove={minOffsetMove[views.indexOf(view)]}
           taskWidth={taskWidth}
-        />
+          inputRef={inputRef}
+          globalCursor={globalCursor}
+        >
+          <LineTaskName
+            task={task}
+            textWidth={textWidth}
+            taskWidth={taskWidth}
+            inputRef={inputRef}
+          />
+        </CenterArea>
 
         <RightStick
           task={task}
@@ -225,21 +230,31 @@ export default function LineTask({
           dateStart={dateStart}
           dateEnd={dateEnd}
           setDateEnd={setDateEnd}
-          maxOffsetRight={maxOffsetRight[views.indexOf(view)]}
-          minOffsetRight={minOffsetRight[views.indexOf(view)]}
           taskWidth={taskWidth}
+          globalCursor={globalCursor}
         />
       </div>
 
-      <When condition={task.isOpened}>
-        <LineTasksRoot
-          root={task._id}
-          setEditedTask={setEditedTask}
-          setMenu={setMenu}
-          view={view}
-          calendarStartDate={calendarStartDate}
-        />
+      <When condition={isTaskOpened[task._id]}>
+        <LineTasksRoot root={task._id} calendarStartDate={calendarStartDate} />
       </When>
     </>
   );
+}
+
+InnerLineTask = memo(InnerLineTask, (prevProps, nextProps) => {
+  for (let key in prevProps.task) {
+    if (prevProps.task[key] != nextProps.task[key]) {
+      return false;
+    }
+  }
+  return (
+    prevProps.view == nextProps.view &&
+    prevProps.calendarStartDate == nextProps.calendarStartDate
+  );
+});
+
+export default function LineTask(props) {
+  const { view } = useContext(OptionsContext);
+  return <InnerLineTask {...{ ...props, view }} />;
 }

@@ -2,13 +2,14 @@ import * as cookie from "cookie";
 const jwt = require("jsonwebtoken");
 
 export default async (req, res) => {
-  res.setHeader("Content-Type", "application/json");
-
   try {
+    res.setHeader("Content-Type", "application/json");
+
     const token = req.cookies.ganttToken;
     if (!token) {
-      return res.json({ message: "Unauthorized" });
+      return res.json({ _id: "", name: "", password: "" });
     }
+
     const user = jwt.verify(token, "jwtSecret");
     if (!user) {
       res.setHeader(
@@ -19,10 +20,30 @@ export default async (req, res) => {
           sameSite: true,
         })
       );
-      return res.status(401).json({ message: "Unauthorized" });
+      return res.status(401).json({ _id: "", name: "", password: "" });
     }
-    return res.status(200).json({ message: "ok", user });
+
+    return res
+      .status(200)
+      .json({ _id: user._id, name: user.name, password: user.password });
   } catch (e) {
-    return res.status(500).json({ message: "Server error" });
+    if (e.name == "TokenExpiredError") {
+      res.setHeader(
+        "Set-Cookie",
+        cookie.serialize("ganttToken", "", {
+          maxAge: 0,
+          path: "/",
+          sameSite: true,
+        })
+      );
+
+      return res.status(401).json({
+        message: "TokenExpiredError",
+      });
+    }
+
+    return res.status(500).json({
+      message: "Server error",
+    });
   }
 };

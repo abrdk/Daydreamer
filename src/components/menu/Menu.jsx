@@ -1,100 +1,53 @@
-import { useState, useContext } from "react";
+import React, { useContext, memo } from "react";
 import styles from "@/styles/menu.module.scss";
-import { nanoid } from "nanoid";
-import { When } from "react-if";
 
 import TaskEdit from "@/src/components/tasks/Edit/TaskEdit";
 import ProjectsDropdown from "@/src/components/projects/ProjectsDropdown";
 import Tasks from "@/src/components/tasks/Tasks";
+import PlusBtn from "@/src/components/menu/PlusBtn";
 
-import { TasksContext } from "@/src//context/tasks/TasksContext";
-import { UsersContext } from "@/src/context/users/UsersContext";
-import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
+import ArrowRightSvg from "@/src/components/svg/ArrowRightSvg";
+import ArrowLeftSvg from "@/src/components/svg/ArrowLeftSvg";
 
-export default function Menu({
-  isMenuOpen,
-  setMenu,
-  editedTask,
-  setEditedTask,
-}) {
-  const userCtx = useContext(UsersContext);
-  const { createTask, tasksByProjectId } = useContext(TasksContext);
-  const { projectByQueryId } = useContext(ProjectsContext);
+import { OptionsContext } from "@/src/context/OptionsContext";
 
-  const [isDropdownOpen, setDropdown] = useState(false);
-
+function InnerMenu({ isMenuOpened, setIsMenuOpened }) {
   const openMenuHandler = () => {
-    setEditedTask(null);
-    setMenu(!isMenuOpen);
-  };
-
-  const createTaskHandler = () => {
-    setMenu(true);
-
-    const today = new Date();
-    const currentDate = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate(),
-      0,
-      0,
-      0
-    );
-    let afterWeek = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate() + 6,
-      23,
-      59,
-      59
-    );
-
-    const topLevelTasks = tasksByProjectId.filter((task) => !task.root);
-
-    createTask({
-      _id: nanoid(),
-      name: "",
-      description: "",
-      dateStart: currentDate,
-      dateEnd: afterWeek,
-      color: "258EFA",
-      project: projectByQueryId._id,
-      root: "",
-      order: topLevelTasks.length,
-    });
+    setIsMenuOpened(!isMenuOpened);
   };
 
   return (
     <>
       <div className={styles.iconOpen} onClick={openMenuHandler}>
-        <img src="/img/arrowRight.svg" alt="close" />
+        <ArrowRightSvg />
       </div>
 
       <div
-        className={isMenuOpen ? styles.mainMenuOpened : styles.mainMenu}
+        className={isMenuOpened ? styles.mainMenuOpened : styles.mainMenu}
         style={{
-          transform: isMenuOpen ? "translateX(0)" : "translateX(-100%)",
+          transform: isMenuOpened ? "translateX(0)" : "translateX(-100%)",
         }}
-        id={isMenuOpen ? "openedMenu" : "closedMenu"}
+        id={isMenuOpened ? "openedMenu" : "closedMenu"}
       >
         <div className={styles.iconClose} onClick={openMenuHandler}>
-          <img src="/img/arrowLeft.svg" alt="close" />
+          <ArrowLeftSvg />
         </div>
-        <ProjectsDropdown
-          isDropdownOpen={isDropdownOpen}
-          setDropdown={setDropdown}
-        />
-        <Tasks editedTask={editedTask} setEditedTask={setEditedTask} />
-        <TaskEdit taskId={editedTask} setEditedTask={setEditedTask} />
+        <ProjectsDropdown />
+        <Tasks />
+        <TaskEdit />
       </div>
-      <When condition={projectByQueryId.owner == userCtx._id}>
-        <img
-          src="/img/plus.svg"
-          alt=" "
-          className={styles.bigPlus}
-          onClick={createTaskHandler}
-        />
-      </When>
+
+      <PlusBtn />
     </>
   );
+}
+
+InnerMenu = memo(
+  InnerMenu,
+  (prevProps, nextProps) => prevProps.isMenuOpened == nextProps.isMenuOpened
+);
+
+export default function Menu() {
+  const { isMenuOpened, setIsMenuOpened } = useContext(OptionsContext);
+  return <InnerMenu {...{ isMenuOpened, setIsMenuOpened }} />;
 }

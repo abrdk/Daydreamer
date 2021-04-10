@@ -12,7 +12,6 @@
   color: #696f75;
   padding-left: 33px;
   position: relative;
-  cursor: pointer;
   &:hover {
     box-shadow: 15px 15px 50px rgba(9, 40, 72, 0.15);
     .textWrapper {
@@ -41,6 +40,11 @@
   width: 25px;
   z-index: 5000;
   margin-right: 15px;
+  cursor: pointer;
+  svg {
+    width: 25px;
+    height: 25px;
+  }
 }
 
 .pencilContainer {
@@ -52,6 +56,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 
 .pencil {
@@ -62,6 +67,10 @@
   position: absolute;
   top: 4px;
   left: 4px;
+  color: #258efa;
+  svg {
+    margin-bottom: 4px;
+  }
 }
 
 .arrowRight {
@@ -72,6 +81,13 @@
   height: 32px;
   margin-right: 9px;
   padding: 9px;
+  cursor: pointer;
+  color: #9ccdff;
+  svg {
+    width: 7px;
+    height: 12px;
+    margin-bottom: 4px;
+  }
 }
 
 .arrowDown {
@@ -82,18 +98,18 @@
   height: 25px;
   margin-right: 9px;
   padding: 9px;
+  cursor: pointer;
+  color: #9ccdff;
+  svg {
+    width: 12px;
+    height: 7px;
+    margin-bottom: 9px;
+    path {
+      stroke-width: 1.5;
+    }
+  }
 }
 
-.subtasksWrapper {
-  padding-left: 14px;
-  .input {
-    color: #949da7;
-  }
-
-  .task {
-    color: #949da7;
-  }
-}
 .textWrapper {
   width: 100%;
   margin-right: 55px;
@@ -106,8 +122,6 @@
   line-height: 21px;
   border: none;
   background: transparent;
-  cursor: pointer;
-  color: #696f75;
   padding: 0;
   font-family: "Noto Sans", sans-serif !important;
   z-index: 5000;
@@ -139,13 +153,13 @@
   background: #f3f3f3;
 }
 
-.tasksHeaderWrapper {
+.headerWrapper {
   display: flex;
   align-items: center;
   height: 73px;
 }
 
-.tasksHeader {
+.header {
   font-style: normal;
   font-weight: 500;
   font-size: 12px;
@@ -171,23 +185,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background 0.4s, color 0.4s, border 0.4s;
+  &:hover {
+    background: #258efa;
+    color: #fff;
+    border: 1px solid transparent;
+  }
 }
 
-.tasksRoot {
+.root {
   overflow-y: auto !important;
-  max-height: calc(100vh - 166px - 80px);
+  max-height: calc(100vh - 246px);
   overflow-x: hidden !important;
-}
-
-.task.dragged {
-  position: fixed;
-  width: 330px;
-  background: #ffffff;
-  box-shadow: 15px 15px 50px rgba(9, 40, 72, 0.1);
-  border-radius: 3px;
-  z-index: 1000;
-  transition-property: padding-left, color;
-  transition-duration: 0.2s;
 }
 
 .hidden {
@@ -210,4 +219,10 @@
   background: #258efa;
   position: absolute;
   left: 0;
+}
+
+.draggedTask {
+  background: #fff;
+  box-shadow: 15px 15px 50px rgba(9, 40, 72, 0.1);
+  border-radius: 3px;
 }

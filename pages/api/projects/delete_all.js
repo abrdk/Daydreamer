@@ -2,9 +2,9 @@ const jwt = require("jsonwebtoken");
 const getDB = require("@/helpers/getDb.js");
 
 export default async (req, res) => {
-  res.setHeader("Content-Type", "application/json");
-
   try {
+    res.setHeader("Content-Type", "application/json");
+
     const token = req.cookies.ganttToken;
     if (!token) {
       return res.status(401).json({ message: "Unauthorized" });
