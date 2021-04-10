@@ -46,7 +46,14 @@ function InnerSubtaskTooltip({
   return (
     <When condition={globalCursor == ""}>
       <When condition={numOfSubtasks}>
-        <div className={calendarStyles.openSubtasksWrapper}>
+        <div
+          className={calendarStyles.openSubtasksWrapper}
+          style={{
+            width: !isUserOwnsProject ? 35 : null,
+            paddingRight: !isUserOwnsProject ? 4 : null,
+            left: !isUserOwnsProject ? -35 : null,
+          }}
+        >
           <div
             className={calendarStyles.openSubtasksIcon}
             onClick={() => {

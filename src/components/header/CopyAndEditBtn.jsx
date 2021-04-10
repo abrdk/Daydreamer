@@ -11,33 +11,40 @@ import { OptionsContext } from "@/src/context/OptionsContext";
 export default function copyAndEditBtn({ setModal }) {
   const router = useRouter();
 
-  const { user } = useContext(UsersContext);
+  const { user, setIsUserLogout } = useContext(UsersContext);
   const { projectByQueryId, createProject } = useContext(ProjectsContext);
   const { createTask, tasksByProjectId } = useContext(TasksContext);
   const { setIsMenuOpened } = useContext(OptionsContext);
 
   const copyAndEdit = async () => {
-    if (user._id) {
-      setIsMenuOpened(false);
-      const newProjectId = nanoid();
-      await createProject({
-        _id: newProjectId,
-        name: projectByQueryId.name,
-        owner: user._id,
-      });
-      const new_ids = tasksByProjectId.map((t) => nanoid());
-      const old_ids = tasksByProjectId.map((t) => t._id);
-
-      const newTasks = tasksByProjectId.map((t) => {
+    if (!user._id) {
+      setModal("signup");
+      return;
+    }
+    setIsUserLogout(true);
+    setIsMenuOpened(false);
+    const newProjectId = nanoid();
+    await createProject({
+      _id: newProjectId,
+      name: projectByQueryId.name,
+      owner: user._id,
+      isCurrent: true,
+    });
+    const new_ids = tasksByProjectId.map((t) => nanoid());
+    const old_ids = tasksByProjectId.map((t) => t._id);
+    const newTasks = tasksByProjectId
+      .map((t) => {
         const i = tasksByProjectId.indexOf(t);
         if (t.root) {
-          return {
-            ...t,
-            _id: new_ids[i],
-            project: newProjectId,
-            owner: user._id,
-            root: new_ids[old_ids.indexOf(t.root)],
-          };
+          if (new_ids[old_ids.indexOf(t.root)]) {
+            return {
+              ...t,
+              _id: new_ids[i],
+              project: newProjectId,
+              owner: user._id,
+              root: new_ids[old_ids.indexOf(t.root)],
+            };
+          }
         } else {
           return {
             ...t,
@@ -46,21 +53,19 @@ export default function copyAndEditBtn({ setModal }) {
             owner: user._id,
           };
         }
+      })
+      .filter((t) => t !== undefined);
+
+    async function createTasks() {
+      const promises = newTasks.map(async (task) => {
+        await createTask(task);
       });
-
-      async function createTasks() {
-        const promises = newTasks.map(async (task) => {
-          await createTask(task);
-        });
-        await Promise.all(promises);
-      }
-      await createTasks();
-
-      router.push(`/gantt/${newProjectId}`);
-      setTimeout(() => router.reload(), 100);
-    } else {
-      setModal("signup");
+      await Promise.all(promises);
     }
+    await createTasks();
+
+    setIsUserLogout(false);
+    router.push(`/gantt/${newProjectId}`);
   };
 
   return (

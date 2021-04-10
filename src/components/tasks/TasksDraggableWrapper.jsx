@@ -157,23 +157,25 @@ function TasksDraggableWrapper({ children }) {
   return (
     <DragDropContext
       onDragEnd={({ source, destination }) => {
-        const [sourceTask, destinationTask] = getSourсeAndDestTask(
-          source.index,
-          destination.index
-        );
+        try {
+          const [sourceTask, destinationTask] = getSourсeAndDestTask(
+            source.index,
+            destination.index
+          );
 
-        if (sourceTask.root == destinationTask.root) {
-          if (
-            isTaskOpened[destinationTask._id] &&
-            getTaskIndex(destinationTask._id) > getTaskIndex(sourceTask._id)
-          ) {
-            makeSourceTaskFirstInDest(sourceTask, destinationTask);
+          if (sourceTask.root == destinationTask.root) {
+            if (
+              isTaskOpened[destinationTask._id] &&
+              getTaskIndex(destinationTask._id) > getTaskIndex(sourceTask._id)
+            ) {
+              makeSourceTaskFirstInDest(sourceTask, destinationTask);
+            } else {
+              replaceTasksAtSameRoot(sourceTask, destinationTask);
+            }
           } else {
-            replaceTasksAtSameRoot(sourceTask, destinationTask);
+            replaceTasksAtDifferentRoot(sourceTask, destinationTask);
           }
-        } else {
-          replaceTasksAtDifferentRoot(sourceTask, destinationTask);
-        }
+        } catch (e) {}
       }}
       onBeforeCapture={({ draggableId }) => {
         updateIsOpened({ _id: draggableId, isOpened: false });

@@ -3,12 +3,16 @@ import { useRouter } from "next/router";
 
 import { UsersContext } from "@/src/context/UsersContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
+import { OptionsContext } from "@/src/context/OptionsContext";
 
 export default function RedirectManager({ children }) {
   const router = useRouter();
 
-  const { isUserLoaded, user, setIsUserLogout } = useContext(UsersContext);
+  const { isUserLoaded, user, setIsUserLogout, isUserLogout } = useContext(
+    UsersContext
+  );
   const { isProjectsLoaded, projects } = useContext(ProjectsContext);
+  const { isMenuOpened, setIsMenuOpened } = useContext(OptionsContext);
 
   useEffect(() => {
     if (!isUserLoaded || !isProjectsLoaded) {
@@ -27,7 +31,12 @@ export default function RedirectManager({ children }) {
         router.push(`/gantt/${currentProject._id}`);
       }
     } else if (router.pathname == "/signup" || router.pathname == "/login") {
-      setIsUserLogout(false);
+      if (isUserLogout) {
+        setIsUserLogout(false);
+      }
+      if (isMenuOpened) {
+        setIsMenuOpened(false);
+      }
       if (user._id && projects.length) {
         let currentProject = projects.find((p) => p.isCurrent);
         if (!currentProject) {

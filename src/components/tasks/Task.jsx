@@ -61,7 +61,11 @@ function InnerTask({
 
   return (
     <>
-      <Draggable draggableId={task._id} index={index}>
+      <Draggable
+        draggableId={task._id}
+        index={index}
+        isDragDisabled={!isUserOwnsProject}
+      >
         {(provided, snapshot) => (
           <div
             ref={provided.innerRef}
@@ -78,6 +82,7 @@ function InnerTask({
               style={{
                 paddingLeft: 33 + taskDepth * taskOffsetLeft,
                 color: taskDepth > 0 ? "#949da7" : "#696f75",
+                cursor: "pointer",
               }}
               onClick={startUpdate}
               ref={taskWrapperRef}
