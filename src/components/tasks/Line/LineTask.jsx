@@ -151,7 +151,7 @@ function InnerLineTask({ task, calendarStartDate, view }) {
 
   useEvent(document, "mousedown", (e) => {
     if (e.target.classList.contains("stick")) {
-      setGlobalCursor("text");
+      setGlobalCursor("ew-resize");
     }
     if (e.target.classList.contains("grab")) {
       setGlobalCursor("grab");

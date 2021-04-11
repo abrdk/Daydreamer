@@ -26,7 +26,7 @@ function InnerLeftStick({
 
   const startResizeLeft = () => {
     setIsResizeLeft(true);
-    document.body.style.cursor = "text";
+    document.body.style.cursor = "ew-resize";
   };
 
   const stopResizeLeft = () => {
@@ -116,7 +116,7 @@ function InnerLeftStick({
           className={calendarStyles.resizeAreaLeft + " stick"}
           onMouseDown={startResizeLeft}
           style={{
-            cursor: globalCursor ? globalCursor : "text",
+            cursor: globalCursor ? globalCursor : "ew-resize",
           }}
         ></div>
       </When>
