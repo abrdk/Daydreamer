@@ -24,7 +24,7 @@ function InnerRightStick({
 
   const startResizeRight = () => {
     setIsResizeRight(true);
-    document.body.style.cursor = "text";
+    document.body.style.cursor = "ew-resize";
   };
 
   const stopResizeRight = () => {
@@ -116,7 +116,7 @@ function InnerRightStick({
           className={calendarStyles.resizeAreaRight + " stick"}
           onMouseDown={startResizeRight}
           style={{
-            cursor: globalCursor ? globalCursor : "text",
+            cursor: globalCursor ? globalCursor : "ew-resize",
             width: taskWidth > 18 ? 18 : taskWidth == 0 ? 160 / 30 : taskWidth,
           }}
         ></div>
