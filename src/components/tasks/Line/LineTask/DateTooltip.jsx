@@ -1,14 +1,15 @@
+import { memo } from "react";
 import calendarStyles from "@/styles/calendar.module.scss";
 import { When } from "react-if";
 const dateFormat = require("dateformat");
 
-export default function DateTooltip({
+function DateTooltip({
   isResizeLeft,
   isResizeRight,
-  view,
   dateStart,
   dateEnd,
   taskWidth,
+  view,
 }) {
   return (
     <>
@@ -37,3 +38,7 @@ export default function DateTooltip({
     </>
   );
 }
+
+DateTooltip = memo(DateTooltip);
+
+export default DateTooltip;

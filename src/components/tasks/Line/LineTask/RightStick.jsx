@@ -1,13 +1,12 @@
 import calendarStyles from "@/styles/calendar.module.scss";
 import { When } from "react-if";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, memo } from "react";
 import useEvent from "@react-hook/event";
 
-import { UsersContext } from "@/src/context/users/UsersContext";
-import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
-import { TasksContext } from "@/src//context/tasks/TasksContext";
+import { ProjectsContext } from "@/src/context/ProjectsContext";
+import { TasksContext } from "@/src/context/TasksContext";
 
-export default function RightStick({
+function InnerRightStick({
   task,
   isResizeRight,
   setIsResizeRight,
@@ -16,19 +15,16 @@ export default function RightStick({
   dateStart,
   dateEnd,
   setDateEnd,
-  maxOffsetRight,
-  minOffsetRight,
   taskWidth,
+  globalCursor,
+  updateTask,
+  isUserOwnsProject,
 }) {
-  const { updateTask } = useContext(TasksContext);
-  const { projectByQueryId } = useContext(ProjectsContext);
-  const userCtx = useContext(UsersContext);
-
   const [scrollLeft, setScrollLeft] = useState(undefined);
 
   const startResizeRight = () => {
     setIsResizeRight(true);
-    document.body.style.cursor = "grab";
+    document.body.style.cursor = "ew-resize";
   };
 
   const stopResizeRight = () => {
@@ -69,12 +65,18 @@ export default function RightStick({
     const offset = clientX - lineRect.right;
     if (Number(lineStyles.width.slice(0, -2)) + offset <= dayWidth) {
       setDateEnd(dateStart);
-    } else if (offset >= maxOffsetRight || offset <= minOffsetRight) {
+    } else if (offset >= dayWidth || offset <= -dayWidth) {
+      let dateDiff;
+      if (offset >= dayWidth) {
+        dateDiff = Math.floor(offset / dayWidth);
+      } else {
+        dateDiff = Math.ceil(offset / dayWidth);
+      }
       setDateEnd(
         new Date(
           dateEnd.getFullYear(),
           dateEnd.getMonth(),
-          dateEnd.getDate() + (Math.floor(offset / dayWidth) + 1),
+          dateEnd.getDate() + dateDiff,
           23,
           59,
           59
@@ -109,16 +111,39 @@ export default function RightStick({
   return (
     <>
       <div className={calendarStyles.stick}></div>
-      <When condition={projectByQueryId.owner == userCtx._id}>
+      <When condition={isUserOwnsProject}>
         <div
-          className={calendarStyles.resizeAreaRight}
+          className={calendarStyles.resizeAreaRight + " stick"}
           onMouseDown={startResizeRight}
           style={{
-            cursor: isResizeRight ? "grab" : "pointer",
+            cursor: globalCursor ? globalCursor : "ew-resize",
             width: taskWidth > 18 ? 18 : taskWidth == 0 ? 160 / 30 : taskWidth,
           }}
         ></div>
       </When>
     </>
   );
+}
+
+InnerRightStick = memo(InnerRightStick, (prevProps, nextProps) => {
+  for (let key in prevProps.task) {
+    if (prevProps.task[key] != nextProps.task[key]) {
+      return false;
+    }
+  }
+  return (
+    prevProps.globalCursor == nextProps.globalCursor &&
+    prevProps.isUserOwnsProject == nextProps.isUserOwnsProject &&
+    prevProps.isResizeRight == nextProps.isResizeRight &&
+    prevProps.dayWidth == nextProps.dayWidth &&
+    prevProps.dateStart == nextProps.dateStart &&
+    prevProps.dateEnd == nextProps.dateEnd &&
+    prevProps.taskWidth == nextProps.taskWidth
+  );
+});
+
+export default function RightStick(props) {
+  const { updateTask } = useContext(TasksContext);
+  const { isUserOwnsProject } = useContext(ProjectsContext);
+  return <InnerRightStick {...{ ...props, updateTask, isUserOwnsProject }} />;
 }

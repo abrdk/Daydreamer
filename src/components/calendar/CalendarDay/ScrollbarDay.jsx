@@ -1,9 +1,7 @@
 import Scrollbar from "react-scrollbars-custom";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import useEvent from "@react-hook/event";
 import styles from "@/styles/calendar.module.scss";
-
-import { TasksContext } from "@/src//context/tasks/TasksContext";
 
 export default function ScrollbarDay({
   cursor,
@@ -17,11 +15,14 @@ export default function ScrollbarDay({
   defaultScrollLeft,
   children,
 }) {
-  const { tasksByProjectId } = useContext(TasksContext);
-
   const [isMouseDown, setIsMouseDown] = useState(false);
   useEvent(document, "mousedown", () => setIsMouseDown(true));
-  useEvent(document, "mouseup", () => setIsMouseDown(false));
+  useEvent(document, "mouseup", () => {
+    setIsMouseDown(false);
+    document.querySelector(".Calendar-Scroller").style.userSelect = "auto";
+    document.querySelector(".Calendar-Scroller").scrollBy(-1, 0);
+    document.querySelector(".Calendar-Scroller").scrollBy(1, 0);
+  });
 
   const [initialScrollLeft, setInitialScrollLeft] = useState(0);
 
@@ -31,19 +32,12 @@ export default function ScrollbarDay({
       setDraggable(true);
       document.body.style.cursor = "grab";
       setCursor("grab");
+      document.querySelector(".Calendar-Scroller").style.userSelect = "none";
     }
   };
 
   const daysInMonth = (month, year) => {
     return new Date(year, month + 1, 0).getDate();
-  };
-
-  const numOfMonths = (startDate, endDate) => {
-    let months;
-    months = (endDate.getFullYear() - startDate.getFullYear()) * 12;
-    months -= startDate.getMonth();
-    months += endDate.getMonth() + 1;
-    return months <= 0 ? 0 : months;
   };
 
   const stopScrollHandler = (scrollValues) => {
@@ -99,73 +93,10 @@ export default function ScrollbarDay({
     }
   };
 
-  useEffect(() => {
-    if (tasksByProjectId.length) {
-      const startDates = tasksByProjectId.map((t) => {
-        if (typeof t.dateStart == "string") {
-          return new Date(t.dateStart);
-        }
-        return t.dateStart;
-      });
-      startDates.sort((t1, t2) => t1.getTime() - t2.getTime());
-      const earliestDate = startDates[0];
-      if (calendarStartDate.getTime() - earliestDate.getTime() > 0) {
-        setCalendarStartDate(
-          new Date(
-            calendarStartDate.getFullYear(),
-            calendarStartDate.getMonth() -
-              numOfMonths(earliestDate, calendarStartDate) +
-              1,
-            1
-          )
-        );
-        const numOfDays = [
-          ...Array(numOfMonths(earliestDate, calendarStartDate) - 1).keys(),
-        ].map((i) =>
-          daysInMonth(
-            calendarStartDate.getMonth() - i - 1,
-            calendarStartDate.getFullYear()
-          )
-        );
-        document
-          .querySelector(".Calendar-Scroller")
-          .scrollBy(numOfDays.reduce((sum, num) => sum + num, 0) * 55, 0);
-        document.querySelector("#linesWrapper").style.paddingLeft =
-          numOfDays.reduce((sum, num) => sum + num, 0) * 55 + "px";
-      }
-
-      const endDates = tasksByProjectId.map((t) => {
-        if (typeof t.dateEnd == "string") {
-          return new Date(t.dateEnd);
-        }
-        return t.dateEnd;
-      });
-      endDates.sort((t1, t2) => t2.getTime() - t1.getTime());
-      const latestDate = endDates[0];
-      if (latestDate.getTime() - calendarEndDate.getTime() > 0) {
-        setCalendarEndDate(
-          new Date(
-            calendarEndDate.getFullYear(),
-            calendarEndDate.getMonth() +
-              numOfMonths(calendarEndDate, latestDate) -
-              1,
-            daysInMonth(
-              calendarEndDate.getFullYear(),
-              calendarEndDate.getMonth() +
-                numOfMonths(calendarEndDate, latestDate) -
-                1
-            ),
-            23,
-            59,
-            59
-          )
-        );
-      }
-    }
-  }, [tasksByProjectId]);
-
   const scrollByMouse = (e) => {
-    e.target.ownerDocument.defaultView.getSelection().removeAllRanges();
+    try {
+      e.target.ownerDocument.defaultView.getSelection().removeAllRanges();
+    } catch (e) {}
     document
       .querySelector(".Calendar-Scroller")
       .scrollBy(-e.clientX + initialScrollLeft, 0);

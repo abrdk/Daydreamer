@@ -3,9 +3,8 @@ import { When } from "react-if";
 import { useContext, useState, useEffect } from "react";
 import useEvent from "@react-hook/event";
 
-import { UsersContext } from "@/src/context/users/UsersContext";
-import { ProjectsContext } from "@/src/context/projects/ProjectsContext";
-import { TasksContext } from "@/src//context/tasks/TasksContext";
+import { ProjectsContext } from "@/src/context/ProjectsContext";
+import { TasksContext } from "@/src/context/TasksContext";
 
 export default function CenterArea({
   task,
@@ -17,24 +16,24 @@ export default function CenterArea({
   setDateStart,
   dateEnd,
   setDateEnd,
-  maxOffsetMove,
-  minOffsetMove,
   taskWidth,
+  inputRef,
+  globalCursor,
+  children,
 }) {
-  const centerAreaWidth = taskWidth - 36 > 100 ? 100 : taskWidth - 36;
-
   const { updateTask } = useContext(TasksContext);
-  const { projectByQueryId } = useContext(ProjectsContext);
-  const userCtx = useContext(UsersContext);
+  const { isUserOwnsProject } = useContext(ProjectsContext);
 
   const [scrollLeft, setScrollLeft] = useState(undefined);
   const [offsetFromCenter, setOffsetFromCenter] = useState(0);
 
   const startMoving = (e) => {
-    setIsMoving(true);
-    const lineRect = lineRef.current.getBoundingClientRect();
-    setOffsetFromCenter(lineRect.left + lineRect.width / 2 - e.clientX);
-    document.body.style.cursor = "grab";
+    if (e.target != inputRef.current && isUserOwnsProject) {
+      setIsMoving(true);
+      const lineRect = lineRef.current.getBoundingClientRect();
+      setOffsetFromCenter(lineRect.left + lineRect.width / 2 - e.clientX);
+      document.body.style.cursor = "grab";
+    }
   };
 
   const stopMoving = () => {
@@ -75,25 +74,44 @@ export default function CenterArea({
     const offset =
       clientX - (lineRect.right - lineRect.width / 2) + offsetFromCenter;
 
-    if (offset >= maxOffsetMove || offset <= minOffsetMove) {
+    if (offset >= dayWidth || offset <= -dayWidth) {
+      let dateDiff;
+      if (offset >= dayWidth) {
+        dateDiff = Math.floor(offset / dayWidth);
+      } else {
+        dateDiff = Math.ceil(offset / dayWidth);
+      }
       setDateStart(
         new Date(
           dateStart.getFullYear(),
           dateStart.getMonth(),
-          dateStart.getDate() + (Math.floor(offset / dayWidth) + 1)
+          dateStart.getDate() + dateDiff
         )
       );
       setDateEnd(
         new Date(
           dateEnd.getFullYear(),
           dateEnd.getMonth(),
-          dateEnd.getDate() + (Math.floor(offset / dayWidth) + 1),
+          dateEnd.getDate() + dateDiff,
           23,
           59,
           59
         )
       );
     }
+  };
+
+  const getCursor = () => {
+    if (!isUserOwnsProject) {
+      return "default";
+    }
+    if (globalCursor) {
+      return globalCursor;
+    }
+    if (isMoving) {
+      return "grab";
+    }
+    return "pointer";
   };
 
   useEvent(document, "mousemove", (e) => {
@@ -120,18 +138,18 @@ export default function CenterArea({
   }, [document.querySelector(".Calendar-Scroller"), scrollLeft]);
 
   return (
-    <When
-      condition={taskWidth - 36 > 0 && projectByQueryId.owner == userCtx._id}
-    >
+    <When condition={taskWidth - 36 > 0}>
       <div
-        className={calendarStyles.moveAreaCenter}
+        className={calendarStyles.moveAreaCenter + " grab"}
         style={{
-          width: centerAreaWidth,
-          left: (taskWidth - centerAreaWidth) / 2,
-          cursor: isMoving ? "grab" : "pointer",
+          width: taskWidth - 36,
+          left: 18,
+          cursor: getCursor(),
         }}
         onMouseDown={startMoving}
-      ></div>
+      >
+        {children}
+      </div>
     </When>
   );
 }

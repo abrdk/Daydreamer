@@ -2,19 +2,19 @@ const jwt = require("jsonwebtoken");
 const getDB = require("@/helpers/getDb.js");
 
 export default async (req, res) => {
-  res.setHeader("Content-Type", "application/json");
-  const {
-    _id,
-    name,
-    description,
-    dateStart,
-    dateEnd,
-    color,
-    root,
-    order,
-  } = req.body;
-
   try {
+    res.setHeader("Content-Type", "application/json");
+    const {
+      _id,
+      name,
+      description,
+      dateStart,
+      dateEnd,
+      color,
+      root,
+      order,
+    } = req.body;
+
     const dateStartM = new Date(dateStart);
     const dateEndM = new Date(dateEnd);
     if (dateEndM - dateStartM < 0) {

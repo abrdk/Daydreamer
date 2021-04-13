@@ -1,6 +1,6 @@
 import styles from "@/styles/calendar.module.scss";
-import { When } from "react-if";
-import { useEffect, useState, useMemo } from "react";
+import { Else, If, Then, When } from "react-if";
+import { useEffect, useState, useMemo, memo } from "react";
 
 import LineTasks from "@/src/components/tasks/Line/LineTasks";
 import ScrollbarDay from "@/src/components/calendar/CalendarDay/ScrollbarDay";
@@ -21,15 +21,12 @@ const monthNames = [
   "December",
 ];
 
-export default function CalendarDay({
+function CalendarDay({
   cursor,
   setCursor,
   isDraggable,
   setDraggable,
-  setMenu,
-  editedTask,
-  setEditedTask,
-  view,
+  isDefault,
 }) {
   const daysInMonth = (month, year) => {
     return new Date(year, month + 1, 0).getDate();
@@ -165,25 +162,38 @@ export default function CalendarDay({
   }, [defaultScrollLeft]);
 
   return (
-    <ScrollbarDay
-      cursor={cursor}
-      setCursor={setCursor}
-      isDraggable={isDraggable}
-      setDraggable={setDraggable}
-      calendarStartDate={calendarStartDate}
-      setCalendarStartDate={setCalendarStartDate}
-      calendarEndDate={calendarEndDate}
-      setCalendarEndDate={setCalendarEndDate}
-      defaultScrollLeft={defaultScrollLeft}
-    >
-      {daysWithLabelsComponents}
-      <LineTasks
-        calendarStartDate={calendarStartDate}
-        setMenu={setMenu}
-        editedTask={editedTask}
-        setEditedTask={setEditedTask}
-        view={view}
-      />
-    </ScrollbarDay>
+    <If condition={isDefault}>
+      <Then>
+        <div className={styles.wrapper}>{daysWithLabelsComponents}</div>
+      </Then>
+      <Else>
+        <ScrollbarDay
+          cursor={cursor}
+          setCursor={setCursor}
+          isDraggable={isDraggable}
+          setDraggable={setDraggable}
+          calendarStartDate={calendarStartDate}
+          setCalendarStartDate={setCalendarStartDate}
+          calendarEndDate={calendarEndDate}
+          setCalendarEndDate={setCalendarEndDate}
+          defaultScrollLeft={defaultScrollLeft}
+        >
+          {daysWithLabelsComponents}
+          <LineTasks
+            calendarStartDate={calendarStartDate}
+            calendarEndDate={calendarEndDate}
+          />
+        </ScrollbarDay>
+      </Else>
+    </If>
   );
 }
+
+CalendarDay = memo(
+  CalendarDay,
+  (prevProps, nextProps) =>
+    prevProps.cursor == nextProps.cursor &&
+    prevProps.isDraggable == nextProps.isDraggable
+);
+
+export default CalendarDay;
