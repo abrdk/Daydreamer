@@ -42,7 +42,7 @@ export default function Signup() {
             <div className={styles.title}>Registration</div>
             <div className={styles.description}>
               Enter your information to register and to be
-              <br /> able to use the service
+              <br className={styles.descriptionBr} /> able to use the service
             </div>
             <NameForm name={name} setName={setName} nameWarn={nameWarn} />
             <PasswordForm

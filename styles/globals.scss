@@ -71,6 +71,14 @@ input:-webkit-autofill:focus {
   line-height: 21px;
 }
 
+@media (max-width: 575.98px) {
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    font-size: 13px;
+  }
+}
+
 // scrollbar
 
 .ScrollbarsCustom-TrackY {

@@ -247,3 +247,107 @@
     margin-top: 0;
   }
 }
+
+@media (max-width: 575.98px) {
+  .container {
+    padding: 0 20px;
+  }
+
+  .form {
+    width: 100%;
+    height: auto;
+    padding: 33px 30px 21px 30px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .description {
+    font-size: 14px;
+    margin-bottom: 13px;
+  }
+
+  .descriptionBr {
+    display: none;
+  }
+
+  .formInput {
+    margin-bottom: 10px;
+    height: 50px;
+    input,
+    textarea {
+      height: 48px;
+      font-size: 13px;
+      &:focus + span {
+        top: -11px;
+        padding-top: 0;
+        padding-bottom: 0;
+        font-size: 11px !important;
+      }
+    }
+    span {
+      padding-top: 13.5px;
+      font-size: 13px !important;
+    }
+  }
+
+  .formInputFilled {
+    margin-bottom: 10px;
+    height: 50px;
+    input,
+    textarea {
+      height: 48px;
+      font-size: 13px;
+      &:focus + span {
+        top: -11px;
+        font-size: 11px !important;
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+    }
+    span {
+      font-size: 11px !important;
+      top: -11px;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
+
+  .passwordEye {
+    top: 13px;
+  }
+
+  .primaryButton {
+    margin-top: 0px;
+    height: 50px;
+    font-size: 15px;
+  }
+
+  .line {
+    width: calc(100% + 60px);
+    height: 1px;
+    position: static;
+    margin-bottom: 10px;
+  }
+
+  .linkDescription {
+    font-size: 13px;
+    position: static;
+    margin-bottom: 3px;
+  }
+
+  .link {
+    font-size: 13px;
+    position: static;
+  }
+
+  .warningContainer {
+    font-size: 11px;
+    margin-bottom: 10px;
+    margin-top: -7px;
+    & + .primaryButton {
+      margin-top: 0;
+    }
+  }
+}
