@@ -83,3 +83,37 @@
     margin-top: 0;
   }
 }
+
+@media (max-width: 575.98px) {
+  .accountModal {
+    width: calc(100% - 40px);
+    padding: 28px 30px 24px 30px;
+  }
+
+  .accountTitle {
+    margin-bottom: 32px;
+    font-size: 24px;
+  }
+
+  .accountPrimaryButton {
+    height: 50px;
+    margin-bottom: 16px;
+    margin-top: 0px;
+    font-size: 15px;
+  }
+
+  .accountSecondaryButton {
+    height: 50px;
+    margin-bottom: 16px;
+    margin-top: 0px;
+    font-size: 15px;
+  }
+
+  .accountLink {
+    font-size: 13px;
+  }
+
+  .accountLinkDisabled {
+    font-size: 13px;
+  }
+}
