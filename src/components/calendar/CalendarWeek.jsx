@@ -26,6 +26,7 @@ function CalendarWeek({ cursor, setCursor, isDraggable, setDraggable }) {
   };
 
   const today = new Date();
+  today.setDate(today.getDate() + 7);
 
   const [calendarStartDate, setCalendarStartDate] = useState(
     new Date(today.getFullYear(), 0, 1)
@@ -50,7 +51,7 @@ function CalendarWeek({ cursor, setCursor, isDraggable, setDraggable }) {
 
   const isDayBetweenTwoDays = (day, weekStart, weekEnd) => {
     return (
-      day.getTime() - weekStart.getTime() > 0 &&
+      day.getTime() - weekStart.getTime() > -24 * 60 * 60 * 1000 &&
       weekEnd.getTime() - day.getTime() > 0
     );
   };
