@@ -191,6 +191,7 @@
   height: 25px;
   background: #fff;
   border-radius: 3px;
+  flex-shrink: 0;
 }
 
 .resizeAreaLeft {
@@ -409,6 +410,16 @@
 
   .line {
     left: 20.5px;
+    height: calc(100vh - 157px);
+  }
+
+  .week {
+    font-size: 13px;
+    height: 48px;
+    width: 91px;
+  }
+
+  .weekLine {
     height: calc(100vh - 157px);
   }
 }

@@ -134,7 +134,10 @@ function InnerLeftStick({
           }}
         ></div>
       </When>
-      <div className={calendarStyles.stick}></div>
+      <div
+        className={calendarStyles.stick}
+        style={{ width: taskWidth < 18 ? 0 : 2 }}
+      ></div>
     </When>
   );
 }

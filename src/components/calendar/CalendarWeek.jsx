@@ -26,7 +26,6 @@ function CalendarWeek({ cursor, setCursor, isDraggable, setDraggable }) {
   };
 
   const today = new Date();
-  today.setDate(today.getDate() + 7);
 
   const [calendarStartDate, setCalendarStartDate] = useState(
     new Date(today.getFullYear(), 0, 1)
@@ -93,15 +92,13 @@ function CalendarWeek({ cursor, setCursor, isDraggable, setDraggable }) {
                     className={styles.weekLine}
                     style={{
                       left:
-                        (Math.ceil(
+                        Math.ceil(
                           (today.getTime() - date.getTime()) /
                             1000 /
                             60 /
                             60 /
                             24
-                        ) *
-                          120) /
-                        7,
+                        ) * (window.innerWidth < 576 ? 92 / 7 : 120 / 7),
                     }}
                   ></div>
                 </When>

@@ -17,7 +17,7 @@ import { OptionsContext } from "@/src/context/OptionsContext";
 
 const views = ["Day", "Week", "Month"];
 const dayWidth = [55, 120 / 7, 160 / 30];
-const dayWidthMobile = [42, 120 / 7, 160 / 30];
+const dayWidthMobile = [42, 92 / 7, 160 / 30];
 
 function InnerLineTask({ task, calendarStartDate, view }) {
   const isMobile = useMedia({ maxWidth: 576 });
@@ -134,7 +134,7 @@ function InnerLineTask({ task, calendarStartDate, view }) {
       if (taskWidth > 120 / 7) {
         return 8;
       }
-      return 120 / 7 / 2 - 1;
+      return 120 / 7 / 2 - 0.5;
     }
     if (taskWidth > (160 * 5) / 28) {
       return 8;

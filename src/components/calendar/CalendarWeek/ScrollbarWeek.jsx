@@ -2,6 +2,7 @@ import Scrollbar from "react-scrollbars-custom";
 import { useEffect, useState } from "react";
 import useEvent from "@react-hook/event";
 import styles from "@/styles/calendar.module.scss";
+import useMedia from "use-media";
 
 export default function ScrollbarWeek({
   cursor,
@@ -14,6 +15,8 @@ export default function ScrollbarWeek({
   setCalendarEndDate,
   children,
 }) {
+  const isMobile = useMedia({ maxWidth: 576 });
+
   const [isMouseDown, setIsMouseDown] = useState(false);
   useEvent(document, "mousedown", () => setIsMouseDown(true));
   useEvent(document, "mouseup", () => {
@@ -133,7 +136,10 @@ export default function ScrollbarWeek({
   };
 
   useEffect(() => {
-    const calculatedDefaultScrollLeft = (getWeekNumber(new Date()) - 4) * 120;
+    const calculatedDefaultScrollLeft =
+      window.innerWidth < 576
+        ? (getWeekNumber(new Date()) - 1) * 92
+        : (getWeekNumber(new Date()) - 4) * 120;
     if (calculatedDefaultScrollLeft > 0) {
       document
         .querySelector(".Calendar-Scroller")
@@ -147,7 +153,10 @@ export default function ScrollbarWeek({
     <Scrollbar
       onScrollStop={stopScrollHandler}
       noScrollY={true}
-      style={{ height: "calc(100vh - 89px)", width: "100vw" }}
+      style={{
+        height: isMobile ? "calc(100vh - 83px)" : "calc(100vh - 89px)",
+        width: "100vw",
+      }}
       trackXProps={{
         renderer: (props) => {
           const { elementRef, ...restProps } = props;
