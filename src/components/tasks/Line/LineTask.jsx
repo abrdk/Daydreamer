@@ -19,7 +19,7 @@ const views = ["Day", "Week", "Month"];
 const dayWidth = [55, 120 / 7, 160 / 30];
 const dayWidthMobile = [42, 91 / 7, 91 / 30];
 
-function InnerLineTask({ task, calendarStartDate, view }) {
+function InnerLineTask({ task, calendarStartDate, view, setEditedTaskId }) {
   const isMobile = useMedia({ maxWidth: 576 });
 
   const lineRef = useRef(null);
@@ -187,6 +187,11 @@ function InnerLineTask({ task, calendarStartDate, view }) {
             editedTaskId != "" ? (editedTaskId == task._id ? 1 : 0.5) : 1,
         }}
         ref={lineRef}
+        onClick={() => {
+          if (isMobile) {
+            setEditedTaskId(task._id);
+          }
+        }}
       >
         <DateTooltip
           isResizeLeft={isResizeLeft}
@@ -282,5 +287,6 @@ InnerLineTask = memo(InnerLineTask, (prevProps, nextProps) => {
 
 export default function LineTask(props) {
   const { view } = useContext(OptionsContext);
-  return <InnerLineTask {...{ ...props, view }} />;
+  const { setEditedTaskId } = useContext(TasksContext);
+  return <InnerLineTask {...{ ...props, view, setEditedTaskId }} />;
 }
