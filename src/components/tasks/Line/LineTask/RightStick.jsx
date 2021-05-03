@@ -2,6 +2,7 @@ import calendarStyles from "@/styles/calendar.module.scss";
 import { When } from "react-if";
 import { useContext, useState, useEffect, memo } from "react";
 import useEvent from "@react-hook/event";
+import useEventListener from "@use-it/event-listener";
 
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 import { TasksContext } from "@/src/context/TasksContext";
@@ -112,6 +113,30 @@ function InnerRightStick({
     }
   });
 
+  useEvent(document, "touchmove", (e) => {
+    if (isResizeRight) {
+      removeSelection(e);
+      resizeRightHandler(e.touches[0].clientX);
+    }
+  });
+
+  useEventListener(
+    "touchmove",
+    (e) => {
+      if (isResizeRight) {
+        e.preventDefault();
+      }
+    },
+    document,
+    { passive: false }
+  );
+
+  useEvent(document, "touchend", (e) => {
+    if (isResizeRight) {
+      stopResizeRight();
+    }
+  });
+
   useEvent(document.querySelector(".Calendar-Scroller"), "scroll", () => {
     if (isResizeRight) {
       resizeRightHandler();
@@ -129,6 +154,7 @@ function InnerRightStick({
         <div
           className={calendarStyles.resizeAreaRight + " stick"}
           onMouseDown={startResizeRight}
+          onTouchStart={startResizeRight}
           style={{
             cursor: globalCursor ? globalCursor : "ew-resize",
             width: taskWidth > 18 ? 18 : taskWidth == 0 ? 160 / 30 : taskWidth,

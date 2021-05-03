@@ -11,6 +11,7 @@
     "@react-hook/event": "^1.2.3",
     "@react-hook/mouse-position": "^4.1.0",
     "@react-hook/previous": "^1.0.1",
+    "@use-it/event-listener": "^0.1.6",
     "bcryptjs": "^2.4.3",
     "dateformat": "^4.5.1",
     "floating-label-react": "^1.0.3",
