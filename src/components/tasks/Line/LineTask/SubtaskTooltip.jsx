@@ -56,7 +56,9 @@ function InnerSubtaskTooltip({
         >
           <div
             className={calendarStyles.openSubtasksIcon}
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
+
               updateIsOpened({
                 _id: task._id,
                 isOpened: !isCurrentTaskOpened,

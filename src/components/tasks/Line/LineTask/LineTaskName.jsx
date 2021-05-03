@@ -93,7 +93,7 @@ function InnerLineTaskName({
               : calendarStyles.name + " grab"
           }
           onClick={() => {
-            if (isUserOwnsProject) {
+            if (isUserOwnsProject && window.innerWidth >= 576) {
               setIsUpdating(true);
             }
           }}

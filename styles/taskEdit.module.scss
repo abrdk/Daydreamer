@@ -420,3 +420,130 @@
   color: #d8d8d8 !important;
   white-space: pre;
 }
+
+.addSubtaskWrapper {
+  display: none;
+}
+
+@media (max-width: 575.98px) {
+  .wrapper {
+    width: 100%;
+    height: 283px;
+    padding: 23px 17px 15px 17px;
+  }
+
+  .inputsWrapper {
+    width: 100%;
+    margin-right: 0;
+    flex-shrink: 0;
+    z-index: 1;
+  }
+
+  .topInputsWrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .inputNameFilled {
+    width: calc(100vw - 78px);
+    margin-right: 19px;
+    margin-bottom: 10px;
+  }
+
+  .hiddenName {
+    font-size: 13px;
+  }
+
+  .closeWrapper {
+    width: 25px;
+    height: 25px;
+    margin-bottom: 20px;
+    position: absolute;
+    right: 17px;
+    top: 36px;
+    z-index: 2;
+  }
+
+  .datesWrapper {
+    width: 100%;
+    margin-bottom: 10px;
+    .dateWrapper {
+      width: calc(50vw - 32.5px);
+      margin-right: 0;
+      font-size: 13px;
+    }
+
+    .dateWrapper:first-child {
+      margin-right: 32px;
+    }
+
+    .dateDash {
+      left: calc(50% - 7.5px);
+    }
+  }
+
+  .description,
+  .descriptionFilled {
+    height: 65px;
+    margin-right: 0;
+    padding: 10px 12px 14px 20px;
+    width: 100%;
+  }
+
+  .fakeText {
+    font-size: 13px;
+    width: calc(100% - 32px);
+  }
+
+  .teaxtareaWrapper {
+    height: 41px;
+    textarea {
+      width: 100%;
+      padding-right: 0px;
+      min-height: 41px;
+    }
+  }
+
+  .sidebar {
+    display: flex;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 283px;
+  }
+
+  .trashWrapper {
+    position: absolute;
+    right: 17px;
+    bottom: 15px;
+    z-index: 2;
+  }
+
+  .colorsWrapper {
+    position: absolute;
+    right: 77px;
+    bottom: 15px;
+    margin-bottom: 0;
+    flex-direction: row;
+    height: 50px;
+    width: 201px;
+    z-index: 2;
+  }
+
+  .addSubtaskWrapper {
+    display: block;
+    width: 45px;
+    height: 45px;
+    position: absolute;
+    left: 17px;
+    bottom: 18px;
+    z-index: 2;
+    cursor: pointer;
+    svg {
+      width: 45px;
+      height: 45px;
+    }
+  }
+}

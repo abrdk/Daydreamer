@@ -132,6 +132,9 @@ input:-webkit-autofill:focus {
   right: 0px !important;
 }
 
+.react-datepicker-wrapper {
+  flex-shrink: 0;
+}
 //dnd
 .animTranslateY {
   transition: all 0.2s;

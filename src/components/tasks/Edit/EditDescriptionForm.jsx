@@ -2,11 +2,13 @@ import { useContext, useState, useEffect, useRef, memo } from "react";
 import styles from "@/styles/taskEdit.module.scss";
 import Scrollbar from "react-scrollbars-custom";
 import usePrevious from "@react-hook/previous";
+import useMedia from "use-media";
 
 import { TasksContext } from "@/src/context/TasksContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 
 function InnerEditDescription({ task, isUserOwnsProject, updateTask }) {
+  const isMobile = useMedia({ maxWidth: 576 });
   const fakeText = useRef(null);
   const textArea = useRef(null);
 
@@ -68,7 +70,8 @@ function InnerEditDescription({ task, isUserOwnsProject, updateTask }) {
       >
         <div className={styles.teaxtareaWrapper}>
           <Scrollbar
-            style={{ height: 238 }}
+            style={{ height: isMobile ? 41 : 238 }}
+            noScrollY={isMobile ? true : false}
             trackYProps={{
               renderer: (props) => {
                 const { elementRef, ...restProps } = props;
@@ -97,7 +100,10 @@ function InnerEditDescription({ task, isUserOwnsProject, updateTask }) {
         <span
           style={{
             transition:
-              !prevDescription && editedDescription ? "all 0ms" : "all 200ms",
+              (!prevDescription && editedDescription) ||
+              (prevDescription && !editedDescription)
+                ? "all 0ms"
+                : "all 200ms",
           }}
         >
           Enter task description

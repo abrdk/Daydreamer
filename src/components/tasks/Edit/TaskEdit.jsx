@@ -7,6 +7,7 @@ import EditNameForm from "@/src/components/tasks/Edit/EditNameForm";
 import EditDescriptionForm from "@/src/components/tasks/Edit/EditDescriptionForm";
 import ColorPicker from "@/src/components/tasks/Edit/ColorPicker";
 import DeleteTaskIcon from "@/src/components/tasks/Edit/DeleteTaskIcon";
+import IconCreateSubtask from "@/src/components/tasks/Edit/IconCreateSubtask";
 
 import CrossSvg from "@/src/components/svg/CrossSvg";
 
@@ -34,7 +35,7 @@ function InnerTaskEdit({
           </div>
           <EditDescriptionForm task={task} />
         </div>
-        <div>
+        <div className={styles.sidebar}>
           <div className={styles.closeWrapper}>
             <div
               className={styles.crossIcon}
@@ -48,6 +49,8 @@ function InnerTaskEdit({
             <DeleteTaskIcon task={task} />
           </When>
         </div>
+
+        <IconCreateSubtask task={task} />
       </div>
     );
   } else {
