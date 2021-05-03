@@ -8,6 +8,7 @@ import ScrollBinder from "@/src/components/tasks/Line/ScrollBinder";
 
 import { TasksContext } from "@/src/context/TasksContext";
 import { OptionsContext } from "@/src/context/OptionsContext";
+import useEvent from "@react-hook/event";
 
 function InnerLineTasks({
   calendarStartDate,
@@ -18,6 +19,36 @@ function InnerLineTasks({
   const isMobile = useMedia({ maxWidth: 576 });
 
   const [calendarWidth, setCalendarWidth] = useState(0);
+
+  const [isSpacePressed, setIsSpacePressed] = useState(0);
+
+  const [scrollLockTimer, setScrollLockTimer] = useState(0);
+
+  const lockScroll = () => {
+    const currentScrollTop = document.querySelector(".LineTasks-Scroller")
+      .scrollTop;
+    const timerId = setInterval(() => {
+      document.querySelector(
+        ".LineTasks-Scroller"
+      ).scrollTop = currentScrollTop;
+    }, 10);
+    setScrollLockTimer(timerId);
+  };
+
+  useEvent(document, "keydown", (e) => {
+    if (e.key == " " && !isSpacePressed) {
+      setIsSpacePressed(true);
+      lockScroll();
+    }
+  });
+  useEvent(document, "keyup", (e) => {
+    if (e.key == " " && isSpacePressed) {
+      setIsSpacePressed(false);
+      setTimeout(() => {
+        clearInterval(scrollLockTimer);
+      }, 50);
+    }
+  });
 
   useEffect(() => {
     let currentCalendarWidth = 0;
