@@ -17,7 +17,7 @@ import { OptionsContext } from "@/src/context/OptionsContext";
 
 const views = ["Day", "Week", "Month"];
 const dayWidth = [55, 120 / 7, 160 / 30];
-const dayWidthMobile = [42, 92 / 7, 160 / 30];
+const dayWidthMobile = [42, 91 / 7, 91 / 30];
 
 function InnerLineTask({ task, calendarStartDate, view }) {
   const isMobile = useMedia({ maxWidth: 576 });
@@ -66,9 +66,11 @@ function InnerLineTask({ task, calendarStartDate, view }) {
   };
 
   const getMonthLeft = (dateStart) => {
-    let monthLeft = 160 * (numOfMonths(calendarStartDate, dateStart) - 1);
+    let monthLeft =
+      (isMobile ? 91 : 160) * (numOfMonths(calendarStartDate, dateStart) - 1);
     monthLeft +=
-      (160 / daysInMonth(dateStart.getMonth(), dateStart.getFullYear())) *
+      ((isMobile ? 91 : 160) /
+        daysInMonth(dateStart.getMonth(), dateStart.getFullYear())) *
       (dateStart.getDate() - 1);
     return monthLeft;
   };
@@ -83,19 +85,23 @@ function InnerLineTask({ task, calendarStartDate, view }) {
       dateStart.getFullYear() == dateEnd.getFullYear()
     ) {
       return (
-        (160 / daysInMonth(dateStart.getMonth(), dateStart.getFullYear())) *
+        ((isMobile ? 91 : 160) /
+          daysInMonth(dateStart.getMonth(), dateStart.getFullYear())) *
         (numOfDays(dateStart, dateEnd) - 1)
       );
     }
 
-    let monthWidth = 160 * (numOfMonths(dateStart, dateEnd) - 2);
+    let monthWidth =
+      (isMobile ? 91 : 160) * (numOfMonths(dateStart, dateEnd) - 2);
     monthWidth +=
-      (160 / daysInMonth(dateStart.getMonth(), dateStart.getFullYear())) *
+      ((isMobile ? 91 : 160) /
+        daysInMonth(dateStart.getMonth(), dateStart.getFullYear())) *
       (daysInMonth(dateStart.getMonth(), dateStart.getFullYear()) -
         dateStart.getDate() +
         1);
     monthWidth +=
-      (160 / daysInMonth(dateEnd.getMonth(), dateEnd.getFullYear())) *
+      ((isMobile ? 91 : 160) /
+        daysInMonth(dateEnd.getMonth(), dateEnd.getFullYear())) *
       dateEnd.getDate();
 
     return monthWidth;
