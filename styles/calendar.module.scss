@@ -450,4 +450,21 @@
     top: 51px;
     height: calc(100vh - 160px);
   }
+
+  .addSubtaskWrapper {
+    display: none;
+  }
+
+  .editTaskIconWrapper {
+    display: none;
+  }
+
+  .openSubtasksWrapper {
+    display: flex;
+    left: -35px;
+    width: 35px;
+    .openSubtasksIcon {
+      display: flex;
+    }
+  }
 }
