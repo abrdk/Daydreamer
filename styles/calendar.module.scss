@@ -390,3 +390,25 @@
   position: relative;
   z-index: 1;
 }
+
+@media (max-width: 575.98px) {
+  .monthName {
+    margin-bottom: 2px;
+    font-size: 13px;
+    margin-top: 4px;
+  }
+
+  .day {
+    margin: 0;
+    font-size: 13px;
+  }
+
+  .lineTask:first-child {
+    margin-top: 28px;
+  }
+
+  .line {
+    left: 20.5px;
+    height: calc(100vh - 157px);
+  }
+}

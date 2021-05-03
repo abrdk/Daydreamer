@@ -22,11 +22,25 @@ function InnerLeftStick({
   isUserOwnsProject,
   view,
 }) {
+  const [isSpacePressed, setIsSpacePressed] = useState(false);
+  useEvent(document, "keydown", (e) => {
+    if (e.key == " ") {
+      setIsSpacePressed(true);
+    }
+  });
+  useEvent(document, "keyup", (e) => {
+    if (e.key == " ") {
+      setIsSpacePressed(false);
+    }
+  });
+
   const [scrollLeft, setScrollLeft] = useState(undefined);
 
   const startResizeLeft = () => {
-    setIsResizeLeft(true);
-    document.body.style.cursor = "ew-resize";
+    if (!isSpacePressed) {
+      setIsResizeLeft(true);
+      document.body.style.cursor = "ew-resize";
+    }
   };
 
   const stopResizeLeft = () => {

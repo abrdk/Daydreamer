@@ -2,6 +2,7 @@ import calendarStyles from "@/styles/calendar.module.scss";
 import { When } from "react-if";
 import { useEffect, useState, useRef, useContext, memo } from "react";
 import useEvent from "@react-hook/event";
+import useMedia from "use-media";
 
 import LineTasksRoot from "@/src/components/tasks/Line/LineTasksRoot";
 import DateTooltip from "@/src/components/tasks/Line/LineTask/DateTooltip";
@@ -16,8 +17,11 @@ import { OptionsContext } from "@/src/context/OptionsContext";
 
 const views = ["Day", "Week", "Month"];
 const dayWidth = [55, 120 / 7, 160 / 30];
+const dayWidthMobile = [42, 120 / 7, 160 / 30];
 
 function InnerLineTask({ task, calendarStartDate, view }) {
+  const isMobile = useMedia({ maxWidth: 576 });
+
   const lineRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -104,7 +108,9 @@ function InnerLineTask({ task, calendarStartDate, view }) {
     const numOfDaysFromCalendarStart = Math.floor(
       (dateStart.getTime() - calendarStartDate.getTime()) / 1000 / 60 / 60 / 24
     );
-    return dayWidth[views.indexOf(view)] * numOfDaysFromCalendarStart;
+    return isMobile
+      ? dayWidthMobile[views.indexOf(view)] * numOfDaysFromCalendarStart
+      : dayWidth[views.indexOf(view)] * numOfDaysFromCalendarStart;
   };
 
   const getTaskWidth = () => {
@@ -118,7 +124,9 @@ function InnerLineTask({ task, calendarStartDate, view }) {
     const taskDuration = Math.floor(
       (dateEnd.getTime() - dateStart.getTime()) / 1000 / 60 / 60 / 24
     );
-    return dayWidth[views.indexOf(view)] * (taskDuration + 1);
+    return isMobile
+      ? dayWidthMobile[views.indexOf(view)] * (taskDuration + 1)
+      : dayWidth[views.indexOf(view)] * (taskDuration + 1);
   };
 
   const getPadding = () => {
@@ -190,7 +198,11 @@ function InnerLineTask({ task, calendarStartDate, view }) {
           isResizeLeft={isResizeLeft}
           setIsResizeLeft={setIsResizeLeft}
           lineRef={lineRef}
-          dayWidth={dayWidth[views.indexOf(view)]}
+          dayWidth={
+            isMobile
+              ? dayWidthMobile[views.indexOf(view)]
+              : dayWidth[views.indexOf(view)]
+          }
           dateStart={dateStart}
           setDateStart={setDateStart}
           dateEnd={dateEnd}
@@ -204,7 +216,11 @@ function InnerLineTask({ task, calendarStartDate, view }) {
           isMoving={isMoving}
           setIsMoving={setIsMoving}
           lineRef={lineRef}
-          dayWidth={dayWidth[views.indexOf(view)]}
+          dayWidth={
+            isMobile
+              ? dayWidthMobile[views.indexOf(view)]
+              : dayWidth[views.indexOf(view)]
+          }
           dateStart={dateStart}
           setDateStart={setDateStart}
           dateEnd={dateEnd}
@@ -226,7 +242,11 @@ function InnerLineTask({ task, calendarStartDate, view }) {
           isResizeRight={isResizeRight}
           setIsResizeRight={setIsResizeRight}
           lineRef={lineRef}
-          dayWidth={dayWidth[views.indexOf(view)]}
+          dayWidth={
+            isMobile
+              ? dayWidthMobile[views.indexOf(view)]
+              : dayWidth[views.indexOf(view)]
+          }
           dateStart={dateStart}
           dateEnd={dateEnd}
           setDateEnd={setDateEnd}

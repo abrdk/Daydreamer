@@ -20,11 +20,25 @@ function InnerRightStick({
   updateTask,
   isUserOwnsProject,
 }) {
+  const [isSpacePressed, setIsSpacePressed] = useState(false);
+  useEvent(document, "keydown", (e) => {
+    if (e.key == " ") {
+      setIsSpacePressed(true);
+    }
+  });
+  useEvent(document, "keyup", (e) => {
+    if (e.key == " ") {
+      setIsSpacePressed(false);
+    }
+  });
+
   const [scrollLeft, setScrollLeft] = useState(undefined);
 
   const startResizeRight = () => {
-    setIsResizeRight(true);
-    document.body.style.cursor = "ew-resize";
+    if (!isSpacePressed) {
+      setIsResizeRight(true);
+      document.body.style.cursor = "ew-resize";
+    }
   };
 
   const stopResizeRight = () => {
