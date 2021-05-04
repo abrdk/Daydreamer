@@ -58,6 +58,7 @@
     overflow: hidden;
     min-height: 238px;
     padding-right: 20px;
+    width: calc(100vw - 157px);
   }
 }
 
@@ -74,30 +75,18 @@
   padding-top: 15px;
   padding-bottom: 15px;
   textarea {
-    width: 100%;
     padding: 0;
     margin: 0;
     overflow: hidden;
     min-height: 238px;
     padding-right: 20px;
+    width: calc(100vw - 157px);
   }
 }
 
 .inputsWrapper {
   width: calc(100% - 70px);
   margin-right: 35px;
-}
-
-.fakeText {
-  font-style: normal;
-  font-weight: normal;
-  font-size: 15px;
-  line-height: 21px;
-  position: absolute;
-  opacity: 0;
-  width: calc(100% - 170px);
-  white-space: pre-wrap;
-  word-break: break-all;
 }
 
 .teaxtareaWrapper {
@@ -425,11 +414,28 @@
   display: none;
 }
 
+.textAreaAutosize {
+  position: absolute;
+  opacity: 0;
+  textarea {
+    margin: 0;
+    padding: 0;
+    border: none;
+    font-family: "Noto Sans";
+    font-style: normal;
+    font-weight: normal;
+    font-size: 15px;
+    line-height: 21px;
+    color: #696f75;
+    width: calc(100vw - 157px);
+  }
+}
+
 @media (max-width: 575.98px) {
   .wrapper {
     width: 100%;
-    height: 283px;
-    padding: 23px 17px 15px 17px;
+    height: auto;
+    padding: 23px 17px 65px 17px;
   }
 
   .inputsWrapper {
@@ -487,21 +493,30 @@
   .descriptionFilled {
     height: 65px;
     margin-right: 0;
-    padding: 10px 12px 14px 20px;
+    padding: 10px 0px 13px 20px;
     width: 100%;
   }
 
-  .fakeText {
-    font-size: 13px;
-    width: calc(100% - 32px);
+  .description.opened,
+  .descriptionFilled.opened {
+    height: calc(100vh - 215px);
+    padding: 11px 0px 23px 20px;
+    textarea {
+      width: calc(100vw - 78px);
+    }
+    & + .textAreaAutosize {
+      textarea {
+        width: calc(100vw - 78px);
+      }
+    }
   }
 
   .teaxtareaWrapper {
-    height: 41px;
+    height: 100%;
     textarea {
-      width: 100%;
+      width: calc(100vw - 68px);
       padding-right: 0px;
-      min-height: 41px;
+      min-height: 100%;
     }
   }
 
@@ -511,7 +526,7 @@
     left: 0;
     bottom: 0;
     width: 100%;
-    height: 283px;
+    height: 100%;
   }
 
   .trashWrapper {
@@ -544,6 +559,36 @@
     svg {
       width: 45px;
       height: 45px;
+    }
+  }
+
+  .hiddenTextarea {
+    font-family: Noto Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 21px;
+    color: #696f75;
+    width: calc(100vw - 68px);
+    overflow: visible;
+    position: absolute;
+    top: 0;
+  }
+
+  .textAreaAutosize {
+    position: absolute;
+    opacity: 0;
+    textarea {
+      margin: 0;
+      padding: 0;
+      border: none;
+      font-family: "Noto Sans";
+      font-style: normal;
+      font-weight: normal;
+      font-size: 13px;
+      line-height: 21px;
+      color: #696f75;
+      width: calc(100vw - 68px);
     }
   }
 }

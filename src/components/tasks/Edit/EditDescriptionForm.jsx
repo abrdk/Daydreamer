@@ -3,14 +3,16 @@ import styles from "@/styles/taskEdit.module.scss";
 import Scrollbar from "react-scrollbars-custom";
 import usePrevious from "@react-hook/previous";
 import useMedia from "use-media";
+import TextareaAutosize from "react-textarea-autosize";
 
 import { TasksContext } from "@/src/context/TasksContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 
 function InnerEditDescription({ task, isUserOwnsProject, updateTask }) {
   const isMobile = useMedia({ maxWidth: 576 });
-  const fakeText = useRef(null);
   const textArea = useRef(null);
+  const hiddenTextareaRef = useRef(null);
+  const [textAreaHeight, setTextAreaHeight] = useState(40);
 
   const [editedDescription, setEditedDescription] = useState(() =>
     task ? task.description : ""
@@ -24,7 +26,12 @@ function InnerEditDescription({ task, isUserOwnsProject, updateTask }) {
   };
 
   const handleBlur = (e) => {
+    e.target.selectionStart = 0;
+    e.target.selectionEnd = 0;
     setTextareaFocused(false);
+    if (isMobile) {
+      document.querySelector(".Description-Scroller").scrollTop = 0;
+    }
   };
 
   const handleFocus = (e) => {
@@ -35,14 +42,9 @@ function InnerEditDescription({ task, isUserOwnsProject, updateTask }) {
     }
   };
 
-  const updateTextareaHeight = () => {
-    if (fakeText.current && textArea.current) {
-      textArea.current.style.height = fakeText.current.clientHeight + "px";
-    }
-  };
-
   const synchronizeTaskDescription = () => {
     if (task) {
+      hiddenTextareaRef.current.value = task.description;
       setEditedDescription(task.description);
     }
   };
@@ -51,27 +53,24 @@ function InnerEditDescription({ task, isUserOwnsProject, updateTask }) {
     synchronizeTaskDescription();
   }, [task]);
 
-  useEffect(() => {
-    updateTextareaHeight();
-  }, [editedDescription]);
-
   return (
     <>
-      <div ref={fakeText} className={styles.fakeText}>
-        {editedDescription}
-      </div>
       <label
         className={
           editedDescription || isTextareaFocused
-            ? styles.descriptionFilled
+            ? isTextareaFocused
+              ? `${styles.descriptionFilled} ${styles.opened}`
+              : styles.descriptionFilled
+            : isTextareaFocused
+            ? `${styles.description} ${styles.opened}`
             : styles.description
         }
         htmlFor="taskDescription"
       >
         <div className={styles.teaxtareaWrapper}>
           <Scrollbar
-            style={{ height: isMobile ? 41 : 238 }}
-            noScrollY={isMobile ? true : false}
+            style={{ height: isMobile ? "100%" : 238 }}
+            noScrollY={isMobile && !isTextareaFocused}
             trackYProps={{
               renderer: (props) => {
                 const { elementRef, ...restProps } = props;
@@ -80,6 +79,18 @@ function InnerEditDescription({ task, isUserOwnsProject, updateTask }) {
                     {...restProps}
                     ref={elementRef}
                     className="ScrollbarsCustom-Track ScrollbarsCustom-TrackY ScrollbarsCustom-EditTask"
+                  />
+                );
+              },
+            }}
+            scrollerProps={{
+              renderer: (props) => {
+                const { elementRef, ...restProps } = props;
+                return (
+                  <div
+                    {...restProps}
+                    ref={elementRef}
+                    className="ScrollbarsCustom-Scroller Description-Scroller"
                   />
                 );
               },
@@ -94,6 +105,7 @@ function InnerEditDescription({ task, isUserOwnsProject, updateTask }) {
               onChange={handleDescriptionUpdate}
               onFocus={handleFocus}
               onBlur={handleBlur}
+              style={{ height: textAreaHeight }}
             ></textarea>
           </Scrollbar>
         </div>
@@ -109,6 +121,13 @@ function InnerEditDescription({ task, isUserOwnsProject, updateTask }) {
           Enter task description
         </span>
       </label>
+
+      <div className={styles.textAreaAutosize}>
+        <TextareaAutosize
+          onHeightChange={(height) => setTextAreaHeight(height)}
+          ref={(tag) => (hiddenTextareaRef.current = tag)}
+        />
+      </div>
     </>
   );
 }
