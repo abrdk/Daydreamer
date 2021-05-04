@@ -232,3 +232,10 @@
     }
   }
 }
+
+@media (max-width: 575.98px) {
+  .root {
+    width: calc(100% - 87px);
+    font-size: 14px;
+  }
+}

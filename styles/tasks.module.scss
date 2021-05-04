@@ -226,3 +226,86 @@
   box-shadow: 15px 15px 50px rgba(9, 40, 72, 0.1);
   border-radius: 3px;
 }
+
+.circleIcon {
+  display: none;
+}
+
+@media (max-width: 575.98px) {
+  .root {
+    max-height: calc(100vh - 223px);
+  }
+
+  .rootShrink {
+    max-height: calc(100vh - 223px - 218px);
+  }
+
+  .headerWrapper {
+    height: 50px;
+  }
+
+  .header {
+    font-size: 11px;
+  }
+
+  .newTaskBtn {
+    width: calc(100% - 30px);
+    margin: 15px;
+    justify-content: flex-start;
+    padding-left: 30px;
+    position: absolute;
+    bottom: 0px;
+  }
+
+  .task {
+    font-size: 14px;
+  }
+
+  .input {
+    font-size: 14px;
+  }
+
+  .fakeText {
+    font-size: 14px;
+  }
+
+  .task:hover {
+    .plus {
+      display: none;
+    }
+
+    .pencilContainer {
+      display: none;
+    }
+  }
+
+  .circleIconWrapper {
+    position: absolute;
+    right: 6px;
+    width: 38px;
+    height: 38px;
+    padding: 10px;
+  }
+
+  .circleIcon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid;
+    border-radius: 100px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+  }
+
+  .circleIconInner {
+    width: 10px;
+    height: 10px;
+    border-radius: 100px;
+    opacity: 1;
+  }
+
+  .input {
+    max-width: 100vw;
+  }
+}

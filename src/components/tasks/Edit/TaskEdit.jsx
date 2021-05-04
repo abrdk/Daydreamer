@@ -1,6 +1,7 @@
 import React, { useContext, memo } from "react";
 import styles from "@/styles/taskEdit.module.scss";
 import { When } from "react-if";
+import useMedia from "use-media";
 
 import CalendarTooltip from "@/src/components/tasks/Edit/CalendarTooltip";
 import EditNameForm from "@/src/components/tasks/Edit/EditNameForm";
@@ -21,11 +22,20 @@ function InnerTaskEdit({
   isMenuOpened,
   setEditedTaskId,
 }) {
+  const isMobile = useMedia({ maxWidth: 576 });
+
   if (task && Object.keys(task).length) {
     return (
       <div
         className={styles.wrapper}
-        style={{ width: isMenuOpened ? "calc(100vw - 335px)" : "100vw" }}
+        style={{
+          width: isMobile
+            ? "100vw"
+            : isMenuOpened
+            ? "calc(100vw - 335px)"
+            : "100vw",
+          left: isMobile ? (isMenuOpened ? 0 : "100vw") : "335px",
+        }}
         id="editTask"
       >
         <div className={styles.inputsWrapper}>

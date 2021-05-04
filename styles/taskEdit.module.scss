@@ -436,6 +436,9 @@
     width: 100%;
     height: auto;
     padding: 23px 17px 75px 17px;
+    left: 100vw;
+    transition: left 0.3s;
+    z-index: 1000;
   }
 
   .inputsWrapper {
