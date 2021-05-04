@@ -232,4 +232,10 @@ textarea {
     top: 6px !important;
     right: 7px !important;
   }
+
+  .calendar-right {
+    .react-datepicker__triangle {
+      left: 238px !important;
+    }
+  }
 }

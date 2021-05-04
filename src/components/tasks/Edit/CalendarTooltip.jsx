@@ -4,6 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { If, Then, Else } from "react-if";
 import useEvent from "@react-hook/event";
+import useMedia from "use-media";
 
 import CalendarArrowLeftSvg from "@/src/components/svg/CalendarArrowLeftSvg";
 import CalendarArrowRightSvg from "@/src/components/svg/CalendarArrowRightSvg";
@@ -27,6 +28,8 @@ import { TasksContext } from "@/src/context/TasksContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 
 function InnerCalendarTooltip({ task, isUserOwnsProject, updateTask }) {
+  const isMobile = useMedia({ maxWidth: 576 });
+
   const [dateStart, setDateStart] = useState(null);
   const [dateEnd, setDateEnd] = useState(null);
 
@@ -244,7 +247,7 @@ function InnerCalendarTooltip({ task, isUserOwnsProject, updateTask }) {
         popperModifiers={{
           offset: {
             enabled: true,
-            offset: "0px, 9px",
+            offset: isMobile ? "38px, 0px" : "0px, 9px",
           },
         }}
         maxDate={dateEnd}
@@ -265,12 +268,12 @@ function InnerCalendarTooltip({ task, isUserOwnsProject, updateTask }) {
         minDate={dateStart}
         className={styles.dateWrapper}
         dateFormat="MMMM d, yyyy"
-        calendarClassName={styles.calendar}
-        popperPlacement="top-start"
+        calendarClassName={styles.calendar + " calendar-right"}
+        popperPlacement={isMobile ? "top-end" : "top-start"}
         popperModifiers={{
           offset: {
             enabled: true,
-            offset: "0px, 9px",
+            offset: isMobile ? "-70px, 0px" : "0px, 9px",
           },
         }}
         shouldCloseOnSelect={false}

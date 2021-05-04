@@ -189,7 +189,11 @@ function InnerLineTask({ task, calendarStartDate, view, setEditedTaskId }) {
         ref={lineRef}
         onClick={() => {
           if (isMobile) {
-            setEditedTaskId(task._id);
+            if (editedTaskId == task._id) {
+              setEditedTaskId("");
+            } else {
+              setEditedTaskId(task._id);
+            }
           }
         }}
       >
