@@ -66,7 +66,9 @@ function InnerLineTasks({
       <Scrollbar
         style={{
           height: isMobile
-            ? "calc(100vh - 157px)"
+            ? editedTaskId
+              ? "calc(100vh - 157px - 272px)"
+              : "calc(100vh - 157px)"
             : editedTaskId
             ? "calc(100vh - 563px)"
             : "calc(100vh - 177px)",
@@ -82,7 +84,9 @@ function InnerLineTasks({
                 ref={elementRef}
                 style={{
                   height: isMobile
-                    ? "calc(100% - 180px)"
+                    ? editedTaskId
+                      ? "calc(100% - 180px - 272px)"
+                      : "calc(100% - 180px)"
                     : editedTaskId
                     ? "calc(100% - 219px - 380px)"
                     : "calc(100% - 219px)",
