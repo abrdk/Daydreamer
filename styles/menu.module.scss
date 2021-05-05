@@ -72,7 +72,7 @@
   }
 }
 
-@media (max-width: 575.98px) {
+@media (max-width: 767.98px) {
   .iconOpen {
     width: 33px;
     height: 30px;
@@ -90,10 +90,6 @@
   }
 
   .mainMenu {
-    width: 100vw;
-  }
-
-  .mainMenu {
     .iconClose {
       width: 40px;
       height: 40px;
@@ -101,5 +97,11 @@
       top: 26px;
       margin-right: 15px;
     }
+  }
+}
+
+@media (max-width: 575.98px) {
+  .mainMenu {
+    width: 100vw;
   }
 }

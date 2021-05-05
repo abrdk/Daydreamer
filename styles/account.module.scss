@@ -84,28 +84,31 @@
   }
 }
 
-@media (max-width: 575.98px) {
+@media (max-width: 767.98px) {
   .accountModal {
-    width: calc(100% - 40px);
+    width: 560px;
     height: auto;
-    padding: 28px 30px 24px 30px;
+    padding: 24px 30px 20px 30px;
+    div:nth-child(3) {
+      top: 80px;
+    }
   }
 
   .accountTitle {
-    margin-bottom: 32px;
+    margin-bottom: 35px;
     font-size: 24px;
   }
 
   .accountPrimaryButton {
     height: 50px;
-    margin-bottom: 16px;
+    margin-bottom: 15px;
     margin-top: 0px;
     font-size: 15px;
   }
 
   .accountSecondaryButton {
     height: 50px;
-    margin-bottom: 16px;
+    margin-bottom: 15px;
     margin-top: 0px;
     font-size: 15px;
   }
@@ -116,5 +119,27 @@
 
   .accountLinkDisabled {
     font-size: 13px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .accountModal {
+    width: calc(100% - 40px);
+    padding: 28px 30px 24px 30px;
+    div:nth-child(3) {
+      top: 0px;
+    }
+  }
+
+  .accountTitle {
+    margin-bottom: 32px;
+  }
+
+  .accountPrimaryButton {
+    margin-bottom: 16px;
+  }
+
+  .accountSecondaryButton {
+    margin-bottom: 16px;
   }
 }
