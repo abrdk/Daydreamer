@@ -232,12 +232,21 @@ textarea {
     top: 6px !important;
     right: 7px !important;
   }
+
+  .react-datepicker__triangle {
+    display: none;
+  }
 }
 
 @media (max-width: 575.98px) {
+  .react-datepicker__triangle {
+    display: block;
+  }
+
   .calendar-right {
     .react-datepicker__triangle {
       left: 238px !important;
+      display: block;
     }
   }
 }

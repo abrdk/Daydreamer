@@ -22,19 +22,42 @@ function InnerTaskEdit({
   isMenuOpened,
   setEditedTaskId,
 }) {
-  const isMobile = useMedia({ maxWidth: 768 });
+  const isMobilePortrait = useMedia({ maxWidth: 576 });
+  const isMobileLandscape = useMedia({ minWidth: 576, maxWidth: 768 });
+
+  const getEditAreaWidth = () => {
+    if (isMobilePortrait || isMobileLandscape) {
+      return "100vw";
+    }
+    if (isMenuOpened) {
+      return "calc(100vw - 335px)";
+    }
+    return "100vw";
+  };
+
+  const getEditAreaLeft = () => {
+    if (isMobilePortrait) {
+      if (isMenuOpened) {
+        return 0;
+      }
+      return "100vw";
+    }
+    if (isMobileLandscape) {
+      if (isMenuOpened) {
+        return 0;
+      }
+      return "335px";
+    }
+    return "335px";
+  };
 
   if (task && Object.keys(task).length) {
     return (
       <div
         className={styles.wrapper}
         style={{
-          width: isMobile
-            ? "100vw"
-            : isMenuOpened
-            ? "calc(100vw - 335px)"
-            : "100vw",
-          left: isMobile ? (isMenuOpened ? 0 : "100vw") : "335px",
+          width: getEditAreaWidth(),
+          left: getEditAreaLeft(),
         }}
         id="editTask"
       >
@@ -45,6 +68,7 @@ function InnerTaskEdit({
           </div>
           <EditDescriptionForm task={task} />
         </div>
+
         <div className={styles.sidebar}>
           <div className={styles.closeWrapper}>
             <div

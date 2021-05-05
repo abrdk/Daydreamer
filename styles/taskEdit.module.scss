@@ -58,7 +58,7 @@
     overflow: hidden;
     min-height: 238px;
     padding-right: 20px;
-    width: calc(100vw - 157px);
+    width: calc(100%);
   }
 }
 
@@ -80,7 +80,7 @@
     overflow: hidden;
     min-height: 238px;
     padding-right: 20px;
-    width: calc(100vw - 157px);
+    width: calc(100%);
   }
 }
 
@@ -431,18 +431,17 @@
   }
 }
 
-@media (max-width: 575.98px) {
+@media (max-width: 767.98px) {
   .wrapper {
     width: 100%;
-    height: auto;
+    height: 100vh;
     padding: 23px 17px 75px 17px;
-    left: 100vw;
     transition: left 0.3s;
     z-index: 1000;
   }
 
   .inputsWrapper {
-    width: 100%;
+    width: calc(100% - 25px);
     margin-right: 0;
     flex-shrink: 0;
     z-index: 1;
@@ -451,7 +450,10 @@
   .topInputsWrapper {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: calc(100% - 25px);
+    label:first-child {
+      align-self: flex-start;
+    }
   }
 
   .inputNameFilled {
@@ -471,12 +473,13 @@
     position: absolute;
     right: 17px;
     top: 36px;
-    z-index: 2;
+    z-index: 0;
   }
 
   .datesWrapper {
     width: 100%;
     margin-bottom: 10px;
+    z-index: 100;
     .dateWrapper {
       width: calc(50vw - 32.5px);
       margin-right: 0;
@@ -488,16 +491,16 @@
     }
 
     .dateDash {
-      left: calc(50% - 7.5px);
+      left: calc(50vw - 24.5px);
     }
   }
 
   .description,
   .descriptionFilled {
-    height: 65px;
+    height: calc(100vh - 215px);
     margin-right: 0;
-    padding: 10px 0px 13px 20px;
-    width: 100%;
+    padding: 10px 0px 15px 20px;
+    width: calc(100vw - 34px);
     margin-bottom: 0;
   }
 
@@ -505,7 +508,7 @@
   .descriptionFilled.opened {
     margin-bottom: 0;
     height: calc(100vh - 215px);
-    padding: 11px 0px 23px 20px;
+    padding: 10px 0px 15px 20px;
     textarea {
       width: calc(100vw - 78px);
     }
@@ -519,7 +522,7 @@
   .teaxtareaWrapper {
     height: 100%;
     textarea {
-      width: calc(100vw - 68px);
+      width: calc(100vw - 78px);
       padding-right: 0px;
       min-height: 100%;
     }
@@ -538,18 +541,18 @@
     position: absolute;
     right: 17px;
     bottom: 15px;
-    z-index: 2;
+    z-index: 0;
   }
 
   .colorsWrapper {
     position: absolute;
-    right: 77px;
+    right: calc(50% - 100.5px);
     bottom: 15px;
     margin-bottom: 0;
     flex-direction: row;
     height: 50px;
     width: 201px;
-    z-index: 2;
+    z-index: 0;
   }
 
   .addSubtaskWrapper {
@@ -559,7 +562,7 @@
     position: absolute;
     left: 17px;
     bottom: 18px;
-    z-index: 2;
+    z-index: 0;
     cursor: pointer;
     svg {
       width: 45px;
@@ -583,6 +586,7 @@
   .textAreaAutosize {
     position: absolute;
     opacity: 0;
+    left: -100%;
     textarea {
       margin: 0;
       padding: 0;
@@ -593,7 +597,40 @@
       font-size: 13px;
       line-height: 21px;
       color: #696f75;
+      width: calc(100vw - 78px);
+    }
+  }
+}
+
+@media (max-width: 575.98px) {
+  .wrapper {
+    height: auto;
+  }
+
+  .description,
+  .descriptionFilled {
+    height: 65px;
+    padding: 10px 0px 13px 20px;
+  }
+
+  .description.opened,
+  .descriptionFilled.opened {
+    padding: 11px 0px 23px 20px;
+  }
+
+  .teaxtareaWrapper {
+    textarea {
       width: calc(100vw - 68px);
     }
+  }
+
+  .textAreaAutosize {
+    textarea {
+      width: calc(100vw - 68px);
+    }
+  }
+
+  .colorsWrapper {
+    right: 77px;
   }
 }

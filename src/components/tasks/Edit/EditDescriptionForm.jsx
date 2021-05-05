@@ -7,9 +7,17 @@ import TextareaAutosize from "react-textarea-autosize";
 
 import { TasksContext } from "@/src/context/TasksContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
+import { OptionsContext } from "@/src/context/OptionsContext";
+import useEvent from "@react-hook/event";
 
-function InnerEditDescription({ task, isUserOwnsProject, updateTask }) {
+function InnerEditDescription({
+  task,
+  isUserOwnsProject,
+  updateTask,
+  isMenuOpened,
+}) {
   const isMobile = useMedia({ maxWidth: 768 });
+  const isMobilePortrait = useMedia({ maxWidth: 576 });
   const textArea = useRef(null);
   const hiddenTextareaRef = useRef(null);
   const [textAreaHeight, setTextAreaHeight] = useState(40);
@@ -26,10 +34,12 @@ function InnerEditDescription({ task, isUserOwnsProject, updateTask }) {
   };
 
   const handleBlur = (e) => {
-    e.target.selectionStart = 0;
-    e.target.selectionEnd = 0;
-    setTextareaFocused(false);
-    if (isMobile) {
+    setTimeout(() => {
+      setTextareaFocused(false);
+    }, 1);
+    if (isMobilePortrait) {
+      e.target.selectionStart = 0;
+      e.target.selectionEnd = 0;
       document.querySelector(".Description-Scroller").scrollTop = 0;
     }
   };
@@ -53,6 +63,24 @@ function InnerEditDescription({ task, isUserOwnsProject, updateTask }) {
     synchronizeTaskDescription();
   }, [task]);
 
+  useEffect(() => {
+    if (hiddenTextareaRef.current && textArea.current) {
+      hiddenTextareaRef.current.style.width =
+        textArea.current.clientWidth -
+        parseInt(window.getComputedStyle(textArea.current).paddingRight) +
+        "px";
+    }
+  }, [isMenuOpened, isTextareaFocused]);
+
+  useEvent(window, "resize", () => {
+    if (hiddenTextareaRef.current && textArea.current) {
+      hiddenTextareaRef.current.style.width =
+        textArea.current.clientWidth -
+        parseInt(window.getComputedStyle(textArea.current).paddingRight) +
+        "px";
+    }
+  });
+
   return (
     <>
       <label
@@ -70,7 +98,7 @@ function InnerEditDescription({ task, isUserOwnsProject, updateTask }) {
         <div className={styles.teaxtareaWrapper}>
           <Scrollbar
             style={{ height: isMobile ? "100%" : 238 }}
-            noScrollY={isMobile && !isTextareaFocused}
+            noScrollY={isMobilePortrait && !isTextareaFocused}
             trackYProps={{
               renderer: (props) => {
                 const { elementRef, ...restProps } = props;
@@ -144,6 +172,11 @@ InnerEditDescription = memo(InnerEditDescription, (prevProps, nextProps) => {
 export default function EditDescription({ task }) {
   const { isUserOwnsProject } = useContext(ProjectsContext);
   const { updateTask } = useContext(TasksContext);
+  const { isMenuOpened } = useContext(OptionsContext);
 
-  return <InnerEditDescription {...{ task, isUserOwnsProject, updateTask }} />;
+  return (
+    <InnerEditDescription
+      {...{ task, isUserOwnsProject, updateTask, isMenuOpened }}
+    />
+  );
 }
