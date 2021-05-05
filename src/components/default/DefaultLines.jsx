@@ -1,8 +1,14 @@
 import lineStyles from "@/styles/default.module.scss";
+import useMedia from "use-media";
 
 export default function DefaultLines() {
+  const isMobile = useMedia({ maxWidth: 576 });
   return (
-    <>
+    <div
+      style={{
+        display: isMobile ? "none" : "block",
+      }}
+    >
       <div
         className={lineStyles.lineTask}
         style={{ left: 214 + 48, top: 182, background: `#FFBC42`, width: 282 }}
@@ -53,6 +59,6 @@ export default function DefaultLines() {
         Task name #5
         <div className={lineStyles.stick}></div>
       </div>
-    </>
+    </div>
   );
 }

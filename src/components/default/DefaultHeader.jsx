@@ -7,6 +7,7 @@ import ViewSwitcher from "@/src/components/viewSwitcher/ViewSwitcher";
 import AvatarSvg from "@/src/components/svg/AvatarSvg";
 import PlusSvg from "@/src/components/svg/PlusSvg";
 import ArrowRightSvg from "@/src/components/svg/ArrowRightSvg";
+import ShareSvg from "@/src/components/svg/ShareSvg";
 
 export default function DefaultHeader() {
   return (
@@ -20,7 +21,10 @@ export default function DefaultHeader() {
             <ViewSwitcher isDefault />
           </div>
           <div className={headerStyles.buttonsContainer}>
-            <button className={headerStyles.share_button}>Share Project</button>
+            <button className={headerStyles.share_button}>
+              <span>Share Project</span>
+              <ShareSvg />
+            </button>
             <button className={headerStyles.account_button}>
               <AvatarSvg />
               <Truncate lines={1} width={100}>

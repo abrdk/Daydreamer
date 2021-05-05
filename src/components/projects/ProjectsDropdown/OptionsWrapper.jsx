@@ -4,7 +4,6 @@ import styles from "@/styles/projectsDropdown.module.scss";
 import { When } from "react-if";
 import Scrollbar from "react-scrollbars-custom";
 import { useRouter } from "next/router";
-import useMedia from "use-media";
 
 import { UsersContext } from "@/src/context/UsersContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
@@ -17,8 +16,6 @@ export default function OptionsWrapper({
   numberOfOptions,
   children,
 }) {
-  const isMobile = useMedia({ maxWidth: 576 });
-
   const router = useRouter();
   const { user } = useContext(UsersContext);
   const {
