@@ -22,7 +22,7 @@ function InnerTaskEdit({
   isMenuOpened,
   setEditedTaskId,
 }) {
-  const isMobile = useMedia({ maxWidth: 576 });
+  const isMobile = useMedia({ maxWidth: 768 });
 
   if (task && Object.keys(task).length) {
     return (

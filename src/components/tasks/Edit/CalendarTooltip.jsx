@@ -28,7 +28,7 @@ import { TasksContext } from "@/src/context/TasksContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 
 function InnerCalendarTooltip({ task, isUserOwnsProject, updateTask }) {
-  const isMobile = useMedia({ maxWidth: 576 });
+  const isMobile = useMedia({ maxWidth: 768 });
 
   const [dateStart, setDateStart] = useState(null);
   const [dateEnd, setDateEnd] = useState(null);

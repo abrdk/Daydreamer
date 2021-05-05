@@ -1,6 +1,5 @@
 import styles from "@/styles/tasks.module.scss";
 import React, { useContext, useEffect, useState, useRef } from "react";
-import useMedia from "use-media";
 import useEvent from "@react-hook/event";
 
 import { TasksContext } from "@/src/context/TasksContext";
@@ -20,8 +19,6 @@ function TaskInput({
   const { updateTask, whereEditNewTask, setWhereEditNewTask } = useContext(
     TasksContext
   );
-
-  const isMobile = useMedia({ maxWidth: 576 });
 
   const inputRef = useRef(null);
 

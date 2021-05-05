@@ -84,7 +84,7 @@ function CalendarMonth({ cursor, setCursor, isDraggable, setDraggable }) {
                   className={styles.monthLine}
                   style={{
                     left:
-                      ((window.innerWidth < 576 ? 91 : 160) /
+                      ((window.innerWidth < 768 ? 91 : 160) /
                         daysInMonth(month, date.getFullYear())) *
                       (new Date().getDate() - 1),
                   }}

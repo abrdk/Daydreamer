@@ -219,7 +219,7 @@ textarea {
   border-collapse: collapse !important;
 }
 
-@media (max-width: 575.98px) {
+@media (max-width: 767.98px) {
   .ScrollbarsCustom-Calendar {
     width: calc(100% - 34px) !important;
     left: 17px !important;
@@ -232,7 +232,9 @@ textarea {
     top: 6px !important;
     right: 7px !important;
   }
+}
 
+@media (max-width: 575.98px) {
   .calendar-right {
     .react-datepicker__triangle {
       left: 238px !important;

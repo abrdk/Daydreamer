@@ -15,7 +15,7 @@ export default function ScrollbarWeek({
   setCalendarEndDate,
   children,
 }) {
-  const isMobile = useMedia({ maxWidth: 576 });
+  const isMobile = useMedia({ maxWidth: 768 });
 
   const [isMouseDown, setIsMouseDown] = useState(false);
   useEvent(document, "mousedown", () => setIsMouseDown(true));
@@ -137,7 +137,7 @@ export default function ScrollbarWeek({
 
   useEffect(() => {
     const calculatedDefaultScrollLeft =
-      window.innerWidth < 576
+      window.innerWidth < 768
         ? (getWeekNumber(new Date()) - 1) * 92
         : (getWeekNumber(new Date()) - 4) * 120;
     if (calculatedDefaultScrollLeft > 0) {

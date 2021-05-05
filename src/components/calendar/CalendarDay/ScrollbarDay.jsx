@@ -16,7 +16,7 @@ export default function ScrollbarDay({
   defaultScrollLeft,
   children,
 }) {
-  const isMobile = useMedia({ maxWidth: 576 });
+  const isMobile = useMedia({ maxWidth: 768 });
 
   const [isMouseDown, setIsMouseDown] = useState(false);
   useEvent(document, "mousedown", () => setIsMouseDown(true));

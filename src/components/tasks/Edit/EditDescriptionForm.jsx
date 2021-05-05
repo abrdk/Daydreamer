@@ -9,7 +9,7 @@ import { TasksContext } from "@/src/context/TasksContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 
 function InnerEditDescription({ task, isUserOwnsProject, updateTask }) {
-  const isMobile = useMedia({ maxWidth: 576 });
+  const isMobile = useMedia({ maxWidth: 768 });
   const textArea = useRef(null);
   const hiddenTextareaRef = useRef(null);
   const [textAreaHeight, setTextAreaHeight] = useState(40);
