@@ -1,7 +1,9 @@
-import { useContext, useState, useEffect, memo } from "react";
+import { useContext, memo, useState, useEffect } from "react";
 import styles from "@/styles/projectsDropdown.module.scss";
 import Truncate from "react-truncate";
 import { If, Then, Else, When } from "react-if";
+import useMedia from "use-media";
+import useEvent from "@react-hook/event";
 
 import ArrowDownSvg from "@/src/components/svg/ArrowDownSvg";
 import ArrowUpSvg from "@/src/components/svg/ArrowUpSvg";
@@ -15,11 +17,29 @@ function InnerCurrentOption({
   isUserOwnsProject,
   projectByQueryIdName,
 }) {
+  const isMobile = useMedia({ maxWidth: 576 });
+  const [isProjectClicked, setIsProjectClicked] = useState(false);
+
+  useEvent(document, "click", (e) => {
+    if (e.clientY < 92 && isDropdownOpened && isMobile && !isProjectClicked) {
+      setIsDropdownOpened(false);
+    }
+  });
+
   const openDropdown = () => {
+    setIsProjectClicked(true);
     if (isUserOwnsProject) {
       setIsDropdownOpened(!isDropdownOpened);
     }
   };
+
+  useEffect(() => {
+    if (isProjectClicked) {
+      setTimeout(() => {
+        setIsProjectClicked(false);
+      }, 1);
+    }
+  }, [isProjectClicked]);
 
   return (
     <div

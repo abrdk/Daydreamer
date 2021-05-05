@@ -2,6 +2,7 @@ import { useState, useContext, useEffect, memo } from "react";
 import styles from "@/styles/projectsDropdown.module.scss";
 import Truncate from "react-truncate";
 import { If, Then, Else } from "react-if";
+import useMedia from "use-media";
 
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 
@@ -16,6 +17,7 @@ function InnerOptionName({
   inputRef,
   updateProject,
 }) {
+  const isMobile = useMedia({ maxWidth: 576 });
   const [inputWidth, setInputWidth] = useState(maxInputWidth);
   const [projectName, setProjectName] = useState(project.name);
 
@@ -83,6 +85,11 @@ function InnerOptionName({
         <span
           className={project.name ? styles.fakeText : styles.fakeTextVisible}
           ref={hiddenTextRef}
+          onClick={() => {
+            if (isMobile) {
+              setIsNameUpdating(true);
+            }
+          }}
         >
           {project.name ? project.name : `Project name #${projectIndex + 1}`}
         </span>

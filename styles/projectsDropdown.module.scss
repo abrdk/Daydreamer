@@ -235,7 +235,61 @@
 
 @media (max-width: 575.98px) {
   .root {
-    width: calc(100% - 87px);
+    width: calc(100% - 85px);
+    font-size: 14px;
+  }
+
+  .wrapOptions {
+    top: 109px;
+    left: 15px;
+    width: calc(100vw - 30px);
+  }
+
+  .wrap {
+    top: 92px;
+    height: calc(100vh - 92px);
+  }
+
+  .newProject {
+    position: fixed;
+    width: calc(100vw - 30px);
+    left: 15px;
+    bottom: 15px;
+    border-radius: 3px;
+  }
+
+  .wrapTop {
+    position: absolute;
+    height: 92px;
+    width: 100vw;
+    top: 0px;
+    z-index: 102;
+  }
+
+  .option:hover,
+  .optionSelected:hover {
+    .pencilContainer {
+      display: none;
+    }
+    .iconContainer {
+      display: none;
+    }
+  }
+
+  .optionSelected {
+    box-shadow: 15px 15px 50px rgba(9, 40, 72, 0.15);
+    .iconContainer {
+      display: flex;
+      .trash {
+        display: block;
+      }
+    }
+    .pencilContainer {
+      display: none;
+    }
+  }
+
+  .hiddenName {
     font-size: 14px;
   }
 }
