@@ -233,10 +233,55 @@
   }
 }
 
+@media (max-width: 767.98px) and (min-width: 576px) {
+  .root {
+    font-size: 14px;
+  }
+
+  .option:hover,
+  .optionSelected:hover {
+    .pencilContainer {
+      display: none;
+    }
+    .iconContainer {
+      display: none;
+    }
+  }
+
+  .optionSelected {
+    box-shadow: 15px 15px 50px rgba(9, 40, 72, 0.15);
+    .iconContainer {
+      display: flex;
+      .trash {
+        display: block;
+      }
+    }
+    .pencilContainer {
+      display: none;
+    }
+  }
+
+  .hiddenName {
+    font-size: 14px;
+  }
+
+  .trash {
+    right: auto;
+  }
+}
+
 @media (max-width: 575.98px) {
   .root {
     width: calc(100% - 85px);
     font-size: 14px;
+  }
+
+  .option {
+    width: calc(100vw - 30px);
+  }
+
+  .trash {
+    right: auto;
   }
 
   .wrapOptions {

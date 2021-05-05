@@ -17,7 +17,7 @@ function InnerOptionName({
   inputRef,
   updateProject,
 }) {
-  const isMobile = useMedia({ maxWidth: 576 });
+  const isMobile = useMedia({ maxWidth: 768 });
   const [inputWidth, setInputWidth] = useState(maxInputWidth);
   const [projectName, setProjectName] = useState(project.name);
 
