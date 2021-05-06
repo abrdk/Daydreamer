@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import styles from "@/styles/projectsDropdown.module.scss";
 import { When } from "react-if";
 import Scrollbar from "react-scrollbars-custom";
@@ -8,6 +8,7 @@ import useMedia from "use-media";
 
 import { UsersContext } from "@/src/context/UsersContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
+import useEvent from "@react-hook/event";
 
 const projectHeight = 50;
 
@@ -18,6 +19,7 @@ export default function OptionsWrapper({
   children,
 }) {
   const isMobile = useMedia({ maxWidth: 576 });
+  const [dropdownHeight, setDropdownHeight] = useState(0);
   const router = useRouter();
   const { user } = useContext(UsersContext);
   const {
@@ -60,12 +62,20 @@ export default function OptionsWrapper({
     setIsDropdownOpened(false);
   };
 
+  useEvent(window, "resize", () => {
+    setDropdownHeight(getDropdownHeight());
+  });
+
+  useEffect(() => {
+    setDropdownHeight(getDropdownHeight());
+  }, [numberOfOptions]);
+
   return (
     <When condition={isDropdownOpened && isUserOwnsProject}>
       <div className={styles.wrap} onClick={closeDropdown}></div>
       <div className={styles.triangle}></div>
       <div className={styles.wrapOptions}>
-        <Scrollbar noScrollX style={{ height: getDropdownHeight() }}>
+        <Scrollbar noScrollX style={{ height: dropdownHeight }}>
           {children}
         </Scrollbar>
         <div className={styles.newProject} onClick={createNewProject}>

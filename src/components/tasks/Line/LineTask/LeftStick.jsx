@@ -149,7 +149,7 @@ function InnerLeftStick({
   }, [document.querySelector(".Calendar-Scroller"), scrollLeft]);
 
   return (
-    <When condition={view != "Month" || taskWidth > dayWidth * 4}>
+    <When condition={(taskWidth - 4) / 3 > 3}>
       <When condition={isUserOwnsProject}>
         <div
           className={calendarStyles.resizeAreaLeft + " stick"}
@@ -157,13 +157,11 @@ function InnerLeftStick({
           onTouchStart={startResizeLeft}
           style={{
             cursor: globalCursor ? globalCursor : "ew-resize",
+            width: taskWidth >= 36 ? 18 : taskWidth / 2,
           }}
         ></div>
       </When>
-      <div
-        className={calendarStyles.stick}
-        style={{ width: taskWidth < 21 ? 0 : 2 }}
-      ></div>
+      <div className={calendarStyles.stick}></div>
     </When>
   );
 }

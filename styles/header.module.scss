@@ -73,6 +73,7 @@
     height: 40px;
     width: 90px;
     margin-top: 16px;
+
     .share_button {
       width: 40px;
       height: 40px;
@@ -106,6 +107,12 @@
         height: 20px;
         margin-right: 0;
       }
+    }
+    .copyBtn {
+      height: 30px;
+      width: 100px;
+      font-size: 12px;
+      margin-top: 5px;
     }
   }
 }

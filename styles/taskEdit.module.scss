@@ -600,11 +600,27 @@
       width: calc(100vw - 78px);
     }
   }
+
+  .wrapperSmallPadding {
+    padding-bottom: 15px;
+    .description,
+    .descriptionFilled {
+      height: calc(100vh - 159px);
+    }
+  }
 }
 
 @media (max-width: 575.98px) {
   .wrapper {
     height: auto;
+  }
+
+  .wrapperSmallPadding {
+    padding-bottom: 15px;
+    .description,
+    .descriptionFilled {
+      height: 65px;
+    }
   }
 
   .description,

@@ -1,10 +1,12 @@
 import React, { useContext, memo } from "react";
 import styles from "@/styles/taskEdit.module.scss";
 import { nanoid } from "nanoid";
+import { When } from "react-if";
 
 import PlusSvg from "@/src/components/svg/PlusSvg";
 
 import { TasksContext } from "@/src/context/TasksContext";
+import { ProjectsContext } from "@/src/context/ProjectsContext";
 
 function InnerIconCreateSubtask({
   task,
@@ -13,6 +15,7 @@ function InnerIconCreateSubtask({
   setWhereEditNewTask,
   updateIsOpened,
   createTask,
+  isUserOwnsProject,
 }) {
   const createSubtask = () => {
     const order = numOfSubtasks;
@@ -31,9 +34,11 @@ function InnerIconCreateSubtask({
   };
 
   return (
-    <div className={styles.addSubtaskWrapper} onClick={createSubtask}>
-      <PlusSvg />
-    </div>
+    <When condition={isUserOwnsProject}>
+      <div className={styles.addSubtaskWrapper} onClick={createSubtask}>
+        <PlusSvg />
+      </div>
+    </When>
   );
 }
 
@@ -46,7 +51,10 @@ InnerIconCreateSubtask = memo(
       }
     }
 
-    return prevProps.numOfSubtasks == nextProps.numOfSubtasks;
+    return (
+      prevProps.numOfSubtasks == nextProps.numOfSubtasks &&
+      prevProps.isUserOwnsProject == nextProps.isUserOwnsProject
+    );
   }
 );
 
@@ -58,6 +66,7 @@ export default function IconCreateSubtask({ task }) {
     setEditedTaskId,
     updateIsOpened,
   } = useContext(TasksContext);
+  const { isUserOwnsProject } = useContext(ProjectsContext);
   const subtasks = tasksByProjectId
     .filter((t) => t.root == task._id)
     .sort((task1, task2) => task1.order > task2.order);
@@ -71,6 +80,7 @@ export default function IconCreateSubtask({ task }) {
         setWhereEditNewTask,
         updateIsOpened,
         createTask,
+        isUserOwnsProject,
       }}
     />
   );

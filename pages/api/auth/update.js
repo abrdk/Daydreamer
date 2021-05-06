@@ -66,7 +66,7 @@ export default async (req, res) => {
       { _id: result._id, name, password },
       "jwtSecret",
       {
-        expiresIn: "24h",
+        expiresIn: "365 days",
       }
     );
 

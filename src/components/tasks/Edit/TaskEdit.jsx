@@ -54,7 +54,11 @@ function InnerTaskEdit({
   if (task && Object.keys(task).length) {
     return (
       <div
-        className={styles.wrapper}
+        className={
+          isUserOwnsProject
+            ? styles.wrapper
+            : `${styles.wrapper} ${styles.wrapperSmallPadding}`
+        }
         style={{
           width: getEditAreaWidth(),
           left: getEditAreaLeft(),

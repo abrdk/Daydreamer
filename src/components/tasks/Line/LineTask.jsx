@@ -136,18 +136,16 @@ function InnerLineTask({ task, calendarStartDate, view, setEditedTaskId }) {
   };
 
   const getPadding = () => {
-    if (view != "Month") {
-      if (taskWidth > 120 / 7) {
-        return 8;
+    if (taskWidth < 28) {
+      if ((taskWidth - 12) / 2 < 3) {
+        if ((taskWidth - 4) / 3 < 3) {
+          return (taskWidth - 2) / 2;
+        }
+        return (taskWidth - 4) / 3;
       }
-      return 120 / 7 / 2 - 0.5;
+      return (taskWidth - 12) / 2;
     }
-    if (taskWidth > (160 * 5) / 28) {
-      return 8;
-    } else if (taskWidth > (160 * 4) / 28) {
-      return 6;
-    }
-    return taskWidth / 2 - 1;
+    return 8;
   };
 
   useEffect(() => {
@@ -163,11 +161,19 @@ function InnerLineTask({ task, calendarStartDate, view, setEditedTaskId }) {
     document.querySelector("#linesWrapper").style.paddingLeft = "0px";
   }, [dateStart, dateEnd, calendarStartDate]);
 
+  useEvent(window, "resize", () => {
+    const newTaskLeft = getTaskLeft();
+    const newTaskWidth = getTaskWidth();
+    setTaskLeft(newTaskLeft);
+    setTaskWidth(newTaskWidth);
+    setTextWidth(newTaskWidth - 36);
+  });
+
   useEvent(document, "mousedown", (e) => {
-    if (e.target.classList.contains("stick")) {
+    if (e.target.classList && e.target.classList.contains("stick")) {
       setGlobalCursor("ew-resize");
     }
-    if (e.target.classList.contains("grab")) {
+    if (e.target.classList && e.target.classList.contains("grab")) {
       setGlobalCursor("grab");
     }
   });

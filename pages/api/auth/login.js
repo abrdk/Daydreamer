@@ -15,12 +15,10 @@ export default async (req, res) => {
     }
 
     if (!password) {
-      return res
-        .status(400)
-        .json({
-          message: "Password should not be empty",
-          errorType: "password",
-        });
+      return res.status(400).json({
+        message: "Password should not be empty",
+        errorType: "password",
+      });
     }
 
     const User = getDB("User");
@@ -42,7 +40,7 @@ export default async (req, res) => {
       { _id: candidate._id, name, password },
       "jwtSecret",
       {
-        expiresIn: "24h",
+        expiresIn: "365 days",
       }
     );
     res.setHeader(

@@ -251,13 +251,13 @@
   .optionSelected {
     box-shadow: 15px 15px 50px rgba(9, 40, 72, 0.15);
     .iconContainer {
-      display: flex;
+      display: flex !important;
       .trash {
-        display: block;
+        display: block !important;
       }
     }
     .pencilContainer {
-      display: none;
+      display: none !important;
     }
   }
 
@@ -267,6 +267,10 @@
 
   .trash {
     right: auto;
+  }
+
+  .input {
+    max-width: none;
   }
 }
 
@@ -324,17 +328,21 @@
   .optionSelected {
     box-shadow: 15px 15px 50px rgba(9, 40, 72, 0.15);
     .iconContainer {
-      display: flex;
+      display: flex !important;
       .trash {
-        display: block;
+        display: block !important;
       }
     }
     .pencilContainer {
-      display: none;
+      display: none !important;
     }
   }
 
   .hiddenName {
     font-size: 14px;
+  }
+
+  .input {
+    max-width: none;
   }
 }

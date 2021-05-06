@@ -13,6 +13,7 @@ function InnerProjectOption({
   projectIndex,
   updateProject,
   projectByQueryId,
+  isDropdownOpened,
 }) {
   const router = useRouter();
 
@@ -45,7 +46,9 @@ function InnerProjectOption({
   return (
     <div
       className={
-        project._id == router.query.id ? styles.optionSelected : styles.option
+        project._id == router.query.id
+          ? styles.optionSelected + " projectOption"
+          : styles.option + " projectOption"
       }
       onClick={handleProjectSelect}
     >
@@ -56,6 +59,7 @@ function InnerProjectOption({
         isNameUpdating={isNameUpdating}
         inputRef={inputRef}
         setIsNameUpdating={setIsNameUpdating}
+        isDropdownOpened={isDropdownOpened}
       />
 
       <OptionPencil

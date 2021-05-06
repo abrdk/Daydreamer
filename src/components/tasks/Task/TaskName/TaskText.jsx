@@ -22,6 +22,8 @@ function TaskText({ task, taskDepth }) {
   useEvent(window, "resize", () => {
     if (isMobile) {
       setTextWidth(window.innerWidth - paddingRightMobile - paddingLeft);
+    } else {
+      setTextWidth(335 - paddingRight - paddingLeft);
     }
   });
 

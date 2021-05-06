@@ -52,6 +52,12 @@
   color: #258efa;
 }
 
+@media (max-width: 991.98px) {
+  .buttonsWrapper.offset {
+    left: 0px;
+  }
+}
+
 @media (max-width: 767.98px) {
   .baseButton {
     width: 60px;
@@ -59,6 +65,12 @@
     font-size: 12px;
   }
 
+  .buttonsWrapper.offset {
+    left: 304px;
+  }
+}
+
+@media (max-width: 576px) {
   .buttonsWrapper.offset {
     left: 0px;
   }
