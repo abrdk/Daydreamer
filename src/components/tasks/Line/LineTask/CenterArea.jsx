@@ -2,6 +2,7 @@ import calendarStyles from "@/styles/calendar.module.scss";
 import { When } from "react-if";
 import { useContext, useState, useEffect } from "react";
 import useEvent from "@react-hook/event";
+import useEventListener from "@use-it/event-listener";
 
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 import { TasksContext } from "@/src/context/TasksContext";
@@ -21,6 +22,18 @@ export default function CenterArea({
   globalCursor,
   children,
 }) {
+  const [isSpacePressed, setIsSpacePressed] = useState(false);
+  useEvent(document, "keydown", (e) => {
+    if (e.key == " ") {
+      setIsSpacePressed(true);
+    }
+  });
+  useEvent(document, "keyup", (e) => {
+    if (e.key == " ") {
+      setIsSpacePressed(false);
+    }
+  });
+
   const { updateTask } = useContext(TasksContext);
   const { isUserOwnsProject } = useContext(ProjectsContext);
 
@@ -28,10 +41,11 @@ export default function CenterArea({
   const [offsetFromCenter, setOffsetFromCenter] = useState(0);
 
   const startMoving = (e) => {
-    if (e.target != inputRef.current && isUserOwnsProject) {
+    if (e.target != inputRef.current && isUserOwnsProject && !isSpacePressed) {
       setIsMoving(true);
       const lineRect = lineRef.current.getBoundingClientRect();
-      setOffsetFromCenter(lineRect.left + lineRect.width / 2 - e.clientX);
+      const cursorX = e.clientX || e.touches[0].clientX;
+      setOffsetFromCenter(lineRect.left + lineRect.width / 2 - cursorX);
       document.body.style.cursor = "grab";
     }
   };
@@ -127,6 +141,30 @@ export default function CenterArea({
     }
   });
 
+  useEvent(document, "touchmove", (e) => {
+    if (isMoving) {
+      removeSelection(e);
+      movingHandler(e.touches[0].clientX);
+    }
+  });
+
+  useEventListener(
+    "touchmove",
+    (e) => {
+      if (isMoving) {
+        e.preventDefault();
+      }
+    },
+    document,
+    { passive: false }
+  );
+
+  useEvent(document, "touchend", (e) => {
+    if (isMoving) {
+      stopMoving();
+    }
+  });
+
   useEvent(document.querySelector(".Calendar-Scroller"), "scroll", () => {
     if (isMoving) {
       movingHandler();
@@ -147,6 +185,7 @@ export default function CenterArea({
           cursor: getCursor(),
         }}
         onMouseDown={startMoving}
+        onTouchStart={startMoving}
       >
         {children}
       </div>

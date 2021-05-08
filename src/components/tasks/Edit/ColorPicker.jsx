@@ -1,9 +1,13 @@
 import { useContext, useState, useEffect, memo } from "react";
 import styles from "@/styles/taskEdit.module.scss";
+import usePrevious from "@react-hook/previous";
 
 import { TasksContext } from "@/src/context/TasksContext";
 
 function InnerColorPicker({ task, updateTask }) {
+  const prevTaskId = usePrevious(task._id);
+  const [isEditedTaskChanged, setIsEditedTaskChanged] = useState(false);
+
   const [editedColor, setEditedColor] = useState("");
 
   const updateColor = (color) => {
@@ -16,6 +20,15 @@ function InnerColorPicker({ task, updateTask }) {
       setEditedColor(task.color);
     }
   }, [task]);
+
+  useEffect(() => {
+    if (prevTaskId != task._id) {
+      setIsEditedTaskChanged(true);
+      setTimeout(() => {
+        setIsEditedTaskChanged(false);
+      }, 200);
+    }
+  }, [prevTaskId, task._id]);
 
   const colorsElements = [
     "258EFA",
@@ -31,6 +44,7 @@ function InnerColorPicker({ task, updateTask }) {
       style={{
         background: editedColor == color && `#fff`,
         border: editedColor == color && `1px solid #${color}`,
+        transition: isEditedTaskChanged ? "all 0s" : null,
       }}
       onClick={() => updateColor(color)}
     >

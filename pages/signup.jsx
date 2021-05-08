@@ -34,6 +34,11 @@ export default function Signup() {
       <Head>
         {" "}
         <title> Daydreamer | Put your ideas on a timeline </title>{" "}
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, 
+     user-scalable=0"
+        ></meta>
       </Head>
       <When condition={isUserLoaded && !user._id}>
         <DefaultGanttBackground />
@@ -42,7 +47,7 @@ export default function Signup() {
             <div className={styles.title}>Registration</div>
             <div className={styles.description}>
               Enter your information to register and to be
-              <br /> able to use the service
+              <br className={styles.descriptionBr} /> able to use the service
             </div>
             <NameForm name={name} setName={setName} nameWarn={nameWarn} />
             <PasswordForm

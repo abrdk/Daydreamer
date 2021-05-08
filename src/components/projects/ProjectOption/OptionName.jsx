@@ -2,8 +2,10 @@ import { useState, useContext, useEffect, memo } from "react";
 import styles from "@/styles/projectsDropdown.module.scss";
 import Truncate from "react-truncate";
 import { If, Then, Else } from "react-if";
+import useMedia from "use-media";
 
 import { ProjectsContext } from "@/src/context/ProjectsContext";
+import useEvent from "@react-hook/event";
 
 const maxInputWidth = 295;
 
@@ -16,7 +18,9 @@ function InnerOptionName({
   inputRef,
   updateProject,
 }) {
+  const isMobile = useMedia({ maxWidth: 768 });
   const [inputWidth, setInputWidth] = useState(maxInputWidth);
+  const [textWidth, setTextWidth] = useState(300);
   const [projectName, setProjectName] = useState(project.name);
 
   const handleNameUpdate = (e) => {
@@ -38,6 +42,16 @@ function InnerOptionName({
   const getInputWidth = () => {
     if (hiddenTextRef.current) {
       const textWidth = hiddenTextRef.current.offsetWidth;
+      if (isMobile) {
+        if (
+          textWidth + 5 >
+          document.querySelector(".projectOption").clientWidth - 60
+        ) {
+          return document.querySelector(".projectOption").clientWidth - 60;
+        }
+        return textWidth + 5;
+      }
+
       if (textWidth + 5 > maxInputWidth) {
         return maxInputWidth;
       }
@@ -45,9 +59,28 @@ function InnerOptionName({
     }
   };
 
+  const getTextWidth = () =>
+    document.querySelector(".projectOption").clientWidth - 60;
+
   useEffect(() => {
     setInputWidth(getInputWidth());
   }, [projectName, isNameUpdating]);
+
+  useEvent(window, "resize", () => {
+    if (isMobile) {
+      setTextWidth(getTextWidth());
+    } else {
+      setTextWidth(300);
+    }
+  });
+
+  useEffect(() => {
+    if (window.innerWidth < 768) {
+      setTextWidth(getTextWidth());
+    } else {
+      setTextWidth(300);
+    }
+  }, []);
 
   useEffect(() => {
     if (isNameUpdating) {
@@ -73,7 +106,7 @@ function InnerOptionName({
           />
         </Then>
         <Else>
-          <Truncate lines={1} width={300}>
+          <Truncate lines={1} width={textWidth}>
             {project.name}
           </Truncate>
         </Else>
@@ -83,6 +116,11 @@ function InnerOptionName({
         <span
           className={project.name ? styles.fakeText : styles.fakeTextVisible}
           ref={hiddenTextRef}
+          onClick={() => {
+            if (isMobile) {
+              setIsNameUpdating(true);
+            }
+          }}
         >
           {project.name ? project.name : `Project name #${projectIndex + 1}`}
         </span>
@@ -99,7 +137,8 @@ InnerOptionName = memo(InnerOptionName, (prevProps, nextProps) => {
   }
   return (
     prevProps.projectIndex == nextProps.projectIndex &&
-    prevProps.isNameUpdating == nextProps.isNameUpdating
+    prevProps.isNameUpdating == nextProps.isNameUpdating &&
+    prevProps.isDropdownOpened == nextProps.isDropdownOpened
   );
 });
 

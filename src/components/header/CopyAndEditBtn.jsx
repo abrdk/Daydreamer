@@ -2,6 +2,7 @@ import { useContext } from "react";
 import styles from "@/styles/header.module.scss";
 import { useRouter } from "next/router";
 import { nanoid } from "nanoid";
+import useMedia from "use-media";
 
 import { UsersContext } from "@/src/context/UsersContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
@@ -9,10 +10,14 @@ import { TasksContext } from "@/src/context/TasksContext";
 import { OptionsContext } from "@/src/context/OptionsContext";
 
 export default function copyAndEditBtn({ setModal }) {
+  const isMobile = useMedia({ maxWidth: 768 });
+
   const router = useRouter();
 
   const { user, setIsUserLogout } = useContext(UsersContext);
-  const { projectByQueryId, createProject } = useContext(ProjectsContext);
+  const { projectByQueryId, createProject, isUserOwnsProject } = useContext(
+    ProjectsContext
+  );
   const { createTask, tasksByProjectId } = useContext(TasksContext);
   const { setIsMenuOpened } = useContext(OptionsContext);
 
@@ -69,7 +74,14 @@ export default function copyAndEditBtn({ setModal }) {
   };
 
   return (
-    <button className={styles.share_button} onClick={copyAndEdit}>
+    <button
+      className={
+        isMobile
+          ? `${styles.share_button} ${styles.copyBtn}`
+          : styles.share_button
+      }
+      onClick={copyAndEdit}
+    >
       Copy and Edit
     </button>
   );

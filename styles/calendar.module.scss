@@ -191,6 +191,7 @@
   height: 25px;
   background: #fff;
   border-radius: 3px;
+  flex-shrink: 0;
 }
 
 .resizeAreaLeft {
@@ -389,4 +390,81 @@
   cursor: text !important;
   position: relative;
   z-index: 1;
+}
+
+@media (max-width: 767.98px) {
+  .monthName {
+    margin-bottom: 2px;
+    font-size: 13px;
+    margin-top: 4px;
+  }
+
+  .day {
+    margin: 0;
+    font-size: 13px;
+  }
+
+  .lineTask:first-child {
+    margin-top: 28px;
+  }
+
+  .line {
+    left: 20.5px;
+    height: calc(100vh - 157px);
+  }
+
+  .week {
+    font-size: 13px;
+    height: 48px;
+    width: 90px;
+  }
+
+  .weekLine {
+    height: calc(100vh - 157px);
+  }
+
+  .monthWrapper {
+    width: 90px;
+    height: 48px;
+    font-size: 13px;
+  }
+
+  .monthLine {
+    height: calc(100vh - 157px);
+  }
+
+  .dashedContainer {
+    width: 42px;
+    height: calc(100vh - 160px);
+    top: 51px;
+  }
+
+  .dashedContainerWeek {
+    width: 91px;
+    top: 51px;
+    height: calc(100vh - 160px);
+  }
+
+  .dashedContainerMonth {
+    width: 91px;
+    top: 51px;
+    height: calc(100vh - 160px);
+  }
+
+  .addSubtaskWrapper {
+    display: none;
+  }
+
+  .editTaskIconWrapper {
+    display: none;
+  }
+
+  .openSubtasksWrapper {
+    display: flex;
+    left: -35px;
+    width: 35px;
+    .openSubtasksIcon {
+      display: flex;
+    }
+  }
 }

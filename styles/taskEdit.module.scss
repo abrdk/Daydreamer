@@ -58,6 +58,7 @@
     overflow: hidden;
     min-height: 238px;
     padding-right: 20px;
+    width: calc(100%);
   }
 }
 
@@ -74,30 +75,18 @@
   padding-top: 15px;
   padding-bottom: 15px;
   textarea {
-    width: 100%;
     padding: 0;
     margin: 0;
     overflow: hidden;
     min-height: 238px;
     padding-right: 20px;
+    width: calc(100%);
   }
 }
 
 .inputsWrapper {
   width: calc(100% - 70px);
   margin-right: 35px;
-}
-
-.fakeText {
-  font-style: normal;
-  font-weight: normal;
-  font-size: 15px;
-  line-height: 21px;
-  position: absolute;
-  opacity: 0;
-  width: calc(100% - 170px);
-  white-space: pre-wrap;
-  word-break: break-all;
 }
 
 .teaxtareaWrapper {
@@ -419,4 +408,245 @@
   width: max-content;
   color: #d8d8d8 !important;
   white-space: pre;
+}
+
+.addSubtaskWrapper {
+  display: none;
+}
+
+.textAreaAutosize {
+  position: absolute;
+  opacity: 0;
+  textarea {
+    margin: 0;
+    padding: 0;
+    border: none;
+    font-family: "Noto Sans";
+    font-style: normal;
+    font-weight: normal;
+    font-size: 15px;
+    line-height: 21px;
+    color: #696f75;
+    width: calc(100vw - 157px);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .wrapper {
+    width: 100%;
+    height: 100vh;
+    padding: 23px 17px 75px 17px;
+    transition: left 0.3s;
+    z-index: 1000;
+  }
+
+  .inputsWrapper {
+    width: calc(100% - 25px);
+    margin-right: 0;
+    flex-shrink: 0;
+    z-index: 1;
+  }
+
+  .topInputsWrapper {
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - 25px);
+    label:first-child {
+      align-self: flex-start;
+    }
+  }
+
+  .inputNameFilled {
+    width: calc(100vw - 78px);
+    margin-right: 19px;
+    margin-bottom: 10px;
+  }
+
+  .hiddenName {
+    font-size: 13px;
+  }
+
+  .closeWrapper {
+    width: 25px;
+    height: 25px;
+    margin-bottom: 20px;
+    position: absolute;
+    right: 17px;
+    top: 36px;
+    z-index: 0;
+  }
+
+  .datesWrapper {
+    width: 100%;
+    margin-bottom: 10px;
+    z-index: 100;
+    .dateWrapper {
+      width: calc(50vw - 32.5px);
+      margin-right: 0;
+      font-size: 13px;
+    }
+
+    .dateWrapper:first-child {
+      margin-right: 32px;
+    }
+
+    .dateDash {
+      left: calc(50vw - 24.5px);
+    }
+  }
+
+  .description,
+  .descriptionFilled {
+    height: calc(100vh - 215px);
+    margin-right: 0;
+    padding: 10px 0px 15px 20px;
+    width: calc(100vw - 34px);
+    margin-bottom: 0;
+  }
+
+  .description.opened,
+  .descriptionFilled.opened {
+    margin-bottom: 0;
+    height: calc(100vh - 215px);
+    padding: 10px 0px 15px 20px;
+    textarea {
+      width: calc(100vw - 78px);
+    }
+    & + .textAreaAutosize {
+      textarea {
+        width: calc(100vw - 78px);
+      }
+    }
+  }
+
+  .teaxtareaWrapper {
+    height: 100%;
+    textarea {
+      width: calc(100vw - 78px);
+      padding-right: 0px;
+      min-height: 100%;
+    }
+  }
+
+  .sidebar {
+    display: flex;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .trashWrapper {
+    position: absolute;
+    right: 17px;
+    bottom: 15px;
+    z-index: 0;
+  }
+
+  .colorsWrapper {
+    position: absolute;
+    right: calc(50% - 100.5px);
+    bottom: 15px;
+    margin-bottom: 0;
+    flex-direction: row;
+    height: 50px;
+    width: 201px;
+    z-index: 0;
+  }
+
+  .addSubtaskWrapper {
+    display: block;
+    width: 45px;
+    height: 45px;
+    position: absolute;
+    left: 17px;
+    bottom: 18px;
+    z-index: 0;
+    cursor: pointer;
+    svg {
+      width: 45px;
+      height: 45px;
+    }
+  }
+
+  .hiddenTextarea {
+    font-family: Noto Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 21px;
+    color: #696f75;
+    width: calc(100vw - 68px);
+    overflow: visible;
+    position: absolute;
+    top: 0;
+  }
+
+  .textAreaAutosize {
+    position: absolute;
+    opacity: 0;
+    left: -100%;
+    textarea {
+      margin: 0;
+      padding: 0;
+      border: none;
+      font-family: "Noto Sans";
+      font-style: normal;
+      font-weight: normal;
+      font-size: 13px;
+      line-height: 21px;
+      color: #696f75;
+      width: calc(100vw - 78px);
+    }
+  }
+
+  .wrapperSmallPadding {
+    padding-bottom: 15px;
+    .description,
+    .descriptionFilled {
+      height: calc(100vh - 159px);
+    }
+  }
+}
+
+@media (max-width: 575.98px) {
+  .wrapper {
+    height: auto;
+  }
+
+  .wrapperSmallPadding {
+    padding-bottom: 15px;
+    .description,
+    .descriptionFilled {
+      height: 65px;
+    }
+  }
+
+  .description,
+  .descriptionFilled {
+    height: 65px;
+    padding: 10px 0px 13px 20px;
+  }
+
+  .description.opened,
+  .descriptionFilled.opened {
+    padding: 11px 0px 23px 20px;
+  }
+
+  .teaxtareaWrapper {
+    textarea {
+      width: calc(100vw - 68px);
+    }
+  }
+
+  .textAreaAutosize {
+    textarea {
+      width: calc(100vw - 68px);
+    }
+  }
+
+  .colorsWrapper {
+    right: 77px;
+  }
 }

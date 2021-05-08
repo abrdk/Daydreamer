@@ -6,6 +6,7 @@ import Truncate from "react-truncate";
 import ViewSwitcher from "@/src/components/viewSwitcher/ViewSwitcher";
 import CopyAndEditBtn from "@/src/components/header/CopyAndEditBtn";
 import AvatarSvg from "@/src/components/svg/AvatarSvg";
+import ShareSvg from "@/src/components/svg/ShareSvg";
 
 import { UsersContext } from "@/src/context/UsersContext";
 import { ProjectsContext } from "@/src/context/ProjectsContext";
@@ -21,16 +22,19 @@ function InnerHeader({ setModal, userName, isUserOwnsProject }) {
               className={styles.share_button}
               onClick={setModal.bind(null, "share")}
             >
-              Share Project
+              <span>Share Project</span>
+              <ShareSvg />
             </button>
             <button
               className={styles.account_button}
               onClick={setModal.bind(null, "account")}
             >
               <AvatarSvg />{" "}
-              <Truncate lines={1} width={100}>
-                {userName}
-              </Truncate>
+              <span>
+                <Truncate lines={1} width={100}>
+                  {userName}
+                </Truncate>
+              </span>
             </button>
           </Then>
           <Else>

@@ -73,3 +73,56 @@
   display: flex;
   justify-content: space-between;
 }
+
+@media (max-width: 767.98px) {
+  .deleteAccountModal {
+    width: 360px;
+    height: auto;
+    padding: 27px 0px 38px 0px;
+  }
+
+  .deleteAccountTitle {
+    font-size: 24px;
+  }
+
+  .deleteAccountDescription {
+    margin-bottom: 21px;
+    font-size: 14px;
+    br {
+      display: none;
+    }
+  }
+
+  .deleteAccountPrimaryButton {
+    width: 100px;
+    height: 50px;
+    font-size: 15px;
+    margin-right: 65px;
+  }
+
+  .deleteAccountSecondaryButton {
+    width: 100px;
+    height: 50px;
+    font-size: 15px;
+    margin-left: 65px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .deleteAccountModal {
+    width: calc(100% - 40px);
+    padding: 33px 52px 41px 52px;
+  }
+
+  .deleteAccountDescription {
+    margin-bottom: 19px;
+    br {
+      display: inline;
+    }
+  }
+
+  .deleteAccountSecondaryButton,
+  .deleteAccountPrimaryButton {
+    margin: 0;
+  }
+}

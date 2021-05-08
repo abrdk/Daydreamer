@@ -11,6 +11,8 @@
     "@react-hook/event": "^1.2.3",
     "@react-hook/mouse-position": "^4.1.0",
     "@react-hook/previous": "^1.0.1",
+    "@use-it/event-listener": "^0.1.6",
+    "@use-it/interval": "^1.0.0",
     "bcryptjs": "^2.4.3",
     "dateformat": "^4.5.1",
     "floating-label-react": "^1.0.3",
@@ -26,9 +28,11 @@
     "react-if": "^4.0.1",
     "react-scripts": "3.4.3",
     "react-scrollbars-custom": "^4.0.25",
+    "react-textarea-autosize": "^8.3.2",
     "react-truncate": "^2.4.0",
     "sass": "^1.32.6",
-    "swr": "^0.5.5"
+    "swr": "^0.5.5",
+    "use-media": "^1.4.0"
   },
   "devDependencies": {
     "@types/react": "^16.9.56",

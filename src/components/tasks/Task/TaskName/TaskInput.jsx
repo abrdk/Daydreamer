@@ -1,10 +1,12 @@
 import styles from "@/styles/tasks.module.scss";
 import React, { useContext, useEffect, useState, useRef } from "react";
+import useEvent from "@react-hook/event";
 
 import { TasksContext } from "@/src/context/TasksContext";
 
 const taskOffsetLeft = 14;
 const paddingRight = 105;
+const paddingRightMobile = 85;
 const taskWidth = 335;
 
 function TaskInput({
@@ -58,13 +60,24 @@ function TaskInput({
   const getInputWidth = () => {
     if (fakeTextRef.current) {
       const currentWidth = fakeTextRef.current.offsetWidth + 5;
-      if (currentWidth > taskWidth - paddingRight - paddingLeft) {
-        return taskWidth - paddingRight - paddingLeft;
+      if (window.innerWidth >= 576) {
+        if (currentWidth > taskWidth - paddingRight - paddingLeft) {
+          return taskWidth - paddingRight - paddingLeft;
+        }
+      } else if (
+        currentWidth >
+        window.innerWidth - paddingRightMobile - paddingLeft
+      ) {
+        return window.innerWidth - paddingRightMobile - paddingLeft;
       }
       return currentWidth;
     }
     return 0;
   };
+
+  useEvent(window, "resize", () => {
+    setInputWidth(getInputWidth());
+  });
 
   useEffect(() => {
     focusOnInput();

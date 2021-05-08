@@ -1,12 +1,14 @@
 import React, { useContext, memo } from "react";
 import styles from "@/styles/taskEdit.module.scss";
 import { When } from "react-if";
+import useMedia from "use-media";
 
 import CalendarTooltip from "@/src/components/tasks/Edit/CalendarTooltip";
 import EditNameForm from "@/src/components/tasks/Edit/EditNameForm";
 import EditDescriptionForm from "@/src/components/tasks/Edit/EditDescriptionForm";
 import ColorPicker from "@/src/components/tasks/Edit/ColorPicker";
 import DeleteTaskIcon from "@/src/components/tasks/Edit/DeleteTaskIcon";
+import IconCreateSubtask from "@/src/components/tasks/Edit/IconCreateSubtask";
 
 import CrossSvg from "@/src/components/svg/CrossSvg";
 
@@ -20,11 +22,47 @@ function InnerTaskEdit({
   isMenuOpened,
   setEditedTaskId,
 }) {
+  const isMobilePortrait = useMedia({ maxWidth: 576 });
+  const isMobileLandscape = useMedia({ minWidth: 576, maxWidth: 768 });
+
+  const getEditAreaWidth = () => {
+    if (isMobilePortrait || isMobileLandscape) {
+      return "100vw";
+    }
+    if (isMenuOpened) {
+      return "calc(100vw - 335px)";
+    }
+    return "100vw";
+  };
+
+  const getEditAreaLeft = () => {
+    if (isMobilePortrait) {
+      if (isMenuOpened) {
+        return 0;
+      }
+      return "100vw";
+    }
+    if (isMobileLandscape) {
+      if (isMenuOpened) {
+        return 0;
+      }
+      return "335px";
+    }
+    return "335px";
+  };
+
   if (task && Object.keys(task).length) {
     return (
       <div
-        className={styles.wrapper}
-        style={{ width: isMenuOpened ? "calc(100vw - 335px)" : "100vw" }}
+        className={
+          isUserOwnsProject
+            ? styles.wrapper
+            : `${styles.wrapper} ${styles.wrapperSmallPadding}`
+        }
+        style={{
+          width: getEditAreaWidth(),
+          left: getEditAreaLeft(),
+        }}
         id="editTask"
       >
         <div className={styles.inputsWrapper}>
@@ -34,7 +72,8 @@ function InnerTaskEdit({
           </div>
           <EditDescriptionForm task={task} />
         </div>
-        <div>
+
+        <div className={styles.sidebar}>
           <div className={styles.closeWrapper}>
             <div
               className={styles.crossIcon}
@@ -48,6 +87,8 @@ function InnerTaskEdit({
             <DeleteTaskIcon task={task} />
           </When>
         </div>
+
+        <IconCreateSubtask task={task} />
       </div>
     );
   } else {

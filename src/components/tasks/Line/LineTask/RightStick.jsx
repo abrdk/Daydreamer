@@ -2,6 +2,7 @@ import calendarStyles from "@/styles/calendar.module.scss";
 import { When } from "react-if";
 import { useContext, useState, useEffect, memo } from "react";
 import useEvent from "@react-hook/event";
+import useEventListener from "@use-it/event-listener";
 
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 import { TasksContext } from "@/src/context/TasksContext";
@@ -20,11 +21,25 @@ function InnerRightStick({
   updateTask,
   isUserOwnsProject,
 }) {
+  const [isSpacePressed, setIsSpacePressed] = useState(false);
+  useEvent(document, "keydown", (e) => {
+    if (e.key == " ") {
+      setIsSpacePressed(true);
+    }
+  });
+  useEvent(document, "keyup", (e) => {
+    if (e.key == " ") {
+      setIsSpacePressed(false);
+    }
+  });
+
   const [scrollLeft, setScrollLeft] = useState(undefined);
 
   const startResizeRight = () => {
-    setIsResizeRight(true);
-    document.body.style.cursor = "ew-resize";
+    if (!isSpacePressed) {
+      setIsResizeRight(true);
+      document.body.style.cursor = "ew-resize";
+    }
   };
 
   const stopResizeRight = () => {
@@ -92,7 +107,31 @@ function InnerRightStick({
     }
   });
 
-  useEvent(document, "mouseup", (e) => {
+  useEvent(document, "mouseup", () => {
+    if (isResizeRight) {
+      stopResizeRight();
+    }
+  });
+
+  useEvent(document, "touchmove", (e) => {
+    if (isResizeRight) {
+      removeSelection(e);
+      resizeRightHandler(e.touches[0].clientX);
+    }
+  });
+
+  useEventListener(
+    "touchmove",
+    (e) => {
+      if (isResizeRight) {
+        e.preventDefault();
+      }
+    },
+    document,
+    { passive: false }
+  );
+
+  useEvent(document, "touchend", (e) => {
     if (isResizeRight) {
       stopResizeRight();
     }
@@ -115,9 +154,15 @@ function InnerRightStick({
         <div
           className={calendarStyles.resizeAreaRight + " stick"}
           onMouseDown={startResizeRight}
+          onTouchStart={startResizeRight}
           style={{
             cursor: globalCursor ? globalCursor : "ew-resize",
-            width: taskWidth > 18 ? 18 : taskWidth == 0 ? 160 / 30 : taskWidth,
+            width:
+              taskWidth >= 36
+                ? 18
+                : (taskWidth - 4) / 3 >= 3
+                ? taskWidth / 2
+                : taskWidth,
           }}
         ></div>
       </When>

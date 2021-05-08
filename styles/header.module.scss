@@ -34,6 +34,9 @@
     color: #fff;
     border: 1px solid transparent;
   }
+  svg {
+    display: none;
+  }
 }
 
 .account_button {
@@ -51,5 +54,65 @@
   }
   svg {
     margin-right: 18px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .header {
+    box-sizing: padding-box;
+    height: 72px;
+    padding: 0px;
+    padding-left: 43px;
+    padding-right: 16px;
+    border-bottom: 1px solid #ecf5ff;
+    display: flex;
+    align-items: center;
+  }
+
+  .buttonsContainer {
+    height: 40px;
+    width: 90px;
+    margin-top: 16px;
+
+    .share_button {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      span {
+        display: none;
+      }
+      svg {
+        display: block;
+        height: 20.818359375px;
+        width: 19.08349609375px;
+      }
+    }
+    .account_button {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-left: 10px;
+      span {
+        display: none;
+      }
+      svg {
+        width: 20px;
+        height: 20px;
+        margin-right: 0;
+      }
+    }
+    .copyBtn {
+      height: 30px;
+      width: 100px;
+      font-size: 12px;
+      margin-top: 5px;
+    }
   }
 }

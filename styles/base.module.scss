@@ -85,3 +85,46 @@
   cursor: default;
   color: #d8d8d8;
 }
+
+.container {
+  padding: 0 15px;
+}
+
+@media (min-width: 575.98px) {
+  .container {
+    padding: 0 calc(50% - 270px);
+  }
+}
+
+@media (min-width: 767.98px) {
+  .container {
+    padding: 0 calc(50% - 368.5px);
+  }
+}
+
+@media (min-width: 991.98px) {
+  .container {
+    padding: 0 calc(50% - 480px);
+  }
+}
+
+@media (min-width: 1199.98px) {
+  .container {
+    padding: 0 calc(50% - 570px);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .successButton {
+    height: 50px;
+    margin-bottom: 15px;
+    margin-top: 0px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .successButton {
+    margin-bottom: 16px;
+  }
+}

@@ -2,6 +2,7 @@ import calendarStyles from "@/styles/calendar.module.scss";
 import { When } from "react-if";
 import { useContext, useState, useEffect, memo } from "react";
 import useEvent from "@react-hook/event";
+import useEventListener from "@use-it/event-listener";
 
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 import { TasksContext } from "@/src/context/TasksContext";
@@ -22,11 +23,25 @@ function InnerLeftStick({
   isUserOwnsProject,
   view,
 }) {
+  const [isSpacePressed, setIsSpacePressed] = useState(false);
+  useEvent(document, "keydown", (e) => {
+    if (e.key == " ") {
+      setIsSpacePressed(true);
+    }
+  });
+  useEvent(document, "keyup", (e) => {
+    if (e.key == " ") {
+      setIsSpacePressed(false);
+    }
+  });
+
   const [scrollLeft, setScrollLeft] = useState(undefined);
 
   const startResizeLeft = () => {
-    setIsResizeLeft(true);
-    document.body.style.cursor = "ew-resize";
+    if (!isSpacePressed) {
+      setIsResizeLeft(true);
+      document.body.style.cursor = "ew-resize";
+    }
   };
 
   const stopResizeLeft = () => {
@@ -99,6 +114,30 @@ function InnerLeftStick({
     }
   });
 
+  useEvent(document, "touchmove", (e) => {
+    if (isResizeLeft) {
+      removeSelection(e);
+      resizeLeftHandler(e.touches[0].clientX);
+    }
+  });
+
+  useEventListener(
+    "touchmove",
+    (e) => {
+      if (isResizeLeft) {
+        e.preventDefault();
+      }
+    },
+    document,
+    { passive: false }
+  );
+
+  useEvent(document, "touchend", (e) => {
+    if (isResizeLeft) {
+      stopResizeLeft();
+    }
+  });
+
   useEvent(document.querySelector(".Calendar-Scroller"), "scroll", (e) => {
     if (isResizeLeft) {
       resizeLeftHandler();
@@ -110,13 +149,15 @@ function InnerLeftStick({
   }, [document.querySelector(".Calendar-Scroller"), scrollLeft]);
 
   return (
-    <When condition={view != "Month" || taskWidth > dayWidth * 4}>
+    <When condition={(taskWidth - 4) / 3 > 3}>
       <When condition={isUserOwnsProject}>
         <div
           className={calendarStyles.resizeAreaLeft + " stick"}
           onMouseDown={startResizeLeft}
+          onTouchStart={startResizeLeft}
           style={{
             cursor: globalCursor ? globalCursor : "ew-resize",
+            width: taskWidth >= 36 ? 18 : taskWidth / 2,
           }}
         ></div>
       </When>

@@ -8,7 +8,7 @@ import TasksDraggableWrapper from "@/src/components/tasks/TasksDraggableWrapper"
 
 import { TasksContext } from "@/src/context/TasksContext";
 
-function InnerTasks({ hasTasksByProjectId }) {
+function InnerTasks({ hasTasksByProjectId, editedTaskId }) {
   const [containerHeight, setContainerHeight] = useState(0);
 
   useEffect(() => {
@@ -25,9 +25,13 @@ function InnerTasks({ hasTasksByProjectId }) {
       </div>
       <div className={styles.line}></div>
       <Scrollbar
-        style={{ height: containerHeight }}
+        className={
+          editedTaskId ? `${styles.root} ${styles.rootShrink}` : styles.root
+        }
+        style={{
+          height: containerHeight,
+        }}
         noScrollX={true}
-        className={styles.root}
         trackYProps={{
           renderer: (props) => {
             const { elementRef, ...restProps } = props;
@@ -65,9 +69,9 @@ function InnerTasks({ hasTasksByProjectId }) {
 InnerTasks = memo(InnerTasks);
 
 export default function Tasks() {
-  const { tasksByProjectId } = useContext(TasksContext);
+  const { tasksByProjectId, editedTaskId } = useContext(TasksContext);
 
   const hasTasksByProjectId = tasksByProjectId.length > 0;
 
-  return <InnerTasks {...{ hasTasksByProjectId }} />;
+  return <InnerTasks {...{ hasTasksByProjectId, editedTaskId }} />;
 }

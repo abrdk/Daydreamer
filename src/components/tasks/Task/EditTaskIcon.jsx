@@ -20,6 +20,16 @@ function EditTaskIconInner({
 }) {
   const [pencilLeft, setPencilLeft] = useState(0);
 
+  const hexToRgb = (hex, opacity) => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result
+      ? `rgba(${parseInt(result[1], 16)}, ${parseInt(
+          result[2],
+          16
+        )}, ${parseInt(result[3], 16)}, ${opacity})`
+      : null;
+  };
+
   const startEditTask = (e) => {
     e.stopPropagation();
     if (editedTaskId == task._id) {
@@ -50,17 +60,31 @@ function EditTaskIconInner({
   }, [task.name]);
 
   return (
-    <div
-      className={styles.pencilContainer}
-      onClick={startEditTask}
-      style={{
-        left: pencilLeft,
-      }}
-    >
-      <div ref={pencilRef} className={styles.pencil}>
-        <PencilSvg />
+    <>
+      <div
+        className={styles.pencilContainer}
+        onClick={startEditTask}
+        style={{
+          left: pencilLeft,
+        }}
+      >
+        <div ref={pencilRef} className={styles.pencil}>
+          <PencilSvg />
+        </div>
       </div>
-    </div>
+      <div className={styles.circleIconWrapper}>
+        <div
+          className={styles.circleIcon}
+          onClick={startEditTask}
+          style={{ borderColor: hexToRgb("#" + task.color, 0.2) }}
+        >
+          <div
+            className={styles.circleIconInner}
+            style={{ background: "#" + task.color }}
+          ></div>
+        </div>
+      </div>
+    </>
   );
 }
 
@@ -68,6 +92,7 @@ EditTaskIconInner = memo(
   EditTaskIconInner,
   (prevProps, nextProps) =>
     prevProps.task.name == nextProps.task.name &&
+    prevProps.task.color == nextProps.task.color &&
     prevProps.taskDepth == nextProps.taskDepth &&
     prevProps.editedTaskId == nextProps.editedTaskId
 );

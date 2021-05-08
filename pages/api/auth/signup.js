@@ -45,7 +45,7 @@ export default async (req, res) => {
     const user = new User({ _id, name, password: hashedPassword });
     const u = await user.save();
     const token = jwt.sign({ _id: u._id, name, password }, "jwtSecret", {
-      expiresIn: "24h",
+      expiresIn: "365 days",
     });
     res.setHeader(
       "Set-Cookie",

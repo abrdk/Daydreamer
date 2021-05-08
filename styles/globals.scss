@@ -71,6 +71,14 @@ input:-webkit-autofill:focus {
   line-height: 21px;
 }
 
+@media (max-width: 767.98px) {
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    font-size: 13px;
+  }
+}
+
 // scrollbar
 
 .ScrollbarsCustom-TrackY {
@@ -120,10 +128,13 @@ input:-webkit-autofill:focus {
 
 .ScrollbarsCustom-TaskLines {
   position: fixed !important;
-  top: 182px !important;
+  top: 182px;
   right: 0px !important;
 }
 
+.react-datepicker-wrapper {
+  flex-shrink: 0;
+}
 //dnd
 .animTranslateY {
   transition: all 0.2s;
@@ -206,4 +217,36 @@ textarea {
   background: transparent !important;
   border: 0px solid transparent !important;
   border-collapse: collapse !important;
+}
+
+@media (max-width: 767.98px) {
+  .ScrollbarsCustom-Calendar {
+    width: calc(100% - 34px) !important;
+    left: 17px !important;
+    bottom: 6px !important;
+    position: fixed !important;
+  }
+
+  .ScrollbarsCustom-EditTask {
+    height: 100% !important;
+    top: 6px !important;
+    right: 7px !important;
+  }
+
+  .react-datepicker__triangle {
+    display: none;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .react-datepicker__triangle {
+    display: block;
+  }
+
+  .calendar-right {
+    .react-datepicker__triangle {
+      left: 238px !important;
+      display: block;
+    }
+  }
 }

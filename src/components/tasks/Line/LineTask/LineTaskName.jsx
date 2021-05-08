@@ -93,7 +93,7 @@ function InnerLineTaskName({
               : calendarStyles.name + " grab"
           }
           onClick={() => {
-            if (isUserOwnsProject) {
+            if (isUserOwnsProject && window.innerWidth >= 768) {
               setIsUpdating(true);
             }
           }}
@@ -104,7 +104,8 @@ function InnerLineTaskName({
           ref={textRef}
         >
           <div style={{ pointerEvents: "none" }}>
-            <Truncate lines={1} width={textWidth}>
+            {/* Don't touch truncate width, otherwise at some width it will not display correctly */}
+            <Truncate lines={1} width={textWidth - 0.1}>
               {task.name != "" ? task.name : getDefaultName()}
             </Truncate>
           </div>

@@ -50,7 +50,7 @@ function CalendarWeek({ cursor, setCursor, isDraggable, setDraggable }) {
 
   const isDayBetweenTwoDays = (day, weekStart, weekEnd) => {
     return (
-      day.getTime() - weekStart.getTime() > 0 &&
+      day.getTime() - weekStart.getTime() > -24 * 60 * 60 * 1000 &&
       weekEnd.getTime() - day.getTime() > 0
     );
   };
@@ -92,15 +92,13 @@ function CalendarWeek({ cursor, setCursor, isDraggable, setDraggable }) {
                     className={styles.weekLine}
                     style={{
                       left:
-                        (Math.ceil(
+                        Math.ceil(
                           (today.getTime() - date.getTime()) /
                             1000 /
                             60 /
                             60 /
                             24
-                        ) *
-                          120) /
-                        7,
+                        ) * (window.innerWidth < 768 ? 91 / 7 : 120 / 7),
                     }}
                   ></div>
                 </When>

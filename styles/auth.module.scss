@@ -247,3 +247,174 @@
     margin-top: 0;
   }
 }
+
+@media (max-width: 767.98px) {
+  .container {
+    padding: 0px;
+  }
+
+  .form {
+    width: 560px;
+    height: auto;
+    padding: 27px 30px 13px 30px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .description {
+    font-size: 14px;
+    margin-bottom: 14px;
+    br {
+      display: none;
+    }
+  }
+
+  .formInput {
+    width: 240px;
+    align-self: flex-start;
+    margin-bottom: 20px;
+    height: 50px;
+    input,
+    textarea {
+      height: 48px;
+      font-size: 13px;
+      &:focus + span {
+        top: -11px;
+        padding-top: 0;
+        padding-bottom: 0;
+        font-size: 11px !important;
+      }
+    }
+    span {
+      padding-top: 13.5px;
+      font-size: 13px !important;
+    }
+  }
+
+  .passwordContainer {
+    width: 240px;
+    position: absolute;
+    right: 30px;
+    top: 101px;
+    height: 50px;
+    & + .warningContainer {
+      margin-left: 260px;
+    }
+  }
+
+  .formInputFilled {
+    align-self: flex-start;
+    width: 240px;
+    margin-bottom: 20px;
+    height: 50px;
+    input,
+    textarea {
+      height: 48px;
+      font-size: 13px;
+      &:focus + span {
+        top: -11px;
+        font-size: 11px !important;
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+    }
+    span {
+      font-size: 11px !important;
+      top: -11px;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
+
+  .passwordEye {
+    top: 13px;
+  }
+
+  .primaryButton {
+    margin-top: 0px;
+    height: 50px;
+    font-size: 15px;
+    margin-bottom: 20px;
+  }
+
+  .line {
+    width: calc(100% + 60px);
+    height: 1px;
+    position: static;
+    margin-bottom: 12px;
+  }
+
+  .linkDescription {
+    font-size: 13px;
+    position: static;
+    margin-bottom: 3px;
+  }
+
+  .link {
+    font-size: 13px;
+    position: static;
+  }
+
+  .warningContainer {
+    font-size: 11px;
+    margin-bottom: 10px;
+    margin-top: -17px;
+    & + .primaryButton {
+      margin-top: 0;
+    }
+  }
+}
+
+@media (max-width: 575.98px) {
+  .container {
+    padding: 0 20px;
+  }
+
+  .form {
+    width: 100%;
+    height: auto;
+    padding: 33px 30px 21px 30px;
+  }
+
+  .description {
+    margin-bottom: 13px;
+    br {
+      display: inline;
+    }
+    .descriptionBr {
+      display: none;
+    }
+  }
+
+  .formInput,
+  .formInputFilled {
+    width: 100%;
+    align-self: center;
+    margin-bottom: 10px;
+  }
+
+  .passwordContainer {
+    width: 100%;
+    margin-bottom: 10px;
+    position: relative;
+    top: 0;
+    right: 0;
+    & + .warningContainer {
+      margin-left: 0;
+    }
+  }
+
+  .warningContainer {
+    margin-top: -7px;
+  }
+
+  .primaryButton {
+    margin-bottom: 24px;
+  }
+
+  .line {
+    margin-bottom: 10px;
+  }
+}

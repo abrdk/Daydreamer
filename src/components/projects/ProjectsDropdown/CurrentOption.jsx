@@ -1,7 +1,9 @@
-import { useContext, useState, useEffect, memo } from "react";
+import { useContext, memo, useState, useEffect } from "react";
 import styles from "@/styles/projectsDropdown.module.scss";
 import Truncate from "react-truncate";
 import { If, Then, Else, When } from "react-if";
+import useMedia from "use-media";
+import useEvent from "@react-hook/event";
 
 import ArrowDownSvg from "@/src/components/svg/ArrowDownSvg";
 import ArrowUpSvg from "@/src/components/svg/ArrowUpSvg";
@@ -15,18 +17,57 @@ function InnerCurrentOption({
   isUserOwnsProject,
   projectByQueryIdName,
 }) {
+  const isMobile = useMedia({ maxWidth: 576 });
+  const [textWidth, setTextWidth] = useState(185);
+  const [isProjectClicked, setIsProjectClicked] = useState(false);
+
+  useEvent(document, "click", (e) => {
+    if (e.clientY < 92 && isDropdownOpened && isMobile && !isProjectClicked) {
+      setIsDropdownOpened(false);
+    }
+  });
+
   const openDropdown = () => {
+    setIsProjectClicked(true);
     if (isUserOwnsProject) {
       setIsDropdownOpened(!isDropdownOpened);
     }
   };
 
+  useEffect(() => {
+    if (window.innerWidth < 576) {
+      setTextWidth(document.querySelector(".projectRoot").clientWidth - 45);
+    } else {
+      setTextWidth(185);
+    }
+  }, []);
+
+  useEvent(window, "resize", () => {
+    if (window.innerWidth < 576) {
+      setTextWidth(document.querySelector(".projectRoot").clientWidth - 45);
+    } else {
+      setTextWidth(185);
+    }
+  });
+
+  useEffect(() => {
+    if (isProjectClicked) {
+      setTimeout(() => {
+        setIsProjectClicked(false);
+      }, 1);
+    }
+  }, [isProjectClicked]);
+
   return (
     <div
-      className={isDropdownOpened ? styles.rootOpened : styles.root}
+      className={
+        isDropdownOpened
+          ? styles.rootOpened + " projectRoot"
+          : styles.root + " projectRoot"
+      }
       onClick={openDropdown}
     >
-      <Truncate lines={1} width={185}>
+      <Truncate lines={1} width={textWidth}>
         {projectByQueryIdName}
       </Truncate>
 
