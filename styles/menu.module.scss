@@ -32,6 +32,10 @@
     background: #258efa;
     color: #fff;
   }
+  &:active {
+    background: #258efa;
+    color: #fff;
+  }
 }
 
 .iconClose {
@@ -62,6 +66,15 @@
     stroke: #258efa;
   }
   &:hover {
+    rect {
+      fill: #258efa;
+      stroke: #258efa;
+    }
+    path {
+      stroke: #fff;
+    }
+  }
+  &:active {
     rect {
       fill: #258efa;
       stroke: #258efa;

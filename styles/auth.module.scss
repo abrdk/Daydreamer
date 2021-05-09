@@ -196,6 +196,11 @@
     color: #258efa;
     border: 1px solid #258efa;
   }
+  &:active {
+    background: rgba(37, 142, 250, 0.05);
+    color: #258efa;
+    border: 1px solid #258efa;
+  }
 }
 
 .line {
@@ -230,6 +235,9 @@
   top: 454px;
   transition: 0.4s;
   &:hover {
+    text-decoration: none;
+  }
+  &:active {
     text-decoration: none;
   }
 }

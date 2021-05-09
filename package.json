@@ -36,6 +36,8 @@
   },
   "devDependencies": {
     "@types/react": "^16.9.56",
+    "postcss": "^8.2.14",
+    "postcss-hover-media-feature": "^1.0.1",
     "typescript": "^4.0.5"
   }
 }

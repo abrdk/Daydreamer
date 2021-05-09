@@ -17,6 +17,11 @@
     color: #258efa;
     border: 1px solid #258efa;
   }
+  &:active {
+    background: rgba(37, 142, 250, 0.05);
+    color: #258efa;
+    border: 1px solid #258efa;
+  }
 }
 
 .secondaryButton {
@@ -26,6 +31,11 @@
   color: #258efa;
   transition: background 0.4s, color 0.4s, border 0.4s;
   &:hover {
+    background: #258efa;
+    color: #fff;
+    border: 1px solid transparent;
+  }
+  &:active {
     background: #258efa;
     color: #fff;
     border: 1px solid transparent;
@@ -76,6 +86,9 @@
   cursor: pointer;
   transition: 0.4s;
   &:hover {
+    text-decoration: none;
+  }
+  &:active {
     text-decoration: none;
   }
 }

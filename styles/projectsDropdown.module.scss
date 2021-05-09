@@ -47,6 +47,10 @@
     background: rgba(37, 142, 250, 0.05);
     color: #258efa;
   }
+  &:active {
+    background: rgba(37, 142, 250, 0.05);
+    color: #258efa;
+  }
 }
 
 .rootOpened {
@@ -55,6 +59,9 @@
   z-index: 102;
   transition: background 0s;
   &:hover {
+    background: #ffffff;
+  }
+  &:active {
     background: #ffffff;
   }
 }
@@ -196,6 +203,10 @@
   cursor: pointer;
   transition: background 0.4s, color 0.4s;
   &:hover {
+    background: #258efa;
+    color: #fff;
+  }
+  &:active {
     background: #258efa;
     color: #fff;
   }

@@ -112,6 +112,9 @@
   &:hover {
     color: #ed95a5;
   }
+  &:active {
+    color: #ed95a5;
+  }
 }
 
 .closeWrapper {
@@ -133,6 +136,9 @@
   align-items: center;
   transition: background 0.4s, border 0.4s;
   &:hover {
+    background: #fff !important;
+  }
+  &:active {
     background: #fff !important;
   }
   &:nth-child(1) {
@@ -250,6 +256,9 @@
   &:hover {
     border: 1px solid #258efa;
   }
+  &:active {
+    border: 1px solid #258efa;
+  }
 }
 
 .topInputsWrapper {
@@ -273,6 +282,11 @@
   margin-right: 30px;
   transition: background 0.4s, color 0.4s, border 0.4s;
   &:hover {
+    background: rgba(37, 142, 250, 0.05);
+    border: 1px solid #258efa;
+    color: #258efa;
+  }
+  &:active {
     background: rgba(37, 142, 250, 0.05);
     border: 1px solid #258efa;
     color: #258efa;
