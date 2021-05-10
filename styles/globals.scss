@@ -71,7 +71,7 @@ input:-webkit-autofill:focus {
   line-height: 21px;
 }
 
-@media (max-width: 767.98px) {
+@media (max-width: 1199.98px) {
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus {
@@ -219,7 +219,7 @@ textarea {
   border-collapse: collapse !important;
 }
 
-@media (max-width: 767.98px) {
+@media (max-width: 1199.98px) {
   .ScrollbarsCustom-Calendar {
     width: calc(100% - 34px) !important;
     left: 17px !important;

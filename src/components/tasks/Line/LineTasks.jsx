@@ -16,7 +16,7 @@ function InnerLineTasks({
   editedTaskId,
   view,
 }) {
-  const isMobile = useMedia({ maxWidth: 768 });
+  const isMobile = useMedia({ maxWidth: 1200 });
 
   const [calendarWidth, setCalendarWidth] = useState(0);
 

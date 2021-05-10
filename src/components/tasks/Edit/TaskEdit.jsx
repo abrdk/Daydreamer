@@ -23,7 +23,7 @@ function InnerTaskEdit({
   setEditedTaskId,
 }) {
   const isMobilePortrait = useMedia({ maxWidth: 576 });
-  const isMobileLandscape = useMedia({ minWidth: 576, maxWidth: 768 });
+  const isMobileLandscape = useMedia({ minWidth: 576, maxWidth: 1200 });
 
   const getEditAreaWidth = () => {
     if (isMobilePortrait || isMobileLandscape) {

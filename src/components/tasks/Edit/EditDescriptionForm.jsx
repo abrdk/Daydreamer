@@ -16,7 +16,7 @@ function InnerEditDescription({
   updateTask,
   isMenuOpened,
 }) {
-  const isMobile = useMedia({ maxWidth: 768 });
+  const isMobile = useMedia({ maxWidth: 1200 });
   const isMobilePortrait = useMedia({ maxWidth: 576 });
   const textArea = useRef(null);
   const hiddenTextareaRef = useRef(null);

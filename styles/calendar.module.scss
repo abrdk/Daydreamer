@@ -184,6 +184,9 @@
       display: flex;
     }
   }
+  &:last-child {
+    margin-bottom: 20px;
+  }
 }
 
 .stick {
@@ -397,7 +400,7 @@
   z-index: 1;
 }
 
-@media (max-width: 767.98px) {
+@media (max-width: 1199.98px) {
   .monthName {
     margin-bottom: 2px;
     font-size: 13px;

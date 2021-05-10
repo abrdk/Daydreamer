@@ -98,7 +98,7 @@ function CalendarWeek({ cursor, setCursor, isDraggable, setDraggable }) {
                             60 /
                             60 /
                             24
-                        ) * (window.innerWidth < 768 ? 91 / 7 : 120 / 7),
+                        ) * (window.innerWidth < 1200 ? 91 / 7 : 120 / 7),
                     }}
                   ></div>
                 </When>

@@ -15,7 +15,7 @@ export default function CalendarMonth({
   setCalendarEndDate,
   children,
 }) {
-  const isMobile = useMedia({ maxWidth: 768 });
+  const isMobile = useMedia({ maxWidth: 1200 });
 
   const [isMouseDown, setIsMouseDown] = useState(false);
   useEvent(document, "mousedown", () => setIsMouseDown(true));
@@ -83,7 +83,7 @@ export default function CalendarMonth({
   useEffect(() => {
     const today = new Date();
     const calculatedDefaultScrollLeft =
-      window.innerWidth < 768
+      window.innerWidth < 1200
         ? (numOfMonths(calendarStartDate, today) - 2) * 91
         : (numOfMonths(calendarStartDate, today) - 4) * 160;
     if (calculatedDefaultScrollLeft > 0) {
