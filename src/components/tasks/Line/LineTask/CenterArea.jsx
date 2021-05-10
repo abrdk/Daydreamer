@@ -1,6 +1,6 @@
 import calendarStyles from "@/styles/calendar.module.scss";
 import { When } from "react-if";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import useEvent from "@react-hook/event";
 import useEventListener from "@use-it/event-listener";
 
@@ -37,7 +37,6 @@ export default function CenterArea({
   const { updateTask } = useContext(TasksContext);
   const { isUserOwnsProject } = useContext(ProjectsContext);
 
-  const [scrollLeft, setScrollLeft] = useState(undefined);
   const [offsetFromCenter, setOffsetFromCenter] = useState(0);
 
   const startMoving = (e) => {
@@ -60,29 +59,12 @@ export default function CenterArea({
   };
 
   const removeSelection = (e) => {
-    e.target.ownerDocument.defaultView.getSelection().removeAllRanges();
-  };
-
-  const setInitialScroll = () => {
-    const calendarEl = document.querySelector(".Calendar-Scroller");
-    if (calendarEl && typeof scrollLeft == "undefined") {
-      setScrollLeft(calendarEl.scrollLeft);
+    if (e.target.ownerDocument) {
+      e.target.ownerDocument.defaultView.getSelection().removeAllRanges();
     }
   };
 
   const movingHandler = (clientX) => {
-    const calendarEl = document.querySelector(".Calendar-Scroller");
-    if (!clientX) {
-      if (calendarEl.scrollLeft > scrollLeft) {
-        clientX = window.innerWidth;
-      } else if (calendarEl.scrollLeft == scrollLeft) {
-        return;
-      } else {
-        clientX = 0;
-      }
-    }
-    setScrollLeft(calendarEl.scrollLeft);
-
     const lineRect = lineRef.current.getBoundingClientRect();
 
     const offset =
@@ -134,6 +116,18 @@ export default function CenterArea({
       movingHandler(e.clientX);
     }
   });
+  useEventListener;
+
+  useEventListener(
+    "touchmove",
+    (e) => {
+      if (isMoving) {
+        e.preventDefault();
+      }
+    },
+    document.querySelector(".Calendar-Scroller"),
+    { passive: false }
+  );
 
   useEvent(document, "mouseup", (e) => {
     if (isMoving) {
@@ -143,21 +137,9 @@ export default function CenterArea({
 
   useEvent(document, "touchmove", (e) => {
     if (isMoving) {
-      removeSelection(e);
       movingHandler(e.touches[0].clientX);
     }
   });
-
-  useEventListener(
-    "touchmove",
-    (e) => {
-      if (isMoving) {
-        e.preventDefault();
-      }
-    },
-    document,
-    { passive: false }
-  );
 
   useEvent(document, "touchend", (e) => {
     if (isMoving) {
@@ -166,14 +148,17 @@ export default function CenterArea({
   });
 
   useEvent(document.querySelector(".Calendar-Scroller"), "scroll", () => {
-    if (isMoving) {
+    if (
+      isMoving &&
+      !(
+        "ontouchstart" in window ||
+        navigator.maxTouchPoints > 0 ||
+        navigator.msMaxTouchPoints > 0
+      )
+    ) {
       movingHandler();
     }
   });
-
-  useEffect(() => {
-    setInitialScroll();
-  }, [document.querySelector(".Calendar-Scroller"), scrollLeft]);
 
   return (
     <When condition={taskWidth - 36 > 0}>

@@ -33,8 +33,6 @@ function InnerRightStick({
     }
   });
 
-  const [scrollLeft, setScrollLeft] = useState(undefined);
-
   const startResizeRight = () => {
     if (!isSpacePressed) {
       setIsResizeRight(true);
@@ -54,26 +52,7 @@ function InnerRightStick({
     e.target.ownerDocument.defaultView.getSelection().removeAllRanges();
   };
 
-  const setInitialScroll = () => {
-    const calendarEl = document.querySelector(".Calendar-Scroller");
-    if (calendarEl && typeof scrollLeft == "undefined") {
-      setScrollLeft(calendarEl.scrollLeft);
-    }
-  };
-
   const resizeRightHandler = (clientX) => {
-    const calendarEl = document.querySelector(".Calendar-Scroller");
-    if (!clientX) {
-      if (calendarEl.scrollLeft > scrollLeft) {
-        clientX = window.innerWidth;
-      } else if (calendarEl.scrollLeft == scrollLeft) {
-        return;
-      } else {
-        clientX = 0;
-      }
-    }
-    setScrollLeft(calendarEl.scrollLeft);
-
     const lineRect = lineRef.current.getBoundingClientRect();
     const lineStyles = lineRef.current.style;
 
@@ -138,14 +117,17 @@ function InnerRightStick({
   });
 
   useEvent(document.querySelector(".Calendar-Scroller"), "scroll", () => {
-    if (isResizeRight) {
+    if (
+      isResizeRight &&
+      !(
+        "ontouchstart" in window ||
+        navigator.maxTouchPoints > 0 ||
+        navigator.msMaxTouchPoints > 0
+      )
+    ) {
       resizeRightHandler();
     }
   });
-
-  useEffect(() => {
-    setInitialScroll();
-  }, [document.querySelector(".Calendar-Scroller"), scrollLeft]);
 
   return (
     <>

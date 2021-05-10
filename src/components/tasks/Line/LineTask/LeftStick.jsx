@@ -21,7 +21,6 @@ function InnerLeftStick({
   globalCursor,
   updateTask,
   isUserOwnsProject,
-  view,
 }) {
   const [isSpacePressed, setIsSpacePressed] = useState(false);
   useEvent(document, "keydown", (e) => {
@@ -34,8 +33,6 @@ function InnerLeftStick({
       setIsSpacePressed(false);
     }
   });
-
-  const [scrollLeft, setScrollLeft] = useState(undefined);
 
   const startResizeLeft = () => {
     if (!isSpacePressed) {
@@ -53,29 +50,12 @@ function InnerLeftStick({
   };
 
   const removeSelection = (e) => {
-    e.target.ownerDocument.defaultView.getSelection().removeAllRanges();
-  };
-
-  const setInitialScroll = () => {
-    const calendarEl = document.querySelector(".Calendar-Scroller");
-    if (calendarEl && typeof scrollLeft == "undefined") {
-      setScrollLeft(calendarEl.scrollLeft);
+    if (e.target.ownerDocument) {
+      e.target.ownerDocument.defaultView.getSelection().removeAllRanges();
     }
   };
 
   const resizeLeftHandler = (clientX) => {
-    const calendarEl = document.querySelector(".Calendar-Scroller");
-    if (!clientX) {
-      if (calendarEl.scrollLeft > scrollLeft) {
-        clientX = window.innerWidth;
-      } else if (calendarEl.scrollLeft == scrollLeft) {
-        return;
-      } else {
-        clientX = 0;
-      }
-    }
-    setScrollLeft(calendarEl.scrollLeft);
-
     const lineRect = lineRef.current.getBoundingClientRect();
     const lineStyles = lineRef.current.style;
 
@@ -139,14 +119,17 @@ function InnerLeftStick({
   });
 
   useEvent(document.querySelector(".Calendar-Scroller"), "scroll", (e) => {
-    if (isResizeLeft) {
+    if (
+      isResizeLeft &&
+      !(
+        "ontouchstart" in window ||
+        navigator.maxTouchPoints > 0 ||
+        navigator.msMaxTouchPoints > 0
+      )
+    ) {
       resizeLeftHandler();
     }
   });
-
-  useEffect(() => {
-    setInitialScroll();
-  }, [document.querySelector(".Calendar-Scroller"), scrollLeft]);
 
   return (
     <When condition={(taskWidth - 4) / 3 > 3}>
