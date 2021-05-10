@@ -67,11 +67,11 @@ function InnerLineTasks({
         style={{
           height: isMobile
             ? editedTaskId
-              ? "calc(100vh - 157px - 272px)"
-              : "calc(100vh - 157px)"
+              ? "calc(calc(var(--vh, 1vh) * 100) - 157px - 272px)"
+              : "calc(calc(var(--vh, 1vh) * 100) - 157px)"
             : editedTaskId
-            ? "calc(100vh - 563px)"
-            : "calc(100vh - 177px)",
+            ? "calc(calc(var(--vh, 1vh) * 100) - 563px)"
+            : "calc(calc(var(--vh, 1vh) * 100) - 177px)",
           width: calendarWidth,
         }}
         noScrollX={true}

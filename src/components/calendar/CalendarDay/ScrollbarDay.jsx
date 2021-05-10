@@ -123,7 +123,9 @@ export default function ScrollbarDay({
       scrollLeft={defaultScrollLeft}
       noScrollY={true}
       style={{
-        height: isMobile ? "calc(100vh - 83px)" : "calc(100vh - 89px)",
+        height: isMobile
+          ? "calc(calc(var(--vh, 1vh) * 100) - 83px)"
+          : "calc(calc(var(--vh, 1vh) * 100) - 89px)",
         width: "100vw",
       }}
       trackXProps={{

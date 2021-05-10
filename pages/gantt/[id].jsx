@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useState, useContext, memo } from "react";
+import { useState, useContext, memo, useEffect } from "react";
 import styles from "@/styles/header.module.scss";
 import { When } from "react-if";
 
@@ -21,6 +21,29 @@ function InnerGantt({
   isUserLogout,
 }) {
   const [modal, setModal] = useState(false);
+
+  useEffect(() => {
+    var customViewportCorrectionVariable = "vh";
+    function setViewportProperty(doc) {
+      var prevClientHeight;
+      var customVar = "--" + (customViewportCorrectionVariable || "vh");
+      function handleResize() {
+        var clientHeight = doc.clientHeight;
+        if (clientHeight === prevClientHeight) return;
+        requestAnimationFrame(function updateViewportHeight() {
+          doc.style.setProperty(customVar, clientHeight * 0.01 + "px");
+          prevClientHeight = clientHeight;
+        });
+      }
+      handleResize();
+      return handleResize;
+    }
+    window.addEventListener(
+      "resize",
+      setViewportProperty(document.documentElement)
+    );
+  }, []);
+
   return (
     <>
       <Head>
@@ -28,8 +51,7 @@ function InnerGantt({
         <title> Daydreamer | Put your ideas on a timeline </title>{" "}
         {/* <meta
           name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, 
-     user-scalable=0"
+          content="width=device-width, height=device-height"
         ></meta> */}
       </Head>
       <When
