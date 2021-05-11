@@ -17,6 +17,11 @@
     color: #258efa;
     border: 1px solid #258efa;
   }
+  &:active {
+    background: rgba(37, 142, 250, 0.05);
+    color: #258efa;
+    border: 1px solid #258efa;
+  }
 }
 
 .secondaryButton {
@@ -26,6 +31,11 @@
   color: #258efa;
   transition: background 0.4s, color 0.4s, border 0.4s;
   &:hover {
+    background: #258efa;
+    color: #fff;
+    border: 1px solid transparent;
+  }
+  &:active {
     background: #258efa;
     color: #fff;
     border: 1px solid transparent;
@@ -78,6 +88,9 @@
   &:hover {
     text-decoration: none;
   }
+  &:active {
+    text-decoration: none;
+  }
 }
 
 .linkDisabled {
@@ -86,35 +99,7 @@
   color: #d8d8d8;
 }
 
-.container {
-  padding: 0 15px;
-}
-
-@media (min-width: 575.98px) {
-  .container {
-    padding: 0 calc(50% - 270px);
-  }
-}
-
-@media (min-width: 767.98px) {
-  .container {
-    padding: 0 calc(50% - 368.5px);
-  }
-}
-
-@media (min-width: 991.98px) {
-  .container {
-    padding: 0 calc(50% - 480px);
-  }
-}
-
-@media (min-width: 1199.98px) {
-  .container {
-    padding: 0 calc(50% - 570px);
-  }
-}
-
-@media (max-width: 767.98px) {
+@media (max-width: 1199.98px) {
   .successButton {
     height: 50px;
     margin-bottom: 15px;

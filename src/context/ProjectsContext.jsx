@@ -24,7 +24,7 @@ export function ProjectsProvider(props) {
   } = useSWR("/projects", loadProjects);
 
   let currentProject = null;
-  if (projects) {
+  if (projects && projects.find) {
     currentProject = projects.find((p) => p._id == router.query.id);
   }
 

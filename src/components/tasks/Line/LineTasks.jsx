@@ -16,37 +16,28 @@ function InnerLineTasks({
   editedTaskId,
   view,
 }) {
-  const isMobile = useMedia({ maxWidth: 768 });
+  const isMobile = useMedia({ maxWidth: 1200 });
 
   const [calendarWidth, setCalendarWidth] = useState(0);
-
   const [isSpacePressed, setIsSpacePressed] = useState(0);
-
-  const [scrollLockTimer, setScrollLockTimer] = useState(0);
-
-  const lockScroll = () => {
-    const currentScrollTop = document.querySelector(".LineTasks-Scroller")
-      .scrollTop;
-    const timerId = setInterval(() => {
-      document.querySelector(
-        ".LineTasks-Scroller"
-      ).scrollTop = currentScrollTop;
-    }, 10);
-    setScrollLockTimer(timerId);
-  };
+  const [scrollTop, setScrollTop] = useState(0);
 
   useEvent(document, "keydown", (e) => {
     if (e.key == " " && !isSpacePressed) {
       setIsSpacePressed(true);
-      lockScroll();
+      setScrollTop(document.querySelector(".LineTasks-Scroller").scrollTop);
     }
   });
   useEvent(document, "keyup", (e) => {
     if (e.key == " " && isSpacePressed) {
-      setIsSpacePressed(false);
       setTimeout(() => {
-        clearInterval(scrollLockTimer);
+        setIsSpacePressed(false);
       }, 50);
+    }
+  });
+  useEvent(document.querySelector(".LineTasks-Scroller"), "scroll", (e) => {
+    if (isSpacePressed) {
+      e.target.scrollTop = scrollTop;
     }
   });
 
@@ -67,11 +58,11 @@ function InnerLineTasks({
         style={{
           height: isMobile
             ? editedTaskId
-              ? "calc(100vh - 157px - 272px)"
-              : "calc(100vh - 157px)"
+              ? "calc(calc(var(--vh, 1vh) * 100) - 146px - 272px)"
+              : "calc(calc(var(--vh, 1vh) * 100) - 146px)"
             : editedTaskId
-            ? "calc(100vh - 563px)"
-            : "calc(100vh - 177px)",
+            ? "calc(calc(var(--vh, 1vh) * 100) - 563px)"
+            : "calc(calc(var(--vh, 1vh) * 100) - 177px)",
           width: calendarWidth,
         }}
         noScrollX={true}

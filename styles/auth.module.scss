@@ -2,8 +2,8 @@
   z-index: 100;
   position: absolute;
   top: 0;
-  min-height: 100vh;
-  min-width: 100vw;
+  height: 100vh;
+  width: 100vw;
   padding: 0 0.5rem;
   display: flex;
   flex-direction: column;
@@ -196,6 +196,11 @@
     color: #258efa;
     border: 1px solid #258efa;
   }
+  &:active {
+    background: rgba(37, 142, 250, 0.05);
+    color: #258efa;
+    border: 1px solid #258efa;
+  }
 }
 
 .line {
@@ -232,6 +237,9 @@
   &:hover {
     text-decoration: none;
   }
+  &:active {
+    text-decoration: none;
+  }
 }
 
 .warningContainer {
@@ -248,7 +256,7 @@
   }
 }
 
-@media (max-width: 767.98px) {
+@media (max-width: 1199.98px) {
   .container {
     padding: 0px;
   }

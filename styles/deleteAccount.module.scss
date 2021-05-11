@@ -56,6 +56,11 @@
     color: #fff;
     border: 1px solid transparent;
   }
+  &:active {
+    background: #258efa;
+    color: #fff;
+    border: 1px solid transparent;
+  }
 }
 
 .deleteAccountSecondaryButton {
@@ -67,6 +72,11 @@
     color: #258efa;
     border: 1px solid #258efa;
   }
+  &:active + .deleteAccountPrimaryButton {
+    background: rgba(37, 142, 250, 0.05);
+    color: #258efa;
+    border: 1px solid #258efa;
+  }
 }
 
 .twoButtons {
@@ -74,7 +84,7 @@
   justify-content: space-between;
 }
 
-@media (max-width: 767.98px) {
+@media (max-width: 1199.98px) {
   .deleteAccountModal {
     width: 360px;
     height: auto;

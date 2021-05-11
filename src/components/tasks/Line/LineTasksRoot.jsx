@@ -9,7 +9,7 @@ export default function LineTasksRoot({ root, calendarStartDate }) {
 
   const sortedTasksComponents = tasksByProjectId
     .filter((t) => t.root == root)
-    .sort((task1, task2) => task1.order > task2.order)
+    .sort((task1, task2) => (task1.order > task2.order ? 1 : -1))
     .map((t) => (
       <LineTask key={t._id} task={t} calendarStartDate={calendarStartDate} />
     ));

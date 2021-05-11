@@ -52,6 +52,9 @@
   &:hover {
     text-decoration: underline;
   }
+  &:active {
+    text-decoration: underline;
+  }
 }
 
 .accountPrimaryButton {
@@ -84,7 +87,7 @@
   }
 }
 
-@media (max-width: 767.98px) {
+@media (max-width: 1199.98px) {
   .accountModal {
     width: 560px;
     height: auto;

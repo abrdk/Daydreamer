@@ -47,6 +47,10 @@
     background: rgba(37, 142, 250, 0.05);
     color: #258efa;
   }
+  &:active {
+    background: rgba(37, 142, 250, 0.05);
+    color: #258efa;
+  }
 }
 
 .rootOpened {
@@ -55,6 +59,9 @@
   z-index: 102;
   transition: background 0s;
   &:hover {
+    background: #ffffff;
+  }
+  &:active {
     background: #ffffff;
   }
 }
@@ -199,6 +206,10 @@
     background: #258efa;
     color: #fff;
   }
+  &:active {
+    background: #258efa;
+    color: #fff;
+  }
 }
 
 .textOptionWrapper {
@@ -233,7 +244,7 @@
   }
 }
 
-@media (max-width: 767.98px) and (min-width: 576px) {
+@media (max-width: 1199.98px) and (min-width: 576px) {
   .root {
     font-size: 14px;
   }

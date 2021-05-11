@@ -128,7 +128,7 @@ export default function SubtaskTooltip({ task, globalCursor }) {
 
   const subtasks = tasksByProjectId
     .filter((t) => t.root == task._id)
-    .sort((task1, task2) => task1.order > task2.order);
+    .sort((task1, task2) => (task1.order > task2.order ? 1 : -1));
 
   const isCurrentTaskOpened = isTaskOpened[task._id];
   return (

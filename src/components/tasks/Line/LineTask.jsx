@@ -20,7 +20,7 @@ const dayWidth = [55, 120 / 7, 160 / 30];
 const dayWidthMobile = [42, 91 / 7, 91 / 30];
 
 function InnerLineTask({ task, calendarStartDate, view, setEditedTaskId }) {
-  const isMobile = useMedia({ maxWidth: 768 });
+  const isMobile = useMedia({ maxWidth: 1200 });
 
   const lineRef = useRef(null);
   const inputRef = useRef(null);

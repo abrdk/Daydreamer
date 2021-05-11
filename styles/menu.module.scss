@@ -32,6 +32,10 @@
     background: #258efa;
     color: #fff;
   }
+  &:active {
+    background: #258efa;
+    color: #fff;
+  }
 }
 
 .iconClose {
@@ -70,9 +74,18 @@
       stroke: #fff;
     }
   }
+  &:active {
+    rect {
+      fill: #258efa;
+      stroke: #258efa;
+    }
+    path {
+      stroke: #fff;
+    }
+  }
 }
 
-@media (max-width: 767.98px) {
+@media (max-width: 1199.98px) {
   .iconOpen {
     width: 33px;
     height: 30px;

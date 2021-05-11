@@ -18,7 +18,7 @@ function InnerOptionName({
   inputRef,
   updateProject,
 }) {
-  const isMobile = useMedia({ maxWidth: 768 });
+  const isMobile = useMedia({ maxWidth: 1200 });
   const [inputWidth, setInputWidth] = useState(maxInputWidth);
   const [textWidth, setTextWidth] = useState(300);
   const [projectName, setProjectName] = useState(project.name);
@@ -75,7 +75,7 @@ function InnerOptionName({
   });
 
   useEffect(() => {
-    if (window.innerWidth < 768) {
+    if (window.innerWidth < 1200) {
       setTextWidth(getTextWidth());
     } else {
       setTextWidth(300);

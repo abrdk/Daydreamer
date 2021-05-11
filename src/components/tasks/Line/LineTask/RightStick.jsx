@@ -1,11 +1,12 @@
 import calendarStyles from "@/styles/calendar.module.scss";
 import { When } from "react-if";
-import { useContext, useState, useEffect, memo } from "react";
+import { useContext, useState, memo } from "react";
 import useEvent from "@react-hook/event";
 import useEventListener from "@use-it/event-listener";
 
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 import { TasksContext } from "@/src/context/TasksContext";
+import { OptionsContext } from "@/src/context/OptionsContext";
 
 function InnerRightStick({
   task,
@@ -21,6 +22,7 @@ function InnerRightStick({
   updateTask,
   isUserOwnsProject,
 }) {
+  const { setIsCalendarScrollLock } = useContext(OptionsContext);
   const [isSpacePressed, setIsSpacePressed] = useState(false);
   useEvent(document, "keydown", (e) => {
     if (e.key == " ") {
@@ -32,8 +34,6 @@ function InnerRightStick({
       setIsSpacePressed(false);
     }
   });
-
-  const [scrollLeft, setScrollLeft] = useState(undefined);
 
   const startResizeRight = () => {
     if (!isSpacePressed) {
@@ -54,26 +54,7 @@ function InnerRightStick({
     e.target.ownerDocument.defaultView.getSelection().removeAllRanges();
   };
 
-  const setInitialScroll = () => {
-    const calendarEl = document.querySelector(".Calendar-Scroller");
-    if (calendarEl && typeof scrollLeft == "undefined") {
-      setScrollLeft(calendarEl.scrollLeft);
-    }
-  };
-
   const resizeRightHandler = (clientX) => {
-    const calendarEl = document.querySelector(".Calendar-Scroller");
-    if (!clientX) {
-      if (calendarEl.scrollLeft > scrollLeft) {
-        clientX = window.innerWidth;
-      } else if (calendarEl.scrollLeft == scrollLeft) {
-        return;
-      } else {
-        clientX = 0;
-      }
-    }
-    setScrollLeft(calendarEl.scrollLeft);
-
     const lineRect = lineRef.current.getBoundingClientRect();
     const lineStyles = lineRef.current.style;
 
@@ -115,7 +96,6 @@ function InnerRightStick({
 
   useEvent(document, "touchmove", (e) => {
     if (isResizeRight) {
-      removeSelection(e);
       resizeRightHandler(e.touches[0].clientX);
     }
   });
@@ -133,19 +113,23 @@ function InnerRightStick({
 
   useEvent(document, "touchend", (e) => {
     if (isResizeRight) {
+      setIsCalendarScrollLock(false);
       stopResizeRight();
     }
   });
 
   useEvent(document.querySelector(".Calendar-Scroller"), "scroll", () => {
-    if (isResizeRight) {
+    if (
+      isResizeRight &&
+      !(
+        "ontouchstart" in window ||
+        navigator.maxTouchPoints > 0 ||
+        navigator.msMaxTouchPoints > 0
+      )
+    ) {
       resizeRightHandler();
     }
   });
-
-  useEffect(() => {
-    setInitialScroll();
-  }, [document.querySelector(".Calendar-Scroller"), scrollLeft]);
 
   return (
     <>
@@ -154,7 +138,10 @@ function InnerRightStick({
         <div
           className={calendarStyles.resizeAreaRight + " stick"}
           onMouseDown={startResizeRight}
-          onTouchStart={startResizeRight}
+          onTouchStart={(e) => {
+            setIsCalendarScrollLock(true);
+            startResizeRight(e);
+          }}
           style={{
             cursor: globalCursor ? globalCursor : "ew-resize",
             width:

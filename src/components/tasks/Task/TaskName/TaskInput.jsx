@@ -81,20 +81,11 @@ function TaskInput({
 
   useEffect(() => {
     focusOnInput();
-  }, [isUpdating, inputRef.current, task.name]);
+  }, [isUpdating]);
 
   useEffect(() => {
     setInputWidth(getInputWidth());
   }, [nameState]);
-
-  useEffect(
-    () => () => {
-      if (!task.name) {
-        updateTask({ ...task, name: getDefaultName() });
-      }
-    },
-    [task.name]
-  );
 
   return (
     <input

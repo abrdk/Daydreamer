@@ -86,7 +86,7 @@ function CalendarDay({
         date.setDate(day + 1);
         if (isSameDate(today, date) && isCalendarWidthNotChanged()) {
           const calculatedDefaultScrollLeft =
-            window.innerWidth < 768 ? (day - 2) * 42 : (day - 9) * 55;
+            window.innerWidth < 1200 ? (day - 2) * 42 : (day - 9) * 55;
 
           if (calculatedDefaultScrollLeft > 0) {
             setDefaultScrollLeft(calculatedDefaultScrollLeft);

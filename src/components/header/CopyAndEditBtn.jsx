@@ -10,7 +10,7 @@ import { TasksContext } from "@/src/context/TasksContext";
 import { OptionsContext } from "@/src/context/OptionsContext";
 
 export default function copyAndEditBtn({ setModal }) {
-  const isMobile = useMedia({ maxWidth: 768 });
+  const isMobile = useMedia({ maxWidth: 1200 });
 
   const router = useRouter();
 

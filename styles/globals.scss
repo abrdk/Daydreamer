@@ -71,7 +71,7 @@ input:-webkit-autofill:focus {
   line-height: 21px;
 }
 
-@media (max-width: 767.98px) {
+@media (max-width: 1199.98px) {
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus {
@@ -97,12 +97,14 @@ input:-webkit-autofill:focus {
   height: 5px !important;
   background: #e5e8eb !important;
   border-radius: 100px !important;
+  z-index: 1;
 }
 
 .ScrollbarsCustom-ThumbX {
   background: #258efa !important;
   border: 1px solid #258efa !important;
   border-radius: 100px !important;
+  display: block !important;
 }
 
 .ScrollbarsCustom-Calendar {
@@ -130,6 +132,12 @@ input:-webkit-autofill:focus {
   position: fixed !important;
   top: 182px;
   right: 0px !important;
+}
+
+.Calendar-Scroller {
+  position: absolute;
+  inset: 0px;
+  user-select: auto;
 }
 
 .react-datepicker-wrapper {
@@ -219,7 +227,18 @@ textarea {
   border-collapse: collapse !important;
 }
 
-@media (max-width: 767.98px) {
+@media (max-width: 1199.98px) {
+  .ThumbX-Calendar {
+    background: #258efa;
+    border: 1px solid #258efa;
+    border-radius: 100px;
+    height: 5px;
+    position: fixed;
+    left: 0;
+    bottom: 6px;
+    z-index: 1;
+  }
+
   .ScrollbarsCustom-Calendar {
     width: calc(100% - 34px) !important;
     left: 17px !important;

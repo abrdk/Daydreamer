@@ -184,6 +184,9 @@
       display: flex;
     }
   }
+  &:last-child {
+    margin-bottom: 20px;
+  }
 }
 
 .stick {
@@ -246,6 +249,11 @@
   color: #258efa;
   transition: color 0.4s, background 0.4s, border 0.4s;
   &:hover {
+    color: #fff;
+    background: #258efa;
+    border: 1px solid transparent;
+  }
+  &:active {
     color: #fff;
     background: #258efa;
     border: 1px solid transparent;
@@ -392,7 +400,20 @@
   z-index: 1;
 }
 
-@media (max-width: 767.98px) {
+.trackBackground {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 15px;
+  background: #fff;
+}
+
+@media (max-width: 1199.98px) {
+  .trackBackground {
+    height: 11px;
+  }
+
   .monthName {
     margin-bottom: 2px;
     font-size: 13px;
@@ -402,6 +423,15 @@
   .day {
     margin: 0;
     font-size: 13px;
+  }
+
+  .lineTask {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
   }
 
   .lineTask:first-child {

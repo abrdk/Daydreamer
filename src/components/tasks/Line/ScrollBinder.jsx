@@ -21,15 +21,17 @@ function ScrollBinder() {
         const lineScroller = document.querySelector(".LineTasks-Scroller");
         lineScroller.scrollTo(
           0,
-          (e.target.scrollTop / e.target.scrollTopMax) *
-            lineScroller.scrollTopMax
+          (e.target.scrollTop /
+            (e.target.scrollHeight - e.target.clientHeight)) *
+            (lineScroller.scrollHeight - lineScroller.clientHeight)
         );
       }
     } else if (isMenuOpened) {
       const lineScroller = document.querySelector(".LineTasks-Scroller");
       lineScroller.scrollTo(
         0,
-        (e.target.scrollTop / e.target.scrollTopMax) * lineScroller.scrollTopMax
+        (e.target.scrollTop / (e.target.scrollHeight - e.target.clientHeight)) *
+          (lineScroller.scrollHeight - lineScroller.clientHeight)
       );
     }
   });
@@ -40,16 +42,17 @@ function ScrollBinder() {
         const tasksScroller = document.querySelector(".Tasks-Scroller");
         tasksScroller.scrollTo(
           0,
-          (e.target.scrollTop / e.target.scrollTopMax) *
-            tasksScroller.scrollTopMax
+          (e.target.scrollTop /
+            (e.target.scrollHeight - e.target.clientHeight)) *
+            (tasksScroller.scrollHeight - tasksScroller.clientHeight)
         );
       }
     } else if (!isMenuOpened) {
       const tasksScroller = document.querySelector(".Tasks-Scroller");
       tasksScroller.scrollTo(
         0,
-        (e.target.scrollTop / e.target.scrollTopMax) *
-          tasksScroller.scrollTopMax
+        (e.target.scrollTop / (e.target.scrollHeight - e.target.clientHeight)) *
+          (tasksScroller.scrollHeight - tasksScroller.clientHeight)
       );
     }
   });

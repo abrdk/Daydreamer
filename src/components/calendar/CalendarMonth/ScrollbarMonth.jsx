@@ -1,8 +1,9 @@
 import styles from "@/styles/calendar.module.scss";
 import Scrollbar from "react-scrollbars-custom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import useEvent from "@react-hook/event";
 import useMedia from "use-media";
+import { OptionsContext } from "@/src/context/OptionsContext";
 
 export default function CalendarMonth({
   cursor,
@@ -15,7 +16,9 @@ export default function CalendarMonth({
   setCalendarEndDate,
   children,
 }) {
-  const isMobile = useMedia({ maxWidth: 768 });
+  const { isCalendarScrollLock } = useContext(OptionsContext);
+
+  const isMobile = useMedia({ maxWidth: 1200 });
 
   const [isMouseDown, setIsMouseDown] = useState(false);
   useEvent(document, "mousedown", () => setIsMouseDown(true));
@@ -83,7 +86,7 @@ export default function CalendarMonth({
   useEffect(() => {
     const today = new Date();
     const calculatedDefaultScrollLeft =
-      window.innerWidth < 768
+      window.innerWidth < 1200
         ? (numOfMonths(calendarStartDate, today) - 2) * 91
         : (numOfMonths(calendarStartDate, today) - 4) * 160;
     if (calculatedDefaultScrollLeft > 0) {
@@ -116,7 +119,9 @@ export default function CalendarMonth({
       onScrollStop={stopScrollHandler}
       noScrollY={true}
       style={{
-        height: isMobile ? "calc(100vh - 83px)" : "calc(100vh - 89px)",
+        height: isMobile
+          ? "calc(calc(var(--vh, 1vh) * 100) - 72px)"
+          : "calc(calc(var(--vh, 1vh) * 100) - 89px)",
         width: "100vw",
       }}
       trackXProps={{
@@ -139,6 +144,11 @@ export default function CalendarMonth({
               {...restProps}
               ref={elementRef}
               className="ScrollbarsCustom-Scroller Calendar-Scroller"
+              style={{
+                overflow: isCalendarScrollLock ? "hidden" : "scroll hidden",
+                paddingBottom: isCalendarScrollLock ? "" : 20,
+                marginBottom: isCalendarScrollLock ? "" : -20,
+              }}
             />
           );
         },

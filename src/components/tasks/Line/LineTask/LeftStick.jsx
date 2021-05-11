@@ -1,6 +1,6 @@
 import calendarStyles from "@/styles/calendar.module.scss";
 import { When } from "react-if";
-import { useContext, useState, useEffect, memo } from "react";
+import { useContext, useState, memo } from "react";
 import useEvent from "@react-hook/event";
 import useEventListener from "@use-it/event-listener";
 
@@ -21,8 +21,9 @@ function InnerLeftStick({
   globalCursor,
   updateTask,
   isUserOwnsProject,
-  view,
 }) {
+  const { setIsCalendarScrollLock } = useContext(OptionsContext);
+
   const [isSpacePressed, setIsSpacePressed] = useState(false);
   useEvent(document, "keydown", (e) => {
     if (e.key == " ") {
@@ -34,8 +35,6 @@ function InnerLeftStick({
       setIsSpacePressed(false);
     }
   });
-
-  const [scrollLeft, setScrollLeft] = useState(undefined);
 
   const startResizeLeft = () => {
     if (!isSpacePressed) {
@@ -53,29 +52,12 @@ function InnerLeftStick({
   };
 
   const removeSelection = (e) => {
-    e.target.ownerDocument.defaultView.getSelection().removeAllRanges();
-  };
-
-  const setInitialScroll = () => {
-    const calendarEl = document.querySelector(".Calendar-Scroller");
-    if (calendarEl && typeof scrollLeft == "undefined") {
-      setScrollLeft(calendarEl.scrollLeft);
+    if (e.target.ownerDocument) {
+      e.target.ownerDocument.defaultView.getSelection().removeAllRanges();
     }
   };
 
   const resizeLeftHandler = (clientX) => {
-    const calendarEl = document.querySelector(".Calendar-Scroller");
-    if (!clientX) {
-      if (calendarEl.scrollLeft > scrollLeft) {
-        clientX = window.innerWidth;
-      } else if (calendarEl.scrollLeft == scrollLeft) {
-        return;
-      } else {
-        clientX = 0;
-      }
-    }
-    setScrollLeft(calendarEl.scrollLeft);
-
     const lineRect = lineRef.current.getBoundingClientRect();
     const lineStyles = lineRef.current.style;
 
@@ -116,7 +98,6 @@ function InnerLeftStick({
 
   useEvent(document, "touchmove", (e) => {
     if (isResizeLeft) {
-      removeSelection(e);
       resizeLeftHandler(e.touches[0].clientX);
     }
   });
@@ -134,19 +115,23 @@ function InnerLeftStick({
 
   useEvent(document, "touchend", (e) => {
     if (isResizeLeft) {
+      setIsCalendarScrollLock(false);
       stopResizeLeft();
     }
   });
 
   useEvent(document.querySelector(".Calendar-Scroller"), "scroll", (e) => {
-    if (isResizeLeft) {
+    if (
+      isResizeLeft &&
+      !(
+        "ontouchstart" in window ||
+        navigator.maxTouchPoints > 0 ||
+        navigator.msMaxTouchPoints > 0
+      )
+    ) {
       resizeLeftHandler();
     }
   });
-
-  useEffect(() => {
-    setInitialScroll();
-  }, [document.querySelector(".Calendar-Scroller"), scrollLeft]);
 
   return (
     <When condition={(taskWidth - 4) / 3 > 3}>
@@ -154,7 +139,10 @@ function InnerLeftStick({
         <div
           className={calendarStyles.resizeAreaLeft + " stick"}
           onMouseDown={startResizeLeft}
-          onTouchStart={startResizeLeft}
+          onTouchStart={(e) => {
+            setIsCalendarScrollLock(true);
+            startResizeLeft(e);
+          }}
           style={{
             cursor: globalCursor ? globalCursor : "ew-resize",
             width: taskWidth >= 36 ? 18 : taskWidth / 2,

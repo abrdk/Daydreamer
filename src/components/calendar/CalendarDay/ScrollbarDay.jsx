@@ -1,8 +1,9 @@
 import Scrollbar from "react-scrollbars-custom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import useEvent from "@react-hook/event";
 import styles from "@/styles/calendar.module.scss";
 import useMedia from "use-media";
+import { OptionsContext } from "@/src/context/OptionsContext";
 
 export default function ScrollbarDay({
   cursor,
@@ -16,7 +17,9 @@ export default function ScrollbarDay({
   defaultScrollLeft,
   children,
 }) {
-  const isMobile = useMedia({ maxWidth: 768 });
+  const { isCalendarScrollLock } = useContext(OptionsContext);
+
+  const isMobile = useMedia({ maxWidth: 1200 });
 
   const [isMouseDown, setIsMouseDown] = useState(false);
   useEvent(document, "mousedown", () => setIsMouseDown(true));
@@ -123,7 +126,9 @@ export default function ScrollbarDay({
       scrollLeft={defaultScrollLeft}
       noScrollY={true}
       style={{
-        height: isMobile ? "calc(100vh - 83px)" : "calc(100vh - 89px)",
+        height: isMobile
+          ? "calc(calc(var(--vh, 1vh) * 100) - 72px)"
+          : "calc(calc(var(--vh, 1vh) * 100) - 89px)",
         width: "100vw",
       }}
       trackXProps={{
@@ -146,6 +151,11 @@ export default function ScrollbarDay({
               {...restProps}
               ref={elementRef}
               className="ScrollbarsCustom-Scroller Calendar-Scroller"
+              style={{
+                overflow: isCalendarScrollLock ? "hidden" : "scroll hidden",
+                paddingBottom: isCalendarScrollLock ? "" : 20,
+                marginBottom: isCalendarScrollLock ? "" : -20,
+              }}
             />
           );
         },
