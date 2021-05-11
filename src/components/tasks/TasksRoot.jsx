@@ -47,13 +47,13 @@ export default function TasksRoot({ root, setContainerHeight }) {
   const findSubtasksIds = (_id) =>
     tasksByProjectId
       .filter((t) => t.root == _id)
-      .sort((task1, task2) => task1.order > task2.order)
+      .sort((task1, task2) => (task1.order > task2.order ? 1 : -1))
       .map((t) => [t._id, ...findSubtasksIds(t._id)]);
   const findTaskWithSubtaskIds = (_id) => [_id, ...findSubtasksIds(_id)];
 
   const sortedTasksIds = tasksByProjectId
     .filter((t) => t.root == "")
-    .sort((task1, task2) => task1.order > task2.order)
+    .sort((task1, task2) => (task1.order > task2.order ? 1 : -1))
     .map((t) => findTaskWithSubtaskIds(t._id).flat())
     .flat();
 
@@ -80,7 +80,7 @@ export default function TasksRoot({ root, setContainerHeight }) {
 
   const sortedTasks = tasksByProjectId
     .filter((task) => task.root == root)
-    .sort((task1, task2) => task1.order > task2.order);
+    .sort((task1, task2) => (task1.order > task2.order ? 1 : -1));
 
   let indexesWithIds = {};
   sortedTasks.forEach((t) => {

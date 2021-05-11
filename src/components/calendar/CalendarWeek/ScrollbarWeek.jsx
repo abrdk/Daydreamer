@@ -155,7 +155,7 @@ export default function ScrollbarWeek({
       noScrollY={true}
       style={{
         height: isMobile
-          ? "calc(calc(var(--vh, 1vh) * 100) - 83px)"
+          ? "calc(calc(var(--vh, 1vh) * 100) - 72px)"
           : "calc(calc(var(--vh, 1vh) * 100) - 89px)",
         width: "100vw",
       }}

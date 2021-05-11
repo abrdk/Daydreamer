@@ -14,13 +14,13 @@ function TasksDraggableWrapper({ children }) {
   const findSubtasksIds = (_id) =>
     tasksByProjectId
       .filter((t) => t.root == _id)
-      .sort((task1, task2) => task1.order > task2.order)
+      .sort((task1, task2) => (task1.order > task2.order ? 1 : -1))
       .map((t) => [t._id, ...findSubtasksIds(t._id)]);
   const findTaskWithSubtaskIds = (_id) => [_id, ...findSubtasksIds(_id)];
 
   const sortedTasksIds = tasksByProjectId
     .filter((t) => t.root == "")
-    .sort((task1, task2) => task1.order > task2.order)
+    .sort((task1, task2) => (task1.order > task2.order ? 1 : -1))
     .map((t) => findTaskWithSubtaskIds(t._id).flat())
     .flat();
 
@@ -80,8 +80,7 @@ function TasksDraggableWrapper({ children }) {
   const replaceTasksAtSameRoot = (sourceTask, destinationTask) => {
     const sortedTasks = tasksByProjectId
       .filter((task) => task.root == sourceTask.root)
-      .sort((task1, task2) => task1.order > task2.order);
-
+      .sort((task1, task2) => (task1.order > task2.order ? 1 : -1));
     if (destinationTask.order > sourceTask.order) {
       sortedTasks
         .slice(sourceTask.order + 1, destinationTask.order + 1)
@@ -101,11 +100,11 @@ function TasksDraggableWrapper({ children }) {
   const makeSourceTaskFirstInDest = (sourceTask, destinationTask) => {
     const sortedTasksBySourceRoot = tasksByProjectId
       .filter((task) => task.root == sourceTask.root)
-      .sort((task1, task2) => task1.order > task2.order);
+      .sort((task1, task2) => (task1.order > task2.order ? 1 : -1));
 
     const sortedTasksByDestRoot = tasksByProjectId
       .filter((task) => task.root == destinationTask._id)
-      .sort((task1, task2) => task1.order > task2.order);
+      .sort((task1, task2) => (task1.order > task2.order ? 1 : -1));
 
     sortedTasksBySourceRoot.slice(sourceTask.order + 1).forEach((t) => {
       updateTask({ ...t, order: t.order - 1 });
@@ -121,11 +120,11 @@ function TasksDraggableWrapper({ children }) {
   const replaceTasksAtDifferentRoot = (sourceTask, destinationTask) => {
     const sortedTasksBySourceRoot = tasksByProjectId
       .filter((task) => task.root == sourceTask.root)
-      .sort((task1, task2) => task1.order > task2.order);
+      .sort((task1, task2) => (task1.order > task2.order ? 1 : -1));
 
     const sortedTasksByDestRoot = tasksByProjectId
       .filter((task) => task.root == destinationTask.root)
-      .sort((task1, task2) => task1.order > task2.order);
+      .sort((task1, task2) => (task1.order > task2.order ? 1 : -1));
 
     sortedTasksBySourceRoot.slice(sourceTask.order + 1).forEach((t) => {
       updateTask({ ...t, order: t.order - 1 });
@@ -162,7 +161,6 @@ function TasksDraggableWrapper({ children }) {
             source.index,
             destination.index
           );
-
           if (sourceTask.root == destinationTask.root) {
             if (
               isTaskOpened[destinationTask._id] &&
@@ -170,6 +168,7 @@ function TasksDraggableWrapper({ children }) {
             ) {
               makeSourceTaskFirstInDest(sourceTask, destinationTask);
             } else {
+              console.log("b");
               replaceTasksAtSameRoot(sourceTask, destinationTask);
             }
           } else {

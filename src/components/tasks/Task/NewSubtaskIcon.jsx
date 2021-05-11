@@ -77,7 +77,7 @@ export default function NewSubtaskIcon({ task, plusRef }) {
 
   const subtasks = tasksByProjectId
     .filter((subtask) => subtask.root == task._id)
-    .sort((task1, task2) => task1.order > task2.order);
+    .sort((task1, task2) => (task1.order > task2.order ? 1 : -1));
 
   return (
     <InnerNewSubtaskIcon

@@ -95,7 +95,6 @@ function InnerTask({
                 arrow={arrow}
                 taskDepth={taskDepth}
               />
-
               <TaskName
                 task={task}
                 isUpdating={isUpdating}

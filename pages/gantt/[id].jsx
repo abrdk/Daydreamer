@@ -23,6 +23,12 @@ function InnerGantt({
   const [modal, setModal] = useState(false);
 
   useEffect(() => {
+    // window.oncontextmenu = function (event) {
+    //   event.preventDefault();
+    //   event.stopPropagation();
+    //   return false;
+    // };
+
     var customViewportCorrectionVariable = "vh";
     function setViewportProperty(doc) {
       var prevClientHeight;
@@ -49,10 +55,10 @@ function InnerGantt({
       <Head>
         {" "}
         <title> Daydreamer | Put your ideas on a timeline </title>{" "}
-        {/* <meta
+        <meta
           name="viewport"
-          content="width=device-width, height=device-height"
-        ></meta> */}
+          content="width=device-width, initial-scale=1"
+        ></meta>
       </Head>
       <When
         condition={

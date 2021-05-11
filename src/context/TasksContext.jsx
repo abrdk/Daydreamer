@@ -51,7 +51,7 @@ export function TasksProvider(props) {
       const findSubtasksIds = (_id) =>
         tasks
           .filter((t) => t.root == _id)
-          .sort((task1, task2) => task1.order > task2.order)
+          .sort((task1, task2) => (task1.order > task2.order ? 1 : -1))
           .map((t) => [t._id, ...findSubtasksIds(t._id)]);
       const findTaskWithSubtaskIds = (_id) => [_id, ...findSubtasksIds(_id)];
 

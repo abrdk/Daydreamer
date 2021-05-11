@@ -69,7 +69,7 @@ export default function IconCreateSubtask({ task }) {
   const { isUserOwnsProject } = useContext(ProjectsContext);
   const subtasks = tasksByProjectId
     .filter((t) => t.root == task._id)
-    .sort((task1, task2) => task1.order > task2.order);
+    .sort((task1, task2) => (task1.order > task2.order ? 1 : -1));
 
   return (
     <InnerIconCreateSubtask

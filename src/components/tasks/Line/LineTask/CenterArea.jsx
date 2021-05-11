@@ -40,6 +40,7 @@ export default function CenterArea({
   const [offsetFromCenter, setOffsetFromCenter] = useState(0);
 
   const startMoving = (e) => {
+    console.log("bbbb");
     if (e.target != inputRef.current && isUserOwnsProject && !isSpacePressed) {
       setIsMoving(true);
       const lineRect = lineRef.current.getBoundingClientRect();
@@ -116,7 +117,6 @@ export default function CenterArea({
       movingHandler(e.clientX);
     }
   });
-  useEventListener;
 
   useEventListener(
     "touchmove",
@@ -134,6 +134,16 @@ export default function CenterArea({
       stopMoving();
     }
   });
+
+  // useEvent(
+  //   document.querySelector(`#line-center${task._id}`),
+  //   "contextmenu",
+  //   (e) => {
+  //     console.log("aaaaaaa");
+  //     e.preventDefault();
+  //     e.stopPropagation();
+  //   }
+  // );
 
   useEvent(document, "touchmove", (e) => {
     if (isMoving) {
@@ -163,6 +173,7 @@ export default function CenterArea({
   return (
     <When condition={taskWidth - 36 > 0}>
       <div
+        id={`line-center${task._id}`}
         className={calendarStyles.moveAreaCenter + " grab"}
         style={{
           width: taskWidth - 36,
