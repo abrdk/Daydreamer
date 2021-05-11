@@ -33,6 +33,7 @@
     "react-truncate": "^2.4.0",
     "sass": "^1.32.6",
     "swr": "^0.5.5",
+    "touch-simulate": "^0.1.1",
     "use-media": "^1.4.0"
   },
   "devDependencies": {

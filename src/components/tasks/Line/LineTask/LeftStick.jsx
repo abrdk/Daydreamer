@@ -1,6 +1,6 @@
 import calendarStyles from "@/styles/calendar.module.scss";
 import { When } from "react-if";
-import { useContext, useState, useEffect, memo } from "react";
+import { useContext, useState, memo } from "react";
 import useEvent from "@react-hook/event";
 import useEventListener from "@use-it/event-listener";
 
@@ -22,6 +22,8 @@ function InnerLeftStick({
   updateTask,
   isUserOwnsProject,
 }) {
+  const { setIsCalendarScrollLock } = useContext(OptionsContext);
+
   const [isSpacePressed, setIsSpacePressed] = useState(false);
   useEvent(document, "keydown", (e) => {
     if (e.key == " ") {
@@ -96,7 +98,6 @@ function InnerLeftStick({
 
   useEvent(document, "touchmove", (e) => {
     if (isResizeLeft) {
-      removeSelection(e);
       resizeLeftHandler(e.touches[0].clientX);
     }
   });
@@ -114,6 +115,7 @@ function InnerLeftStick({
 
   useEvent(document, "touchend", (e) => {
     if (isResizeLeft) {
+      setIsCalendarScrollLock(false);
       stopResizeLeft();
     }
   });
@@ -137,7 +139,10 @@ function InnerLeftStick({
         <div
           className={calendarStyles.resizeAreaLeft + " stick"}
           onMouseDown={startResizeLeft}
-          onTouchStart={startResizeLeft}
+          onTouchStart={(e) => {
+            setIsCalendarScrollLock(true);
+            startResizeLeft(e);
+          }}
           style={{
             cursor: globalCursor ? globalCursor : "ew-resize",
             width: taskWidth >= 36 ? 18 : taskWidth / 2,

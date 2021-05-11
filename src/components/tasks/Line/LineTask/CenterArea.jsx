@@ -6,6 +6,7 @@ import useEventListener from "@use-it/event-listener";
 
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 import { TasksContext } from "@/src/context/TasksContext";
+import { OptionsContext } from "@/src/context/OptionsContext";
 
 export default function CenterArea({
   task,
@@ -36,11 +37,11 @@ export default function CenterArea({
 
   const { updateTask } = useContext(TasksContext);
   const { isUserOwnsProject } = useContext(ProjectsContext);
+  const { setIsCalendarScrollLock } = useContext(OptionsContext);
 
   const [offsetFromCenter, setOffsetFromCenter] = useState(0);
 
   const startMoving = (e) => {
-    console.log("bbbb");
     if (e.target != inputRef.current && isUserOwnsProject && !isSpacePressed) {
       setIsMoving(true);
       const lineRect = lineRef.current.getBoundingClientRect();
@@ -135,16 +136,6 @@ export default function CenterArea({
     }
   });
 
-  // useEvent(
-  //   document.querySelector(`#line-center${task._id}`),
-  //   "contextmenu",
-  //   (e) => {
-  //     console.log("aaaaaaa");
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //   }
-  // );
-
   useEvent(document, "touchmove", (e) => {
     if (isMoving) {
       movingHandler(e.touches[0].clientX);
@@ -153,20 +144,22 @@ export default function CenterArea({
 
   useEvent(document, "touchend", (e) => {
     if (isMoving) {
+      setIsCalendarScrollLock(false);
       stopMoving();
     }
   });
 
-  useEvent(document.querySelector(".Calendar-Scroller"), "scroll", () => {
-    if (
-      isMoving &&
-      !(
-        "ontouchstart" in window ||
-        navigator.maxTouchPoints > 0 ||
-        navigator.msMaxTouchPoints > 0
-      )
-    ) {
-      movingHandler();
+  useEvent(document.querySelector(".Calendar-Scroller"), "scroll", (e) => {
+    if (isMoving) {
+      if (
+        !(
+          "ontouchstart" in window ||
+          navigator.maxTouchPoints > 0 ||
+          navigator.msMaxTouchPoints > 0
+        )
+      ) {
+        movingHandler();
+      }
     }
   });
 
@@ -181,7 +174,10 @@ export default function CenterArea({
           cursor: getCursor(),
         }}
         onMouseDown={startMoving}
-        onTouchStart={startMoving}
+        onTouchStart={(e) => {
+          setIsCalendarScrollLock(true);
+          startMoving(e);
+        }}
       >
         {children}
       </div>

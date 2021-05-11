@@ -1,11 +1,12 @@
 import calendarStyles from "@/styles/calendar.module.scss";
 import { When } from "react-if";
-import { useContext, useState, useEffect, memo } from "react";
+import { useContext, useState, memo } from "react";
 import useEvent from "@react-hook/event";
 import useEventListener from "@use-it/event-listener";
 
 import { ProjectsContext } from "@/src/context/ProjectsContext";
 import { TasksContext } from "@/src/context/TasksContext";
+import { OptionsContext } from "@/src/context/OptionsContext";
 
 function InnerRightStick({
   task,
@@ -21,6 +22,7 @@ function InnerRightStick({
   updateTask,
   isUserOwnsProject,
 }) {
+  const { setIsCalendarScrollLock } = useContext(OptionsContext);
   const [isSpacePressed, setIsSpacePressed] = useState(false);
   useEvent(document, "keydown", (e) => {
     if (e.key == " ") {
@@ -94,7 +96,6 @@ function InnerRightStick({
 
   useEvent(document, "touchmove", (e) => {
     if (isResizeRight) {
-      removeSelection(e);
       resizeRightHandler(e.touches[0].clientX);
     }
   });
@@ -112,6 +113,7 @@ function InnerRightStick({
 
   useEvent(document, "touchend", (e) => {
     if (isResizeRight) {
+      setIsCalendarScrollLock(false);
       stopResizeRight();
     }
   });
@@ -136,7 +138,10 @@ function InnerRightStick({
         <div
           className={calendarStyles.resizeAreaRight + " stick"}
           onMouseDown={startResizeRight}
-          onTouchStart={startResizeRight}
+          onTouchStart={(e) => {
+            setIsCalendarScrollLock(true);
+            startResizeRight(e);
+          }}
           style={{
             cursor: globalCursor ? globalCursor : "ew-resize",
             width:

@@ -103,6 +103,7 @@ input:-webkit-autofill:focus {
   background: #258efa !important;
   border: 1px solid #258efa !important;
   border-radius: 100px !important;
+  display: block !important;
 }
 
 .ScrollbarsCustom-Calendar {
@@ -130,6 +131,12 @@ input:-webkit-autofill:focus {
   position: fixed !important;
   top: 182px;
   right: 0px !important;
+}
+
+.Calendar-Scroller {
+  position: absolute;
+  inset: 0px;
+  user-select: auto;
 }
 
 .react-datepicker-wrapper {
@@ -220,6 +227,17 @@ textarea {
 }
 
 @media (max-width: 1199.98px) {
+  .ThumbX-Calendar {
+    background: #258efa;
+    border: 1px solid #258efa;
+    border-radius: 100px;
+    height: 5px;
+    position: fixed;
+    left: 0;
+    bottom: 6px;
+    z-index: 1;
+  }
+
   .ScrollbarsCustom-Calendar {
     width: calc(100% - 34px) !important;
     left: 17px !important;

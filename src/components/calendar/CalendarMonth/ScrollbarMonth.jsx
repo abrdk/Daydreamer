@@ -1,8 +1,9 @@
 import styles from "@/styles/calendar.module.scss";
 import Scrollbar from "react-scrollbars-custom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import useEvent from "@react-hook/event";
 import useMedia from "use-media";
+import { OptionsContext } from "@/src/context/OptionsContext";
 
 export default function CalendarMonth({
   cursor,
@@ -15,6 +16,8 @@ export default function CalendarMonth({
   setCalendarEndDate,
   children,
 }) {
+  const { isCalendarScrollLock } = useContext(OptionsContext);
+
   const isMobile = useMedia({ maxWidth: 1200 });
 
   const [isMouseDown, setIsMouseDown] = useState(false);
@@ -141,6 +144,11 @@ export default function CalendarMonth({
               {...restProps}
               ref={elementRef}
               className="ScrollbarsCustom-Scroller Calendar-Scroller"
+              style={{
+                overflow: isCalendarScrollLock ? "hidden" : "scroll hidden",
+                paddingBottom: isCalendarScrollLock ? "" : 20,
+                marginBottom: isCalendarScrollLock ? "" : -20,
+              }}
             />
           );
         },
