@@ -97,6 +97,7 @@ input:-webkit-autofill:focus {
   height: 5px !important;
   background: #e5e8eb !important;
   border-radius: 100px !important;
+  z-index: 1;
 }
 
 .ScrollbarsCustom-ThumbX {

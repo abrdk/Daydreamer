@@ -400,7 +400,20 @@
   z-index: 1;
 }
 
+.trackBackground {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 15px;
+  background: #fff;
+}
+
 @media (max-width: 1199.98px) {
+  .trackBackground {
+    height: 11px;
+  }
+
   .monthName {
     margin-bottom: 2px;
     font-size: 13px;
