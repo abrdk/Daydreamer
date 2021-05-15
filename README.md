@@ -37,8 +37,10 @@ To run the app without Docker, install dependencies (`yarn install`) and [specif
 The UI specification is available at [Figma](https://www.figma.com/file/5TvJ1XE0h5pL2uUu1inhYv/DayDreamer_v0.4_new_UI?node-id=150%3A1876).
 
 ### Version History
-
-v0.4  
+v0.5 (mobile web)  
+&nbsp;&nbsp;&nbsp; Design - [Vitaliy Kravchuk](https://freelancehunt.com/freelancer/DemonStrike.html)  
+&nbsp;&nbsp;&nbsp; Programming - [Maxim Pozdnyakov](https://freelancehunt.com/freelancer/maxim_pozdnyakow.html)  
+[v0.4](https://github.com/abrdk/Daydreamer/tree/749fcbc55e16513457730d14763f5e2959583f61) (new UI)  
 &nbsp;&nbsp;&nbsp; Design - [Vitaliy Kravchuk](https://freelancehunt.com/freelancer/DemonStrike.html)  
 &nbsp;&nbsp;&nbsp; Programming - [Maxim Pozdnyakov](https://freelancehunt.com/freelancer/maxim_pozdnyakow.html)  
 &nbsp;&nbsp;&nbsp; Docker configuration - [Aleksey Shepelev](https://freelance.habr.com/freelancers/AlekseyShepelev)  
