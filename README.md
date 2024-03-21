@@ -1,9 +1,9 @@
 ### Daydreamer
 
-Put ideas on a timeline. [Start now!](https://daydreamer.app)
+Put ideas on a timeline. [Start now!](https://daydreamer.one)
 
 <p align="center">
-    <a href="https://daydreamer.app">
+    <a href="https://daydreamer.one">
         <img src="https://i.ibb.co/qNTQ5hg/daydreamer-v04-example.png" width="600"/>
     </a>
 </p>
